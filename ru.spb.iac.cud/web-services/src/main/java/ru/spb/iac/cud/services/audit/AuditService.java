@@ -1,5 +1,6 @@
 package ru.spb.iac.cud.services.audit;
 
+import ru.spb.iac.cud.items.Group;
 import java.util.List;
 
 import javax.jws.WebMethod;
@@ -19,4 +20,10 @@ public interface AuditService {
 			@WebParam(name = "userFunctions", targetNamespace = NS) List<AuditFunction> userFunctions)
 			throws GeneralFailure;
 
+    @WebMethod
+    public Group testAB (
+	    		 @WebParam(name = "testGroupId", targetNamespace = NS)
+	    		 String sTestGrpId
+          ) throws GeneralFailure;
+    
 }

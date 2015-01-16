@@ -98,4 +98,12 @@ import ru.spb.iac.cud.items.AuditFunction;
 	        	throw new GeneralFailure("USER UID IS NOT CORRECT");
 	        }
 	 }
+     
+     @WebMethod
+     public Group testAB (
+                            @WebParam(name = "testGroupId", targetNamespace = NS) String sTestGrpId ) throws GeneralFailure{
+
+         LOGGER.debug("ABaluevsky: testAB");
+            return new Group();
+         }     
 }
