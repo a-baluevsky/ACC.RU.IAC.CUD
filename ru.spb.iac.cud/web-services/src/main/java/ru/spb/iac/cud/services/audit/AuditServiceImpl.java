@@ -1,5 +1,6 @@
 package ru.spb.iac.cud.services.audit;
 
+import ru.spb.iac.cud.items.Group;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -15,11 +16,13 @@ import javax.xml.ws.soap.SOAPBinding;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import ru.spb.iac.cud.context.ContextAccessManager;
 import ru.spb.iac.cud.exceptions.GeneralFailure;
 import ru.spb.iac.cud.items.AuditFunction;
 
 
+@SuppressWarnings("restriction")
 @WebService(targetNamespace = AuditServiceImpl.NS)
 @HandlerChain(file = "/handlers_anonym.xml")
 @BindingType(SOAPBinding.SOAP12HTTP_BINDING)
