@@ -1,12 +1,14 @@
 package ru.spb.iac.cud.services.audit;
 
 import ru.spb.iac.cud.items.Group;
+
 import java.util.List;
 
 import javax.annotation.Resource;
 import javax.jws.HandlerChain;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
+import javax.jws.WebResult;
 import javax.jws.WebService;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.ws.BindingType;
@@ -103,10 +105,14 @@ import ru.spb.iac.cud.items.AuditFunction;
 	 }
      
      @WebMethod
+     @WebResult(targetNamespace = NS)
      public Group testAB (
                             @WebParam(name = "testGroupId", targetNamespace = NS) String sTestGrpId ) throws GeneralFailure{
-
-         LOGGER.debug("ABaluevsky: testAB");
-            return new Group();
+    	 System.out.println("ABaluevsky: testAB: Group grp =  new Group();");
+         	LOGGER.debug("ABaluevsky: testAB - " + sTestGrpId);
+         	Group grp =  new Group();
+         	grp.setName("ABaluevsky group: "+sTestGrpId);
+         	LOGGER.debug("ABaluevsky: testAB: "+grp.getName());
+            return grp;
          }     
 }
