@@ -114,5 +114,14 @@ import ru.spb.iac.cud.items.AuditFunction;
          	grp.setName("ABaluevsky group: "+sTestGrpId);
          	LOGGER.debug("ABaluevsky: testAB: "+grp.getName());
             return grp;
-         }     
+         }
+
+ 	@WebMethod
+ 	@WebResult(targetNamespace = NS)
+ 	public String testABStr (
+ 			@WebParam(name = "testString", targetNamespace = NS)
+ 			String sTestString)
+ 					throws GeneralFailure { 
+		return "Hello from AuditService, "+sTestString+"!";
+	}     
 }

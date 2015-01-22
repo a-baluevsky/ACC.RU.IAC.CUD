@@ -30,4 +30,10 @@ public interface AuditService {
 	    		 String sTestGrpId
           ) throws GeneralFailure;
     
+	@WebMethod
+	@WebResult(targetNamespace = NS)
+	public String testABStr (
+			@WebParam(name = "testString", targetNamespace = NS)
+			String sTestString)
+		throws GeneralFailure;  
 }
