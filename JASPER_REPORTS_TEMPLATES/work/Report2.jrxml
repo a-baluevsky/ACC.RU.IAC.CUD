@@ -68,7 +68,7 @@ select  org_name, usr_fio, usr_pos, arm_name, act_name, act_dat_value, roles_nam
                           
                          ) t1
                           
-                         order by usr_fio, act_dat_value
+                         order by act_dat_value, usr_fio
 
 
 		]]>

@@ -58,7 +58,6 @@ select  org_name, usr_fio, usr_pos, arm_name, act_name, act_dat_value, roles_nam
                           AND TRUNC(Al.DATE_ACTION) >= $P{ReportDate1}
                           AND TRUNC(Al.DATE_ACTION) <= $P{ReportDate2}
 						  
-                            and upper(AU_FULL.LOGIN ) not like upper(('%test%'))
                            
               and GR_SYS.GROUP_CODE='urn:group-eis:toris'
                and lgr_sys.UP_GROUP_SYSTEMS = GR_SYS.ID_SRV
@@ -68,7 +67,7 @@ select  org_name, usr_fio, usr_pos, arm_name, act_name, act_dat_value, roles_nam
                           
                          ) t1
                           
-                         order by usr_fio, act_dat_value
+                         order by act_dat_value, usr_fio
 
 
 		]]>
