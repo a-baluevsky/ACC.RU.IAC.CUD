@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="CUDQueryReport" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="515" leftMargin="40" rightMargin="40" topMargin="50" bottomMargin="50" uuid="347ebd82-2741-4ae4-9312-31cd4e70b4b2">
+	<!--template><![CDATA["/home/jboss/jboss/data/reports/templates/ReportStyles.jrtx"]]></template-->
+	<style name="Sans_Normal" isDefault="true" fontName="DejaVu Sans" fontSize="12"/>
+	<style name="Sans_Bold" isDefault="false" fontName="DejaVu Sans" fontSize="12" isBold="true"/>
+	<style name="Sans_Italic" isDefault="false" fontName="DejaVu Sans" fontSize="12" isItalic="true"/>
+	
+	<parameter name="ReportTitle" class="java.lang.String"/>
+	<parameter name="ReportDate1" class="java.util.Date"/>
+	<parameter name="ReportDate2" class="java.util.Date"/>
+	<parameter name="ReportDateValue" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[
+		select t2_gl.t1_id, t2_gl.t1_fio, t2_gl.t1_pos, t2_gl.t1_org_name, cnt from (
+select SL.UP_USERS id_user, count(SL.ID_SRV ) cnt from SERVICES_LOG_KNL_T sl,
+GROUP_SYSTEMS_KNL_T gr_sys
+where SL.UP_GR_SYS=GR_SYS.ID_SRV
+and GR_SYS.GROUP_CODE='urn:group-eis:toris'
+and SL.RESULT_VALUE = 'true'
+and SL.UP_SERVICES in(2, 62, 79, 97, 98, 99)
+AND  TRUNC(SL.DATE_ACTION) >= $P{ReportDate1}
+AND  TRUNC(SL.DATE_ACTION) <= $P{ReportDate2}
+group by SL.UP_USERS
+) t1_gl, 
+(select t1.t1_id, t1.t1_login, t1.t1_cert, t1.t1_usr_code, t1.t1_fio, t1.t1_tel, t1.t1_email,t1.t1_pos, t1.t1_dep_name, 
+                            t1.t1_org_code, t1.t1_org_name, t1.t1_org_adr, t1.t1_org_tel, t1.t1_start, t1.t1_end, t1.t1_status, 
+                             t1.t1_crt_date, t1.t1_crt_usr_login, t1.t1_upd_date, t1.t1_upd_usr_login, 
+                             t1.t1_dep_code, t1.t1_org_status, t1.t1_usr_status, t1.t1_dep_status, t1.t1_iogv_bind_type  
+                            from( 
+                            select AU_FULL.ID_SRV t1_id, AU_FULL.login t1_login, AU_FULL.CERTIFICATE t1_cert, t2.CL_USR_CODE t1_usr_code, 
+                             decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_fio,   
+                              decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.PHONE, CL_USR_FULL.PHONE ) t1_tel,    
+                              decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.E_MAIL, CL_USR_FULL.EMAIL) t1_email,   
+                              decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.POSITION, CL_USR_FULL.POSITION)t1_pos,   
+                              decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.DEPARTMENT, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.FULL_)) t1_dep_name,  
+                              t1.CL_ORG_CODE t1_org_code, CL_ORG_FULL.FULL_ t1_org_name, 
+                              CL_ORG_FULL.PREFIX || decode(CL_ORG_FULL.HOUSE, null, null, ','  ||CL_ORG_FULL.HOUSE  ) t1_org_adr, 
+                              CL_ORG_FULL.PHONE t1_org_tel, 
+                              to_char(AU_FULL.START_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_start,  
+                              to_char(AU_FULL.END_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_end,   
+                              AU_FULL.STATUS t1_status,   
+                              AU_FULL.CREATED t1_crt_date,  
+                              USR_CRT.LOGIN t1_crt_usr_login,  
+                              to_char(AU_FULL.MODIFIED, 'DD.MM.YY HH24:MI:SS') t1_upd_date,  
+                              USR_UPD.LOGIN t1_upd_usr_login,  
+                              decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.sign_object)) t1_dep_code,  
+                              CL_ORG_FULL.STATUS t1_org_status,  CL_usr_FULL.STATUS t1_usr_status,  
+                               decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.STATUS)) t1_dep_status,
+                               AU_FULL.UP_BINDING t1_iogv_bind_type       
+                            from 
+                            (select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE 
+                            from ISP_BSS_T cl_org, 
+                            AC_USERS_KNL_T au 
+                            where AU.UP_SIGN = CL_ORG.SIGN_OBJECT 
+                            group by CL_ORG.SIGN_OBJECT) t1, 
+                            (select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE 
+                            from ISP_BSS_T cl_usr, 
+                            AC_USERS_KNL_T au 
+                            where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT 
+                            group by CL_usr.SIGN_OBJECT) t2, 
+                            (select max(CL_dep.ID_SRV) CL_DEP_ID,  CL_DEP.SIGN_OBJECT  CL_DEP_CODE 
+                            from ISP_BSS_T cl_dep, 
+                            AC_USERS_KNL_T au 
+                            where substr(au.UP_SIGN_USER,1,5)||'000'  =cl_dep.SIGN_OBJECT(+) 
+                            group by CL_DEP.SIGN_OBJECT) t3, 
+                            ( select t_core.t_core_id
+                            from( 
+                            select AU_FULL.ID_SRV t_core_id
+                            from 
+        
+                            AC_USERS_KNL_T au_full
+                            
+                            )t_core 
+                            group by t_core_id
+                           order by t_core.t_core_id
+                            ) t4,
+                            
+                            ISP_BSS_T cl_org_full, 
+                            ISP_BSS_T cl_usr_full, 
+                            ISP_BSS_T cl_dep_full, 
+                            AC_USERS_KNL_T au_full, 
+                            AC_USERS_KNL_T usr_crt,   
+                            AC_USERS_KNL_T usr_upd
+                            where cl_org_full.ID_SRV= CL_ORG_ID 
+                            and cl_usr_full.ID_SRV(+)=CL_USR_ID 
+                            and cl_DEP_full.ID_SRV(+)=CL_DEP_ID 
+                            and au_full.UP_SIGN = CL_ORG_CODE 
+                            and au_full.UP_SIGN_USER  =  CL_USR_CODE(+) 
+                            and substr(au_full.UP_SIGN_USER,1,5)||'000'  =  CL_DEP_CODE(+) 
+                            and au_full.CREATOR=USR_CRT.ID_SRV  
+                            and au_full.MODIFICATOR=USR_UPD.ID_SRV(+)  
+                            and AU_FULL.ID_SRV=t4.t_core_id
+                            )t1 )t2_gl
+    where t1_gl.id_user = t2_gl.t1_id
+	order by t1_fio
+		]]>
+	</queryString>
+	<field name="t1_id" class="java.lang.Integer"/>
+	<field name="t1_fio" class="java.lang.String"/>
+	<field name="t1_pos" class="java.lang.String"/>
+	<field name="t1_org_name" class="java.lang.String"/>
+	<field name="cnt" class="java.lang.Integer"/>
+	
+	<title>
+		<band height="50">
+			<textField isBlankWhenNull="true" isStretchWithOverflow="true">
+				<reportElement style="Sans_Normal" positionType="Float" x="0" y="0" width="850" height="30" uuid="f4319415-6741-45b7-b0f1-db7067341070"/>
+				<textElement textAlignment="Left">
+					<font size="16"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<!--textFieldExpression><![CDATA[$P{ReportTitle} +" "+ $P{ReportDateValue} ]]></textFieldExpression-->
+				<textFieldExpression><![CDATA["Отчёт по количеству входов в ТОРИС ( "+
+				new java.text.SimpleDateFormat("dd.MM.yyyy").format($P{ReportDate1})+
+				"-" +
+				new java.text.SimpleDateFormat("dd.MM.yyyy").format($P{ReportDate2}) +
+				")"]]></textFieldExpression>
+			</textField>
+
+		</band>
+	</title>
+	<pageHeader>
+		<band height="20">
+			<staticText>
+				<reportElement style="Sans_Bold" mode="Opaque" x="0" y="0" width="350" height="15" forecolor="#FFFFFF" backcolor="#333333" uuid="29ede41f-c9c3-4250-8cc4-99ec1c4651e4"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[ФИО]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Sans_Bold" mode="Opaque" x="350" y="0" width="350" height="15" forecolor="#FFFFFF" backcolor="#333333" uuid="00bca530-cad8-48df-be82-30371fc49684"/>
+				<text><![CDATA[Должность]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Sans_Bold" mode="Opaque" x="700" y="0" width="500" height="15" forecolor="#FFFFFF" backcolor="#333333" uuid="00bca530-cad8-48df-be82-30371fc49684"/>
+				<text><![CDATA[Организация]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Sans_Bold" mode="Opaque" x="1200" y="0" width="150" height="15" forecolor="#FFFFFF" backcolor="#333333" uuid="e5643d5d-98a2-4969-9f00-a512b4906c5e"/>
+				<text><![CDATA[Количество входов]]></text>
+			</staticText>
+			
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="20" >
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="0" y="0" width="350" height="15" uuid="21d5b9b3-0c48-489a-95ce-436044902f49" />
+				<textFieldExpression><![CDATA[$F{t1_fio}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="350" y="0" width="350" height="15" uuid="b40c4545-77bb-4e3d-933f-dd99e6e412c5"/>
+				<textFieldExpression><![CDATA[$F{t1_pos}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="700" y="0" width="500" height="15" uuid="b40c4545-77bb-4e3d-933f-dd99e6e412c5"/>
+				<textFieldExpression><![CDATA[$F{t1_org_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="1200" y="0" width="150" height="15" uuid="c16dbc25-0b76-4008-bf63-32753ecac356"/>
+				<textFieldExpression><![CDATA[$F{cnt}]]></textFieldExpression>
+			</textField>
+			<!--line>
+				<reportElement positionType="Float" x="0" y="19" width="50" height="1" forecolor="#808080" uuid="d06ffbd0-fa95-4d57-b0c0-dfd69a8417e1"/>
+			</line-->
+		</band>
+	</detail>
+
+</jasperReport>

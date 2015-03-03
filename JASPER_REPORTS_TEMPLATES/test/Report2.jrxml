@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="CUDQueryReport" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="515" leftMargin="40" rightMargin="40" topMargin="50" bottomMargin="50" uuid="347ebd82-2741-4ae4-9312-31cd4e70b4b2">
+	<!--template><![CDATA["/home/jboss/jboss/data/reports/templates/ReportStyles.jrtx"]]></template-->
+	
+	<style name="Sans_Normal" isDefault="true" fontName="DejaVu Sans" fontSize="12"/>
+	<style name="Sans_Bold" isDefault="false" fontName="DejaVu Sans" fontSize="12" isBold="true"/>
+	<style name="Sans_Italic" isDefault="false" fontName="DejaVu Sans" fontSize="12" isItalic="true"/>
+	
+	<parameter name="ReportTitle" class="java.lang.String"/>
+	<parameter name="ReportDate1" class="java.util.Date"/>
+	<parameter name="ReportDate2" class="java.util.Date"/>
+	<parameter name="ReportDateValue" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[
+		
+
+
+select  org_name, usr_fio, usr_pos, arm_name, act_name, act_dat_value, roles_names
+                         from 
+                        (select AL.ID_SRV act_id,  
+                         AL.DATE_ACTION act_dat, to_char(AL.DATE_ACTION, 'DD.MM.YY HH24:MI:SS') act_dat_value, 
+                         decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO) usr_fio, 
+                          decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.POSITION, CL_USR_FULL.POSITION) usr_pos,  
+                         ARM.ID_SRV arm_id, ARM.FULL_ arm_name, ACT.FULL_ act_name ,
+                         CL_ORG_FULL.FULL_ org_name, 
+                         alr.ROLES_NAMES ROLES_NAMES
+                         from ACTIONS_LOG_KNL_T al, 
+                          ACTIONS_LOG_ROLES_KNL_T alr,
+                         AC_IS_BSS_T arm, 
+                         ACTIONS_BSS_T act, 
+                         AC_USERS_KNL_T AU_FULL, 
+                         ISP_BSS_T cl_usr_full,
+                          ISP_BSS_T cl_org_full, 
+                         (select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE 
+                         from ISP_BSS_T cl_usr, 
+                         AC_USERS_KNL_T au 
+                         where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT 
+                         group by CL_usr.SIGN_OBJECT) t2,
+                          (select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE 
+                from ISP_BSS_T cl_org, 
+                AC_USERS_KNL_T au 
+                where AU.UP_SIGN = CL_ORG.SIGN_OBJECT 
+                group by CL_ORG.SIGN_OBJECT) t3,
+
+               GROUP_SYSTEMS_KNL_T gr_sys,
+               LINK_GROUP_SYS_SYS_KNL_T lgr_sys
+			   
+                         where ACT.ID_SRV=AL.UP_ACTIONS 
+                         and alr.ID_SRV = AL.UP_LOG_ROLES
+                         and ACT.UP_IS=ARM.ID_SRV 
+                         and AU_FULL.UP_SIGN_USER=t2.CL_USR_CODE(+) 
+                         and AU_FULL.ID_SRV=AL.UP_USERS 
+                         and CL_USR_FULL.ID_SRV(+)=t2.CL_USR_ID
+                         
+                         and au_full.UP_SIGN = CL_ORG_CODE
+                         and  cl_org_full.ID_SRV= CL_ORG_ID 
+                         
+                          AND TRUNC(Al.DATE_ACTION) >= $P{ReportDate1}
+                          AND TRUNC(Al.DATE_ACTION) <= $P{ReportDate2}
+						  
+                            and upper(AU_FULL.LOGIN ) not like upper(('%test%'))
+                           
+              and GR_SYS.GROUP_CODE='urn:group-eis:toris'
+               and lgr_sys.UP_GROUP_SYSTEMS = GR_SYS.ID_SRV
+                and  lgr_sys.UP_SYSTEMS = ARM.ID_SRV
+				
+                         order by Al.DATE_ACTION desc
+                          
+                         ) t1
+                          
+                         order by usr_fio, act_dat_value
+
+
+		]]>
+	</queryString>
+		
+	<field name="org_name" class="java.lang.String"/>
+	<field name="usr_fio" class="java.lang.String"/>
+	<field name="usr_pos" class="java.lang.String"/>
+	<field name="arm_name" class="java.lang.String"/>
+	<field name="act_name" class="java.lang.String"/>
+	<field name="act_dat_value" class="java.lang.String"/>
+	<field name="roles_names" class="java.lang.String"/>
+	
+	
+	<title>
+		<band height="50">
+			<textField isBlankWhenNull="true" isStretchWithOverflow="true">
+				<reportElement style="Sans_Normal" positionType="Float" x="0" y="0" width="850" height="30" uuid="f4319415-6741-45b7-b0f1-db7067341070"/>
+				<textElement textAlignment="Left">
+					<font size="16"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<!--textFieldExpression><![CDATA[$P{ReportTitle} +" "+ $P{ReportDateValue} ]]></textFieldExpression-->
+				<textFieldExpression><![CDATA["Отчёт по аудиту действий пользователей ( "+
+				new java.text.SimpleDateFormat("dd.MM.yyyy").format($P{ReportDate1})+
+				"-" +
+				new java.text.SimpleDateFormat("dd.MM.yyyy").format($P{ReportDate2}) +
+				")"]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="20">
+			<staticText>
+				<reportElement style="Sans_Bold" mode="Opaque" x="0" y="0" width="350" height="15" forecolor="#FFFFFF" backcolor="#333333" uuid="29ede41f-c9c3-4250-8cc4-99ec1c4651e4"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[ФИО]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Sans_Bold" mode="Opaque" x="350" y="0" width="350" height="15" forecolor="#FFFFFF" backcolor="#333333" uuid="00bca530-cad8-48df-be82-30371fc49684"/>
+				<text><![CDATA[Должность]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Sans_Bold" mode="Opaque" x="700" y="0" width="500" height="15" forecolor="#FFFFFF" backcolor="#333333" uuid="00bca530-cad8-48df-be82-30371fc49684"/>
+				<text><![CDATA[Организация]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Sans_Bold" mode="Opaque" x="1200" y="0" width="200" height="15" forecolor="#FFFFFF" backcolor="#333333" uuid="e5643d5d-98a2-4969-9f00-a512b4906c5e"/>
+				<text><![CDATA[Подсистема]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Sans_Bold" mode="Opaque" x="1400" y="0" width="200" height="15" forecolor="#FFFFFF" backcolor="#333333" uuid="00bca530-cad8-48df-be82-30371fc49684"/>
+				<text><![CDATA[Дата]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Sans_Bold" mode="Opaque" x="1600" y="0" width="400" height="15" forecolor="#FFFFFF" backcolor="#333333" uuid="00bca530-cad8-48df-be82-30371fc49684"/>
+				<text><![CDATA[Действие]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Sans_Bold" mode="Opaque" x="2000" y="0" width="400" height="15" forecolor="#FFFFFF" backcolor="#333333" uuid="e5643d5d-98a2-4969-9f00-a512b4906c5e"/>
+				<text><![CDATA[Роли]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="30" >
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="0" y="0" width="350" height="15" uuid="21d5b9b3-0c48-489a-95ce-436044902f49" />
+				<textFieldExpression><![CDATA[$F{usr_fio}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="350" y="0" width="350" height="15" uuid="21d5b9b3-0c48-489a-95ce-436044902f49" />
+				<textFieldExpression><![CDATA[$F{usr_pos}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="700" y="0" width="500" height="15" uuid="b40c4545-77bb-4e3d-933f-dd99e6e412c5"/>
+				<textFieldExpression><![CDATA[$F{org_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="1200" y="0" width="200" height="25" uuid="c16dbc25-0b76-4008-bf63-32753ecac356"/>
+				<textFieldExpression><![CDATA[$F{arm_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="1400" y="0" width="200" height="15" uuid="21d5b9b3-0c48-489a-95ce-436044902f49" />
+				<textFieldExpression><![CDATA[$F{act_dat_value}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="1600" y="0" width="400" height="15" uuid="b40c4545-77bb-4e3d-933f-dd99e6e412c5"/>
+				<textFieldExpression><![CDATA[$F{act_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="2000" y="0" width="400" height="15" uuid="c16dbc25-0b76-4008-bf63-32753ecac356"/>
+				<textFieldExpression><![CDATA[$F{roles_names}]]></textFieldExpression>
+			</textField>
+			<!--line>
+				<reportElement positionType="Float" x="0" y="19" width="50" height="1" forecolor="#808080" uuid="d06ffbd0-fa95-4d57-b0c0-dfd69a8417e1"/>
+			</line-->
+		</band>
+	</detail>
+
+</jasperReport>
