@@ -2,6 +2,8 @@ package iac.grn.infosweb.context.mc.usr;
 
 import iac.grn.infosweb.session.table.BaseStateHolder;
 
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -33,13 +35,30 @@ import org.jboss.seam.log.Log;
         public void clearFilters(){
     	   log.info("clearFilters:01");
     	   if(columnFilterValues!=null){
-           		for(Iterator<Map.Entry<String, String>> it = columnFilterValues.entrySet().iterator(); it.hasNext();)
-    			{
-    			      Map.Entry<String, String> me = it.next();
-    				  if(me.getValue()==null||me.getValue().isEmpty()||"#-1#".equals(me.getValue())){
-    	     			  log.info("Ahtung!!!");
-    	     			  it.remove();
-    	     		   }
+           		for(Iterator<Map.Entry<String, String>> it = columnFilterValues.entrySet().iterator(); 
+           			it.hasNext(); )
+    			{   
+    			      Map.Entry<String, String> me =  it.next();
+    			      Object oCurValue=me.getValue();    			      
+    			      if(oCurValue==null) {    			    	  
+    			    	  it.remove();
+    			      } else {
+	    			      String sCurTxt=null;
+	    			      Class curValClass = oCurValue.getClass();
+	    			      if(curValClass.equals(String.class)) {
+	    			    	  sCurTxt = (String)oCurValue;
+	    			      } else if(curValClass.equals(Date.class)) {
+	    			    	  SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy");
+	    			    	  sCurTxt = df.format((Date)oCurValue);
+	    			    	  me.setValue(sCurTxt);
+	    			      } else {
+	    			    	  sCurTxt = oCurValue.toString();
+	    			      }
+	    				  if(sCurTxt.isEmpty()||"#-1#".equals(sCurTxt)){
+	    	     			  log.info("Ahtung!!!");
+	    	     			  it.remove();
+	    	     		  }	    			      
+    			      }
     			}
           }
        }

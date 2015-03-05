@@ -16,6 +16,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -755,6 +756,40 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppOrgManagerBssT;
 		return userCertList;
 	}
 
+  public void updUsrUCCertRemove(Long idUser, String idSrvUserCert) {
+	   
+	  LOGGER.debug("UsrManager:updUsrUCCertRemove:01:"+idUser);
+	  LOGGER.debug("UsrManager:updUsrUCCertRemove:02:"+idSrvUserCert);
+	  
+	   try{
+		   
+		    
+	       if(idSrvUserCert==null){
+	    	   return;
+	       }
+	       
+           
+                
+	               entityManager.createNativeQuery(
+						    "delete from AC_USERS_CERT_BSS_T auc " + 
+						    "where AUC.ID_SRV = ? ")
+			                .setParameter(1, new Long(idSrvUserCert))
+	                        .executeUpdate();
+			      
+	              audit(ResourcesMap.USER, ActionsMap.REMOVE_CERT) ;
+	              
+           //!!!надо даже при заявке, а иначе будет пустой список userCertList
+           //при сохранении сертификатов мы остаёмся на той же форме
+		 	//надо обновить список имеющихся сертификатов
+		 	//loadUserCert();
+		 	
+		 	
+	       
+	   }catch(Exception e){
+		   LOGGER.error("UsrManager:updUsrUCCertRemove:error::"+e);
+	   }
+   }
+  
   public void audit(ResourcesMap resourcesMap, ActionsMap actionsMap){
 	   try{
 		  

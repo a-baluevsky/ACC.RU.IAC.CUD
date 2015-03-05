@@ -43,6 +43,11 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 
 			LOGGER.debug("system_cert:01:" + domain_name);
 
+			
+			if(domain_name==null){
+				return null;
+			}
+			
 			// ищем код в системах
 			if (domain_name.startsWith(CUDConstants.armPrefix)) {
 

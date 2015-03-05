@@ -89,18 +89,26 @@ import org.slf4j.LoggerFactory;
 
 				pw.print("<html>");
 				pw.print("<HEAD>");
+				
+				
+				pw.print("<script type=\"text/javascript\" src=\""
+						+ request.getContextPath()
+						+ "/js/login.js\"></script>");
+				
 				pw.print("<link rel=\"stylesheet\" type=\"text/css\" href=\""
 						+ request.getContextPath()
 						+ "/stylesheet/theme.css\"/>");
+				
+				
 				pw.print("</HEAD>");
 
-				pw.print("<body>");
+				pw.print("<body onload =\"setRemember('cudRememberPass');\">");
 
 				pw.print("<table style=\"width:100%; height:100%;\">");
 				pw.print("<tr>");
 				pw.print("<td align=\"center\" valign=\"middle\">");
 
-				pw.print("<div style=\"border:0; width:253px; height:150px\">");
+				pw.print("<div style=\"border:0; width:253px; height:135px\">");
 				pw.print("<div style=\"border:1px solid silver; width:250px; height:130px\">");
 
 				pw.print("<FORM METHOD=\"POST\" ACTION=\"" + destination
@@ -137,7 +145,8 @@ import org.slf4j.LoggerFactory;
 					pw.print("<INPUT TYPE=\"HIDDEN\" NAME=\"switch\" VALUE=\"false\"/>");
 				}
 
-				pw.print("<table width = \"220px\">");
+				//pw.print("<table width = \"220px\">");
+				pw.print("<table width = \"230px\">");
 
 				if (request.getParameter("success") != null
 						&& "false".equals(request.getParameter("success"))) {
@@ -168,21 +177,42 @@ import org.slf4j.LoggerFactory;
 				pw.print("<input type=\"password\" NAME=\"password\" />");
 				pw.print("</td>");
 				pw.print("</tr>");
-				pw.print("<tr>");
+				
+			/*	pw.print("<tr>");
+	            pw.print("<td width = \"50px\" height = \"10px\"></td>");
+				pw.print("<td align=\"left\" height = \"10px\">");
+				pw.print("<input id=\"remember\" type=\"checkbox\" \"/> Запомнить");
+					
+				pw.print("</td>");
+	            pw.print("</tr>");
+				*/
+	            pw.print("<tr>");
 
 				pw.print("<td colspan=\"2\"  align=\"center\" height = \"30px\">");
-				pw.print("<input type=\"submit\" value=\"Войти\" class=\"but_class\"/>");
+				
+				pw.print("<table width = \"100%\" border=\"0\">");
+				pw.print("<tr><td width = \"80px\"></td><td align=\"center\">");
+				pw.print("<input type=\"submit\" value=\"Войти\" class=\"but_class\""
+						+ "onclick=\"goAuth('cudRememberPass','"+request.getContextPath()+"');\"/>");
+			
+				pw.print("<td width = \"80px\">");
+				pw.print("<input type=\"checkbox\" id=\"remember\" style=\"float: left;padding:0px;margin:0px;margin-top: 1px; border:0px;\"/> "
+						+ "<LABEL for=\"remember\" style=\"float: left; margin-top: 2px;font-size: 11px;\">Запомнить</LABEL>");
+				pw.print("</td>");
+				pw.print("</tr>");
+				pw.print("</table>");
 				pw.print("</td>");
 
 				
 				pw.print("</tr>");
-				
+	            
+	        	
 				pw.print("</table>");
 
 				pw.print("</FORM>");
 
 				pw.print("</div>");
-
+				pw.print("</div>");
 				
 				if (multiAuthRequest!=null) {
 					

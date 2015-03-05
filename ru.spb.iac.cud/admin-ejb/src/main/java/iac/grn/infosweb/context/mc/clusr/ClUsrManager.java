@@ -1,19 +1,11 @@
 package iac.grn.infosweb.context.mc.clusr;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.log.Log;
-
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.dataitems.BaseParamItem;
 import iac.cud.infosweb.entity.AcLegalEntityType;
+import iac.cud.infosweb.entity.AcUser;
 import iac.cud.infosweb.entity.IspBssT;
 import iac.cud.infosweb.entity.IspTempBssT;
-import iac.cud.infosweb.entity.AcUser;
 import iac.cud.infosweb.entity.JournIspLoad;
 import iac.cud.infosweb.local.service.ServiceReestrAction;
 import iac.cud.infosweb.local.service.ServiceReestrPro;
@@ -23,17 +15,28 @@ import iac.cud.infosweb.ws.classifierzip.clientsample.ClientSample;
 import iac.grn.infosweb.session.audit.actions.ActionsMap;
 import iac.grn.infosweb.session.audit.actions.ResourcesMap;
 import iac.grn.infosweb.session.audit.export.AuditExportData;
-import java.util.*;
+import iac.grn.serviceitems.BaseTableItem;
 
-import org.jboss.seam.Component;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.faces.context.FacesContext;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
-import iac.grn.serviceitems.BaseTableItem;
-
 import javax.persistence.NoResultException;
+
+import org.jboss.seam.Component;
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.log.Log;
 
 
 /**
@@ -667,7 +670,52 @@ import javax.persistence.NoResultException;
 	    }
 	  }
    
-  
+  /*
+   //изменение для учёта отделов как организаций 
+   //!!!
+   //IspBssT а не IspTempBssT
+   public List<IspBssT> autocomplete(Object suggest) throws Exception{
+   	String pref = (String)suggest;
+   	
+	    log.info("Usr:autocomplete:01:pref:"+pref);
+	    
+	    String  signObject = FacesContext.getCurrentInstance().getExternalContext()
+		        .getRequestParameterMap()
+		        .get("signObject");
+	    log.info("Usr:autocomplete:signObject="+signObject);
+	    
+	    String codeOrg= null;
+	    
+	    if(signObject.endsWith("00000")){
+	    	codeOrg = signObject.substring(0, 3);
+	    }else{
+	    	codeOrg = signObject.substring(0, 5);
+	    }
+	    		
+	    log.info("Usr:autocomplete:codeOrg:"+codeOrg);		
+	    
+	    try {
+	    	if(listUsrAutocomplete==null){
+	    		log.info("Usr:autocomplete:02");
+	    		listUsrAutocomplete=entityManager.createQuery(
+	    				"select o from IspBssT o where o.status='A' and o.signObject not like '%000' " +
+	    				"and upper(o.fio) like upper(:pref) " +
+	    				//"and substr(o.signObject,1,3) = :codeOrg " +
+	    				"and o.signObject like :codeOrg " +
+	    				"order by o.fio ")
+	    				.setParameter("pref", pref+"%")
+	    				//.setParameter("codeOrg", codeOrg)
+	    				.setParameter("codeOrg", codeOrg+"%")
+	    				.getResultList();
+	    		log.info("Usr:autocomplete:03:size:"+listUsrAutocomplete.size());
+	    	}
+	     } catch (Exception e) {
+	    	 log.error("Usr:autocomplete:ERROR:"+e);
+	         throw e;
+	     }
+	    return listUsrAutocomplete;
+  }
+   */
    
    //!!!
    //IspBssT а не IspTempBssT
@@ -703,6 +751,7 @@ import javax.persistence.NoResultException;
 	     }
 	    return listUsrAutocomplete;
   }
+   
    //!!!
    //IspBssT а не IspTempBssT
    public void forViewAutocomplete() {

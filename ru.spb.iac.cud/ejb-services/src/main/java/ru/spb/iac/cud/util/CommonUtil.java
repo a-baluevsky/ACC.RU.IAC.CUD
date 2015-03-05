@@ -9,6 +9,9 @@ import ru.spb.iac.cud.items.User;
 
  public class CommonUtil {
 
+	 CommonUtil(){
+		 
+	 }
 	public static String createLine (List<String> uids){
 		String result = null;
 		
@@ -53,58 +56,58 @@ import ru.spb.iac.cud.items.User;
 
 				switch (i) {
 
-				case 0: {
+				case 0: 
 					name = "USER_UID";
 					break;
-				}
-				case 1: {
+				
+				case 1: 
 					name = "USER_LOGIN";
 					break;
-				}
-				case 4: {
+				
+				case 4: 
 					name = "USER_FIO";
 					break;
-				}
-				case 5: {
+				
+				case 5: 
 					name = "USER_PHONE";
 					break;
-				}
-				case 6: {
+				
+				case 6: 
 					name = "USER_EMAIL";
 					break;
-				}
-				case 10: {
+				
+				case 10: 
 					name = "ORG_NAME";
 					break;
-				}
-				case 9: {
+				
+				case 9: 
 					name = "ORG_CODE_IOGV";
 					break;
-				}
-				case 11: {
+				
+				case 11: 
 					name = "ORG_ADDRESS";
 					break;
-				}
-				case 12: {
+				
+				case 12: 
 					name = "ORG_PHONE";
 					break;
-				}
-				case 8: {
+				
+				case 8: 
 					name = "DEP_NAME";
 					break;
-				}
-				case 7: {
+				
+				case 7: 
 					name = "USER_POSITION";
 					break;
-				}
-				case 24: {
+				
+				case 24: 
 					name = "ORG_CODE_OKATO";
 					break;
-				}
-				case 25: {
+				
+				case 25: 
 					name = "DEP_ADDRESS";
 					break;
-				}
+				
 
 				default:
 					name = null;

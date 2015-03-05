@@ -34,6 +34,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.catalina.Context;
@@ -162,6 +163,10 @@ public abstract class CUDAbstractIDPValve extends ValveBase {
 
 	private transient SAML2HandlerChain chain = null;
 
+	private static final String cookieLogin = "cudLogin";
+	private static final String cookieAuthType = "cudAuthType";
+
+	
 	/**
 	 * The user can inject a fully qualified name of a
 	 * {@link SAMLConfigurationProvider}
@@ -389,13 +394,29 @@ public abstract class CUDAbstractIDPValve extends ValveBase {
 				// sendRedirect
 				// хот€ € в фильтре и сделал ветку на logout, но на вс€кий
 				// случай пусть reset() будет.
-				response.reset();
+				//!!!переиграно - теперь(при добавлении кук-запомнить) ресет() об€зательно надо закомментировать!!!
+				//иначе идущее дальше удаление кук не выполнитс€(куки не удал€тс€)
+				
+				//вообще в этом месте (когда в »ƒѕ нет сессии, а у нас логаут) 
+				//имеем 2 удалени€ кук - 1-е в ≈кст‘илтер при исЋогаут, 2-е здесь в финалли
+				//то есть по хорошему удаление кук в финналли не нужно.
+				
+				//куки не удал€лись, потому что :
+				//1) сначала в ≈кст‘илтер мы удал€ли куки,
+				// 2) затем ресет() был перед хандлеЋогаут, где отправл€лс€ ответ.
+				//3) получаетс€ ненужное удаление кук в финналли
+				
+				//в итоге можно оставить и ресет(), но после него и перед хандлеЋогаут
+				//поставить удаление кук.
+				
+				//!!!response.reset();
 				response.recycle();
 				handleLogout(request, response);
 
 			} finally {
 				// cleanUpSessionNote(request);
 				request.getSession().invalidate();
+				removeCookies(request, response);
 			}
 		} else if (isIsPassiveFailed(request)) {
 			// нет активной сессии при isPassive запросе
@@ -818,6 +839,32 @@ public abstract class CUDAbstractIDPValve extends ValveBase {
 		}
 	}
 
+	private void removeCookies (Request request, Response response) {
+		
+		Cookie[] cookies = request.getCookies();	
+		
+		if (cookies != null) { 
+		    for (Cookie cookie : cookies) {
+		    	
+		    	LOGGERSLF4J.debug("removeCoockies:01:"+cookie.getName());
+		    	
+		    	if (cookieLogin.equals(cookie.getName())||
+		        	cookieAuthType.equals(cookie.getName())) {
+		        	
+		    		LOGGERSLF4J.debug("removeCoockies:02:"+request.getContextPath());
+		        	
+		        	cookie.setValue(null);
+		        	cookie.setPath(request.getContextPath());
+		        	cookie.setMaxAge(0);
+		        	
+		            response.addCookie(cookie);
+		            
+		           }
+		    }
+		}
+		
+	}
+	
 	private boolean isUnauthorized(Response response) {
 		return response.getStatus() == HttpServletResponse.SC_FORBIDDEN;
 	}

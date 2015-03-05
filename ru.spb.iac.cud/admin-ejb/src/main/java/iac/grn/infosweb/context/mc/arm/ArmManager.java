@@ -272,10 +272,13 @@ import org.jboss.seam.transaction.Transaction;
 		   AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
 			 
 		   
-		 if((au.getAllowedSys()!=null && !au.isAllowedReestr("004", "2"))||!armCodeExistCrt(armBeanCrt.getCode().trim())){
+		 if(((au.getAllowedSys()!=null || au.getIsAccOrgManagerValue()) && !au.isAllowedReestr("004", "2"))||!armCodeExistCrt(armBeanCrt.getCode().trim())){
 		   
 			 
-			 if(au.getAllowedSys()!=null && !au.isAllowedReestr("004", "2")){
+			 log.info("armManager:addArm:02_1:"+(au.getAllowedSys()!=null));
+			 log.info("armManager:addArm:02_2:"+(!au.isAllowedReestr("004", "2")));
+			 
+			 if((au.getAllowedSys()!=null || au.getIsAccOrgManagerValue()) && !au.isAllowedReestr("004", "2")){
 	    		  //пользователь имеет право только создать заявку 
 	    		  //на создание пользователя
 	    		  log.info("armManager:addArm:05");
@@ -286,6 +289,8 @@ import org.jboss.seam.transaction.Transaction;
 	    		  audit(ResourcesMap.APP_SYS, ActionsMap.CREATE) ;
 	    		  
 	    	  }else{  
+	    		  
+	    		  log.info("armManager:addArm:06");
 	    		  
 				  armBeanCrt.setName(armBeanCrt.getName().trim());
 				  armBeanCrt.setCode(armBeanCrt.getCode().trim());
@@ -340,7 +345,7 @@ import org.jboss.seam.transaction.Transaction;
                              "DESCRIPTION, UP_USER, SECRET, COMMENT_APP) " +
 				   " values ( JOURN_APP_SYSTEM_SEQ.nextval, ?, ?, ?, ?, ?, ? ) ")
 				    .setParameter(1, armBeanCrt.getName())
-					.setParameter(2, "-")
+					.setParameter(2, armBeanCrt.getLinks())
 					.setParameter(3, armBeanCrt.getDescription())
 					.setParameter(4, armBeanCrt.getCreator())
 					.setParameter(5, secret)

@@ -1,26 +1,5 @@
 package iac.grn.infosweb.context.app.system;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Map;
-import java.util.List;
-import java.util.Set;
-
-import javax.faces.context.FacesContext;
-
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.faces.FacesMessages;
-
-
-
-
-
-
 import iac.cud.infosweb.dataitems.AppSystemItem;
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.entity.AcApplication;
@@ -30,6 +9,22 @@ import iac.grn.infosweb.session.audit.actions.ResourcesMap;
 import iac.grn.infosweb.session.table.BaseManager;
 import iac.grn.serviceitems.BaseTableItem;
 import iac.grn.serviceitems.HeaderTableItem;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.faces.context.FacesContext;
+
+import org.jboss.seam.Component;
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.faces.FacesMessages;
 
 @Name("appSystemManager")
  public class AppSystemManager extends BaseManager{
@@ -307,10 +302,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 		   try{
 			   
 			
-			 
-			 
-			 
-		     ArmManager armManager = (ArmManager)
+			 ArmManager armManager = (ArmManager)
 			          Component.getInstance("armManager", ScopeType.EVENT);
 		   
 		     armManager.addArm();
@@ -408,6 +400,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	    		
 	    	 ao.setName(ui.getFullName());
 	    	 ao.setDescription(ui.getDescription());
+	    	 ao.setLinks(ui.getShortName());
 	    	 
 		     Contexts.getEventContext().set("armBeanCrt", ao);
 		     

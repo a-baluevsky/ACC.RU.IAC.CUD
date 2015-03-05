@@ -1179,6 +1179,28 @@ import ru.spb.iac.crypto.export.Crypto15Init;
        return "loggedOut";
     }
     
+    public String localNaturalLogout(){
+    	
+        LOGGER.debug("localNaturalLogout:01");
+        
+        
+       try{
+     	   
+     	   if(Identity.instance().isLoggedIn()){
+     	   
+ 		    	   Identity.instance().logout();
+ 		  	 
+ 		 	      LOGGER.debug("localNaturalLogout:02");
+     	   
+     	   }
+     	   
+        }catch(Exception e){
+     	   LOGGER.error("localNaturalLogout:"+e);
+        }
+        
+        return "loggedOut";
+     }
+    
     public void sendPost(String samlMessage, String destination, HttpServletResponse response) throws Exception {
        
     	try{

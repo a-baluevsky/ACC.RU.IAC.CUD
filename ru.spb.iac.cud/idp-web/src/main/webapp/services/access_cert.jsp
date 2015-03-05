@@ -13,6 +13,8 @@
 	href="<%=request.getContextPath()%>/stylesheet/theme.css" />
 <script language="javascript"
 	src="<%=request.getContextPath()%>/js/Code.js"></script>
+	<script language="javascript"
+	src="<%=request.getContextPath()%>/js/login.js"></script>
 </head>
 
 <%
@@ -34,7 +36,7 @@ String RequestRequestURI  = (String) request.getSession().getAttribute(RequestRe
 
 %>
 
-<body style="padding: 10px;">
+<body style="padding: 10px;" onload ="setRemember('cudRememberCert');">
 
 	<table width="100%" cellspacing="0" frame="void" border="0">
 		<tr height="40px">
@@ -101,11 +103,19 @@ String RequestRequestURI  = (String) request.getSession().getAttribute(RequestRe
 
 						</select>
 					</div>
+					
 					<div>
 						<input id="SignBtn" type="button" value="Отправить"
 							name="SignData" class="but_class"
-							onclick="SignBtn_Click('ctl00_ContentPlaceHolder1_CertListBox', 'ctl00_BrowserName', 'ctl00_ContentPlaceHolder1_DataToSignTxtBox', 'ctl00_ContentPlaceHolder1_TSPAddressTxtBox', 'signatureValue', 'ctl00_ContentPlaceHolder1_SignatureTypeHF');" />
+							onclick="goAuth('cudRememberCert','<%=request.getContextPath()%>'); SignBtn_Click('ctl00_ContentPlaceHolder1_CertListBox', 'ctl00_BrowserName', 'ctl00_ContentPlaceHolder1_DataToSignTxtBox', 'ctl00_ContentPlaceHolder1_TSPAddressTxtBox', 'signatureValue', 'ctl00_ContentPlaceHolder1_SignatureTypeHF');" />
+					
+					<input id="remember" type="checkbox" style="vertical-align:middle; margin-left: 5px;"/>
+					<LABEL for="remember" style="font-size: 11px;">Запомнить</LABEL>
+					
+					
 					</div>
+					
+					
 					<% if(multiAuthRequest!=null){%>
 					<div style="margin-top: 5px;">
                        <a href="<%=request.getContextPath()+"/AccessServicesWebLogin"%>">Войти по логину</a>

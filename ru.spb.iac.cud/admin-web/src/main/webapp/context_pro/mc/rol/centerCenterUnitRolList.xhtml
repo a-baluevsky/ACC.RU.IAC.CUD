@@ -140,7 +140,7 @@
 					<f:param name="remoteAudit" value="1" />
 				</rich:dataTable>
 				<a4j:jsFunction name="invokeMyStart"
-					reRender="outCenterCenterFooter,outCenterCenter"
+					reRender="outCenterCenterFooter,outCenterCenter,outCenterCenterQueryStatText"
 					oncomplete="setCaretToEnd(event);">
 					<f:param name="#{param['sessionId']!=null ? 'sessionId' : 'xxx1'}"
 						value="#{param['sessionId']}" />
@@ -166,7 +166,7 @@
 											minValue="5" enableManualInput="false"
 											oninputkeypress="return false;" /></td>
 									<td width="40px;"><a4j:commandLink
-											reRender="outCenterCenter, outCenterCenterFooterDscr"
+											reRender="outCenterCenter,outCenterCenterQueryStatText, outCenterCenterFooterDscr"
 											ajaxSingle="true" process="rowCId">
 											<h:graphicImage url="/img/icons/Da.gif"
 												styleClass="img-in-link" height="14" width="14" />
@@ -178,7 +178,7 @@
 									<td><a4j:outputPanel id="outCenterCenterFooterDscr">
 											<rich:datascroller align="center" for="audit_dt" maxPages="5"
 												stepControls="hide" id="dt_dscr" immediate="true"
-												renderIfSinglePage="false" reRender="outCenterCenter"
+												renderIfSinglePage="false" reRender="outCenterCenter,outCenterCenterQueryStatText"
 												ajaxSingle="true" style="padding-right:30px;">
 												<f:param name="auditListCount"
 													value="#{rolDataModel.rowCount2}" />
@@ -202,7 +202,7 @@
               </td-->
 									<td><s:div rendered="#{param['sessionId']!=null}">
 											<a4j:commandButton style="width:60px;" ajaxSingle="true"
-												reRender="outCenterCenter, outCenterCenterFooter"
+												reRender="outCenterCenter,outCenterCenterQueryStatText, outCenterCenterFooter"
 												value="#{rolBean.selected ? 'Очистить' : 'Отметить'}"
 												action="#{rolManager.selectRecord}" styleClass="but_class">
 												<f:param name="sessionId" value="#{param['sessionId']}" />
@@ -211,7 +211,14 @@
 													value="#{param['auditListCount'] != null ? param['auditListCount'] : rolDataModel.rowCount}" />
 											</a4j:commandButton>
 										</s:div></td>
-								</tr>
+								
+									<!-- 17.02.15: AB: MANTIS-4954  -->
+									<td width="260px" align="right"><a4j:outputPanel id="outCenterCenterQueryStatText">
+										<h:outputText value="#{rolManager.queryStatText}" />
+										<!-- , #{param['auditListCount']}  -->
+										</a4j:outputPanel>
+									</td>
+								</tr>									
 							</table>
 
 						</s:div></td>

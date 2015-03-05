@@ -5,7 +5,9 @@ public enum ActionsMap {
 	UPDATE_PASSWORD("update_password"),
 	ADD_CERTIFICATE("add_certificate"),
 	LOGIN_UARM("login_uarm"),
-	LOGOUT_UARM("logout_uarm");
+	LOGOUT_UARM("logout_uarm"),
+	REMOVE_CERT("remove_cert");
+	
 	
     private String code;
 	

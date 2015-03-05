@@ -6,8 +6,9 @@ import iac.grn.serviceitems.HeaderTableItem;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap; import java.util.Map;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
  public class AppMySystemContext {
 
@@ -69,8 +70,8 @@ import java.util.List;
 		auditItemsMap.put("usrFio", new BaseTableItem("Пользователь", "...", "usrFio", "t1_user_fio", 21, h2));
 		
 		auditItemsMap.put("fullName",new BaseTableItem("Полное наименование ИС", "...", "fullName", "t1_full_name", 30, h1));
-		auditItemsMap.put("shortName",new BaseTableItem("Краткое наименование ИС", "...", "shortName", "t1_short_name", 31, h1));
-		auditItemsMap.put("description",new BaseTableItem("Описание ИС", "...", "description", "t1_description", 32, h1));
+		auditItemsMap.put("description",new BaseTableItem("Описание ИС", "...", "description", "t1_description", 31, h1));
+		auditItemsMap.put("shortName",new BaseTableItem("Ссылки ИС", "...", "shortName", "t1_short_name", 32, h1));
 		
 		
 		auditItemsMap.put("codeArm",new BaseTableItem("Код ИС", "...", "codeArm", "t1_arm_code", 34, h4));

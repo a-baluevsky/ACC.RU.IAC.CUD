@@ -71,8 +71,10 @@ import ru.spb.iac.cud.items.Role;
 
 		try {
 
-			utx.begin();
-
+			if(utx!=null){
+			  utx.begin();
+			}
+			
 			if (idIS == null) {
 				LOGGER.debug("sync_roles:return");
 				throw new GeneralFailure("idIS is null");
@@ -325,7 +327,9 @@ import ru.spb.iac.cud.items.Role;
 
 		try {
 
-			utx.begin();
+			if(utx!=null){
+				  utx.begin();
+				}
 
 			if (idIS == null || "".equals(idIS.trim())) {
 				throw new GeneralFailure("Отсутствует код системы!");
@@ -805,7 +809,9 @@ import ru.spb.iac.cud.items.Role;
 
 		try {
 
-			utx.begin();
+			if(utx!=null){
+				  utx.begin();
+				}
 
 			/*
 			 * проверка на уровне выше - is_exist()
@@ -1109,7 +1115,9 @@ import ru.spb.iac.cud.items.Role;
 
 		try {
 
-			utx.begin();
+			if(utx!=null){
+				  utx.begin();
+				}
 
 			/*
 			 * проверка на уровне выше - is exist
@@ -1352,7 +1360,9 @@ import ru.spb.iac.cud.items.Role;
 		 String linksLine=null;
 		 
 		 try{
-			 utx.begin();
+			 if(utx!=null){
+				  utx.begin();
+				}
 			 
 			 if(idIS==null||idIS.trim().isEmpty()){
 				 throw new GeneralFailure("idIS is null!");
@@ -1570,7 +1580,9 @@ import ru.spb.iac.cud.items.Role;
 
 		try {
 
-			utx.begin();
+			if(utx!=null){
+				  utx.begin();
+				}
 
 			/*
 			 * проверка на уровне выше - is_exist()

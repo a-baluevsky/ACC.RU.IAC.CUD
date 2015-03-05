@@ -409,8 +409,8 @@
 							value="/img/icons/close.gif" />
 					</h:panelGroup>
 				</f:facet>
-				<div id="CBmpUpdUsrAlfHDiv" style="width: 100%; overflow: auto;">
-					<h:form id="CBformUpdUserAlf">
+				<h:form id="CBformUpdUserAlf">
+				<div id="CBmpUpdUsrAlfHDivAB" style="width: 100%;">
 
 						<!--h:inputHidden id ="uorgid" value="#{usrBean.acClOrganization}"/>
         <h:inputHidden id ="ucluid" value="#{usrBean.acClUser}"/-->
@@ -434,12 +434,17 @@
              </td>
             </tr-->
 							<tr>
-								<td width="100px" valign="top"><h:outputText
+								<td width="100px" valign="top">								
+								<h:outputText
 										value="Пользователи:" /> <br /> <br /> <h:outputText
 										value="Выделить все " style="font-style:italic;" /> <h:selectBooleanCheckbox
 										id="CBsdtchbUpdManager" onchange="selectAllCHBox(this)"
-										style="vertical-align:bottom;" /></td>
-								<td><a4j:outputPanel id="outCBmpUpdUserAlfList"
+										style="vertical-align:bottom;" />
+										
+										</td>
+										
+								<td>								
+								<a4j:outputPanel id="outCBmpUpdUserAlfList"
 										layout="block">
 										<!--rich:dataTable id="CBdtUpdUserAlf" style="width:100%" 
                                rowKeyVar="rkv" var="it_usr"
@@ -469,6 +474,7 @@
                     </rich:column>
                 </rich:dataTable-->
 
+										<div id="CBmpUpdUsrAlfHDiv" style="overflow: auto;"> 
 										<rich:dataTable id="rolUsr_dt" style="width:100%" var="it"
 											value="#{rolUsrDataModel}" rows="15" reRender="rolUsr_dscr">
 
@@ -530,6 +536,7 @@
 											<f:param name="onUpdateUserAlf" value="1" />
 
 										</rich:dataTable>
+										</div>
 										<a4j:jsFunction name="invokeMyStartRolUsr"
 											reRender="outCBmpUpdUserAlfList"
 											oncomplete="setHDiv_min_proSoft_top_rmp('CBmpUpdUsrAlfHDiv', 'CBmpUpdUserAlfCDiv', 10); setCaretToEnd(event);">
@@ -538,35 +545,31 @@
 											<f:param name="remoteAudit" value="filterFieldFact" />
 											<f:param name="onUpdateUserAlf" value="1" />
 										</a4j:jsFunction>
-
-										<a4j:outputPanel id="outCenterCenterFooterDscr">
-											<rich:datascroller align="center" for="rolUsr_dt"
-												maxPages="5" stepControls="hide" id="rolUsr_dscr"
-												immediate="true" renderIfSinglePage="false"
-												reRender="outCBmpUpdUserAlfList" ajaxSingle="true"
-												style="padding-right:30px;"
-												oncomplete="setHDiv_min_proSoft_top_rmp('CBmpUpdUsrAlfHDiv', 'CBmpUpdUserAlfCDiv', 10);"
-												page="#{rolStateHolder.pageNumber}">
-												<f:param name="auditListCount"
-													value="#{rolUsrDataModel.rowCount2}" />
-												<!--f:param name="#{param['sessionId']!=null ? 'sessionId' : 'xxx1'}" value="#{param['sessionId']}"/-->
-												<f:param name="sessionId" value="#{param['sessionId']}" />
-												<f:param name="remoteAudit" value="dScrollFact" />
-												<f:param name="onUpdateUserAlf" value="1" />
-											</rich:datascroller>
-										</a4j:outputPanel>
-
-
 									</a4j:outputPanel></td>
 							</tr>
-
-							<tr>
-								<td colspan="2" align="center" height="35px"><a4j:commandButton
+							<tr><td>&#160;</td><td align="center" valign="middle" style="height:60px" colspan="2">
+								<a4j:outputPanel id="outCenterCenterFooterDscr">
+									<rich:datascroller align="center" for="rolUsr_dt"
+										maxPages="5" stepControls="hide" id="rolUsr_dscr"
+										immediate="true" renderIfSinglePage="false"
+										reRender="outCBmpUpdUserAlfList" ajaxSingle="true"
+										style="padding-right:30px;"
+										oncomplete="setHDiv_min_proSoft_top_rmp('CBmpUpdUsrAlfHDiv', 'CBmpUpdUserAlfCDiv', 10);"
+										page="#{rolStateHolder.pageNumber}">
+										<f:param name="auditListCount"
+											value="#{rolUsrDataModel.rowCount2}" />
+										<!--f:param name="#{param['sessionId']!=null ? 'sessionId' : 'xxx1'}" value="#{param['sessionId']}"/-->
+										<f:param name="sessionId" value="#{param['sessionId']}" />
+										<f:param name="remoteAudit" value="dScrollFact" />
+										<f:param name="onUpdateUserAlf" value="1" />
+									</rich:datascroller>
+								</a4j:outputPanel>
+								<div style="height: 15px" />				
+								<a4j:commandButton
 										value="Закрыть"
 										onclick="#{rich:component('CBmpUpdUserAlf')}.hide();return false;"
-										styleClass="but_class" /> <a4j:outputPanel
-										id="outCBmpUpdUserAlfButton">
-
+										styleClass="but_class" /> 
+										<a4j:outputPanel id="outCBmpUpdUserAlfButton">
 										<a4j:commandButton value="Сохранить"
 											action="#{rolUsrManager.updRolUserAlf}"
 											reRender="outCenterBottom, outCBmpUpdUserAlfList"
@@ -582,13 +585,13 @@
 											<!--f:param name="shortData" 
                     value="#{(currentUser.idUser!=linksMap.superUserCode or usrBean.idUser!=linksMap.superUserCode ? '1' : ())}"/-->
 										</a4j:commandButton>
-
-
-									</a4j:outputPanel></td>
-							</tr>
-						</table>
-					</h:form>
+									</a4j:outputPanel>								
+							</td></tr>
+						</table>					
 				</div>
+												
+
+				</h:form>
 			</rich:modalPanel>
 		</a4j:outputPanel>
 

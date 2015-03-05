@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
 			return createResourceTreeItem(appCode, roles, null);
 		} catch (Exception e) {
 			LOGGER.error("authCompleteItem:Error:", e);
-			throw e;			
+			throw e;
 		}
 	}
 

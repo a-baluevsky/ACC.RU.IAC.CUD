@@ -71,21 +71,7 @@ import ru.spb.iac.cud.core.util.Configuration;
 		this.parameters = parameters;
 	}
 
-	public static void main(String[] args) {
-		try {
-
-			LOGGER.debug("main:01");
-
-			CUDQueryAppFull caf = new CUDQueryAppFull();
-
-			caf.create_report();
-
-			LOGGER.debug("main:0100");
-
-		} catch (Exception e) {
-			LOGGER.error("main:error:", e);
-		}
-	}
+	
 
 	public void create_report() throws Exception {
 		try {
@@ -185,6 +171,8 @@ import ru.spb.iac.cud.core.util.Configuration;
 
 			Class.forName(driver);
 			conn = DriverManager.getConnection(url);
+			
+						
 		} catch (ClassNotFoundException e) {
 			throw new JRException(e);
 		} catch (SQLException e) {
@@ -199,22 +187,86 @@ import ru.spb.iac.cud.core.util.Configuration;
 	 *
 	 */
 	public void test() throws JRException {
+		try{
 		fillIgnorePagination();
+		}catch(Exception e){
+			LOGGER.debug("download_report:01:"+e);
+		}
+		try{
 		fill();
+	}catch(Exception e2){
+		LOGGER.debug("download_report:012:"+e2);
+	}
+		try{
 		pdf();
+ }catch(Exception e3){
+		LOGGER.debug("download_report:013:"+e3);
+	}
+		try{
 		xmlEmbed();
+	}catch(Exception e4){
+		LOGGER.debug("download_report:014:"+e4);
+	}
+		try{
 		xml();
+	}catch(Exception e5){
+		LOGGER.debug("download_report:01:"+e5);
+	}
+		try{
 		html();
+	}catch(Exception e6){
+		LOGGER.debug("download_report:01:"+e6);
+	}
+		try{
 		rtf();
+	}catch(Exception e7){
+		LOGGER.debug("download_report:01:"+e7);
+	}
+		try{
 		xls();
+	}catch(Exception e8){
+		LOGGER.debug("download_report:01:"+e8);
+	}
+		try{
 		jxl();
+	}catch(Exception e9){
+		LOGGER.debug("download_report:01:"+e9);
+	}
+		try{
 		csv();
+	}catch(Exception e10){
+		LOGGER.debug("download_report:01:"+e10);
+	}
+		try{
 		odt();
+	}catch(Exception e11){
+		LOGGER.debug("download_report:01:"+e11);
+	}
+	try{
 		ods();
+	}catch(Exception e12){
+		LOGGER.debug("download_report:01:"+e12);
+	}
+	try{
 		docx();
+	}catch(Exception e13){
+		LOGGER.debug("download_report:01:"+e13);
+	}
+	try{
 		xlsx();
+	}catch(Exception e14){
+		LOGGER.debug("download_report:01:"+e14);
+	}
+	try{
 		pptx();
+	}catch(Exception e15){
+		LOGGER.debug("download_report:01:"+e15);
+	}
+	try{
 		xhtml();
+	}catch(Exception e16){
+		LOGGER.debug("download_report:01:"+e16);
+	}
 	}
 
 	/**

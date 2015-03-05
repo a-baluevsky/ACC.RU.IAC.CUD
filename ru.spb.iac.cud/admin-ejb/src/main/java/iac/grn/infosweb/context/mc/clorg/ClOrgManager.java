@@ -1,5 +1,21 @@
 package iac.grn.infosweb.context.mc.clorg;
 
+import iac.cud.infosweb.dataitems.BaseItem;
+import iac.cud.infosweb.entity.AcLegalEntityType;
+import iac.cud.infosweb.entity.AcUser;
+import iac.cud.infosweb.entity.IspBssT;
+import iac.grn.serviceitems.BaseTableItem;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.faces.context.FacesContext;
+import javax.persistence.EntityManager;
+
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -7,17 +23,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
-
-import iac.cud.infosweb.dataitems.BaseItem;
-import iac.cud.infosweb.entity.AcLegalEntityType;
-import iac.cud.infosweb.entity.IspBssT;
-import iac.cud.infosweb.entity.AcUser;
-import java.util.*;
-
-import org.jboss.seam.Component;
-import javax.faces.context.FacesContext;
-import javax.persistence.EntityManager;
-import iac.grn.serviceitems.BaseTableItem;
 
 /**
  * ”правл€ющий Ѕин
@@ -327,7 +332,41 @@ import iac.grn.serviceitems.BaseTableItem;
 	     }
 	    return listOrg;
    }
-    
+    /*
+     //изменение дл€ учЄта отделов как организаций
+    public List<IspBssT> autocomplete(Object suggest) throws Exception{
+    	String pref = (String)suggest;
+    	
+	    log.info("autocomplete:01:pref:"+pref);
+	    try {
+	    	
+	    	if(listOrg==null){
+	    		
+	    		log.info("autocomplete:02");
+	    		
+	    		AcUser  cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+	    		
+	    		listOrg=entityManager.createQuery(
+	    				"select o from IspBssT o where o.status='A' " +
+	    				//"and o.signObject like '%00000' " +
+	    				"and o.signObject like '%000' " +
+	    				"and ( 1 = :orgAccFlag  or o.signObject = :orgCode) " +
+	    				"and upper(o.full) like upper(:pref) " +
+	    				"order by o.full ")
+	    				.setParameter("pref", "%"+pref+"%")
+	    				.setParameter("orgAccFlag", cau.getIsAccOrgManagerValue() ? -1 : 1)
+	    				.setParameter("orgCode", cau.getUpSign()!=null? cau.getUpSign():"")
+	    				.getResultList();
+	    		
+	    		log.info("autocomplete:03:size:"+listOrg.size());
+	    	}
+	     } catch (Exception e) {
+	    	 log.error("autocomplete:ERROR:"+e);
+	         throw e;
+	     }
+	    return listOrg;
+   }*/
+   
     public List<IspBssT> autocomplete(Object suggest) throws Exception{
     	String pref = (String)suggest;
     	
@@ -360,7 +399,6 @@ import iac.grn.serviceitems.BaseTableItem;
 	     }
 	    return listOrg;
    }
-    
    public int getConnectError(){
 	   return connectError;
    }

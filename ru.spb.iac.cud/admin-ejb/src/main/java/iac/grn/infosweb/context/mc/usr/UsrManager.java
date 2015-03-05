@@ -14,6 +14,7 @@ import iac.cud.infosweb.entity.LinkAdminUserSys;
 import iac.cud.infosweb.entity.LinkGroupUsersUsersKnlT;
 import iac.cud.infosweb.entity.MunicBssT;
 import iac.cud.infosweb.entity.UcCertReestr;
+import iac.grn.infosweb.context.mc.QuerySvc;
 import iac.grn.infosweb.session.audit.actions.ActionsMap;
 import iac.grn.infosweb.session.audit.actions.ResourcesMap;
 import iac.grn.infosweb.session.audit.export.AuditExportData;
@@ -48,6 +49,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
@@ -60,7 +62,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 @Name("usrManager")
- public class UsrManager {
+ public class UsrManager extends QuerySvc {
 	
 	 @Logger private Log log;
 	
@@ -206,53 +208,71 @@ import org.slf4j.LoggerFactory;
 	}
 	public void invokeLocal(String type, int firstRow, int numberOfRows,
 	           String sessionId) {
-		try{
-			 String orderQueryUsr=null;
+		try{			 
 			 log.info("UserManager:invokeLocal");
 			 
 			 UsrStateHolder usrStateHolder = (UsrStateHolder)
 					  Component.getInstance("usrStateHolder",ScopeType.SESSION);
 			 Map<String, String> filterMap = usrStateHolder.getColumnFilterValues();
-			 String st=null;
-			  
+			 resetWhereConditions();
+			 //String st=null;
+			 
+             // TODO: use QuerySvc to analyze filter data and produce consistent SQL-query			 
+                if(filterMap!=null) {
+   	    		 Set<Map.Entry<String, String>> setFilterUser = filterMap.entrySet();
+   	              for (Map.Entry<String, String> me : setFilterUser) {   	               
+	   	   		     if("t1_crt_date".equals(me.getKey())){  
+	   	   		    	 putWhereCondition(Date.class, "t1_crt_date", ">=", me.getValue());
+	   	        	   //делаем фильтр на начало  
+	   	        	     //st=(st!=null?st+" and " :"")+" lower(to_char("+me.getKey()+",'DD.MM.YY HH24:MI:SS')) like lower('"+me.getValue()+"%') ";
+	   	    	     }
+	   	   		     else if ("t1_crt_date2".equals(me.getKey())) {
+	   	   		    	putWhereCondition(Date.class, "t1_crt_date", "<=", me.getValue());
+	   	   		    	System.out.println("invokeLocal: t1_crt_date2="+me.getValue());
+					 }
+	   	   		     else{
+	   	   		    	 putWhereCondition(me.getKey(), "like", me.getValue());
+	   	        		//делаем фильтр на начало
+	   	            	//st=(st!=null?st+" and " :"")+" lower("+me.getKey()+") like lower('"+me.getValue()+"%') ";
+	   	        	  }   	              
+   	              }
+                }
+                
+                // 13.02.15: ab 
+				AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+				if(cau!=null) {
+					if(cau.getIsAccOrgManagerValue()) {
+						String curUserName = cau.getName1();
+						String sCurUserOrg = cau.getUpSign();
+						System.out.println("invokeLocal - filter for: "+curUserName+", "+sCurUserOrg);
+						//String sfltUsersByMgrOrg = " t1.t1_org_code='"+sCurUserOrg+"'";
+						//log.info("sfltUsersByMgrOrg: "+sfltUsersByMgrOrg);	
+						//st=(st==null)?sfltUsersByMgrOrg:st+" and "+sfltUsersByMgrOrg;
+						putWhereCondition(/*Integer.class,*/ "t1.t1_org_code", "=", sCurUserOrg);
+					}
+				}
+                
+             //log.info("User:invokeLocal:list:filterQuery:"+st);
+				log.info("User:invokeLocal:list:filterQuery: "+getWhereAndClause());
+				
+				
 			 if("list".equals(type)){
 				 log.info("User:invokeLocal:list:01");
-				 
-				 Set<Map.Entry<String, String>> set = usrStateHolder.getSortOrders().entrySet();
-                
-				 for (Map.Entry<String, String> me : set) {
-                	 
-      		        
-      		       if(orderQueryUsr==null){
-      		    	 orderQueryUsr="order by "+me.getKey()+" "+me.getValue();
-      		       }else{
-      		    	 orderQueryUsr=orderQueryUsr+", "+me.getKey()+" "+me.getValue();  
-      		       }
-      		     }
-                 log.info("User:invokeLocal:list:orderQueryUsr:"+orderQueryUsr);
-                 
-                 if(filterMap!=null){
-    	    		 Set<Map.Entry<String, String>> setFilterUser = filterMap.entrySet();
-    	              for (Map.Entry<String, String> me : setFilterUser) {
-    	               
-    	   		     if("t1_crt_date".equals(me.getKey())){  
-    	        	   //делаем фильтр на начало  
-    	        	     st=(st!=null?st+" and " :"")+" lower(to_char("+me.getKey()+",'DD.MM.YY HH24:MI:SS')) like lower('"+me.getValue()+"%') ";
-    	    	     }else{
-    	        		//делаем фильтр на начало
-    	            	  st=(st!=null?st+" and " :"")+" lower("+me.getKey()+") like lower('"+me.getValue()+"%') ";
-    	        	  }
-    	              }
-    	    	   }
-                 log.info("User:invokeLocal:list:filterQuery:"+st);
-                 
-			
-             
+				 String orderQueryUsr=null;
+   				 Set<Map.Entry<String, String>> set = usrStateHolder.getSortOrders().entrySet();		                
+   				 for (Map.Entry<String, String> me : set) {
+        		       if(orderQueryUsr==null){
+        		    	 orderQueryUsr="order by "+me.getKey()+" "+me.getValue();
+        		       }else{
+        		    	 orderQueryUsr=orderQueryUsr+", "+me.getKey()+" "+me.getValue();  
+        		       }
+        		     }
+                   log.info("User:invokeLocal:list:orderQueryUsr:"+orderQueryUsr); 
+                   
                List<Object[]> lo=null;
                UserItem ui = null;
                DateFormat df = new SimpleDateFormat ("dd.MM.yy HH:mm:ss");
-
-      
+     
                lo=entityManager.createNativeQuery(
 					"select t1.t1_id, t1.t1_login, t1.t1_cert, t1.t1_usr_code, t1.t1_fio, " +
 					       "t1.t1_tel, t1.t1_email,t1.t1_pos, t1.t1_dep_name, t1.t1_org_code, " +
@@ -312,8 +332,8 @@ import org.slf4j.LoggerFactory;
 					"and au_full.MODIFICATOR=USR_UPD.ID_SRV(+) "+ 
 					//!!!
 					"and AU_FULL.STATUS !=3 "+
-					")t1 "+
-					                      (st!=null ? " where "+st :" ")+
+					")t1 "+getWhereAndClause()+" "+
+					                      //(st!=null ? " where "+st :" ")+
                       (orderQueryUsr!=null ? orderQueryUsr+", t1_fio " : " order by t1_fio "))
               .setFirstResult(firstRow)
               .setMaxResults(numberOfRows)
@@ -357,23 +377,16 @@ import org.slf4j.LoggerFactory;
             	   }
                }  
                
+               // 17.02.15: AB: MANTIS-4954
+               m_QueryStats = new long[]{1+firstRow, firstRow+auditList.size(), (auditCount==null)?0:auditCount};
+               //System.out.println("m_QueryStats = "+QueryStatsToString());   
+               
              log.info("User:invokeLocal:list:02");
              
 			 } else if("count".equals(type)){
-				 log.info("UserList:count:01");
-				 
+				 log.info("UserList:count:01");				 
                  
-                 if(filterMap!=null){
-    	    		 Set<Map.Entry<String, String>> setFilterUser = filterMap.entrySet();
-    	              for (Map.Entry<String, String> me : setFilterUser) {
-    	             
-    	   		    		//делаем фильтр на начало
-    	            	  st=(st!=null?st+" and " :"")+" lower("+me.getKey()+") like lower('"+me.getValue()+"%') ";
-    	               }
-    	    	   }
-				 
-				
-				 auditCount = ((java.math.BigDecimal)entityManager.createNativeQuery(
+                 auditCount = ((java.math.BigDecimal)entityManager.createNativeQuery(
 						        "select count(*) "+ 
 								 "from( "+
 								 "select AU_FULL.ID_SRV t1_id, AU_FULL.login t1_login, AU_FULL.CERTIFICATE t1_cert, t2.CL_USR_CODE t1_usr_code, "+
@@ -428,10 +441,14 @@ import org.slf4j.LoggerFactory;
 								 "and au_full.MODIFICATOR=USR_UPD.ID_SRV(+) "+ 
 								 //!!!
 								 "and AU_FULL.STATUS !=3 "+
-								 ")t1 "+
-		         (st!=null ? " where "+st :" "))
+								 ")t1 "+getWhereAndClause())   //(st!=null ? " where "+st :" "))
                .getSingleResult()).longValue();
-                 
+               
+                 // 17.02.15: AB: MANTIS-4954
+                 if(m_QueryStats!=null) {
+                	 m_QueryStats[2] = auditCount;
+                	 //System.out.println("m_QueryStats = "+QueryStatsToString());
+                 }
                  
                log.info("User:invokeLocal:count:02:"+auditCount);
            	 } else if("bean".equals(type)){
@@ -565,9 +582,10 @@ import org.slf4j.LoggerFactory;
 	      
 	    	
 	    	 usrBeanCrt.setUpSignUser(clUsrBean.getSignObject());
-	    	 
 	    	    	  
 	    	  usrBeanCrt.setUpSign(clUsrBean.getSignObject().substring(0,3)+"00000");
+	    	 //изменение для учёта отделов как организаций 
+	    	 //usrBeanCrt.setUpSign(clOrgBean.getSignObject());	    	 
 	    	  
 	       }else{
 	       	  log.info("usrManager:addUsr:03");
@@ -3645,7 +3663,6 @@ public List<MunicBssT> getMunicList() {
 public void setMunicList(List<MunicBssT> municList) {
 	this.municList = municList;
 }
-
 
 }
 

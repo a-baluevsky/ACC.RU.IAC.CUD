@@ -14,8 +14,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap; import java.util.Map;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.ejb.EJB;
@@ -31,6 +32,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
+import org.apache.xml.security.utils.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ru.spb.iac.cud.uarm.ejb.context.user.UserManagerEJB;
 import ru.spb.iac.cud.uarm.ejb.entity.AcIsBssT;
 import ru.spb.iac.cud.uarm.ejb.entity.AcRolesBssT;
@@ -41,9 +46,6 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppAccessBssT;
 import ru.spb.iac.cud.uarm.ejb.entity.JournAppAdminUserSysBssT;
 import ru.spb.iac.cud.uarm.ejb.entity.JournAppOrgManagerBssT;
 import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
-import org.apache.xml.security.utils.Base64;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 @ManagedBean(name="userManagerBean")
@@ -789,5 +791,23 @@ import org.slf4j.LoggerFactory;
 		this.userCertList = userCertList;
 	}
 	 
+	  public void updUsrUCCertRemove() {
+		  
+		  try{
+			   HttpSession hs = (HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false); 
+			   Long authUserID = (Long) hs.getAttribute(CUDUserConsoleConstants.authUserID);
+		
+			   String pidSrvUserCert = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap()
+					     .get("idSrvUserCert");
+			   
+		       userManagerEJB.updUsrUCCertRemove(authUserID, pidSrvUserCert);
+		  
+		       this.userCertList=null;
+		       
+		  }catch(Exception e){
+				 LOGGER.error("UserManagerBean:getUserCertList:error:"+e);
+			}
+		  
+	  }
 	
 }

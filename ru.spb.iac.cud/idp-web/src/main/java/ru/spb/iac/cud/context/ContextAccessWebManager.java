@@ -2,6 +2,7 @@ package ru.spb.iac.cud.context;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,5 +69,11 @@ import ru.spb.iac.cud.items.AuthMode;
 			String IPAddress, String codeSys) throws GeneralFailure {
 		LOGGER.debug("authenticate_uid_obo");
 		return aml.authenticate_uid_obo(uid, authMode, IPAddress, codeSys);
+	}
+	
+	public Long authenticate_login_obo(String login, AuthMode authMode,
+			String IPAddress, String codeSys) throws GeneralFailure {
+		LOGGER.debug("authenticate_login_obo");
+		return aml.authenticate_login_obo(login, authMode, IPAddress, codeSys);
 	}
 }

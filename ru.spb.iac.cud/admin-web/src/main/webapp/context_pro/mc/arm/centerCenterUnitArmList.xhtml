@@ -22,7 +22,9 @@
 										<!-- <a4j:commandButton style="width:70px;" 
              value="Создать
              #{not empty currentUser.allowedSys and !currentUser.isAllowedReestr('004', '2') ? '[Заявка]' : ''}"
-         --> <a4j:commandButton style="/*width:70px;*/"
+         --> 
+         
+         <a4j:commandButton style="/*width:70px;*/"
 											value="Создать
              #{(not empty currentUser.allowedSys or currentUser.isAccOrgManager==1) and !currentUser.isAllowedReestr('004', '2') ? '[Заявка]' : ''}"
 											reRender="outCBmpCrt" ajaxSingle="true"

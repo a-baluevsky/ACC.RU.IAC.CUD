@@ -23,10 +23,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
-
-
-
-
 import ru.spb.iac.cud.exceptions.GeneralFailure;
 import ru.spb.iac.cud.items.AuditFunction;
 import ru.spb.iac.cud.items.Function;
@@ -86,6 +82,7 @@ import ru.spb.iac.cud.services.audit.AuditService;
 	   
 	 }catch(GeneralFailure e1){
 		 LOGGER.error("auditServicesClient:audit:error1:"+e1.getMessage());
+		
      }catch(Exception e2){
 		 LOGGER.error("auditServicesClient:audit:error2:"+e2.getMessage());
 	    }

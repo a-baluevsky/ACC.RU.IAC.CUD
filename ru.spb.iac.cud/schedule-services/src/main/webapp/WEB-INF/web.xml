@@ -25,8 +25,9 @@
 	</servlet-mapping>
 
 	<context-param>
-		<param-name>CRL_REESTR</param-name>
-		<param-value>/home/jboss/jboss/data/crl/</param-value>
-	</context-param>
+    <param-name>CRL_REESTR</param-name>
+    <param-value>/opt/toris/data/crl/</param-value>
+  </context-param>
+
 
 </web-app>

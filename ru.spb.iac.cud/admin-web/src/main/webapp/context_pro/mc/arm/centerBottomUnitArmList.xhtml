@@ -211,7 +211,7 @@
 									maxlength="100" size="45" /></td>
 						</tr>
 						<c:if
-							test="#{empty currentUser.allowedSys or currentUser.isAllowedReestr('004', '2')}">
+							test="#{(empty currentUser.allowedSys and currentUser.isAccOrgManager!=1) or currentUser.isAllowedReestr('004', '2')}">
 
 							<tr>
 								<td width="100px" height="25px"><h:outputText value="Код" /></td>
@@ -225,14 +225,16 @@
 							<td><h:inputTextarea value="#{armBeanCrt.description}"
 									id="descr" cols="41" rows="3" /></td>
 						</tr>
+							
 						<tr>
 							<td width="100px" height="25px"><h:outputText value="Ссылки" /></td>
 							<td><h:inputText value="#{armBeanCrt.links}" id="links"
 									maxlength="240" size="45" /></td>
 						</tr>
+						
 						<tr>
 							<c:if
-								test="#{not empty currentUser.allowedSys and !currentUser.isAllowedReestr('004', '2')}">
+								test="#{(not empty currentUser.allowedSys or currentUser.isAccOrgManager==1) and !currentUser.isAllowedReestr('004', '2')}">
 								<tr>
 									<td width="100px" height="20px"><h:outputText
 											value="Комментарий" /></td>
@@ -638,7 +640,7 @@ function check(tform){
 	  msg+="Нет Наименования !\n";
  }
 
- if(#{empty currentUser.allowedSys or currentUser.isAllowedReestr('004', '2')}){
+ if(#{(empty currentUser.allowedSys and currentUser.isAccOrgManager!=1) or currentUser.isAllowedReestr('004', '2')}){
 		
 	 if (jQuery.trim(document.getElementById(tform+":code").value)==""){
 		  msg+="Нет Кода !\n";

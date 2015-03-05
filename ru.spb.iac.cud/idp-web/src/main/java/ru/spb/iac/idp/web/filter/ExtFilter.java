@@ -3,8 +3,10 @@ package ru.spb.iac.idp.web.filter;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.security.KeyPair;
 import java.security.Principal;
 import java.security.PrivateKey;
@@ -88,12 +90,16 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 
 	private String context_path = null;
 
-	private static final String CIPHER_ALG_TRANSPORT = "GostTransport";
+	private static final String CIPHERALGTRANSPORT = "GostTransport";
 
-	private static final String CIPHER_ALG = "GOST28147/CFB/NoPadding";
+	private static final String CIPHERALG = "GOST28147/CFB/NoPadding";
 
 	private static final String loginEncrypt = "loginEncrypt";
 
+	private static final String cookieLogin = "cudLogin";
+	private static final String cookieAuthType = "cudAuthType";
+	private static final String cookieRememberPass = "cudRememberPass";
+	private static final String cookieRememberCert = "cudRememberCert";
 	
 	public void destroy() {
 		LOGGER.debug("destroy");
@@ -128,11 +134,7 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 
 			setRedirectUrl(request);
 
-			 
-
-		
-
-			Principal principal1 = request.getUserPrincipal();
+	         Principal principal1 = request.getUserPrincipal();
 
 			LOGGER.debug("doFilter:03:" + (principal1 == null));
 
@@ -183,6 +185,108 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 			}
 			LOGGER.debug("doFilter:07:" + principal2);
 
+			String authenticate = (String) request.getSession().getAttribute(
+					"authenticate");
+			LOGGER.debug("doFilter:07+:" + authenticate);
+			
+			if(principal2==null&&!"success".equals(authenticate)){
+				
+				//2-ое условие нужно - когда мы у нас есть в куках аутентиф по паролю,
+				//затем мы прошли аутентификацию по сертификату и будем сейчас создавать принципала
+				//и надо сохранить установленный в сессии тип аутентификации
+				//а иначе здесь мы его перебьём на тот что в куке(на пароль)
+				
+				 Cookie[] cookies = request.getCookies();
+					if (cookies != null) {
+						
+						String loginUser =null;
+						String authType =null;
+						boolean rememberPass = false;
+						boolean rememberCert = false;
+						
+					for (Cookie cookie : cookies) {
+							
+						 LOGGER.debug("doFilter:07_0001:" + cookie.getName());
+						 LOGGER.debug("doFilter:07_0002:" + cookie.getValue());
+						
+						if(cookieLogin.equals(cookie.getName())&&
+							   cookie.getValue()!=null&&
+							   !"".equals(cookie.getValue())){
+								
+								loginUser = cookie.getValue();
+							
+							
+							
+						} else if(cookieAuthType.equals(cookie.getName())){
+							
+							authType = cookie.getValue();
+							
+							
+						}else if(cookieRememberPass.equals(cookie.getName())){
+							
+							if ("true".equals(cookie.getValue())){
+								rememberPass=true;
+							}
+						}else if(cookieRememberCert.equals(cookie.getName())){
+							
+							if ("true".equals(cookie.getValue())){
+								rememberCert=true;
+							}
+						}
+					}
+						 LOGGER.debug("doFilter:07_001_Pass:" + rememberPass);
+						 LOGGER.debug("doFilter:07_002_Cert:" + rememberCert);
+						 LOGGER.debug("doFilter:07_003:" + loginUser);
+						
+						 String reqAuthType = getAuthTypeForCookie(getAuthType(request));
+							
+						 LOGGER.debug("doFilter:07_004:" + reqAuthType);
+						 
+						 if((rememberPass&&getAuthTypeForCookie(authTypePassword).equals(reqAuthType)||rememberCert&&getAuthTypeForCookie(authTypeX509).equals(reqAuthType)||
+								 (rememberPass||rememberCert)&&getAuthTypeForCookie(authTypeMulti).equals(reqAuthType)) && loginUser !=null){
+							 try{	
+								 (new ContextAccessWebManager())
+										.authenticate_login_obo(
+												loginUser,
+												AuthMode.HTTP_REDIRECT,
+												getIPAddress(request),
+												getCodeSystem(
+														request,
+														(String) request.getMethod()));
+								 
+								
+									
+									if (!getAuthTypeForCookie(authTypePassword).equals(authType)&&!getAuthTypeForCookie(authTypeX509).equals(authType)){
+										
+										authType=getAuthTypeForCookie(authTypePassword);
+										
+										//правильно, что в условии нет мульти
+										//т.к. мульти у нас не ставится в цуд_аутч_тайп
+									} 
+									
+									principal2 = new GenericPrincipal(null, loginUser, "9753560");
+									
+									request2.setAuthType(URLDecoder.decode(authType, "utf-8"));
+									request2.setUserPrincipal(principal2);
+									
+									request.getSession().setAttribute("cud_auth_type",
+											URLDecoder.decode(authType, "utf-8"));
+									
+						
+						} catch (GeneralFailure e2) {
+							LOGGER.error("doFilter:07_2:error:"
+									+ e2.getMessage());
+						} catch (Exception e3) {
+							LOGGER.error("doFilter:07_3:error:"
+									+ e3.getMessage());
+						}
+					 }
+					
+				}
+			}
+			
+			
+			
 			// текущая страница - cert.jsp
 			// текущая страница - WebCertAction
 			// текущая страница - /idp - редирект с WebCertAction
@@ -193,8 +297,7 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 				return;
 			}
 
-			String authenticate = (String) request.getSession().getAttribute(
-					"authenticate");
+		
 
 			if (requestURI.endsWith(certToForm)
 					|| requestURI.endsWith(certToAuth)
@@ -312,12 +415,11 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 
 			} else if ((requestURI.endsWith(context_path) || requestURI
 					.endsWith(context_path + "/"))
-					&& authenticate != null
-					&& authenticate.equals("success")) {
+					&& "success".equals(authenticate)) {
 
 				LOGGER.debug("doFilter:09:" + authenticate);
 
-				if (authenticate != null && authenticate.equals("success")) {
+				if ("success".equals(authenticate)) {
 					// if(request_getParameter("form_login")!=null) {
 
 					// может быть вообще убрать это условие - и устанавливать
@@ -366,7 +468,7 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 
 					LOGGER.debug("doFilter:010_+1:" + loginUser);
 
-					authenticate(request, loginUser);
+					authenticate(request, loginUser,  response);
 
 					principal1 = request.getUserPrincipal();
 
@@ -477,6 +579,30 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 								getCodeSystem(request,
 										(String) request.getMethod()));
 
+						Cookie[] cookies = request.getCookies();	
+						
+						if (cookies != null) { 
+						    for (Cookie cookie : cookies) {
+						    	
+						    	LOGGER.debug("doFilter:019_002:"+cookie.getName());
+						    	
+						    	if (cookieLogin.equals(cookie.getName())||
+						        	cookieAuthType.equals(cookie.getName())) {
+						        	
+						        	LOGGER.debug("doFilter:019_002+");
+						        	
+						        	cookie.setValue(null);
+						        	cookie.setPath(request.getContextPath());
+						        	cookie.setMaxAge(0);
+						        	
+						            response.addCookie(cookie);
+						            
+						           }
+						    }
+						}
+						
+						  LOGGER.debug("doFilter:019_003");
+						  
 					} else {
 						// /login
 
@@ -659,7 +785,7 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 									           success = "true";
 									           
 											} catch (GeneralFailure e2) {
-												LOGGER.error("doFilter:019_4_2:error:"
+												LOGGER.error("doFilter:019_5_1:error:"
 														+ e2.getMessage());
 											} catch (Exception e3) {
 												LOGGER.error("doFilter:019_5_2:error:"
@@ -698,12 +824,13 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 
 							} else {
 								// пользователь уже аутентифицирован
+								LOGGER.debug("doFilter:019_5_3");
 							}
 
 						} else {
 							// нормальная аутентификация
 
-							LOGGER.debug("doFilter:019_3");
+							LOGGER.debug("doFilter:019_5_4");
 
 							if (principal2 == null) {
 
@@ -896,7 +1023,8 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 
 	private void authenticate(
 			HttpServletRequest servletRequest,
-			String loginUser) {
+			String loginUser,
+			HttpServletResponse response) {
 		LOGGER.debug("authenticate:027");
 		try {
 
@@ -921,8 +1049,22 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 			register(request2, principal, loginUser, credential,
 					servletRequest);
 
-			LOGGER.debug("authenticate:029");
+			LOGGER.debug("authenticate:029:"+(String) servletRequest.getSession().getAttribute("cud_auth_type"));
 
+			
+			
+			  Cookie cookUid = new Cookie(cookieLogin, principal.getName());
+			  cookUid.setMaxAge(100000000);
+			  cookUid.setPath(servletRequest.getContextPath());
+			  
+			  Cookie cookAuthType = new Cookie(cookieAuthType, 
+					  getAuthTypeForCookie((String) servletRequest.getSession().getAttribute("cud_auth_type")));
+			  cookAuthType.setMaxAge(100000000);
+			  cookAuthType.setPath(servletRequest.getContextPath());
+			  
+			  response.addCookie(cookUid); 
+			  response.addCookie(cookAuthType); 
+			
 		} catch (Exception e) {
 			LOGGER.error("authenticate:030:error:", e);
 		}
@@ -1093,10 +1235,14 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 				// !!! Задаём по умолчанию аутентификация по паролю
 				result = authTypePassword;
 
-			
-				boolean beginReqMethod = "GET".equals((String) request
-						.getSession().getAttribute("incoming_http_method"));
-
+				boolean beginReqMethod;
+				if(request.getSession().getAttribute("incoming_http_method")==null){
+					beginReqMethod = "GET".equals(request.getMethod());
+				}else{
+					beginReqMethod = "GET".equals((String) request
+				    .getSession().getAttribute("incoming_http_method"));
+				}
+				
 				SAMLDocumentHolder samlDocumentHolder = getSAMLDocumentHolder(
 						samlRequestMessage, beginReqMethod);
 
@@ -1427,6 +1573,7 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 		}
 
 		LOGGER.debug("register:07");
+	
 	}
 
 	public void init(FilterConfig arg0) throws ServletException {
@@ -1598,12 +1745,12 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 
 			LOGGER.debug("getCipherDecrypt:03:" + responderPrivateKey);
 
-			Cipher unwrapCipher = Cipher.getInstance(CIPHER_ALG_TRANSPORT);
+			Cipher unwrapCipher = Cipher.getInstance(CIPHERALGTRANSPORT);
 			unwrapCipher.init(Cipher.UNWRAP_MODE, responderPrivateKey);
 			SecretKey clientSecretKey = (SecretKey) unwrapCipher.unwrap(
 					wrappedSecretKey, null, Cipher.SECRET_KEY);
 
-			Cipher cipher = Cipher.getInstance(CIPHER_ALG);
+			Cipher cipher = Cipher.getInstance(CIPHERALG);
 			cipher.init(Cipher.DECRYPT_MODE, clientSecretKey,
 					new IvParameterSpec(iv), null);
 
@@ -1698,5 +1845,18 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 		}
 		
 		return result;
+	}
+	private String getAuthTypeForCookie(String realAuthType){
+		
+		if(realAuthType==null){
+			return null;
+		}else{
+			try {
+				return URLEncoder.encode(realAuthType,"utf-8");
+			} catch (UnsupportedEncodingException e) {
+				return null;
+			}
+		}		
+				
 	}
 }

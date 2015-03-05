@@ -16,6 +16,7 @@ import iac.cud.infosweb.entity.AcLinkUserToRoleToRaion;
 import iac.cud.infosweb.entity.AcPermissionsList;
 import iac.cud.infosweb.entity.AcRole;
 import iac.cud.infosweb.entity.AcUser;
+import iac.grn.infosweb.context.mc.QuerySvc;
 import iac.grn.infosweb.session.audit.actions.ActionsMap;
 import iac.grn.infosweb.session.audit.actions.ResourcesMap;
 import iac.grn.infosweb.session.audit.export.AuditExportData;
@@ -27,6 +28,7 @@ import org.jboss.seam.Component;
 
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
+
 import iac.grn.serviceitems.BaseTableItem;
 
 /**
@@ -35,7 +37,7 @@ import iac.grn.serviceitems.BaseTableItem;
  *
  */
 @Name("rolManager")
- public class RolManager {
+ public class RolManager extends QuerySvc {
 	
 	 @Logger private Log log;
 	
@@ -189,7 +191,11 @@ import iac.grn.serviceitems.BaseTableItem;
  	                           .setMaxResults(numberOfRows)
  	                           .getResultList();
  	    		}
-				
+                
+ 	    		// 17.02.15: AB: MANTIS-4954
+                m_QueryStats = new long[]{1+firstRow, firstRow+auditList.size(), (auditCount==null)?0:auditCount};
+                System.out.println("m_QueryStats = "+QueryStatsToString());
+                
              log.info("Rol:invokeLocal:list:02");
   
 			 } else if("count".equals(type)){
@@ -227,6 +233,12 @@ import iac.grn.serviceitems.BaseTableItem;
 					         (st!=null ? " where "+st :""))
 			                .getSingleResult();
   	    		 }
+                 // 17.02.15: AB: MANTIS-4954
+                 if(m_QueryStats!=null) {
+                	 m_QueryStats[2] = auditCount;
+                	 System.out.println("m_QueryStats = "+QueryStatsToString());
+                 }
+                 
                log.info("Rol:invokeLocal:count:02:"+auditCount);
            	 }
 		}catch(Exception e){

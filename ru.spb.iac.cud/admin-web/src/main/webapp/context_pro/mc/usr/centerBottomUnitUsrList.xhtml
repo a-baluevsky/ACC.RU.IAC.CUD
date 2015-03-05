@@ -313,8 +313,8 @@
 
 					<table style="width: 90%;">
 						<tr>
-							<td width="100px" height="20px"><h:outputText
-									value="Организация" /></td>
+							<td width="100px" height="20px" class="requiredfield">
+							<h:outputText value="Организация" /></td>
 							<td><a4j:status startText="Выполняется загрузка...."
 									startStyle="color:green;font: bold 8pt arial"
 									id="statusCompOrg" forceId="true" /> <a4j:region>
@@ -362,8 +362,8 @@
 									<h:panelGroup rendered="#{param['signObject']!=null}">
 										<table style="width: 99%;">
 											<tr>
-												<td width="100px" height="20px" valign="top"><h:outputText
-														value="Выбрана организация" /></td>
+												<td width="100px" height="20px" valign="top">
+												<h:outputText value="Выбрана организация" /></td>
 												<td>
 													<!--h:panelGrid columns="2" border="0" cellpadding="0" cellspacing="0">
                 <h:outputText value="Название: " /--> <h:outputText
@@ -376,8 +376,8 @@
 						</tr>
 
 						<tr>
-							<td width="100px" height="20px" valign="top"><h:outputText
-									value="Пользователь" /></td>
+							<td width="100px" height="20px" valign="top" class="requiredfield">
+								<h:outputText value="Пользователь" /></td>
 							<td><h:selectOneRadio id="stiu" layout="lineDirection"
 									value="1" onchange="/*invokeTypeUserInput(this.value);*/"
 									onclick="invokeTypeUserInput(this.value);">
@@ -395,8 +395,7 @@
           <rich:tab label="Справочник" style="padding-top:10px;"-->
 										<table style="width: 99%;">
 											<tr>
-												<td width="100px" height="20px" valign="top"><h:outputText
-														value="ФИО" /></td>
+												<td width="100px" height="20px" valign="top"><h:outputText value="ФИО" /></td>
 												<td><a4j:outputPanel id="outCBmpUsrCrt">
 
 														<h:panelGroup
@@ -584,7 +583,7 @@
 
 							<!--c:if test="#{!authenticator.accessPerm('002','23')&&authenticator.accessPerm('002','2')}"-->
 							<tr>
-								<td width="100px" height="20px"><h:outputText value="Логин" /></td>
+								<td width="100px" height="20px" class="requiredfield"><h:outputText value="Логин" /></td>
 								<td><h:inputText value="#{usrBeanCrt.login}" id="login"
 										maxlength="50" size="55" /></td>
 							</tr>
@@ -712,7 +711,7 @@
 
 					<table style="width: 90%;">
 						<tr>
-							<td width="100px" height="20px"><h:outputText
+							<td class="requiredfield" width="100px" height="20px"><h:outputText
 									value="Организация" /></td>
 							<td><h:inputText value="#{usrBean.orgName}" id="org"
 									maxlength="30" size="55" disabled="true" /></td>
@@ -1091,14 +1090,11 @@
 							value="/img/icons/close.gif" />
 					</h:panelGroup>
 				</f:facet>
-				<div id="CBmpUpdRoleHDiv" style="width: 100%; overflow: auto;">
-					<h:form id="CBformUpdRole">
-
+				<h:form id="CBformUpdRole">
+					<div id="CBmpUpdRoleHDivAB" style="width: 100%;">
 						<!--h:inputHidden id ="uorgid" value="#{usrBean.acClOrganization}"/>
         <h:inputHidden id ="ucluid" value="#{usrBean.acClUser}"/-->
-
 						<table style="width: 90%;">
-
 							<tr>
 								<td width="100px" valign="top" height="25px"><h:outputText
 										value="ИС" /></td>
@@ -1114,6 +1110,7 @@
 								<td width="100px" valign="top"><h:outputText value="Роли:" />
 								</td>
 								<td><a4j:outputPanel id="outCBmpUpdRoleList" layout="block">
+									<div id="CBmpUpdRoleHDiv" style="width:100%; overflow: auto;">
 										<rich:dataTable id="CBdtUpdArmRole" style="width:100%"
 											rowKeyVar="rkv" var="it_rl" value="#{usrManager.roleList}"
 											rows="15">
@@ -1161,19 +1158,8 @@
 												<h:outputText value=" #{it_rl.sign}" />
 											</rich:column>
 										</rich:dataTable>
-
-										<rich:datascroller align="center" for="CBdtUpdArmRole"
-											maxPages="5" stepControls="hide" id="CBdtUpdArmRole_dscr"
-											immediate="true" renderIfSinglePage="false" ajaxSingle="true"
-											style="padding: 10px 100px 0 0;"
-											page="#{usrStateHolder.pageNumber}"
-											oncomplete="setHDiv_min_proSoft_top_rmp('CBmpUpdRoleHDiv', 'CBmpUpdRoleCDiv', 25);">
-											<f:param name="sessionId" value="#{param['sessionId']}" />
-											<f:param name="remoteAudit" value="dScrollFact" />
-											<f:param name="onUpdateRole" value="1" />
-											<f:param name="idArm" value="#{param['idArm']}" />
-										</rich:datascroller>
-
+										</div>
+		
 										<a4j:jsFunction name="invokeMyStart_usrRole"
 											reRender="outCBmpUpdRoleList"
 											oncomplete="setHDiv_min_proSoft_top_rmp('CBmpUpdRoleHDiv', 'CBmpUpdRoleCDiv', 25); setCaretToEnd(event);"
@@ -1183,8 +1169,20 @@
 											<f:param name="onUpdateRole" value="1" />
 											<f:param name="idArm" value="#{param['idArm']}" />
 										</a4j:jsFunction>
-
-									</a4j:outputPanel></td>
+										
+										<rich:datascroller align="center" for="CBdtUpdArmRole"
+											maxPages="5" stepControls="hide" id="CBdtUpdArmRole_dscr"
+											immediate="true" renderIfSinglePage="false" ajaxSingle="true"
+											style="position: relative; left: 45px; padding: 10px 100px 0 0;"
+											page="#{usrStateHolder.pageNumber}"
+											oncomplete="setHDiv_min_proSoft_top_rmp('CBmpUpdRoleHDiv', 'CBmpUpdRoleCDiv', 25);">
+											<f:param name="sessionId" value="#{param['sessionId']}" />
+											<f:param name="remoteAudit" value="dScrollFact" />
+											<f:param name="onUpdateRole" value="1" />
+											<f:param name="idArm" value="#{param['idArm']}" />
+										</rich:datascroller>											
+									</a4j:outputPanel>								
+									</td>
 							</tr>
 
 							<!--tr>
@@ -1226,36 +1224,40 @@
             </tr-->
 
 							<!--/c:if-->
+							<tr align="center" height="60px"><td>&#160;</td><td>
+								<a4j:outputPanel id="outCenterCenterFooterDscr">
+					
+								</a4j:outputPanel>
+							
+					<a4j:commandButton
+						value="Закрыть"
+						onclick="#{rich:component('CBmpUpdRole')}.hide();return false;"
+						styleClass="but_class" /> <a4j:outputPanel
+						id="outCBmpUpdRoleButton">
 
-							<tr>
-								<td colspan="2" align="center" height="35px"><a4j:commandButton
-										value="Закрыть"
-										onclick="#{rich:component('CBmpUpdRole')}.hide();return false;"
-										styleClass="but_class" /> <a4j:outputPanel
-										id="outCBmpUpdRoleButton">
-
-										<a4j:commandButton value="Сохранить"
-											action="#{usrManager.updUsrRole}"
-											reRender="outCenterBottom, outCBmpUpdRoleList"
-											oncomplete="/*#{rich:component('CBmpUpdRole')}.hide();*/"
-											onclick="/*enableCHBox('CBformUpdRole')*/"
-											styleClass="but_class"
-											rendered="#{param['idArm']!=null and param['idArm']!='-1'}">
-											<f:param name="idArm" value="#{param['idArm']}" />
-											<f:param name="onUpdateRole" value="1" />
-											<f:param name="remoteAudit" value="UpdFact" />
-											<f:param name="sessionId" value="#{param['sessionId']}" />
-											<f:param name="saveEditFlag" value="1" />
-											<!--f:param name="shortData" 
-                    value="#{(currentUser.idUser!=linksMap.superUserCode or usrBean.idUser!=linksMap.superUserCode ? '1' : ())}"/-->
-										</a4j:commandButton>
-
-
-									</a4j:outputPanel></td>
-							</tr>
+						<a4j:commandButton value="Сохранить"
+							action="#{usrManager.updUsrRole}"
+							reRender="outCenterBottom, outCBmpUpdRoleList"
+							oncomplete="/*#{rich:component('CBmpUpdRole')}.hide();*/"
+							onclick="/*enableCHBox('CBformUpdRole')*/"
+							styleClass="but_class"
+							rendered="#{param['idArm']!=null and param['idArm']!='-1'}">
+							<f:param name="idArm" value="#{param['idArm']}" />
+							<f:param name="onUpdateRole" value="1" />
+							<f:param name="remoteAudit" value="UpdFact" />
+							<f:param name="sessionId" value="#{param['sessionId']}" />
+							<f:param name="saveEditFlag" value="1" />
+							<!--f:param name="shortData" 
+                value="#{(currentUser.idUser!=linksMap.superUserCode or usrBean.idUser!=linksMap.superUserCode ? '1' : ())}"/-->
+						</a4j:commandButton>
+					</a4j:outputPanel>
+												
+							</td></tr>
 						</table>
-					</h:form>
 				</div>
+				</h:form>
+				
+				
 			</rich:modalPanel>
 		</a4j:outputPanel>
 
@@ -2193,26 +2195,24 @@
 
 											</a4j:outputPanel></td>
 									</tr>
-
-
 									<tr>
-										<td colspan="2" align="center" height="35px"><a4j:commandButton
-												value="Закрыть"
+										<td colspan="2" align="center" height="35px">
+											<a4j:commandButton value="Закрыть"
 												onclick="#{rich:component('CBmpUpdIS')}.hide();return false;"
-												styleClass="but_class" /> <a4j:commandButton
-												value="Сохранить" action="#{usrManager.updUsrAdminIS()}"
-												reRender="outCenterBottom, outCBdtUpdIS_dtbl, outCBdtUpdIS_dscr, outCBdtUpdIS_appOnly"
-												styleClass="but_class">
-												<!--f:param name="idArm" value="#{param['idArm']}"/-->
-												<f:param name="onUpdateIS" value="1" />
-												<f:param name="remoteAudit" value="UpdFact" />
-												<f:param name="sessionId" value="#{param['sessionId']}" />
-												<f:param name="saveEditFlag" value="1" />
-											</a4j:commandButton></td>
-									</tr>
-								</table>
+ 												styleClass="but_class" /> <a4j:commandButton
+ 												value="Сохранить" action="#{usrManager.updUsrAdminIS()}"
+ 												reRender="outCenterBottom, outCBdtUpdIS_dtbl, outCBdtUpdIS_dscr, outCBdtUpdIS_appOnly"
+ 												styleClass="but_class">
+ 												<!--f:param name="idArm" value="#{param['idArm']}"/-->
+ 												<f:param name="onUpdateIS" value="1" />
+ 												<f:param name="remoteAudit" value="UpdFact" />
+ 												<f:param name="sessionId" value="#{param['sessionId']}" />
+ 												<f:param name="saveEditFlag" value="1" />
+ 											</a4j:commandButton></td>
+ 									</tr>									
+								</table>							
 							</h:form>
-
+		
 						</rich:tab>
 						<rich:tab name="work_0" ontabenter="">
 							<f:facet name="label">

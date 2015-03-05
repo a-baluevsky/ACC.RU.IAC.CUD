@@ -1,6 +1,7 @@
 package iac.grn.infosweb.filter;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -93,11 +94,12 @@ import org.slf4j.LoggerFactory;
 		LOGGER.debug("main:01");
 
 		try {
-
+			String st = URLEncoder.encode(null,"utf-8");
 			List<String> available_ports = new ArrayList<String>(
 					Arrays.asList("".split(",")));
 
 			LOGGER.debug("main:02:" + available_ports.size());
+			LOGGER.debug("main:03:" + st);
 		} catch (Exception e) {
 		
 			LOGGER.error("error:", e);

@@ -131,7 +131,7 @@ import org.w3c.dom.NodeList;
        расширение "Улучшенный ключ" имеет значение "Проверка подлинности клиента".
      */
 	
-		LOGGER.debug("STSServiceClient:sign_verify_soap_transform_2sign:01+");	  
+		LOGGER.debug("STSServiceClient:sign_verify_soap_transform_2sign:01++");	  
 		
 		final ThreadLocal<Dispatch<SOAPMessage>> dispatchLocal = new InheritableThreadLocal(); 
 		try{
@@ -175,17 +175,26 @@ import org.w3c.dom.NodeList;
 			
 			
 			cert = ks.getCertificate(signingAlias);
-		 	publicKey = cert.getPublicKey() ;
-		 	
+			
+			LOGGER.debug("STSServiceClient:sign_verify_soap_transform_2sign:02+");
+			
+			if(cert!=null){
+				LOGGER.debug("STSServiceClient:sign_verify_soap_transform_2sign:03+");
+		 	  publicKey = cert.getPublicKey() ;
+			 }
+			
+			LOGGER.debug("STSServiceClient:sign_verify_soap_transform_2sign:04+");
 			}
-				
+			
+			LOGGER.debug("STSServiceClient:sign_verify_soap_transform_2sign:05+");
+			
 			QName service = new QName("http://sts.services.cud.iac.spb.ru/", ServiceName);
 			QName portName = new QName("http://sts.services.cud.iac.spb.ru/", PortName);
 			
 			
 			URL wsdlLocation = new URL(wsdlLocationURI);
 			
-			Service jaxwsService = Service.create(wsdlLocation, service);
+	Service jaxwsService = Service.create(wsdlLocation, service);
 			
 			//не работает с https - java7 - cxf
 			//Service jaxw/sService = Serv/ice.crea/te(service);
