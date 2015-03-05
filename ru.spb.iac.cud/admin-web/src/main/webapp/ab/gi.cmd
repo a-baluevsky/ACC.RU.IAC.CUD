@@ -1,0 +1,22 @@
+copy  ".gitignore" "C:\jboss-as-7.1.3.Final-fighting-mvn\git\paaa\ru.spb.iac.cud\common-ilib"
+copy  ".gitignore" "C:\jboss-as-7.1.3.Final-fighting-mvn\git\paaa\ru.spb.iac.cud\crypto-15export"
+copy  ".gitignore" "C:\jboss-as-7.1.3.Final-fighting-mvn\git\paaa\ru.spb.iac.cud\ejb-services"
+copy  ".gitignore" "C:\jboss-as-7.1.3.Final-fighting-mvn\git\paaa\ru.spb.iac.cud\idp-lib"
+copy  ".gitignore" "C:\jboss-as-7.1.3.Final-fighting-mvn\git\paaa\ru.spb.iac.cud\idp-web"
+copy  ".gitignore" "C:\jboss-as-7.1.3.Final-fighting-mvn\git\paaa\ru.spb.iac.cud\report-services"
+copy  ".gitignore" "C:\jboss-as-7.1.3.Final-fighting-mvn\git\paaa\ru.spb.iac.cud\schedule-services"
+copy  ".gitignore" "C:\jboss-as-7.1.3.Final-fighting-mvn\git\paaa\ru.spb.iac.cud\sp-lib"
+copy  ".gitignore" "C:\jboss-as-7.1.3.Final-fighting-mvn\git\paaa\ru.spb.iac.cud\sts-lib"
+copy  ".gitignore" "C:\jboss-as-7.1.3.Final-fighting-mvn\git\paaa\ru.spb.iac.cud\sts-web"
+copy  ".gitignore" "C:\jboss-as-7.1.3.Final-fighting-mvn\git\paaa\ru.spb.iac.cud\target"
+copy  ".gitignore" "C:\jboss-as-7.1.3.Final-fighting-mvn\git\paaa\ru.spb.iac.cud\user-ear"
+copy  ".gitignore" "C:\jboss-as-7.1.3.Final-fighting-mvn\git\paaa\ru.spb.iac.cud\user-ejb"
+copy  ".gitignore" "C:\jboss-as-7.1.3.Final-fighting-mvn\git\paaa\ru.spb.iac.cud\user-web"
+copy  ".gitignore" "C:\jboss-as-7.1.3.Final-fighting-mvn\git\paaa\ru.spb.iac.cud\web-services"
+copy  ".gitignore" "C:\jboss-as-7.1.3.Final-fighting-mvn\git\paaa\ru.spb.iac.cud\admin-ear"
+copy  ".gitignore" "C:\jboss-as-7.1.3.Final-fighting-mvn\git\paaa\ru.spb.iac.cud\admin-ejb"
+copy  ".gitignore" "C:\jboss-as-7.1.3.Final-fighting-mvn\git\paaa\ru.spb.iac.cud\admin-web"
+copy  ".gitignore" "C:\jboss-as-7.1.3.Final-fighting-mvn\git\paaa\ru.spb.iac.cud\authz-module"
+
+pause
+

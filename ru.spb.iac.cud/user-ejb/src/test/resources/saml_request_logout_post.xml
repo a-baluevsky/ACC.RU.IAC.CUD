@@ -1,0 +1,13 @@
+<samlp:LogoutRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
+                     xmlns="urn:oasis:names:tc:SAML:2.0:assertion"
+                     Destination="http://localhost:8080/cudidp/"
+                     ID="ID_0dad0b5e-08a4-4159-9818-e0dfddf7f68f"
+                     IssueInstant="2014-02-14T16:49:07.201+04:00"
+                     Version="2.0"
+                     >
+    <saml:Issuer xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">urn:sub-eis:sales:post</saml:Issuer>
+    <saml:NameID xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">tut 
+    </saml:NameID>
+    <samlp:SessionIndex>ID_d30876d5-daae-44b3-b39c-9cf568a16041     
+    </samlp:SessionIndex>
+</samlp:LogoutRequest>

@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='windows-1251' ?>
+<html xmlns="http://www.w3.org/1999/xhtml"	
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+	<head>
+		<title>AB test</title>
+	</head>
+
+	<body>
+		 <h:outputText id="ho1" value="value = #{ABTestAction.value}"/><br/><br/>
+		<h:form>
+			<h:outputText value="METERS TO INCHES CONVERSION"/><br/><br/>
+			<h:outputText value="Enter amount in meters (m):"/> 
+			<h:inputText size="16" value="#{ABTestAction.value}" /><br/><br/>
+			<h:commandButton action="#{ABTestAction.doAction}" value="Convert into inches"/>
+		</h:form>
+		
+		<a4j:form>
+			<h:inputText id="inptxtA4j" size="16" value="#{ABTestAction.value}" /><br/><br/>
+			<a4j:commandButton action="#{ABTestAction.doAjaxAction}" value="change measure item" reRender="ho1"></a4j:commandButton>
+		</a4j:form>
+		
+	</body>
+</html>
