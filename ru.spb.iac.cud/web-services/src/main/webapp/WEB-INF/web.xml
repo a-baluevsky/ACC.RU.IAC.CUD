@@ -93,8 +93,7 @@
 		<init-param>
 			<description></description>
 			<param-name>available_ports</param-name>
-			<!--param-value>8443,18443</param-value -->
-			<param-value>8080,8443,18443</param-value>
+			<param-value>80,8080,8443,18443</param-value>
 		</init-param>
 	</filter>
 	<filter-mapping>
