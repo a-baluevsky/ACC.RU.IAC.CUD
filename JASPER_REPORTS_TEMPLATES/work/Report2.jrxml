@@ -10,6 +10,10 @@
 	<parameter name="ReportDate1" class="java.util.Date"/>
 	<parameter name="ReportDate2" class="java.util.Date"/>
 	<parameter name="ReportDateValue" class="java.lang.String"/>
+	<parameter name="orgCode" class="java.lang.String">
+		<defaultValueExpression>"*"</defaultValueExpression>
+	</parameter>
+	
 	<queryString>
 		<![CDATA[
 		
@@ -39,7 +43,7 @@ select  org_name, usr_fio, usr_pos, arm_name, act_name, act_dat_value, roles_nam
                           (select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE 
                 from ISP_BSS_T cl_org, 
                 AC_USERS_KNL_T au 
-                where AU.UP_SIGN = CL_ORG.SIGN_OBJECT 
+                where AU.UP_SIGN = CL_ORG.SIGN_OBJECT AND ($P{orgCode}='*' OR $P{orgCode}=CL_ORG.SIGN_OBJECT)
                 group by CL_ORG.SIGN_OBJECT) t3,
 
                GROUP_SYSTEMS_KNL_T gr_sys,
