@@ -108,7 +108,8 @@ if(TextInputLib) {
 	};
 
 	TextInputLib.DateTextInput = function (dateInput) {
-		this.selDate=new TextSelection(dateInput);		
+		this.selDate=new TextSelection(dateInput);
+		this.setStringValue(dateInput.value);
 		dateInput.onfocus	=Functional(onFocusHandler,dateInput.onfocus,this);
 		dateInput.onclick	=Functional(onClickHandler,dateInput.onclick,this);
 		dateInput.onkeydown =Functional(onKeydownHandler,dateInput.onkeydown,this);
@@ -130,7 +131,7 @@ if(TextInputLib) {
 		};
 		onBlurHandler = function(prvOnblur,dateTextInput) {			
 			var selDate=dateTextInput.selDate;
-			selDate.input.value=dateTextInput.getStringValue();
+			dateTextInput.setStringValue(dateTextInput.getStringValue());
 			selDate.resetTextSelection();
 			return (prvOnblur)?prvOnblur():true;
 		};
@@ -141,7 +142,8 @@ if(TextInputLib) {
 			var kc=evt.keyCode;			
 			var d0,d1,d2,d3,d4;
 			switch(kc) 			
-			{	case 9: break;					
+			{	case 9: break;
+				case 27: dateTextInput.reset(); cancel=true; break;
 				case 13: dateTextInput.refresh(); bCallHandler=cancel=true; break;
 				case 8: cancel=true; break;
 				case 46: bCallHandler=true;
@@ -151,11 +153,11 @@ if(TextInputLib) {
 				case 38: dateTextInput.adjustDate(1);	cancel=true; break;
 				case 40: dateTextInput.adjustDate(-1);	cancel=true; break;			
 				case 37: dateTextInput.goNeighbourField(-1);cancel=true; break;			
-				case 39: dateTextInput.goNeighbourField(1);	cancel=true; break;
+				case 190: case 39: dateTextInput.goNeighbourField(1);	cancel=true; break;
 				case 51: d3=true; case 50: d2=true; 
 				case 49: d1=true; case 48: d0=true;				
 				default: 
-					if(kc>=48 && kc<=57) { d4=kc>51;
+					if(kc>=48 && kc<=57) { d4=kc>=52;
 						if(dateTextInput.getStringValue().length==0) {
 							delete dateTextInput.lastSelFieldId;
 							delete dateTextInput.cntFldTypedChars;
@@ -170,13 +172,15 @@ if(TextInputLib) {
 						if(selTxt==selDate.input.value) {
 							dateTextInput.selDate.select(0, 2);
 							cancel=true; break;
-						}
-						var f=[false,false,false]; f[fldId]=true;
+						}						
 						dateTextInput.cntFldTypedChars=(selTxt.length!=0)?0:1+dateTextInput.cntFldTypedChars;
-						var fldId=dateTextInput.lastSelFieldId||dateTextInput.getFieldByCaret()[0];						
+						var fldId=dateTextInput.lastSelFieldId||dateTextInput.getFieldByCaret()[0];		
+						var f=[false,false,false]; f[fldId]=true;
 						var b1=dateTextInput.cntFldTypedChars>=dateFldLen[fldId]-1;
 						//alert_("dateTextInput.cntFldTypedChars: "+dateTextInput.cntFldTypedChars+"");
-						if(b1||(d4&&!f[2])||(d2&&f[1])) {
+						//alert_(b1+" "+(d4&&!f[2])+" "+(d2&&f[1]));
+						//alert(fldId +" "+f[1]);
+						if(b1||(d4&&f[0])||(d2&&f[1])) {
 							dateTextInput.cntFldTypedChars=0;							
 							setTimeout(Functional(Function("dti", "dti.goNeighbourField(1);delete dti.cntFldTypedChars;"), dateTextInput), 50);
 						}
@@ -209,8 +213,8 @@ if(TextInputLib) {
 		prototype.getPartsValue		= prototype.setPartsValue =
 		prototype.getDateValue		= prototype.setDateValue = 
 		prototype.getStringValue	= prototype.setStringValue = 
-		prototype.adjustDate		= prototype.refresh =
-		prototype.correctSelection =
+		prototype.adjustDate		= prototype.refresh = prototype.reset =
+		prototype.correctSelection  = 
 			TextInputLib.forwardDeclare;
 		
 		with(prototype) {
@@ -265,20 +269,16 @@ if(TextInputLib) {
 				return [k,j,dateFldLen[k]];
 			};
 			goNeighbourField = function(stepCnt) {
-				this.refresh();
-				var fldInfo=(this.lastSelFieldId)?[this.lastSelFieldId,3*this.lastSelFieldId,dateFldLen[this.lastSelFieldId]]:this.getFieldByCaret();
-				var nbrFld;
-				if(stepCnt>0) {
-					nbrFld=fldInfo[0]+1;
-					if(nbrFld>2)
-					  nbrFld=0;								
+				if(this.validateValue(this.selDate.input.value)) {
+					this.refresh();
+					var fldInfo=(this.lastSelFieldId)?[this.lastSelFieldId,3*this.lastSelFieldId,dateFldLen[this.lastSelFieldId]]:this.getFieldByCaret();
+					var nbrFld=(fldInfo[0]+stepCnt+3)%3;
+					var nbrFldStart=3*nbrFld,nbrFldLen=dateFldLen[nbrFld];					
+					this.selDate.setTextSelection(nbrFldStart,nbrFldLen);
+					this.lastSelFieldId=nbrFld;	
 				} else {
-					nbrFld=fldInfo[0]-1;
-					if(nbrFld<0) nbrFld=2;
+					this.reset();
 				}
-				var nbrFldStart=3*nbrFld,nbrFldLen=dateFldLen[nbrFld];					
-				this.selDate.setTextSelection(nbrFldStart,nbrFldLen);
-				this.lastSelFieldId=nbrFld;	
 			};	
 
 			getDateFromDateParts = function(aDateParts) {
@@ -292,6 +292,8 @@ if(TextInputLib) {
 					return dt;
 				} else return null;
 			};
+			
+		
 			validateValue = function(chkTxt) {
 				if(chkTxt==null || chkTxt=="") return "";
 				var chkInfo=dateRegex.exec(chkTxt);
@@ -324,18 +326,25 @@ if(TextInputLib) {
 				var validValue=this.validateValue(this.selDate.input.value);
 				return (validValue!=null)?validValue:this.getDefaultDate();
 			};			
-			setStringValue = function(StringValue) {		
-				var validValue=this.validateValue(StringValue);
+			setStringValue = function(StringValue) {	
+				var result=false;
+				var validValue=(StringValue)?this.validateValue(StringValue):"";
 				if(validValue!=null) {
-					this.selDate.input.value = validValue||"";
+					this.selDate.input.value = validValue;
+					if(this.lastValidDateText!=validValue) {						
+						//alert("update lastValidDateText: "+this.lastValidDateText+" => "+validValue);
+						this.lastValidDateText=validValue;
+					}
+					result=true;
 				}
 				delete this.lastSelFieldId;
+				return result;
 			};
 			
 			refresh = function() {
 				var selDate=this.selDate;
 				var v=this.getStringValue();
-				if(v!=selDate.input.value) {
+				if(v!=this.lastValidDateText || v!=selDate.input.value) {
 					var selSt, selLn;
 					if(this.lastSelFieldId!=null) {
 						selSt=3*this.lastSelFieldId;
@@ -345,11 +354,18 @@ if(TextInputLib) {
 						selSt=selInfo.start;
 						selLn=selInfo.length;
 					}
-					selDate.input.value=v;
+					this.setStringValue(v);
 					selDate.select(selSt,selLn);
 					delete this.cntFldTypedChars;
+					return true;
 				}
-			}			
+				return false;
+			}
+			reset = function() {
+				var curFld=this.lastSelFieldId||this.getFieldByCaret();
+				this.setStringValue(this.getDefaultDate());
+				this.selDate.setTextSelection(3*curFld,dateFldLen[curFld]);				
+			};
 			adjustDate = function(stepCnt) {
 				this.correctSelection();
 				var dt=this.getDateValue();
@@ -368,13 +384,56 @@ if(TextInputLib) {
 					this.selDate.select(0, 2);					
 				}				
 				return dt;
-			}; //adjustDate	
+			}; //adjustDate
 			correctSelection = function() {
 				if(this.selDate.input.value!="") {
 					var fldId=this.lastSelFieldId||this.getFieldByCaret()[0];
 					this.selDate.select(3*fldId, dateFldLen[fldId]);
 				}			
-			} // correctSelection
+			}; // correctSelection
 		}; //with(DateTextInput.prototype)
 	}; //with(DateTextInput);
+	
+	TextInputLib.sortSelectElementNodes = function (selELm) {
+		var arrSortNodes = new Array();	
+		var opts=selELm.children;
+		var l=opts.length;
+		var iSortGroupIndex=1000;
+		var reChkNum=/^(\d*)$/ ; //new RegExp();
+		for(var i=l-1; i>=0; --i){
+			var curOpt=opts[i];
+			if(curOpt.tagName.toUpperCase()=="OPTION") {			
+				if(!reChkNum.exec(curOpt.value))
+					curOpt.SortGroupIndex=--iSortGroupIndex,iSortGroupIndex--;
+				else
+					curOpt.SortGroupIndex=iSortGroupIndex;
+				//curOpt.innerHTML += ": "+curOpt.value+", "+curOpt.SortGroupIndex;
+				arrSortNodes.push(curOpt);			
+			}
+			selELm.removeChild(curOpt);
+		}
+		arrSortNodes.sort(function /*cmpNodesBySortGroupIndex*/(n1,n2) {
+			var i1=n1.SortGroupIndex||0, i2=n2.SortGroupIndex||0;
+			if(i1!=i2)
+				return (i1<i2)?-1:1;
+			var t1=n1.innerText||n1.text, t2=n2.innerText||n2.text;
+			if(t1==t2)
+				return 0;
+			else
+				return (t1<t2)?-1:1;
+		});
+		for(var i=0; i<arrSortNodes.length; ++i){
+			selELm.appendChild(arrSortNodes[i]);
+		}
+	} // sortSelectElementNodes
+	TextInputLib.fixAppList = function (selId){
+		if(document.getElementById(selId)) {			
+			var selCtl=document.getElementById(selId);			     
+				arguments.callee.sortSelectElementNodes(selCtl);
+				selCtl.style.width="250px";		   			
+		} else {
+			setTimeout(Functional(arguments.callee, selId), 4000);
+		}
+	};
+	TextInputLib.fixAppList.sortSelectElementNodes = TextInputLib.sortSelectElementNodes;
 }} else {throw "Module requires JsInclude";}
