@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.security.KeyStore;
+import java.security.Signature;
 import java.security.cert.CertPath;
 import java.security.cert.CertPathBuilder;
 import java.security.cert.CertPathValidator;
@@ -49,6 +50,7 @@ import ru.CryptoPro.JCP.JCP;
 import ru.CryptoPro.JCP.ASN.CryptographicMessageSyntax.ContentInfo;
 import ru.CryptoPro.JCP.ASN.CryptographicMessageSyntax.DigestAlgorithmIdentifier;
 import ru.CryptoPro.JCP.ASN.CryptographicMessageSyntax.SignedData;
+import ru.CryptoPro.JCP.ASN.CryptographicMessageSyntax.SignerInfo;
 import ru.CryptoPro.JCP.params.OID;
 import ru.CryptoPro.JCP.tools.Decoder;
 import ru.spb.iac.cud.uarm.ejb.context.user.UserManagerEJB;
@@ -262,6 +264,7 @@ public X509Certificate CMSVerify(byte[] buffer, Certificate[] certs, byte[] data
 		throw new Exception("Unknown digest");
 	}
      
+	 final OID eContTypeOID = new OID(cms.encapContentInfo.eContentType.value);     
     
     if (cms.certificates != null) {
      	
@@ -278,10 +281,28 @@ public X509Certificate CMSVerify(byte[] buffer, Certificate[] certs, byte[] data
 
             
              
-          
+			for (int j = 0; j < cms.signerInfos.elements.length; j++) {
+
+				   final SignerInfo info = cms.signerInfos.elements[j];
+
+				   if (!digestOid.equals(new OID(info.digestAlgorithm.algorithm.value))) {
+
+						  throw new Exception("Not signed on certificate.");
+
+				   }
+
+				   final boolean checkResult = verifyOnCert(cert, info, "12345".getBytes(), eContTypeOID);
+
+				   if (checkResult){
+
+						  return  cert;
+
+				   }
+
+			}          
            
           
-          if(root_sn()!=null&&!root_sn().equals(dec_to_hex(cert.getSerialNumber()))){
+/*          if(root_sn()!=null&&!root_sn().equals(dec_to_hex(cert.getSerialNumber()))){
         	
         
  		   
@@ -289,7 +310,7 @@ public X509Certificate CMSVerify(byte[] buffer, Certificate[] certs, byte[] data
             	
               return cert;
              }
-         }  
+         }  */
             
 
         }
@@ -515,5 +536,39 @@ public String root_sn() {
 	 return result;
 }  
 
+	private static boolean verifyOnCert(X509Certificate cert, SignerInfo info, byte[] text, OID eContentTypeOID) 
+		throws Exception {
+
+             final byte[] sign = info.signature.value;
+
+             final byte[] data;
+
+             if (info.signedAttrs == null) {
+
+                    data = text;
+
+             } else {
+
+ 
+
+                    final Asn1BerEncodeBuffer encBufSignedAttr = new Asn1BerEncodeBuffer();
+
+                    info.signedAttrs.encode(encBufSignedAttr);
+
+                    data = encBufSignedAttr.getMsgCopy();
+
+                   
+
+             }
+
+             final Signature signature = Signature.getInstance(JCP.GOST_EL_SIGN_NAME);
+
+             signature.initVerify(cert);
+
+             signature.update(data);
+
+             return signature.verify(sign);
+
+    }
 
 }

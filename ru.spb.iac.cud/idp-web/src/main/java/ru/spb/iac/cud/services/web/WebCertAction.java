@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.KeyStore;
+import java.security.Signature;
 import java.security.cert.CertPath;
 import java.security.cert.CertPathBuilder;
 import java.security.cert.CertPathValidator;
@@ -47,11 +48,13 @@ import ru.spb.iac.cud.context.ContextAccessWebManager;
 import ru.spb.iac.cud.exceptions.GeneralFailure;
 import ru.spb.iac.cud.exceptions.InvalidCredentials;
 import ru.spb.iac.cud.exceptions.RevokedCertificate;
+
 import com.objsys.asn1j.runtime.Asn1BerEncodeBuffer;
 
 import ru.CryptoPro.JCP.ASN.CryptographicMessageSyntax.ContentInfo;
 import ru.CryptoPro.JCP.ASN.CryptographicMessageSyntax.DigestAlgorithmIdentifier;
 import ru.CryptoPro.JCP.ASN.CryptographicMessageSyntax.SignedData;
+import ru.CryptoPro.JCP.ASN.CryptographicMessageSyntax.SignerInfo;
 import ru.CryptoPro.JCP.JCP;
 import ru.CryptoPro.JCP.params.OID;
 import ru.CryptoPro.JCP.tools.Decoder;
@@ -236,6 +239,7 @@ private static String alias_root = "σφροαγσο«ροαθΰφ».crt";
 			throw new Exception("Unknown digest");
 		}
 		
+		final OID eContTypeOID = new OID(cms.encapContentInfo.eContentType.value);		
 
 		if (cms.certificates != null) {
 
@@ -252,19 +256,37 @@ private static String alias_root = "σφροαγσο«ροαθΰφ».crt";
 						.generateCertificate(encBuf.getInputStream());
 
 				 
-				 
+		   for (int j = 0; j < cms.signerInfos.elements.length; j++) {
+
+						  final SignerInfo info = cms.signerInfos.elements[j];
+
+						  if (!digestOid.equals(new OID(info.digestAlgorithm.algorithm.value))) {
+
+								throw new Exception("Not signed on certificate.");
+
+						  }
+
+						  final boolean checkResult = verifyOnCertIDP(cert, info, "12345".getBytes(), eContTypeOID);
+
+						  if (checkResult){
+
+								return dec_to_hex(cert.getSerialNumber());
+
+						  }
+
+				   }				 
 				 
 				 
 				 
 
-				if (root_sn() != null
+/*				if (root_sn() != null
 						&& !root_sn()
 								.equals(dec_to_hex(cert.getSerialNumber()))) {
 
 					if (chain_check(cert)) {
 						return dec_to_hex(cert.getSerialNumber());
 					}
-				}
+				} */
 
 			}
 		}
@@ -469,5 +491,41 @@ private static String alias_root = "σφροαγσο«ροαθΰφ».crt";
 
 		return saml2Request.getSamlDocumentHolder();
 	}
+	
+	private static boolean verifyOnCertIDP(X509Certificate cert, SignerInfo info, byte[] text, OID eContentTypeOID)
+		throws Exception {
 
+             final byte[] signIDP = info.signature.value;
+
+             final byte[] dataIDP;
+
+             if (info.signedAttrs == null) {
+
+                    dataIDP = text;
+
+             } else {
+
+ 
+
+                    final Asn1BerEncodeBuffer encBufSignedAttr = new Asn1BerEncodeBuffer();
+
+                    info.signedAttrs.encode(encBufSignedAttr);
+
+                    dataIDP = encBufSignedAttr.getMsgCopy();
+
+                   
+
+             }
+
+             final Signature signatureIDP = Signature.getInstance(JCP.GOST_EL_SIGN_NAME);
+
+             signatureIDP.initVerify(cert);
+
+             signatureIDP.update(dataIDP);
+
+             return signatureIDP.verify(signIDP);
+
+     }
+	   
+	   
 }

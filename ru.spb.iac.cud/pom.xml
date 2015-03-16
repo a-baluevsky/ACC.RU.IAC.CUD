@@ -2,8 +2,195 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>ru.spb.iac</groupId>
   <artifactId>cud</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0</version>
   <packaging>pom</packaging>
+  
+  <properties>
+          
+        <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
+        <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
+        <sonar.language>java</sonar.language>
+        <sonar.jacoco.itReportPath>${project.basedir}/../target/itjacoco.exec</sonar.jacoco.itReportPath>
+      
+        <coverage.reports.dir>${basedir}/target/coverage-reports</coverage.reports.dir>
+        <sonar.jacoco.reportPath>${coverage.reports.dir}/jacoco-unit.exec</sonar.jacoco.reportPath>
+        <sonar.jacoco.itReportPath>${coverage.reports.dir}/jacoco-it.exec</sonar.jacoco.itReportPath>
+        <sonar.jacoco.jar>${basedir}/lib/jacocoagent.jar</sonar.jacoco.jar>
+
+    </properties>
+    
+    <dependencies>
+    		<!-- arquillian - start -->
+		
+		   
+          <dependency>
+                    <groupId>org.hibernate</groupId>
+                    <artifactId>hibernate-entitymanager</artifactId>
+                    <version>3.4.0.GA</version>
+                    <scope>test</scope>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>javax.persistence</groupId>
+                            <artifactId>persistence-api</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <groupId>javax.transaction</groupId>
+                            <artifactId>jta</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+        
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-openejb-embedded-3.1</artifactId>
+             <!--scope>compile</scope-->
+             <scope>test</scope>
+            <version>1.0.0.CR2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.openejb</groupId>
+            <artifactId>openejb-core</artifactId>
+            <!--scope>compile</scope-->
+             <scope>test</scope>
+            <version>3.1.4</version>
+        </dependency> 
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
+            <!--scope>compile</scope-->
+             <scope>test</scope>
+        </dependency> 
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
+             <scope>test</scope>
+           </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.1</version>
+             <scope>test</scope>
+        </dependency>
+		
+		<dependency>
+    <groupId>cn.guoyukun.jdbc</groupId>
+    <artifactId>oracle-ojdbc6</artifactId>
+    <version>11.2.0.3.0</version>
+     <scope>test</scope>
+</dependency>
+            
+		
+	<!-- arquillian - end -->
+		
+	</dependencies>
+    <dependencyManagement>
+        <dependencies>
+           
+            <dependency>  
+                <groupId>org.jboss.arquillian.extension</groupId>  
+                <artifactId>arquillian-jacoco</artifactId>  
+                <version>1.0.0.Alpha6</version>  
+                <scope>test</scope>  
+            </dependency>  
+            <dependency>  
+                <groupId>org.jacoco</groupId>  
+                <artifactId>org.jacoco.core</artifactId>  
+                <version>0.7.0.201403182114</version>  
+                <scope>test</scope>  
+            </dependency>  
+            
+            
+          <!-- for test -->  
+            
+        <dependency>
+                  <groupId>org.jboss.arquillian</groupId>
+                  <artifactId>arquillian-bom</artifactId>
+                  <version>1.1.5.Final</version>
+                  <type>pom</type>
+                  <scope>import</scope>
+            </dependency>
+            
+            
+        </dependencies>
+    </dependencyManagement>
+            
+    <build>
+     <pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.7.0.201403182114</version>
+                <executions>
+                    <execution>
+                        <id>default-prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>default-report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>default-report-integration</id>
+                        <configuration>
+                            <destFile>${sonar.jacoco.itReportPath}</destFile>
+                        </configuration>
+                        <goals>
+                            <goal>report-integration</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <destFile>${sonar.jacoco.reportPath}</destFile>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.16</version>
+                <configuration>
+                    <destFile>${sonar.jacoco.itReportPath}</destFile>
+                    <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+                    <argLine>${jacoco.agent.argLine}</argLine>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>verify</id>
+                        <goals>
+                            <goal>verify</goal>
+                            <goal>integration-test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <!--source>1.7</source>
+                    <target>1.7</target-->
+                    <encoding>cp1251</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+        </pluginManagement>
+    </build>
+  
+  
   <modules>
   	<module>admin-web</module>
   	<module>admin-ejb</module>
@@ -25,7 +212,6 @@
   	<module>report-services</module>
     </modules>
     
-   
-        
+           
     
 </project>
