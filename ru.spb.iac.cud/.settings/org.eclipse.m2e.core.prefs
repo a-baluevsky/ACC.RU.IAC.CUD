@@ -1,4 +1,4 @@
-activeProfiles=
+activeProfiles=repository.jboss.org, new-jboss-public-repository, repository-apache-org, jboss-public-repository, central-public-repository
 eclipse.preferences.version=1
 resolveWorkspaceProjects=true
 version=1

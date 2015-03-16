@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>ru.spb.iac</groupId>
 		<artifactId>cud</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0</version>
 	</parent>
 	<artifactId>admin-ejb</artifactId>
 
@@ -70,7 +70,7 @@
 		<dependency>
 			<groupId>ru.spb.iac</groupId>
 			<artifactId>common-ilib</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
@@ -100,7 +100,7 @@
 		<dependency>
 			<groupId>ru.spb.iac</groupId>
 			<artifactId>crypto-15export</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>ru.crypto</groupId>
@@ -146,8 +146,11 @@
 	<version>4.10</version>
 </dependency-->
 
+   
+    
 	</dependencies>
 
+    
 	<!--build> <plugins> <plugin> <groupId>org.apache.maven.plugins</groupId> 
 		<artifactId>maven-compiler-plugin</artifactId> <configuration> <source>1.7</source> 
 		<target>1.7</target> </configuration> </plugin> </plugins> </build -->

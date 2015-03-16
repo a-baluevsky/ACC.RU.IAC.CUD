@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>ru.spb.iac</groupId>
 		<artifactId>cud</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0</version>
 	</parent>
 	<artifactId>idp-web</artifactId>
 	<packaging>war</packaging>
@@ -13,7 +13,7 @@
 		<dependency>
 			<groupId>ru.spb.iac</groupId>
 			<artifactId>common-ilib</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -28,12 +28,12 @@
 		<dependency>
 			<groupId>ru.spb.iac</groupId>
 			<artifactId>idp-lib</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>ru.spb.iac</groupId>
 			<artifactId>crypto-15export</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.as</groupId>

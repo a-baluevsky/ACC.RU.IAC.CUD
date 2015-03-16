@@ -4,11 +4,18 @@
 	<parent>
 		<groupId>ru.spb.iac</groupId>
 		<artifactId>cud</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0</version>
 	</parent>
 	<artifactId>common-ilib</artifactId>
 	<build>
 		<finalName>CudIlib</finalName>
+		<!--plugins>
+		 <plugin>
+      <groupId>org.jacoco</groupId>
+      <artifactId>jacoco-maven-plugin</artifactId>
+      <version>0.7.3-SNAPSHOT</version>
+    </plugin>
+    </plugins-->
 	</build>
 	<dependencies>
 		<dependency>
@@ -25,4 +32,6 @@
 		
 		
 	</dependencies>
+	
+
 </project>

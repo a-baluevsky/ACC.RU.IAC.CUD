@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>ru.spb.iac</groupId>
 		<artifactId>cud</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0</version>
 	</parent>
 	<artifactId>admin-ear</artifactId>
 	<packaging>ear</packaging>
@@ -46,6 +46,9 @@
 				<artifactId>maven-ear-plugin</artifactId>
 				<version>2.9.1</version>
 				<configuration>
+				  <packagingExcludes>lib/dom4j-1.6.1.jar,lib/slf4j-api-1.4.2.jar,
+				  lib/xml-apis-1.0.b2.jar,lib/commons-collections-3.2.jar</packagingExcludes>
+					
 					<!--packagingExcludes>lib/jboss-seam-2.2.2.Final.jar</packagingExcludes -->
 					<!--packagingIncludes>InfoS-ejb.jar, InfoS-web.war, lib/commons-codec-1.3.jar, 
 						lib/commons-beanutils-1.8.0.jar, lib/*</packagingIncludes -->
@@ -107,6 +110,10 @@
 			<artifactId>hibernate-core</artifactId>
 			<version>3.3.1.GA</version>
 			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
 				<exclusion>
 					<groupId>*</groupId>
 					<artifactId>*</artifactId>
