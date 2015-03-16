@@ -106,7 +106,7 @@
 
   <context-param>
     <param-name>JASPER_SERVER</param-name>
-    <param-value>http://report.tp.toris.vpn/jasperserver/rest_v2/reports/</param-value>
+    <param-value>http://report.test.toris.vpn/jasperserver/rest_v2/reports/</param-value>
  <!--param-value>http://reports.toris.adc.spb:8080/jasperserver/rest_v2/reports/</param-value-->
   </context-param>
 
