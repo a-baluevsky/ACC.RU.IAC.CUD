@@ -2,8 +2,10 @@ package iac.grn.infosweb.context.mc.audit.func;
 
 import iac.grn.infosweb.session.table.BaseStateHolder;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.Iterator;
+
 import javax.faces.context.FacesContext;
 
 import org.jboss.seam.ScopeType;
@@ -37,10 +39,14 @@ import org.jboss.seam.log.Log;
            		for(Iterator<Map.Entry<String, String>> it = columnFilterValues.entrySet().iterator(); it.hasNext();)
     			{
     			      Map.Entry<String, String> me = it.next();
-    			       if(me.getValue()==null||me.getValue().isEmpty()||"#-1#".equals(me.getValue())){
+    			      Object oValue=me.getValue();
+    			      if(oValue instanceof Date) {
+    			    	  //act_dat_value2 
+    			      }
+    			      else if(oValue==null||((String)oValue).isEmpty()||"#-1#".equals(oValue)){
     	     			  log.info("Ahtung!!!");
     	     			  it.remove();
-    	     		   }
+    	     		  }
     			}
           }
        }

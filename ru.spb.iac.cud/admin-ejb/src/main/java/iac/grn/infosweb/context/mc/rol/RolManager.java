@@ -628,7 +628,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	    log.info("RolManager:getListRolArm:01");
 	    try {
 	    	if(listRolArm==null){
-	     		listRolArm=entityManager.createQuery("select o from AcApplication o where o.acRoles IS NOT EMPTY").getResultList();
+	     		listRolArm=entityManager.createQuery("select o from AcApplication o where o.acRoles IS NOT EMPTY order by o.name ").getResultList();
 	    	}
 	     } catch (Exception e) {
 	    	 log.error("RolManager:getListRolArm:ERROR:"+e);
@@ -962,13 +962,13 @@ import iac.grn.serviceitems.BaseTableItem;
 	    			listArm=entityManager.createQuery(
 	    					"select o from AcApplication o "+
 	    				    "where o.idArm in (:idsArm) " +
-	    				    (query!=null?" and "+query:" "))
+	    				    (query!=null?" and "+query:" ")+" order by o.name ")
 	       				    .setParameter("idsArm", cau.getAllowedSys())
 	    					.getResultList();
 	    		}else{
 	    			listArm=entityManager.createQuery(
 	    					"select o from AcApplication o "+
-	    					(query!=null?" where "+query:" "))
+	    					(query!=null?" where "+query:" ")+" order by o.name ")
 	    					.getResultList();
 	    		}
 	    		
@@ -1001,13 +1001,12 @@ import iac.grn.serviceitems.BaseTableItem;
 	    		if(cau.getAllowedSys()!=null){
 	    			listArmUgroup=entityManager.createQuery(
 	    					      query+
-	    					      " and o.idArm in (:idsArm) " )
+	    					      " and o.idArm in (:idsArm) order by o.name" )
 	    					      .setParameter("idsArm", cau.getAllowedSys())
                                   .getResultList();
 	    		}else{
-	    			listArmUgroup=entityManager.createQuery(query).getResultList();
+	    			listArmUgroup=entityManager.createQuery(query+" order by o.name").getResultList();
 	    		}
-	    		
 	    		
 	    	}
 	     } catch (Exception e) {

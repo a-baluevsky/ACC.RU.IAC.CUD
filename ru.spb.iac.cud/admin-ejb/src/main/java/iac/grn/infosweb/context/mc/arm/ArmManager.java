@@ -697,12 +697,12 @@ import org.jboss.seam.transaction.Transaction;
 	    			 
 	    			listArm=entityManager.createQuery(
 		       				  "select o from AcApplication o " +
-		       				  "where o.idArm in (:idsArm) ")
+		       				  "where o.idArm in (:idsArm) order by o.name ")
 		       				  .setParameter("idsArm", au.getAllowedSys())
 		       				  .getResultList();
 	    		}else{
 	       		   listArm=entityManager.createQuery(
-	       				  "select o from AcApplication o")
+	       				  "select o from AcApplication o  order by o.name ")
 	       				  .getResultList();
 	    		}
 	    	}

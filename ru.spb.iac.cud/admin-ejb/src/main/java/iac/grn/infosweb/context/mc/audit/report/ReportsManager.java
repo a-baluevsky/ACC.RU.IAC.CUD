@@ -2,13 +2,16 @@ package iac.grn.infosweb.context.mc.audit.report;
 
 import iac.cud.infosweb.dataitems.BaseParamItem;
 import iac.cud.infosweb.dataitems.ReportDownloadItem;
+import iac.cud.infosweb.entity.AcUser;
 import iac.cud.infosweb.entity.ReportsBssT;
+
 import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
 import javax.faces.context.FacesContext;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -17,10 +20,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import mypackage.Configuration;
 
+import org.jboss.seam.Component;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.log.Log;
+
 import ru.spb.iac.cud.reports.ReportsManagerLocal;
 
 @Name("reportsManager")
@@ -197,14 +203,19 @@ public void server_report(String reportType){
 				reportDate1 = cln.getTime();
 				reportDate2 = new Date();
 			}
-
+			String orgCode="*";
+			AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+			if(cau!=null) {
+				if(cau.getIsAccOrgManagerValue()) {		
+					orgCode = cau.getUpSign();
+				}
+			}			
 			reportUrl = jasperServer+rep.getReportPath()+"?"
 					+ "ReportDate1="+df.format(reportDate1)
 					+ "&ReportDate2="+df.format(reportDate2)
+//					+ "&orgCode="+orgCode
 					+ "&j_username="+jasperLogin
 					+ "&j_password="+jasperPassword;
-			
-			    
 			log.info("reportsManager:server_report:02");
 		}catch(Exception e){
 			log.error("reportsManager:server_report:error:"+e);

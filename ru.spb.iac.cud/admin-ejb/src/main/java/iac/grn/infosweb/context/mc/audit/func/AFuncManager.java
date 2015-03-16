@@ -9,6 +9,7 @@ import iac.cud.infosweb.entity.ActionsLogKnlT;
 import iac.cud.infosweb.local.service.ServiceReestrAction;
 import iac.cud.infosweb.local.service.ServiceReestrPro;
 import iac.cud.infosweb.remote.frontage.IRemoteFrontageLocal;
+import iac.grn.infosweb.context.mc.QuerySvc;
 import iac.grn.infosweb.session.audit.actions.ActionsMap;
 import iac.grn.infosweb.session.audit.actions.ResourcesMap;
 import iac.grn.infosweb.session.audit.export.AuditExportData;
@@ -44,7 +45,7 @@ import org.jboss.seam.log.Log;
  *
  */
 @Name("aFuncManager")
- public class AFuncManager {
+ public class AFuncManager extends QuerySvc {
 	
 	 @Logger private Log log;
 	
@@ -188,222 +189,104 @@ import org.jboss.seam.log.Log;
 	public void invokeLocal(String type, int firstRow, int numberOfRows,
 	           String sessionId) {
 		try{
-			 String orderQuery=null;
 			 log.info("AFuncManager:invokeLocal");
-			 
+			 String sQuerySql; javax.persistence.Query query;
 			 AFuncStateHolder aFuncStateHolder = (AFuncStateHolder)
 					  Component.getInstance("aFuncStateHolder",ScopeType.SESSION);
 			 Map<String, String> filterMap = aFuncStateHolder.getColumnFilterValues();
-			 String st=null;
-			 
-			 if("list".equals(type)){
+			 resetWhereConditions();
+			 // TODO: use QuerySvc to analyze filter data and produce consistent SQL-query	
+			 AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
+			 String sQuerySqlT1 =
+					 "(select AL.ID_SRV act_id, "+  
+						 "AL.DATE_ACTION act_dat, to_char(AL.DATE_ACTION, 'DD.MM.YY HH24:MI:SS') act_dat_value, "+ 
+						 "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO) usr_fio, "+ 
+						 "ARM.ID_SRV arm_id, ARM.FULL_ arm_name, ACT.FULL_ act_name "+ 
+						 "from ACTIONS_LOG_KNL_T al, "+ 
+						 "AC_IS_BSS_T arm, "+ 
+						 "ACTIONS_BSS_T act, "+ 
+						 "AC_USERS_KNL_T AU_FULL, "+ 
+						 "ISP_BSS_T cl_usr_full, "+
+							 "(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "+ 
+							 "from ISP_BSS_T cl_usr, "+ 
+							 "AC_USERS_KNL_T au "+ 
+							 "where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT "+ 
+							 "group by CL_usr.SIGN_OBJECT) t2 "+ 
+						 "where ACT.ID_SRV=AL.UP_ACTIONS "+ 
+						 "and ACT.UP_IS=ARM.ID_SRV "+ 
+						 "and AU_FULL.UP_SIGN_USER=t2.CL_USR_CODE(+) "+ 
+						 "and AU_FULL.ID_SRV=AL.UP_USERS "+ 
+						 "and CL_USR_FULL.ID_SRV(+)=t2.CL_USR_ID "+
+						 (au.getIsAccOrgManagerValue() ? "and au_full.UP_SIGN = "+au.getUpSign() : "" )+
+					 ") t1 ";
+			 Set<Map.Entry<String, String>> set = aFuncStateHolder.getSortOrders().entrySet();			 
+			 resetOrderBy(); putOrderByFromStringSet(set);
+			 String orderQuery=getOrderByClause();
+			 log.info("AFunc:invokeLocal:list:orderQuery:"+orderQuery);  			 
+             if(filterMap!=null){
+	    		 Set<Map.Entry<String, String>> setFilterAFunc = filterMap.entrySet();
+	              for (Map.Entry<String, String> me : setFilterAFunc) {  
+	            	  String sKey=me.getKey();
+	              //у нас act_dat_value переведена в строку уже в запросе	            	  
+	   		      if(sKey.equals("arm_id")){ 
+	   		    	 putWhereCondition("arm_id", "=", me.getValue());      	        		  
+  	        	  } else if(sKey.equals("act_dat_value")) {
+  	        		  putWhereCondition(Date.class, "act_dat", ">=", me.getValue());
+  	        	  } else if(sKey.equals("act_dat_value2")) {
+  	        		  putWhereCondition(Date.class, "act_dat", "<=", me.getValue());
+  	        	  } else{ //делаем фильтр на начало текста
+	            	 putWhereCondition(sKey, "like", me.getValue());
+	        	  }
+	            }
+	    	  }
+             log.info("AFunc:invokeLocal:filterQuery:"+getWhereAndClause());
+			 if("list".equals(type)) {
 				 log.info("AFunc:invokeLocal:list:01");
-				 
-				
-				 Set<Map.Entry<String, String>> set = aFuncStateHolder.getSortOrders().entrySet();
-                 for (Map.Entry<String, String> me : set) {
-      		        
-      		       if(orderQuery==null){
-      		    	 orderQuery="order by "+me.getKey()+" "+me.getValue();
-      		       }else{
-      		    	 orderQuery=orderQuery+", "+me.getKey()+" "+me.getValue();  
-      		       }
-      		     }
-                 log.info("AFunc:invokeLocal:list:orderQuery:"+orderQuery);
-                 
-                 if(filterMap!=null){
-    	    		 Set<Map.Entry<String, String>> setFilterAFunc = filterMap.entrySet();
-    	              for (Map.Entry<String, String> me : setFilterAFunc) {
-    	            
-    	           //у нас act_dat_value переведена в строку уже в запросе
-    	   		       if(me.getKey().equals("arm_id")){ 
-      	        		  st=(st!=null?st+" and " :" ")+me.getKey()+" = "+me.getValue();
-      	        	 }else{
-    	        		//делаем фильтр на начало
-    	            	  st=(st!=null?st+" and " :"")+" lower("+me.getKey()+") like lower('"+me.getValue()+"%') ";
-    	        	  }
-    	            }
-    	    	  }
-                 log.info("AFunc:invokeLocal:list:filterQuery:"+st);
-                 
-				
-                List<Object[]> lo = null;  
-                 
-                AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
-	    		 
+                 sQuerySql = "select t1.act_id, t1.act_dat_value, t1.usr_fio, t1.arm_name, t1.act_name "+
+                		 	 "from "+sQuerySqlT1;
+                 putOrderBy("act_id", "desc"); 
  	    		if(au.getAllowedSys()!=null){
-                 
-                  lo = entityManager.createNativeQuery(
-                		 "select t1.act_id, t1.act_dat_value, t1.usr_fio, t1.arm_name, t1.act_name "+
-                         "from "+ 
-                         "(select AL.ID_SRV act_id, "+  
-                         "AL.DATE_ACTION act_dat, to_char(AL.DATE_ACTION, 'DD.MM.YY HH24:MI:SS') act_dat_value, "+ 
-                         "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO) usr_fio, "+ 
-                         "ARM.ID_SRV arm_id, ARM.FULL_ arm_name, ACT.FULL_ act_name "+ 
-                         "from ACTIONS_LOG_KNL_T al, "+ 
-                         "AC_IS_BSS_T arm, "+ 
-                         "ACTIONS_BSS_T act, "+ 
-                         "AC_USERS_KNL_T AU_FULL, "+ 
-                         "ISP_BSS_T cl_usr_full, "+
-                         "(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "+ 
-                         "from ISP_BSS_T cl_usr, "+ 
-                         "AC_USERS_KNL_T au "+ 
-                         "where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT "+ 
-                         "group by CL_usr.SIGN_OBJECT) t2 "+ 
-                         "where ACT.ID_SRV=AL.UP_ACTIONS "+ 
-                         "and ACT.UP_IS=ARM.ID_SRV "+ 
-                         "and AU_FULL.UP_SIGN_USER=t2.CL_USR_CODE(+) "+ 
-                         "and AU_FULL.ID_SRV=AL.UP_USERS "+ 
-                         "and CL_USR_FULL.ID_SRV(+)=t2.CL_USR_ID "+
-                         (au.getIsAccOrgManagerValue() ? "and au_full.UP_SIGN = "+au.getUpSign() : "" )+
-                         ") t1 "+
-                         "where arm_id in (:idsArm) "+
-                         (st!=null ? " and "+st :" ")+
-                         (orderQuery!=null ? orderQuery+", act_id desc " : " order by act_id desc "))
-                          .setFirstResult(firstRow)
-                          .setMaxResults(numberOfRows)
-                          .setParameter("idsArm", au.getAllowedSys())
-        		          .getResultList();
+					putWhereCondition("arm_id", "in", ":idsArm");
+					sQuerySql += getWhereAndClause()+" "+getOrderByClause();
+					query = entityManager.createNativeQuery(sQuerySql).setParameter("idsArm", au.getAllowedSys());
  	    		}else{
- 	    			
- 	                 lo = entityManager.createNativeQuery(
- 	                		 "select t1.act_id, t1.act_dat_value, t1.usr_fio, t1.arm_name, t1.act_name "+
- 	                         "from "+ 
- 	                         "(select AL.ID_SRV act_id, "+  
- 	                         "AL.DATE_ACTION act_dat, to_char(AL.DATE_ACTION, 'DD.MM.YY HH24:MI:SS') act_dat_value, "+ 
- 	                         "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO) usr_fio, "+ 
- 	                         "ARM.ID_SRV arm_id, ARM.FULL_ arm_name, ACT.FULL_ act_name "+ 
- 	                         "from ACTIONS_LOG_KNL_T al, "+ 
- 	                         "AC_IS_BSS_T arm, "+ 
- 	                         "ACTIONS_BSS_T act, "+ 
- 	                         "AC_USERS_KNL_T AU_FULL, "+ 
- 	                         "ISP_BSS_T cl_usr_full, "+
- 	                         "(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "+ 
- 	                         "from ISP_BSS_T cl_usr, "+ 
- 	                         "AC_USERS_KNL_T au "+ 
- 	                         "where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT "+ 
- 	                         "group by CL_usr.SIGN_OBJECT) t2 "+ 
- 	                         "where ACT.ID_SRV=AL.UP_ACTIONS "+ 
- 	                         "and ACT.UP_IS=ARM.ID_SRV "+ 
- 	                         "and AU_FULL.UP_SIGN_USER=t2.CL_USR_CODE(+) "+ 
- 	                         "and AU_FULL.ID_SRV=AL.UP_USERS "+ 
- 	                         "and CL_USR_FULL.ID_SRV(+)=t2.CL_USR_ID "+
- 	                        (au.getIsAccOrgManagerValue() ? "and au_full.UP_SIGN = "+au.getUpSign() : "" )+
- 	                         ") t1 "+
- 	                         (st!=null ? " where "+st :" ")+
- 	                         (orderQuery!=null ? orderQuery+", act_id desc " : " order by act_id desc "))
- 	                          .setFirstResult(firstRow)
- 	                          .setMaxResults(numberOfRows)
- 	        		          .getResultList();
- 	    			
+					sQuerySql += getWhereAndClause()+" "+getOrderByClause();
+					query = entityManager.createNativeQuery(sQuerySql); 	    			
  	    		}
-                 
-                 auditList = new ArrayList<BaseItem>();
-                 
+                 List<Object[]> lo = query.setFirstResult(firstRow).setMaxResults(numberOfRows).getResultList();  
+                 auditList = new ArrayList<BaseItem>();                 
                  for(Object[] objectArray :lo){
-                	 
                 	 try{ 
-                		 
-                      ActionsLogKnlT al = new ActionsLogKnlT();
-                      
+                      ActionsLogKnlT al = new ActionsLogKnlT();                      
                       al.setIdSrv(new Long(objectArray[0].toString()));
                       al.setDateActionValue(objectArray[1].toString());
                       al.setUserName(objectArray[2]!=null?objectArray[2].toString():"");
                       al.setIsName(objectArray[3]!=null?objectArray[3].toString():"");
                       al.setActName(objectArray[4]!=null?objectArray[4].toString():"");
-
-                      auditList.add(al);
-                      
+                      auditList.add(al);                      
               	   }catch(Exception e1){
               		   log.error("AFunc:invokeLocal:for:error:"+e1);
               	   }
                  }
-                 
-             log.info("AFunc:invokeLocal:list:02");
-  
+                 m_QueryStats = new long[]{1+firstRow, firstRow+auditList.size(), (auditCount==null)?0:auditCount};
+                 log.info("AFunc:invokeLocal:list:02");  
 			 } else if("count".equals(type)){
 				 log.info("AFuncList:count:01");
-				
-				 
-                 if(filterMap!=null){
-    	    		 Set<Map.Entry<String, String>> setFilterAFunc = filterMap.entrySet();
-    	              for (Map.Entry<String, String> me : setFilterAFunc) {
-    	            
-    	            	  //у нас act_dat_value переведена в строку уже в запросе
-    	   		       if(me.getKey().equals("arm_id")){ 
-          	        	 st=(st!=null?st+" and " :" ")+me.getKey()+" = "+me.getValue();
-          	         }else{
-    	        		//делаем фильтр на начало
-    	            	  st=(st!=null?st+" and " :"")+" lower("+me.getKey()+") like lower('"+me.getValue()+"%') ";
-    	        	  }
-    	              }
-    	    	  }
-                 log.info("AFunc:invokeLocal:count:filterQuery:"+st);
-              
-                 
-                 AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
-	    		 
-  	    		if(au.getAllowedSys()!=null){
-  	    			
-  	    		  auditCount = ((java.math.BigDecimal)entityManager.createNativeQuery(
-                		         "select count(*) "+
-                				 "from "+ 
-                                 "(select AL.ID_SRV act_id, "+  
-                                 "AL.DATE_ACTION act_dat, to_char(AL.DATE_ACTION, 'DD.MM.YY HH24:MI:SS') act_dat_value, "+ 
-                                 "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO) usr_fio, "+ 
-                                 "ARM.ID_SRV arm_id, ARM.FULL_ arm_name, ACT.FULL_ act_name "+ 
-                                 "from ACTIONS_LOG_KNL_T al, "+ 
-                                 "AC_IS_BSS_T arm, "+ 
-                                 "ACTIONS_BSS_T act, "+ 
-                                 "AC_USERS_KNL_T AU_FULL, "+ 
-                                 "ISP_BSS_T cl_usr_full, "+
-                                 "(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "+ 
-                                 "from ISP_BSS_T cl_usr, "+ 
-                                 "AC_USERS_KNL_T au "+ 
-                                 "where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT "+ 
-                                 "group by CL_usr.SIGN_OBJECT) t2 "+ 
-                                 "where ACT.ID_SRV=AL.UP_ACTIONS "+ 
-                                 "and ACT.UP_IS=ARM.ID_SRV "+ 
-                                 "and AU_FULL.UP_SIGN_USER=t2.CL_USR_CODE(+) "+ 
-                                 "and AU_FULL.ID_SRV=AL.UP_USERS "+ 
-                                 "and CL_USR_FULL.ID_SRV(+)=t2.CL_USR_ID "+
-                                 ") t1 "+
-                                 (au.getIsAccOrgManagerValue() ? "and au_full.UP_SIGN = "+au.getUpSign() : "" )+
-                                 "where arm_id in (:idsArm) "+
-                         (st!=null ? " and "+st :" "))
-                         .setParameter("idsArm", au.getAllowedSys())
-                         .getSingleResult()).longValue();
-  	    		}else{
-  	    			 auditCount = ((java.math.BigDecimal)entityManager.createNativeQuery(
-            		         "select count(*) "+
-            				 "from "+ 
-                             "(select AL.ID_SRV act_id, "+  
-                             "AL.DATE_ACTION act_dat, to_char(AL.DATE_ACTION, 'DD.MM.YY HH24:MI:SS') act_dat_value, "+ 
-                             "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO) usr_fio, "+ 
-                             "ARM.ID_SRV arm_id, ARM.FULL_ arm_name, ACT.FULL_ act_name "+ 
-                             "from ACTIONS_LOG_KNL_T al, "+ 
-                             "AC_IS_BSS_T arm, "+ 
-                             "ACTIONS_BSS_T act, "+ 
-                             "AC_USERS_KNL_T AU_FULL, "+ 
-                             "ISP_BSS_T cl_usr_full, "+
-                             "(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "+ 
-                             "from ISP_BSS_T cl_usr, "+ 
-                             "AC_USERS_KNL_T au "+ 
-                             "where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT "+ 
-                             "group by CL_usr.SIGN_OBJECT) t2 "+ 
-                             "where ACT.ID_SRV=AL.UP_ACTIONS "+ 
-                             "and ACT.UP_IS=ARM.ID_SRV "+ 
-                             "and AU_FULL.UP_SIGN_USER=t2.CL_USR_CODE(+) "+ 
-                             "and AU_FULL.ID_SRV=AL.UP_USERS "+ 
-                             "and CL_USR_FULL.ID_SRV(+)=t2.CL_USR_ID "+
-                             (au.getIsAccOrgManagerValue() ? "and au_full.UP_SIGN = "+au.getUpSign() : "" )+
-                             ") t1 "+
-                     (st!=null ? " where "+st :" "))
-                     .getSingleResult()).longValue();
-  	    		} 
-                 
-                 
-               log.info("AFunc:invokeLocal:count:02:"+auditCount);
+				 sQuerySql = "select count(*) from "+sQuerySqlT1; 				 
+  	    		 if(au.getAllowedSys()!=null){
+  	    			putWhereCondition("arm_id", "in", ":idsArm");
+  	    			sQuerySql += getWhereAndClause();
+  	    			query = entityManager.createNativeQuery(sQuerySql)
+                         .setParameter("idsArm", au.getAllowedSys());
+  	    		 } else{
+  	    			sQuerySql += getWhereAndClause();
+  	    			query = entityManager.createNativeQuery(sQuerySql);
+  	    		 } 
+    			 auditCount = ((java.math.BigDecimal)query.getSingleResult()).longValue();
+                 if(m_QueryStats!=null) {
+                	 m_QueryStats[2] = auditCount;
+                 }    			 
+                 log.info("AFunc:invokeLocal:count:02:"+auditCount);
            	 }  else if(type.equals("listReport")){
 				 log.info("AFunc:invokeLocal:listReport:01");
                  
@@ -428,9 +311,6 @@ import org.jboss.seam.log.Log;
 					    "нет запроса"
 						)
 						 .getResultList();
-				 
-                        
-	                    
 				 for(Object[] objectArray :lo){
 					 AuditFuncItem afi = new AuditFuncItem(
 							 objectArray[0]!=null?(String)objectArray[0]:"",
