@@ -7,7 +7,13 @@
 	xmlns:rich="http://richfaces.org/rich"
 	xmlns:s="http://jboss.com/products/seam/taglib"
 	xmlns:c="http://java.sun.com/jstl/core">
-
+	<script type="text/javascript">
+	//<![CDATA[     
+		//debugger;
+		$include("BAVIAC.TextInput", "#{request.contextPath}/jscss/TextInput.js", "{5890CB2D-138F-45F2-B6A8-2E485AF83F43}");
+		//var g_DateInputFrom, g_DateInputTo;
+	//]]>
+	</script>
 
 	<h3 class="ui-widget-header">Аудит действий пользователя</h3>
 
@@ -88,14 +94,61 @@
 												label="#{n.name}" itemValue="#{n.idArm}" />
 										</h:selectOneMenu>
 									</c:when>
+									<c:when test="#{field.itemFiltField=='act_dat_value'}">
+										<rich:calendar id="dateInputActDatFrom"
+											locale="RU"
+											showWeeksBar="false"
+											value="#{aFuncStateHolder.columnFilterValues['act_dat_value']}"
+											datePattern="dd.MM.yyyy"
+											immediate="true"
+											onchanged="invokeMyStart()"
+											enableManualInput="true"
+											inputSize="6" />
+										<rich:calendar id="dateInputActDatTo"
+											locale="RU"
+											showWeeksBar="false"
+											value="#{aFuncStateHolder.columnFilterValues['act_dat_value2']}"
+											datePattern="dd.MM.yyyy"
+											immediate="true"
+											onchanged="invokeMyStart()"	enableManualInput="true"									
+											inputSize="6"/>
+										<SCRIPT type="text/javascript">
+										//<![CDATA[
+										function calendarKeyPress(evt) {
+											  evt=evt || event || window.event;
+											  var kc=evt.keyCode;
+											  switch(kc) {
+											  case 8: case 46: case 13: // DELETE & ENTER 
+													invokeMyStart(); 
+													break;
+											  }         
+										}										
+										function initDateInput(richCalId) {
+											if($(richCalId))
+												with($load(BAVIAC.TextInput)) {
+													var cmpDateInput=$(richCalId).component;
+													var txtDateInput=$(cmpDateInput.INPUT_DATE_ID);
+													txtDateInput.onkeydown=calendarKeyPress;
+													var g_DateInput=new DateTextInput(txtDateInput);
+													cmpDateInput.params.labels.today="Сегодня";	
+												}
+											else {
+												setTimeout(Functional(initDateInput, richCalId), 1000 );
+											}
+										}											
+									   initDateInput("fAuditList:audit_dt:dateInputActDatFrom");
+									   initDateInput("fAuditList:audit_dt:dateInputActDatTo");
+									  //]]>
+									 </SCRIPT> 
+									</c:when>
 									<c:otherwise>
-
+										<!--<h:outputText value="#{field.itemFiltField}" />-->
 										<h:inputText
 											value="#{aFuncStateHolder.columnFilterValues[field.itemFiltField]}"
 											immediate="true" id="iaf#{index}"
 											onkeypress="if(event.keyCode==13){invokeMyStart();}" />
-									</c:otherwise>
-								</c:choose>
+									</c:otherwise>									
+									</c:choose>								
 							</h:panelGroup>
 						</f:facet>
 						<!--c:choose> 
@@ -116,7 +169,7 @@
 					<f:param name="remoteAudit" value="1" />
 				</rich:dataTable>
 				<a4j:jsFunction name="invokeMyStart"
-					reRender="outCenterCenterFooter,outCenterCenter"
+					reRender="outCenterCenterFooter,outCenterCenter,outCenterCenterQueryStatText"
 					oncomplete="setCaretToEnd(event);">
 					<f:param name="#{param['sessionId']!=null ? 'sessionId' : 'xxx1'}"
 						value="#{param['sessionId']}" />
@@ -139,10 +192,10 @@
 									<td width="40px;"><h:outputText value="Строк:" /></td>
 									<td width="50px;"><rich:inputNumberSpinner
 											value="#{profile.rowsCountAFunc}" inputSize="1" id="rowCId"
-											minValue="5" enableManualInput="false"
+											minValue="10" step="10" enableManualInput="false"
 											oninputkeypress="return false;" /></td>
 									<td width="40px;"><a4j:commandLink
-											reRender="outCenterCenter, outCenterCenterFooterDscr"
+											reRender="outCenterCenter, outCenterCenterFooterDscr,outCenterCenterQueryStatText"
 											ajaxSingle="true" process="rowCId">
 											<h:graphicImage url="/img/icons/Da.gif"
 												styleClass="img-in-link" height="14" width="14" />
@@ -154,7 +207,7 @@
 									<td><a4j:outputPanel id="outCenterCenterFooterDscr">
 											<rich:datascroller align="center" for="audit_dt" maxPages="5"
 												stepControls="hide" id="dt_dscr" immediate="true"
-												renderIfSinglePage="false" reRender="outCenterCenter"
+												renderIfSinglePage="false" reRender="outCenterCenter,outCenterCenterQueryStatText"
 												ajaxSingle="true" style="padding-right:30px;">
 												<f:param name="auditListCount"
 													value="#{aFuncDataModel.rowCount2}" />
@@ -178,7 +231,7 @@
               </td-->
 									<td><s:div rendered="#{param['sessionId']!=null}">
 											<a4j:commandButton style="width:60px;" ajaxSingle="true"
-												reRender="outCenterCenter, outCenterCenterFooter"
+												reRender="outCenterCenter, outCenterCenterFooter,outCenterCenterQueryStatText"
 												value="#{aFuncBean.selected ? 'Очистить' : 'Отметить'}"
 												action="#{aFuncManager.selectRecord}" styleClass="but_class">
 												<f:param name="sessionId" value="#{param['sessionId']}" />
@@ -187,6 +240,12 @@
 													value="#{param['auditListCount'] != null ? param['auditListCount'] : aFuncDataModel.rowCount}" />
 											</a4j:commandButton>
 										</s:div></td>
+										<!-- 17.02.15: AB: MANTIS-4954  -->
+										<td width="260px" align="right"><a4j:outputPanel id="outCenterCenterQueryStatText">
+											<h:outputText value="#{aFuncManager.queryStatText}" />
+											<!-- , #{param['auditListCount']}  -->
+											</a4j:outputPanel>
+										</td>										
 								</tr>
 							</table>
 
@@ -202,13 +261,18 @@
     jQuery(document).ready(
 	   function () {
 		   invokeRemoteAudit();
-	   }
+		   with($load(BAVIAC.TextInput)) { fixAppList("fAuditList:audit_dt:som2");  }
+		}
 	);
-	
+		   
     function setCaretToEnd(e) {
-
+		with($load(BAVIAC.TextInput)) { fixAppList("fAuditList:audit_dt:som2");  }
+		
         var id = (e.target ? e.target : e.srcElement).id;
-
+        if(id.indexOf("dateInput")!=-1) { 
+            // AB: don't touch TextDate controls to avoid their misbehavior 
+            return;
+        }
         var control = document.getElementById(id);
       
         if (control.createTextRange) {

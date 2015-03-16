@@ -229,12 +229,16 @@
 								<c:choose>
 									<c:when test="#{field.itemField=='crtDate'}">
 										<rich:calendar 
+											locale="RU"
+											showWeeksBar="false"
 											value="#{usrStateHolder.columnFilterValues[field.itemSortField]}"
 											datePattern="dd.MM.yyyy"
 											immediate="true"
 											onchanged="invokeMyStart()"																						
 											id="iaf3From" inputSize="6" enableManualInput="true"/>
 										<rich:calendar 
+											locale="RU"
+											showWeeksBar="false"
 											value="#{usrStateHolder.columnFilterValues['t1_crt_date2']}"
 											datePattern="dd.MM.yyyy"
 											immediate="true"
@@ -376,8 +380,8 @@
 									<td width="40px;"><h:outputText value="Строк:" /></td>
 									<td width="50px;"><rich:inputNumberSpinner
 											value="#{profile.rowsCountUsr}" inputSize="1" id="rowCId"
-											minValue="5" enableManualInput="false"
-											oninputkeypress="return false;" /></td>
+											minValue="10" enableManualInput="false"
+											oninputkeypress="return false;" step="10"/></td>
 									<td width="40px;"><a4j:commandLink
 											reRender="outCenterCenter,outCenterCenterFooterDscr,outCenterCenterQueryStatText"
 											ajaxSingle="true" process="rowCId">
