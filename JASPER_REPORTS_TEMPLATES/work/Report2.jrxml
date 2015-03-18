@@ -26,8 +26,8 @@ select  org_name, usr_fio, usr_pos, arm_name, act_name, act_dat_value, roles_nam
                          decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO) usr_fio, 
                           decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.POSITION, CL_USR_FULL.POSITION) usr_pos,  
                          ARM.ID_SRV arm_id, ARM.FULL_ arm_name, ACT.FULL_ act_name ,
-                         CL_ORG_FULL.FULL_ org_name, 
-                         alr.ROLES_NAMES ROLES_NAMES
+                         CL_ORG_FULL.FULL_ org_name, '' ROLES_NAMES
+                         -- alr.ROLES_NAMES ROLES_NAMES
                          from ACTIONS_LOG_KNL_T al, 
                           ACTIONS_LOG_ROLES_KNL_T alr,
                          AC_IS_BSS_T arm, 
@@ -43,7 +43,7 @@ select  org_name, usr_fio, usr_pos, arm_name, act_name, act_dat_value, roles_nam
                           (select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE 
                 from ISP_BSS_T cl_org, 
                 AC_USERS_KNL_T au 
-                where AU.UP_SIGN = CL_ORG.SIGN_OBJECT AND ($P{orgCode}='*' OR $P{orgCode}=CL_ORG.SIGN_OBJECT)
+                where (AU.UP_SIGN = CL_ORG.SIGN_OBJECT) AND ('$P!{orgCode}'='*' OR '$P!{orgCode}'=CL_ORG.SIGN_OBJECT)
                 group by CL_ORG.SIGN_OBJECT) t3,
 
                GROUP_SYSTEMS_KNL_T gr_sys,
