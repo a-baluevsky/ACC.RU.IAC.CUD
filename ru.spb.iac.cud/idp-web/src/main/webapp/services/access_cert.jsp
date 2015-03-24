@@ -8,7 +8,7 @@
 <head>
 <meta http-equiv="Content-Type"
 	content="text/html; charset=windows-1251">
-<title>Insert title here</title>
+<title>Войти по сертификату</title>
 <link rel="stylesheet" type="text/css"
 	href="<%=request.getContextPath()%>/stylesheet/theme.css" />
 <script language="javascript"
@@ -36,7 +36,24 @@ String RequestRequestURI  = (String) request.getSession().getAttribute(RequestRe
 
 %>
 
-<body style="padding: 10px;" onload ="setRemember('cudRememberCert');">
+<script language="javascript">
+	function initPage() {
+		setRemember('cudRememberCert');
+		tryAutoLogin();		
+	}
+	function tryAutoLogin() {
+		var lstBox=document.getElementById("ctl00_ContentPlaceHolder1_CertListBox");
+		if(lstBox && (1==lstBox.length)) {
+			var first=lstBox.item(0);
+			first.selected=true;
+			var SignBtn=document.getElementById("SignBtn");
+			if(SignBtn && confirm("Войти по выбранному сертификату:\n"+(first.innerText||first.text)))			
+				SignBtn.onclick();
+		}
+	}
+</script>
+
+<body style="padding: 10px;" onload ="initPage()">
 
 	<table width="100%" cellspacing="0" frame="void" border="0">
 		<tr height="40px">
