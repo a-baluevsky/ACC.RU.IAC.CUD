@@ -22,8 +22,7 @@
             styleClass="but_class"/-->
 
 					</td>
-					<td height="25px;"><h:outputText value="&amp;nbsp;"
-							escape="false" /></td>
+					<td height="25px;"><h:outputText value="&amp;nbsp;" escape="false" /></td>
 				</tr>
 			</table>
 		</a4j:outputPanel>
@@ -69,8 +68,8 @@
 									<f:param name="reportId" value="#{it.idSrv}" />
 								</a4j:commandButton></td>
 							<td><s:link
-									action="#{reportsManager.download_report('xls')}" target="#"
-									id="link_pdf" style="color:#BC2D31;white-space: nowrap;">
+									action="#{reportsManager.download_report('xlsx')}" target="#"
+									id="link_report" style="color:#BC2D31;white-space: nowrap;">
 									<h:outputText value="Скачать" />
 									<h:graphicImage url="/img/icons/icon_download.gif"
 										styleClass="img-in-link" />

@@ -1,22 +1,32 @@
 package iac.grn.infosweb.context.mc.audit.report;
 
+import iac.grn.infosweb.context.mc.audit.report.JasperReportService;
+import iac.grn.infosweb.context.mc.audit.report.JasperReportService.REPORTSTATUS;
 import iac.cud.infosweb.dataitems.BaseParamItem;
 import iac.cud.infosweb.dataitems.ReportDownloadItem;
 import iac.cud.infosweb.entity.AcUser;
 import iac.cud.infosweb.entity.ReportsBssT;
 
+import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.context.FacesContext;
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import mypackage.Configuration;
 
@@ -25,7 +35,9 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.log.Log;
+import org.xml.sax.SAXException;
 
 import ru.spb.iac.cud.reports.ReportsManagerLocal;
 
@@ -37,123 +49,174 @@ import ru.spb.iac.cud.reports.ReportsManagerLocal;
 	@In 
 	EntityManager entityManager;
 	
-	private List<ReportsBssT> reportsList;
-	private int runReportFlag; 
-	
-	private Date reportDate1; 
-	
-	private Date reportDate2; 
+	private List<ReportsBssT> reportsList;	
+	private Date reportDate1, reportDate2;
 	
 	//http://192.168.68.7:8080/jasperserver/rest_v2/reports/
 	private String jasperServer = Configuration.getJasperServer();
-	
 	private String jasperLogin = Configuration.getJasperLogin();
-	
 	private String jasperPassword = Configuration.getJasperPassword();
-	
 	private String reportUrl;
 	
+	//// ReportStatus: CodeString, StatusShortText, ActionText
+	public int getRunReportStatus(String reportId) {
+		JasperReportService reporter=getReporter(reportId);
+		return(reporter==null)?REPORTSTATUS.INITIAL.toInt():reporter.getReportStatus().toInt();
+	}
+	public String getReportStatusCodeString(String reportId)  {
+		JasperReportService reporter=getReporter(reportId);
+		return(reporter==null)?"":reporter.getReportStatus().toString();
+	}
+	public String getReportStatusShortText(String reportId)   {
+		JasperReportService reporter=getReporter(reportId);
+		return(reporter==null)?"":reporter.getReportStatus().toShortText();
+	}
+	public String getReportStatusActionText(String reportId)  {
+		JasperReportService reporter=getReporter(reportId);
+		return(reporter==null)?"":reporter.getReportStatus().toActionText();
+	}
+	
+	// HashMap: reportId -> reporter
+	private HashMap<String, JasperReportService> getReporters() throws Exception {
+		HashMap<String, JasperReportService> reporters = null;
+		try { 
+			reporters = (HashMap<String, JasperReportService>)( Component.getInstance("reporters",ScopeType.SESSION));
+		}
+		catch (Exception e) {
+			if(e instanceof org.jboss.seam.InstantiationException) {				
+				log.info(this.getClass().getName()+".getReporters: 'reporters' not initialized");
+			} else { 
+				throw e;
+			}
+		}
+		if(reporters==null) {
+			reporters = new HashMap<String, JasperReportService>(2);
+			Contexts.getSessionContext().set("reporters", reporters);				
+		}
+		return reporters;
+	}
+	
+	private Map<String,String> getExternalContextParameters() {
+		return FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+	}
+	
+	private String getTargetReportId() { return getExternalContextParameters().get("reportId");	}
+	
+    protected static String fmtRequestDate(Date dt) {
+    	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    	return df.format(dt);
+    }  
+    
+	private JasperReportService getReporter(String reportId) {
+		try {
+			HashMap<String, JasperReportService> reporters = getReporters();
+			return reporters.get(reportId);
+		} catch (Exception e) {
+			return null;
+		}		
+	}	
+	private JasperReportService findReporter() throws Exception {
+		return getReporters().get(getTargetReportId()); 
+	}
+	
 	public void create_report(){
-		  
 		log.info("reportsManager:create_report:01:"+this.reportDate1);
 		log.info("reportsManager:create_report:02:"+this.reportDate2);
-		
-		
 		try{
-			String reportId = FacesContext.getCurrentInstance().getExternalContext()
-			             .getRequestParameterMap()
-			             .get("reportId");
-			
-			if(reportId==null){
-				return;
+			String reportId = getTargetReportId();	
+			if(reportId!=null){
+				ReportsBssT rep = entityManager.find(ReportsBssT.class, new Long(reportId));
+				String reportCode=rep.getReportCode(), orgCode = getOrgCode();
+				HashMap<String, String> reportParameters = new HashMap<String, String>(5);
+				reportParameters.put("reportId", 	reportId);
+				reportParameters.put("reportPath",  rep.getReportPath());
+		        reportParameters.put("reportName",  rep.getReportName());    	
+		    	reportParameters.put("ReportDate1", fmtRequestDate(reportDate1));
+		    	reportParameters.put("ReportDate2", fmtRequestDate(reportDate2));	    	
+		        if(orgCode!=null) reportParameters.put("orgCode", orgCode);	        
+				JasperReportService reporter = new JasperReportService(reportCode, reportParameters);
+				HashMap<String, JasperReportService> reporters = getReporters();
+				reporters.put(reportId, reporter);
 			}
-			
-			ReportsBssT rep = entityManager.find(ReportsBssT.class, new Long(reportId));
-			
-			
-			
-			Context ctx = new InitialContext();
-			
-			ReportsManagerLocal aml = (ReportsManagerLocal) ctx.lookup("java:global/ReportsServices/ReportsManager!ru.spb.iac.cud.reports.ReportsManagerLocal");
-			
-			BaseParamItem paramMap = new BaseParamItem();
-			paramMap.put("reportCode", rep.getReportCode());
-			paramMap.put("reportDate1", reportDate1);
-			paramMap.put("reportDate2", reportDate2);
-			paramMap.put("reportName", rep.getReportName());
-			
-			this.runReportFlag = aml.create_report(paramMap);
-			
-			log.info("reportsManager:create_report:02");
-			
+			log.info("reportsManager:create_report:02");			
 		}catch(Exception e){
 			log.error("reportsManager:create_report:error:"+e);
-			
-		}
-			 	
+		}			 	
 	}
 
-	public void download_report(String reportType){
-		  
-		
-		try{
+	public int checkReportStatus() {
+		int curStatus=REPORTSTATUS.UNKNOWN.toInt();
+		try {
+			JasperReportService reporter = findReporter();
+			curStatus=((reporter==null)?REPORTSTATUS.INITIAL:reporter.checkReportStatus()).toInt();
+		}
+		catch (Exception e) {			
+			log.error(this.getClass().getName()+".checkReportStatus:error:"+e);
+		}
+		return curStatus;	
+	}
+	
+/*	
+	private void download_report_sync_original(String reportType) throws NamingException{
 			String reportCode = FacesContext.getCurrentInstance().getExternalContext()
 			             .getRequestParameterMap()
-			             .get("reportCode");
-			
-			OutputStream os = null;
-			 
+			             .get("reportCode");			  
 			Context ctx = new InitialContext();
-			
 			ReportsManagerLocal aml = (ReportsManagerLocal) ctx.lookup("java:global/ReportsServices/ReportsManager!ru.spb.iac.cud.reports.ReportsManagerLocal");
-			
 			ReportDownloadItem report = aml.download_report(reportCode, reportType);
-			
 			byte[] content = report.getContent();
 			int flagExec = 	report.getFlagExec();
 			
-			HttpServletResponse response = (HttpServletResponse)
-					  FacesContext.getCurrentInstance().getExternalContext().getResponse();
+			HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
 			
-			os = response.getOutputStream();
+			OutputStream os = response.getOutputStream();
 			
-			//1 - успешно
-			//0 - нет ресурса
-			//-1 - формирование ещё не завершено
-			//-2 - техническая ошибка
-			
+			//1 - успешно			
+			//0 - формирование ещё не завершено
+			//-1 - техническая ошибка (ошибка при формировании)			
+			//-2 - нет ресурса (нет репортера, не был запроса на формир. отчёта)
 			if(flagExec==1){
-			
-			  response.setHeader("Content-disposition", "attachment; filename="+reportCode+".xls");
-		      response.setContentType("application/xls");
-			 
-		      os.write(content);
-	          
-	      		
-			}else if(flagExec==0){
-				 response.setContentType("text/html; charset=utf-8");
-				 
+				byte[] content = ;
+				response.setHeader("Content-disposition", "attachment; filename="+reporter.getReportFileName());
+				response.setContentType(reporter.getReportContentType());			 
+				os.write(content);
+			}else if(flagExec==-2){
+				 response.setContentType("text/html; charset=utf-8");				 
 				 os.write("Запрашиваемый ресурс не найден!".getBytes("utf-8"));
 				 os.write("<br/><br/><a href=\"javascript:window.close();\" style=\"color:black;font-size:18px!important;\"> Закрыть </a>".getBytes("utf-8"));
 				         
-		   	}else if(flagExec==-1){
-				 response.setContentType("text/html; charset=utf-8");
-				 
+		   	}else if(flagExec==0){
+				 response.setContentType("text/html; charset=utf-8");				 
 				 os.write("Формирование отчёта ещё не завершено!".getBytes("utf-8"));
 				 os.write("<br/><br/><a href=\"javascript:window.close();\" style=\"color:black;font-size:18px!important;\"> Закрыть </a>".getBytes("utf-8"));
 				         
-		   	}else if(flagExec==-2){
-				 response.setContentType("text/html; charset=utf-8");
-				 
-				 os.write("При скачивании произошла ошибка !".getBytes("utf-8"));
+		   	}else //if(flagExec==-2)
+		   	{
+				 response.setContentType("text/html; charset=utf-8");				 
+				 os.write(("При скачивании произошла ошибка ! Код: "+String.valueOf(flagExec)).getBytes("utf-8"));
 				 os.write("<br/><br/><a href=\"javascript:window.close();\" style=\"color:black;font-size:18px!important;\"> Закрыть </a>".getBytes("utf-8"));
-				         
-		   	}
-			
-			  os.flush();
-	          os.close();
+		   	}			
+			  os.flush(); os.close();
 			  FacesContext.getCurrentInstance().responseComplete();
-		    
+	}
+*/
+	
+	public void download_report(){
+		try{
+			JasperReportService reporter = findReporter();
+			if(reporter==null) {
+				respondServletAlert("Запрашиваемый ресурс не найден!");
+			} else {
+				switch (reporter.checkReportStatus()) {
+					case ready: respondServletResult("Content-disposition", "attachment; filename="+reporter.getReportFileName(), 
+													 reporter.getReportContentType(), reporter.downloadReportFile());
+					break;
+					case queued:
+					case execution: respondServletAlert("Формирование отчёта ещё не завершено!"); break;
+				default: respondServletAlert("При скачивании произошла ошибка! ["+reporter.getReportStatus()+"]");
+					break;
+				}
+			}		    
 			log.info("reportsManager:download_report:03");
 		}catch(Exception e){
 			log.error("reportsManager:download_report:error:"+e);
@@ -161,59 +224,63 @@ import ru.spb.iac.cud.reports.ReportsManagerLocal;
 		}
 			 	
 	}
+	private static void respondServletAlert(String Message) throws UnsupportedEncodingException, IOException {
+		if(Message!=null) {
+			StringBuffer sb = new StringBuffer("<script>alert('"); //Er\'ror!
+			sb.append(Message.replaceAll("'", "\\\\'")).append("')</script>");			
+			respondServletResult(null,null,"text/html; charset=utf-8", sb.toString().getBytes("utf-8"));
+		}
+	}	
+//	private static void respondServletMessage(String Message) throws UnsupportedEncodingException, IOException {
+//		if(Message!=null) respondServletResult(null,null,"text/html; charset=utf-8",Message.getBytes("utf-8"));
+//	}
+	private static void respondServletResult(String Header1, String Header2, String ContentType, byte[] content) throws IOException {
+		FacesContext ctx=FacesContext.getCurrentInstance();
+		HttpServletResponse response = (HttpServletResponse) ctx.getExternalContext().getResponse();
+		OutputStream os = response.getOutputStream();
+		if(Header1!=null && Header2!=null) response.setHeader(Header1,Header2);
+		if(ContentType!=null) response.setContentType(ContentType);
+		os.write(content);
+		os.flush(); os.close();
+		ctx.responseComplete();
+	}
 	
-public void server_report(String reportType){
+	private String getOrgCode() {
+		String orgCode="*";
+		AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+		if(cau!=null) {
+			if(cau.getIsAccOrgManagerValue()) {		
+				orgCode = cau.getUpSign();
+			}
+		}
+		return orgCode;	
+	}
+	
+	public void server_report(String reportType){
 		  //сделали даты обязятельными!!!
-		
 		try{
-			
 			log.info("reportsManager:server_report:01");
-			
-			
-			String reportId = FacesContext.getCurrentInstance().getExternalContext()
-		             .getRequestParameterMap()
-		             .get("reportId");
-			
-			
+			String reportId = getExternalContextParameters().get("reportId");
 			ReportsBssT rep = entityManager.find(ReportsBssT.class, new Long(reportId));
-			
-			
 			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-
-		
-			if (reportDate1 != null && reportDate2 != null) {
-				
-				log.info("reportsManager:server_report:02");
-				
+			if (reportDate1 != null && reportDate2 != null) {				
+				log.info("reportsManager:server_report:02");				
 			} else if (reportDate1 != null) {
 				reportDate2 = new Date();
-
 			} else if (reportDate2 != null) {
-
-		
 				Calendar cln = Calendar.getInstance();
 				cln.set(Calendar.YEAR, 2000);
 				reportDate1 = cln.getTime();
-
-			} else {
-
-			
+			} else {			
 				Calendar cln = Calendar.getInstance();
 				cln.set(Calendar.YEAR, 2000);
 				reportDate1 = cln.getTime();
 				reportDate2 = new Date();
 			}
-			String orgCode="*";
-			AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
-			if(cau!=null) {
-				if(cau.getIsAccOrgManagerValue()) {		
-					orgCode = cau.getUpSign();
-				}
-			}			
 			reportUrl = jasperServer+rep.getReportPath()+"?"
 					+ "ReportDate1="+df.format(reportDate1)
 					+ "&ReportDate2="+df.format(reportDate2)
-//					+ "&orgCode="+orgCode
+					+ "&orgCode="+getOrgCode()
 					+ "&j_username="+jasperLogin
 					+ "&j_password="+jasperPassword;
 			log.info("reportsManager:server_report:02");
@@ -224,7 +291,6 @@ public void server_report(String reportType){
 			 	
 	}
 
-	
 	
 	public List<ReportsBssT> getReportsList() {
 		if(this.reportsList==null){
@@ -241,37 +307,24 @@ public void server_report(String reportType){
 		this.reportsList = reportsList;
 	}
 
-	public int getRunReportFlag() {
-		return runReportFlag;
+// volatile prop to link form data 
+	/*
+	public String	getReportId() {
+		String sReportId = (String)Component.getInstance("currentReportId",ScopeType.SESSION);
+		return (sReportId==null)?"":sReportId; 
 	}
+	public void 	setReportId(String newValue) 	{ 
+		Contexts.getSessionContext().set("currentReportId", newValue);
+	}
+	*/
+	public Date 	getReportDate1() 					{	return reportDate1;									}
+	public void 	setReportDate1(Date reportDate1) 	{	this.reportDate1 = reportDate1;						}
 
-	public void setRunReportFlag(int runReportFlag) {
-		this.runReportFlag = runReportFlag;
-	}
+	public Date 	getReportDate2() 					{	return reportDate2;									}
+	public void 	setReportDate2(Date reportDate2) 	{	this.reportDate2 = reportDate2;						}
 
-	public Date getReportDate1() {
-		return reportDate1;
-	}
-
-	public void setReportDate1(Date reportDate1) {
-		this.reportDate1 = reportDate1;
-	}
-
-	public Date getReportDate2() {
-		return reportDate2;
-	}
-
-	public void setReportDate2(Date reportDate2) {
-		this.reportDate2 = reportDate2;
-	}
-
-	public String getReportUrl() {
-		return reportUrl;
-	}
-
-	public void setReportUrl(String reportUrl) {
-		this.reportUrl = reportUrl;
-	}
+	public String 	getReportUrl() 						{	return reportUrl;									}
+	public void 	setReportUrl(String reportUrl) 		{	this.reportUrl = reportUrl;							}
 
 	
 			

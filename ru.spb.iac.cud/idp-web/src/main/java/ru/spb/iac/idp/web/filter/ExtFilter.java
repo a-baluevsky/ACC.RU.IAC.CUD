@@ -10,7 +10,9 @@ import java.net.URLEncoder;
 import java.security.KeyPair;
 import java.security.Principal;
 import java.security.PrivateKey;
+import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -105,6 +107,34 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 		LOGGER.debug("destroy");
 	}
 
+	protected int clearCookies(HttpServletResponse response, HttpServletRequest request, String[] cookNames) {
+		HashSet<String> clearNames = new HashSet<String>(Arrays.asList(cookNames));
+		int cntCleared=0;
+		Cookie[] cookies = request.getCookies();		
+		if (cookies != null) { 
+		    for (Cookie cookie : cookies) {
+		    	String sCurName=cookie.getName();
+		    	LOGGER.debug("clearCookies: "+sCurName);
+		    	if(clearNames.contains(sCurName)) {		    		
+		        	cookie.setValue(null);
+		        	cookie.setPath(request.getContextPath());
+		        	cookie.setMaxAge(0);
+		            response.addCookie(cookie);
+		            LOGGER.debug("... cleared!");
+		            ++cntCleared;
+		        }
+		    }
+		}
+		return cntCleared;		
+	}
+	protected Cookie addCookie(HttpServletResponse response, String ContextPath, String CookieName, String CookieValue) {
+		Cookie cook = new Cookie(CookieName, CookieValue);
+		cook.setMaxAge(100000000);
+		cook.setPath(ContextPath);									  
+		response.addCookie(cook);
+		return cook;
+	}
+	
 	public void doFilter(ServletRequest servletRequest,
 			ServletResponse servletResponse, FilterChain filterChain)
 			throws IOException, ServletException {
@@ -118,7 +148,6 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 
 		LOGGER.debug("doFilter:02_1:" + requestURI);
 
-		
 		if(requestURI.endsWith(loginEncrypt)){
 		//запрашивается сценарий с зашифрованным ответом	
 		 request.getSession().setAttribute(
@@ -126,7 +155,7 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 		}
 		
 		context_path = request.getContextPath();
-
+		
 		LOGGER.debug("doFilter:02_2:" + context_path);
 
 		int returnFlag = 0;
@@ -204,31 +233,20 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 						boolean rememberPass = false;
 						boolean rememberCert = false;
 						
-					for (Cookie cookie : cookies) {
-							
+					for (Cookie cookie : cookies) {							
 						 LOGGER.debug("doFilter:07_0001:" + cookie.getName());
-						 LOGGER.debug("doFilter:07_0002:" + cookie.getValue());
-						
+						 LOGGER.debug("doFilter:07_0002:" + cookie.getValue());						
 						if(cookieLogin.equals(cookie.getName())&&
 							   cookie.getValue()!=null&&
-							   !"".equals(cookie.getValue())){
-								
+							   !"".equals(cookie.getValue())){								
 								loginUser = cookie.getValue();
-							
-							
-							
-						} else if(cookieAuthType.equals(cookie.getName())){
-							
+						} else if(cookieAuthType.equals(cookie.getName())){							
 							authType = cookie.getValue();
-							
-							
-						}else if(cookieRememberPass.equals(cookie.getName())){
-							
+						}else if(cookieRememberPass.equals(cookie.getName())){							
 							if ("true".equals(cookie.getValue())){
 								rememberPass=true;
 							}
-						}else if(cookieRememberCert.equals(cookie.getName())){
-							
+						}else if(cookieRememberCert.equals(cookie.getName())){							
 							if ("true".equals(cookie.getValue())){
 								rememberCert=true;
 							}
@@ -578,34 +596,16 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 								getLoginLogout(request2),
 								getCodeSystem(request,
 										(String) request.getMethod()));
-
-						Cookie[] cookies = request.getCookies();	
 						
-						if (cookies != null) { 
-						    for (Cookie cookie : cookies) {
-						    	
-						    	LOGGER.debug("doFilter:019_002:"+cookie.getName());
-						    	
-						    	if (cookieLogin.equals(cookie.getName())||
-						        	cookieAuthType.equals(cookie.getName())) {
-						        	
-						        	LOGGER.debug("doFilter:019_002+");
-						        	
-						        	cookie.setValue(null);
-						        	cookie.setPath(request.getContextPath());
-						        	cookie.setMaxAge(0);
-						        	
-						            response.addCookie(cookie);
-						            
-						           }
-						    }
-						}
+							if(clearCookies(response, request, new String[]{cookieLogin, cookieAuthType})>0) {
+								LOGGER.debug("doFilter:019_002+");
+							}
 						
 						  LOGGER.debug("doFilter:019_003");
 						  
 					} else {
 						// /login
-
+						
 						// !!!
 						// перед обработкой - сохранение запроса и метода
 						// обязательно!!!
@@ -623,7 +623,7 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 							LOGGER.debug("doFilter:019_01");
 
 							// важно!!!
-							resetSessionData(request, request2);
+							resetSessionData(request, request2, response);
 
 							request.getSession()
 									.setAttribute("incoming_http_method",
@@ -639,7 +639,7 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 							principal2 = request2.getSessionInternal(false)
 									.getPrincipal();
 						}
-
+						
 						if (getIsPassive(request)) {
 							// пассивная аутентификация
 
@@ -666,6 +666,7 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 								String secret_key_key = data[4];
 								String initialization_vector_key = data[5];
 								String tokenId = data[6];
+								boolean rememberPass = "1".equals(data[7])?true:Boolean.parseBoolean(data[7]); 
 								
 								LOGGER.debug("doFilter:019_2_1:" + login);
 								LOGGER.debug("doFilter:019_2_2:" + password);
@@ -679,6 +680,7 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 										+ initialization_vector_key);
 								LOGGER.debug("doFilter:019_2_7:"
 										+ tokenId);
+								LOGGER.debug("remember="+rememberPass);
 								
 								if ((login != null || (login_encrypt_key != null
 										&& secret_key_key != null && initialization_vector_key != null))
@@ -757,9 +759,17 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 												"authenticate", "success");
 										request.getSession().setAttribute(
 												"login_user", loginUser);
-										response.sendRedirect(request
-												.getContextPath() + "/");
+										
+										if(rememberPass) {
+											LOGGER.debug("doFilter:030: SETTING cookie for RememberPass ...");
+											addCookie(response, context_path, cookieRememberPass, "true");
+											addCookie(response, context_path, cookieAuthType, getAuthTypeForCookie("urn:oasis:names:tc:SAML:2.0:ac:classes:password"));
+											addCookie(response, context_path, cookieLogin, loginUser);
+										}
 
+									  response.sendRedirect(request
+												.getContextPath() + "/");									  
+									  
 									} else {
 										request.getSession().setAttribute(
 												"is_passive_failed", "true");
@@ -795,7 +805,7 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 									}
 									
 									if ("true".equals(success)) {
-
+										
 										request.getSession()
 												.setAttribute("cud_auth_type",
 														authTypeX509.equals(userAuthInfo[1])?
@@ -807,6 +817,7 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 												"login_user", loginUser);
 										response.sendRedirect(request
 												.getContextPath() + "/");
+										
 
 									} else {
 										request.getSession().setAttribute(
@@ -1410,12 +1421,15 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 	private String[] getExtPassiveAuthData(HttpServletRequest request) {
 
 		LOGGER.debug("getExtPassiveAuthData:01");
+		String[] asTknNames = new String[]{
+				"login", 	"password", 	"elogin", 	"epassword", 
+				"skey", 	"ivector", 		"tokenId", 	"remember"};
 
 		// !!!
 		// Обязательно тип Boolean
 		// в AuthnRequestType используется Boolean
 		// и если в запросе нет параметра, то он = null
-		String[] result = new String[7];
+		String[] result = new String[asTknNames.length];
 		URI result_uri = null;
 		try {
 			org.apache.catalina.connector.Request request2 = null;
@@ -1450,30 +1464,13 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 				String result_st = result_uri.toString();
 
 				LOGGER.debug("getExtPassiveAuthData:02:" + result_st);
-
-				result[0] = WebUtil.getTokenValue(result_st, "login");
-				result[1] = WebUtil.getTokenValue(result_st, "password");
-				result[2] = WebUtil.getTokenValue(result_st, "elogin");
-				result[3] = WebUtil.getTokenValue(result_st, "epassword");
-				result[4] = WebUtil.getTokenValue(result_st, "skey");
-				result[5] = WebUtil.getTokenValue(result_st, "ivector");
-
-				result[6] = WebUtil.getTokenValue(result_st, "tokenId");
-				
-				result[0] = result[0] != null ? URLDecoder.decode(result[0],
-						"UTF-8") : null;
-				result[1] = result[1] != null ? URLDecoder.decode(result[1],
-						"UTF-8") : null;
-				result[2] = result[2] != null ? URLDecoder.decode(result[2],
-						"UTF-8") : null;
-				result[3] = result[3] != null ? URLDecoder.decode(result[3],
-						"UTF-8") : null;
-				result[4] = result[4] != null ? URLDecoder.decode(result[4],
-						"UTF-8") : null;
-				result[5] = result[5] != null ? URLDecoder.decode(result[5],
-						"UTF-8") : null;
-				result[6] = result[6] != null ? URLDecoder.decode(result[6],
-						"UTF-8") : null;
+				for(int i=0; i<result.length; ++i) {
+					String s = WebUtil.getTokenValue(result_st, asTknNames[i]);
+					if(s!=null) {
+						s =  URLDecoder.decode(s,"UTF-8");
+					}
+					result[i]=s;
+				}				
 			}
 
 		} catch (Exception e) {
@@ -1484,12 +1481,12 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 	}
 
 	private void resetSessionData(HttpServletRequest request,
-			org.apache.catalina.connector.Request request2) throws Exception {
-
+								  org.apache.catalina.connector.Request request2, 
+								  HttpServletResponse response) throws Exception {
 		LOGGER.debug("resetSessionData:01");
-
 		try {
-
+			clearCookies(response, request, new String[]{
+					cookieLogin, cookieAuthType, cookieRememberPass});
 			// очистка всех возможных установленных аттрибутов
 			request.getSession().removeAttribute("password_cud_redirect");
 			request.getSession().removeAttribute("authenticate");

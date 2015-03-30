@@ -8,12 +8,6 @@
 	xmlns:s="http://jboss.com/products/seam/taglib"
 	xmlns:c="http://java.sun.com/jstl/core">
 
-	<script type="text/javascript">
-	//<![CDATA[     
-		$include("BAVIAC.TextInput", "#{request.contextPath}/jscss/TextInput.js", "{5890CB2D-138F-45F2-B6A8-2E485AF83F43}");
-	//]]>
-	</script>
-	
 	<h3 class="ui-widget-header">Список Ролей</h3>
 
 	<div class="ui-widget-header" style="background: #E6E6E6;">
@@ -119,7 +113,7 @@
 									<c:when test="#{field.itemField=='armName'}">
 										<h:selectOneMenu
 											value="#{rolStateHolder.columnFilterValues[field.itemFiltField]}"
-											id="som#{index}" style="width:100px;"
+											id="som#{index}" style="width:200px;"
 											onchange="invokeMyStart();">
 											<f:selectItem itemLabel="Все" itemValue="#-1#" />
 											<s:selectItems value="#{armManager.listArm}" var="n"
@@ -238,13 +232,10 @@
     jQuery(document).ready(
 	   function () {
 		   invokeRemoteAudit();
-		   with($load(BAVIAC.TextInput)) {   fixAppList("fAuditList:audit_dt:som3");  }
 	   }
 	);
 
     function setCaretToEnd(e) {
-		with($load(BAVIAC.TextInput)) {   fixAppList("fAuditList:audit_dt:som3");  }
-		
         var id = (e.target ? e.target : e.srcElement).id;
 
         var control = document.getElementById(id);

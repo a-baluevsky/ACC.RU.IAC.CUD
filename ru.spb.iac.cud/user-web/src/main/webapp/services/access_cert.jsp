@@ -7,7 +7,7 @@
 <head>
 <meta http-equiv="Content-Type"
 	content="text/html; charset=windows-1251">
-<title>Insert title here</title>
+<title>Insert title here - user-web/src/main/webapp/services/access_cert.jsp</title>
 <link rel="stylesheet" type="text/css"
 	href="<%=request.getContextPath()%>/stylesheet/theme.css" />
 <script language="javascript"

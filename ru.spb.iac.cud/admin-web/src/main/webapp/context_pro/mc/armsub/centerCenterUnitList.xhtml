@@ -7,11 +7,6 @@
 	xmlns:rich="http://richfaces.org/rich"
 	xmlns:s="http://jboss.com/products/seam/taglib"
 	xmlns:c="http://java.sun.com/jstl/core">
-	<script type="text/javascript">
-	//<![CDATA[     
-		$include("BAVIAC.TextInput", "#{request.contextPath}/jscss/TextInput.js", "{5890CB2D-138F-45F2-B6A8-2E485AF83F43}");
-	//]]>
-	</script>
 
 	<h3 class="ui-widget-header">Справочник информационных систем</h3>
 
@@ -116,7 +111,8 @@
 										<h:selectOneMenu
 											value="#{armSubStateHolder.columnFilterValues[field.itemFiltField]}"
 											id="som#{index}" style="width:100px;"
-											onchange="invokeMyStart();">
+											onchange="invokeMyStart();"
+											style="width: 200px">											
 											<f:selectItem itemLabel="Все" itemValue="#-1#" />
 											<s:selectItems value="#{armManager.listArm}" var="n"
 												label="#{n.name}" itemValue="#{n.idArm}" />
@@ -230,11 +226,9 @@
     jQuery(document).ready(
 	   function () {
 		   invokeRemoteAudit();
-		   with($load(BAVIAC.TextInput)) { fixAppList("fAuditList:audit_dt:som2");  }
 	   }
 	);
     function setCaretToEnd(e) {
-		with($load(BAVIAC.TextInput)) { fixAppList("fAuditList:audit_dt:som2");  }
         var id = (e.target ? e.target : e.srcElement).id;
 
         var control = document.getElementById(id);

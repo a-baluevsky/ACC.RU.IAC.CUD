@@ -1,0 +1,261 @@
+<?xml version='1.0' encoding='windows-1251' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core">
+	<script type="text/javascript">
+	//<![CDATA[     
+		$include("BAVIAC.TextInput", "#{request.contextPath}/jscss/TextInput.js", "{5890CB2D-138F-45F2-B6A8-2E485AF83F43}");
+	    function calendarKeyPress(evt) {
+	          evt=evt || event || window.event;
+	          var kc=evt.keyCode;
+	          switch(kc) {
+	          case 13:
+		          	//invokeMyStart(); 
+					alert("!");
+		          	evt.cancelBubble=true; 
+		          	break;
+	          }         
+	    }		
+ 		function initCalendar2(objCalFrom, objCalTo) {
+			//if(confirm("debug?")) debugger;
+			if( objCalFrom && objCalTo &&
+			   (objCalTo.params.labels.today!="Сегодня"))
+			{			
+				with($load(BAVIAC.TextInput)) {
+					var g_DateInputFrom, g_DateInputTo;
+					var txtCalFrom	= $(objCalFrom.INPUT_DATE_ID);
+					var txtCalTo	= $(objCalTo.INPUT_DATE_ID);
+					//txtCalFrom.onkeydown=txtCalTo.onkeydown=calendarKeyPress;
+					g_DateInputFrom = new DateTextInput(txtCalFrom);			
+					g_DateInputTo = new DateTextInput(txtCalTo);
+					var l1=objCalFrom.params.labels, l2=objCalTo.params.labels;
+					l1.apply=l2.apply="Применить";
+					l1.cancel=l2.cancel="Отмена";
+					l1.clean=l2.clean="Очистить";
+					l1.close=l2.close="x";
+					l1.ok=l2.ok="OK";
+					l1.today=l2.today="Сегодня";
+				}
+			}
+		}
+		
+		function testAction(oLink) {
+			//alert("hi! "+oLink.tagName+" "+oLink.id+" "+oLink.getAtt(style));  //.class
+			//alert();---------------------------
+			//j_id11:j_id13:0:link_report
+			//event.cancelBubble=true;
+			return true;
+		}
+		function getIdFromStyle(oLink) {
+			var id;
+			var st=oLink.getAttribute("style");
+			if(typeof(st)=="object") {
+				id = st.getAttribute("id");
+			} else {
+				var a=re.exec(/id:\s*(\S+)/);
+				if(a) {	id = a[1];	}
+			}	
+			return id;
+		}
+		function notifyReportStatus(statusText,notifyFlags) {
+			if(notifyFlags==null) notifyFlags=-1;
+			switch(notifyFlags) {
+				case -1:	alert(statusText); break;
+				case 0: reportStatusShortText0.innerHTML=statusText; break;
+			}
+		}
+		function displayReportStatusMessage(statusCode,statusMessage) {
+			alert(statusMessage+'\n'+" ["+statusCode+"]");
+		}
+		function navIfrmPage(URL)    { 
+			try {        
+				ifmReportDownloader.document.location = URL; 
+			} catch(e) {
+				dvContainerReportDownloader.innerHTML='<iframe id="ifmReportDownloader" name="ifmReportDownloader" frameborder="no" height="100%"'+
+				' hidefocus="hideFocus" noresize="noResize" scrolling="no" unselectable="on" width="100%" ></iframe>';
+				navMsgPage(URL);
+			}
+		}		
+	//]]>
+	</script>
+
+	<h3 class="ui-widget-header">Отчёты</h3>
+
+	<div class="ui-widget-header" style="background: #E6E6E6;">
+		<a4j:outputPanel id="outCenterCenterHeader">
+			<table>
+				<tr>
+					<td>
+						<!--a4j:commandButton style="width:100px;"
+            value="Архивирование" 
+            onclick="#{rich:component('CTClearDate')}.show();return false; " 
+            styleClass="but_class"/-->
+
+					</td>
+					<td height="25px;"><h:outputText value="&amp;nbsp;"
+							escape="false" /></td>
+				</tr>
+			</table>
+		</a4j:outputPanel>
+	</div>
+
+	<div class="ui-layout-content">
+		<a4j:outputPanel id="outCenterCenter">
+
+			<h:form>
+
+				<table style="width: 99%; margin: 10px;" border="1">
+
+					<a4j:repeat value="#{reportsManager.reportsList}" var="it"
+						rowKeyVar="rkv">
+
+						<tr>
+							<td width="10px;" style="padding-bottom: 5px; padding-top: 10px;"
+								valign="top"><h:outputText value="#{rkv+1}. " /></td>							
+							<td width="300px" colspan="3" style="padding-bottom: 5px; padding-top: 10px;"
+								valign="top"><h:outputText value="#{it.reportName}" /></td>								
+						</tr>
+						<tr>
+							<td width="10px;"> </td>
+							<td style="width:150px;"><a4j:commandButton action="0"
+									style="width:90px;margin-left:10px;" value="Сформировать"
+									reRender="outMPReport"
+									oncomplete="#{rich:component('CBReport')}.show();"
+									styleClass="but_class" rendered="#{it.dateRequired==1}">
+									<f:param name="sessionId" value="#{param['sessionId']}" />
+									<f:param name="remoteAudit" value="reportCreateOpenFact" />
+									<f:param name="reportId" value="#{it.idSrv}" />
+									<f:param name="onCreate" value="1" />
+								</a4j:commandButton> <a4j:commandButton style="width:90px;" ajaxSingle="true"
+									value="Сформировать2"
+									action="#{reportsManager.create_report()}"
+									styleClass="but_class"
+									oncomplete="notifyReportStatus('#{reportsManager.getReportStatusShortText(it.idSrv)}')"
+									rendered="#{param['remoteAudit']=='reportCreateFact' or it.dateRequired==0}">
+									<f:param name="sessionId" value="#{param['sessionId']}" />
+									<f:param name="remoteAudit" value="reportCreateFact" />
+									<f:param name="reportId" value="#{it.idSrv}" />
+								</a4j:commandButton>
+								</td>
+							<td align="left" width="200px"><div id="reportStatusShortText#{rkv}"></div><h:outputText value="#{reportsManager.getReportStatusShortText(it.idSrv)}" />
+								<a4j:commandButton style="width:90px;" ajaxSingle="true"
+									value="Проверить статус"
+									action="#{reportsManager.checkReportStatus()}"
+									styleClass="but_class"
+									oncomplete="notifyReportStatus('#{reportsManager.getReportStatusShortText(it.idSrv)}')"
+									rendered="true" >
+									<!--rendered="#{param['remoteAudit']=='reportCreateFact' or it.dateRequired==0}" -->
+									<f:param name="sessionId" value="#{param['sessionId']}" />
+									<f:param name="remoteAudit" value="reportCreateFact" />
+									<f:param name="reportId" value="#{it.idSrv}" />
+								</a4j:commandButton>
+							</td>	
+							<td align="left"><s:link
+									action="#{reportsManager.download_report()}" target="ifmReportDownloader"
+									id="link_report" style="color:#BC2D31;white-space: nowrap;class:link_report#{rkv}"
+									onclick="testAction(this);"
+									>
+									<h:outputText value="Скачать" />
+									<h:graphicImage url="/img/icons/icon_download.gif"
+										styleClass="img-in-link" />
+
+									<f:param name="sessionId" 	value="#{param['sessionId']}" />
+									<f:param name="remoteAudit" value="reportDownloadFact" />
+									<f:param name="reportCode" 	value="#{it.reportCode}" />
+									<f:param name="reportId" 	value="#{it.idSrv}" />
+								</s:link>
+								<div id="dvContainerReportDownloader" style="position:absolute; left:653px; top: 418px; width: 300px; height: 186px; visibility:hidden">
+									<iframe id="ifmReportDownloader" name="ifmReportDownloader" frameborder="no" height="100%" hidefocus="hideFocus" noresize="noResize" scrolling="no" unselectable="on" width="100%" ></iframe>
+								</div>								
+							</td>
+						</tr>
+
+					</a4j:repeat>
+
+				</table>
+
+			</h:form>
+
+		</a4j:outputPanel>
+	</div>
+	<a4j:outputPanel id="outMPReport">
+		<rich:modalPanel id="CBReport" trimOverlayedElements="false"
+			width="250" height="150" onbeforeshow="initCalendar2(#{rich:component('report_date1')}, #{rich:component('report_date2')})"
+			rendered="#{param['onCreate']!=null}" >
+			<f:facet name="header">
+				<h:panelGroup>
+					<h:outputText value="Отчёт" />
+				</h:panelGroup>
+			</f:facet>
+			<f:facet name="controls">
+				<h:panelGroup>
+					<h:graphicImage onclick="#{rich:component('CBReport')}.hide();"
+						value="/img/icons/close.gif" />
+				</h:panelGroup>
+			</f:facet>
+			<h:form id="CBfReport" target="#">
+				<table>
+					<tr>
+						<td colspan="3" height="25px"><h:outputText
+								value="Период отчёта:" /></td>
+					</tr>
+					<tr>
+						<td width="20px" />
+						<td width="20px" height="25px"><h:outputText value="С:" /></td>
+						<td ><rich:calendar id="report_date1" value="#{reportsManager.reportDate1}"
+								datePattern="dd.MM.yyyy" locale="RU"
+								showWeeksBar="false" inputSize="16" enableManualInput="true" /></td>
+					</tr>
+					<tr>
+						<td width="20px" />
+						<td width="20px" height="25px"><h:outputText value="По:" /></td>
+						<td ><rich:calendar id="report_date2" value="#{reportsManager.reportDate2}"
+								datePattern="dd.MM.yyyy" locale="RU"
+								showWeeksBar="false" inputSize="16" enableManualInput="true"/></td>
+					</tr>
+				</table>
+				<div
+					style="white-space: nowrap; text-align: center; margin-top: 5px;">
+					<s:button
+						onclick="#{rich:component('CBReport')}.hide();return false;"
+						value="Отмена" />
+					<!--s:link view="/context_pro/mc/audit/sys/reportWord.xhtml"
+                action="#{aSysManager.forViewWord('')}"
+                target="#" id="link_word" onmouseup="link_option(this);"
+                onclick="if(check_report_date()){return false;}else{#{rich:component('CBReport')}.hide();}"
+                styleClass="but_class" >
+              <h:outputText value=" Отчёт" escape="false"/> 
+              <f:param name="remoteAudit" value="protBeanWord"/>
+              <f:param name="modelType" value="#{modelType}"/>
+           </s:link-->
+					<a4j:commandButton style="width:90px;" value="Сформировать"
+						action="#{reportsManager.create_report()}" styleClass="but_class"
+						oncomplete="displayReportStatusMessage('#{reportsManager.getReportStatusCodeString(param['reportId'])}', '#{reportsManager.getReportStatusActionText(param['reportId'])}'); 
+                               #{rich:component('CBReport')}.hide();">
+						<f:param name="sessionId" value="#{param['sessionId']}" />
+						<f:param name="remoteAudit" value="reportCreateFact" />
+						<f:param name="reportId" value="#{param['reportId']}" />
+						<f:param name="onCreate" value="1" />
+					</a4j:commandButton>
+				</div>
+			</h:form>
+		</rich:modalPanel>
+
+	</a4j:outputPanel>
+	<SCRIPT type="text/javascript">
+ //<![CDATA[
+    jQuery(document).ready(
+	   function () {
+		   //invokeRemoteAudit();	   
+	   }
+	);
+
+    
+  //]]>
+ </SCRIPT>
+</ui:composition>
