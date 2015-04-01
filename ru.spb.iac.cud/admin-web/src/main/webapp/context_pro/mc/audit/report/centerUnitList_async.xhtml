@@ -44,13 +44,7 @@
 			}
 		}
 		
-		function testAction(oLink) {
-			//alert("hi! "+oLink.tagName+" "+oLink.id+" "+oLink.getAtt(style));  //.class
-			//alert();---------------------------
-			//j_id11:j_id13:0:link_report
-			//event.cancelBubble=true;
-			return true;
-		}
+	
 		function getIdFromStyle(oLink) {
 			var id;
 			var st=oLink.getAttribute("style");
@@ -62,10 +56,24 @@
 			}	
 			return id;
 		}
+		//var arrDldClicks = []; // auto-click only single time!
+		function onUpdateReportStatus(repId,repStat,link_report) {
+			//if(repStat=="ready" && !(arrDldClicks[repId]||false)) {				
+			//	if(link_report.click) link_report.click();
+			//	arrDldClicks[repId] = true;
+			//} else if(repStat=="execution") {
+			//	arrDldClicks[repId] = false;
+			//}
+		}
+		function link_report_onClick(oLink) {
+			//alert("link_report_onClick: "+oLink.id);
+			return true;
+		}		
 		function notifyReportStatus(statusText,notifyFlags) {
 			if(notifyFlags==null) notifyFlags=-1;
+			if(statusText=="") statusText="Команды создать отчёт не было!";
 			switch(notifyFlags) {
-				case -1:	alert(statusText); break;
+				case -1: 	alert(statusText); break;
 				case 0: reportStatusShortText0.innerHTML=statusText; break;
 			}
 		}
@@ -85,7 +93,6 @@
 	</script>
 
 	<h3 class="ui-widget-header">Отчёты</h3>
-
 	<div class="ui-widget-header" style="background: #E6E6E6;">
 		<a4j:outputPanel id="outCenterCenterHeader">
 			<table>
@@ -106,23 +113,19 @@
 
 	<div class="ui-layout-content">
 		<a4j:outputPanel id="outCenterCenter">
-
 			<h:form>
-
-				<table style="width: 99%; margin: 10px;" border="1">
-
-					<a4j:repeat value="#{reportsManager.reportsList}" var="it"
-						rowKeyVar="rkv">
-
+				<table style="width: 96%; margin: 10px;" border="0">
+					<a4j:repeat value="#{reportsManager.reportsList}" var="it" rowKeyVar="rkv">
 						<tr>
 							<td width="10px;" style="padding-bottom: 5px; padding-top: 10px;"
 								valign="top"><h:outputText value="#{rkv+1}. " /></td>							
-							<td width="300px" colspan="3" style="padding-bottom: 5px; padding-top: 10px;"
+							<td width="300px" colspan="2" style="padding-bottom: 5px; padding-top: 10px;"
 								valign="top"><h:outputText value="#{it.reportName}" /></td>								
-						</tr>
+						</tr>					
 						<tr>
-							<td width="10px;"> </td>
-							<td style="width:150px;"><a4j:commandButton action="0"
+							<td width="10px;"><h:outputText value="&amp;nbsp;" escape="false" /></td>
+							<td style="width:150px;">
+								<a4j:commandButton action="0"
 									style="width:90px;margin-left:10px;" value="Сформировать"
 									reRender="outMPReport"
 									oncomplete="#{rich:component('CBReport')}.show();"
@@ -131,58 +134,69 @@
 									<f:param name="remoteAudit" value="reportCreateOpenFact" />
 									<f:param name="reportId" value="#{it.idSrv}" />
 									<f:param name="onCreate" value="1" />
-								</a4j:commandButton> <a4j:commandButton style="width:90px;" ajaxSingle="true"
-									value="Сформировать2"
-									action="#{reportsManager.create_report()}"
-									styleClass="but_class"
-									oncomplete="notifyReportStatus('#{reportsManager.getReportStatusShortText(it.idSrv)}')"
-									rendered="#{param['remoteAudit']=='reportCreateFact' or it.dateRequired==0}">
-									<f:param name="sessionId" value="#{param['sessionId']}" />
-									<f:param name="remoteAudit" value="reportCreateFact" />
-									<f:param name="reportId" value="#{it.idSrv}" />
 								</a4j:commandButton>
-								</td>
-							<td align="left" width="200px"><div id="reportStatusShortText#{rkv}"></div><h:outputText value="#{reportsManager.getReportStatusShortText(it.idSrv)}" />
+							</td>
+							
+							<td align="left" width="400px"><div id="reportStatusShortText#{rkv}"></div>							
+								<h:panelGrid columns="3" width="400" id="reportFile">
+									<h:outputText id="reportStatusShortText" value="#{reportsManager.getReportStatusShortText(it.idSrv)}" />
+									<!-- h:outputText id="reportStatusCodeString" value="#{reportsManager.getReportStatusCodeString(it.idSrv)}" / -->
+									<s:link
+										action="#{reportsManager.download_report()}" target="ifmReportDownloader"
+										id="link_report" style="color:#BC2D31;white-space: nowrap;class:link_report#{rkv}"
+										onclick="link_report_onClick(this);" rendered="#{reportsManager.getReportStatusCodeString(it.idSrv)=='ready'}"
+									>
+										<h:outputText value="Скачать" />
+										<h:graphicImage url="/img/icons/icon_download.gif"
+											styleClass="img-in-link" />
+										<f:param name="sessionId" 	value="#{param['sessionId']}" />
+										<f:param name="remoteAudit" value="reportDownloadFact" />
+										<f:param name="reportCode" 	value="#{it.reportCode}" />
+										<f:param name="reportId" 	value="#{it.idSrv}" />
+									</s:link>										
+								</h:panelGrid>
+							
+							</td>
+							<td align="left"><!-- -->
+								<a4j:poll id="pollSingleReportReady"  interval="1000"
+									action="#{reportsManager.checkReportStatus()}"
+									oncomplete="onUpdateReportStatus('#{it.idSrv}', '#{reportsManager.getReportStatusCodeString(it.idSrv)}', #{rich:element('link_report')})"
+									reRender="pollSingleReportReady,reportFile"
+									enabled="#{reportsManager.checkReportRunning(it.idSrv) or ((param['lastRun']||false))}"
+								>
+									<f:param name="reportId" 		value="#{it.idSrv}" />
+									<f:param name="lastRun" 		value="#{reportsManager.checkReportRunning(it.idSrv)}" />
+									<f:param name="lastRepStatCode" value="#{reportsManager.getReportStatusCodeString(it.idSrv)}" />
+								</a4j:poll>								
 								<a4j:commandButton style="width:90px;" ajaxSingle="true"
-									value="Проверить статус"
+									value="Узнать статус"
 									action="#{reportsManager.checkReportStatus()}"
 									styleClass="but_class"
 									oncomplete="notifyReportStatus('#{reportsManager.getReportStatusShortText(it.idSrv)}')"
-									rendered="true" >
+									reRender="reportFile,pollSingleReportReady"
+									rendered="false" >
 									<!--rendered="#{param['remoteAudit']=='reportCreateFact' or it.dateRequired==0}" -->
 									<f:param name="sessionId" value="#{param['sessionId']}" />
 									<f:param name="remoteAudit" value="reportCreateFact" />
 									<f:param name="reportId" value="#{it.idSrv}" />
-								</a4j:commandButton>
-							</td>	
-							<td align="left"><s:link
-									action="#{reportsManager.download_report()}" target="ifmReportDownloader"
-									id="link_report" style="color:#BC2D31;white-space: nowrap;class:link_report#{rkv}"
-									onclick="testAction(this);"
-									>
-									<h:outputText value="Скачать" />
-									<h:graphicImage url="/img/icons/icon_download.gif"
-										styleClass="img-in-link" />
-
-									<f:param name="sessionId" 	value="#{param['sessionId']}" />
-									<f:param name="remoteAudit" value="reportDownloadFact" />
-									<f:param name="reportCode" 	value="#{it.reportCode}" />
-									<f:param name="reportId" 	value="#{it.idSrv}" />
-								</s:link>
-								<div id="dvContainerReportDownloader" style="position:absolute; left:653px; top: 418px; width: 300px; height: 186px; visibility:hidden">
-									<iframe id="ifmReportDownloader" name="ifmReportDownloader" frameborder="no" height="100%" hidefocus="hideFocus" noresize="noResize" scrolling="no" unselectable="on" width="100%" ></iframe>
-								</div>								
+								</a4j:commandButton>								
 							</td>
-						</tr>
-
+						</tr>						
 					</a4j:repeat>
-
-				</table>
-
+				</table>			
 			</h:form>
-
 		</a4j:outputPanel>
+		<!--
+		<a4j:region><h:form>
+			<a4j:poll id="pollSingleReportReady"  interval="5000"
+			  enabled="#{reportsManager.enabledPollReportReady}"
+			  reRender="pollReportReady,outCenterCenter" />	
+		</h:form></a4j:region>			
+		-->
 	</div>
+	<div id="dvContainerReportDownloader" style="_position:absolute; left:0px; top:0px; width:0px; height:0px; visibility:hidden">
+		<iframe id="ifmReportDownloader" name="ifmReportDownloader" frameborder="no" height="100%" hidefocus="hideFocus" noresize="noResize" scrolling="no" unselectable="on" width="100%" ></iframe>
+	</div>		
 	<a4j:outputPanel id="outMPReport">
 		<rich:modalPanel id="CBReport" trimOverlayedElements="false"
 			width="250" height="150" onbeforeshow="initCalendar2(#{rich:component('report_date1')}, #{rich:component('report_date2')})"
@@ -236,16 +250,27 @@
 					<a4j:commandButton style="width:90px;" value="Сформировать"
 						action="#{reportsManager.create_report()}" styleClass="but_class"
 						oncomplete="displayReportStatusMessage('#{reportsManager.getReportStatusCodeString(param['reportId'])}', '#{reportsManager.getReportStatusActionText(param['reportId'])}'); 
-                               #{rich:component('CBReport')}.hide();">
+                               #{rich:component('CBReport')}.hide();"
+						reRender="outCenterCenter"
+						>
 						<f:param name="sessionId" value="#{param['sessionId']}" />
 						<f:param name="remoteAudit" value="reportCreateFact" />
 						<f:param name="reportId" value="#{param['reportId']}" />
 						<f:param name="onCreate" value="1" />
+					
 					</a4j:commandButton>
 				</div>
 			</h:form>
 		</rich:modalPanel>
-
+		<!--
+				<a4j:commandButton style="width:120px" id="control"
+                    value="#{reportsManager.enabledPollReportReady?'Stop':'Start'} Polling"
+					reRender="pollReportReady,outCenterCenter"
+                    >
+						<a4j:actionparam name="polling" value="#{!reportsManager.enabledPollReportReady}"
+							assignTo="#{reportsManager.enabledPollReportReady}" />	
+                </a4j:commandButton>
+		-->		
 	</a4j:outputPanel>
 	<SCRIPT type="text/javascript">
  //<![CDATA[
