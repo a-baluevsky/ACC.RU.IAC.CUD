@@ -140,6 +140,23 @@
 			<version>1.0.53</version>
 		</dependency>
 
+		<dependency>
+        	<groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.2.5</version>
+        </dependency>		
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.2.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
+            <version>4.2.5</version>
+        </dependency>
+		
+
 <!--dependency>
 	<groupId>junit</groupId>
 	<artifactId>junit</artifactId>
