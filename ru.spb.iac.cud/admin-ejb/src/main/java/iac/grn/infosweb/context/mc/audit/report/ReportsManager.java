@@ -2,8 +2,6 @@ package iac.grn.infosweb.context.mc.audit.report;
 
 import iac.grn.infosweb.context.mc.audit.report.JasperReportService;
 import iac.grn.infosweb.context.mc.audit.report.JasperReportService.REPORTSTATUS;
-import iac.cud.infosweb.dataitems.BaseParamItem;
-import iac.cud.infosweb.dataitems.ReportDownloadItem;
 import iac.cud.infosweb.entity.AcUser;
 import iac.cud.infosweb.entity.ReportsBssT;
 
@@ -19,14 +17,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.faces.context.FacesContext;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
 
 import mypackage.Configuration;
 
@@ -37,9 +29,8 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.log.Log;
-import org.xml.sax.SAXException;
 
-import ru.spb.iac.cud.reports.ReportsManagerLocal;
+
 
 @Name("reportsManager")
  public class ReportsManager {
@@ -58,23 +49,39 @@ import ru.spb.iac.cud.reports.ReportsManagerLocal;
 	private String jasperPassword = Configuration.getJasperPassword();
 	private String reportUrl;
 	
-	//// ReportStatus: CodeString, StatusShortText, ActionText
-	public int getRunReportStatus(String reportId) {
+	private JasperReportService getFreshReporter(String reportId) {		
 		JasperReportService reporter=getReporter(reportId);
+		if(reporter!=null)
+		try {
+			if(reporter.isStatusExpired())
+				reporter.checkReportStatus();
+		} catch (Exception e) {
+			log.info("reportsManager:getFreshReporter: "+e);
+		}
+		return reporter;
+	}
+	
+	//// ReportStatus: CodeString, StatusShortText, ActionText	
+	public int getRunReportStatus(String reportId) {
+		JasperReportService reporter=getFreshReporter(reportId);
 		return(reporter==null)?REPORTSTATUS.INITIAL.toInt():reporter.getReportStatus().toInt();
 	}
 	public String getReportStatusCodeString(String reportId)  {
-		JasperReportService reporter=getReporter(reportId);
+		JasperReportService reporter=getFreshReporter(reportId);
 		return(reporter==null)?"":reporter.getReportStatus().toString();
 	}
 	public String getReportStatusShortText(String reportId)   {
-		JasperReportService reporter=getReporter(reportId);
+		JasperReportService reporter=getFreshReporter(reportId);
 		return(reporter==null)?"":reporter.getReportStatus().toShortText();
 	}
 	public String getReportStatusActionText(String reportId)  {
-		JasperReportService reporter=getReporter(reportId);
+		JasperReportService reporter=getFreshReporter(reportId);
 		return(reporter==null)?"":reporter.getReportStatus().toActionText();
 	}
+	public boolean isReportReady(String reportId) {
+		JasperReportService reporter=getFreshReporter(reportId);
+		return(reporter==null)?false:REPORTSTATUS.ready.equals(reporter.getReportStatus());
+	}	
 	
 	// HashMap: reportId -> reporter
 	private HashMap<String, JasperReportService> getReporters() throws Exception {
@@ -210,9 +217,14 @@ import ru.spb.iac.cud.reports.ReportsManagerLocal;
 				switch (reporter.checkReportStatus()) {
 					case ready: respondServletResult("Content-disposition", "attachment; filename="+reporter.getReportFileName(), 
 													 reporter.getReportContentType(), reporter.downloadReportFile());
-					break;
+						break;
 					case queued:
-					case execution: respondServletAlert("Формирование отчёта ещё не завершено!"); break;
+					case execution: 
+						respondServletAlert("Формирование отчёта ещё не завершено!"); 
+						break;
+					case failed:
+						respondServletAlert(REPORTSTATUS.failed.toShortText()); 
+						break;
 				default: respondServletAlert("При скачивании произошла ошибка! ["+reporter.getReportStatus()+"]");
 					break;
 				}
@@ -286,37 +298,66 @@ import ru.spb.iac.cud.reports.ReportsManagerLocal;
 			log.info("reportsManager:server_report:02");
 		}catch(Exception e){
 			log.error("reportsManager:server_report:error:"+e);
-			
 		}
-			 	
 	}
 
 	
 	public List<ReportsBssT> getReportsList() {
 		if(this.reportsList==null){
+			String sFilter=("*".equals(this.getOrgCode()))?"":"WHERE idSrv IN(2)";
 			this.reportsList = entityManager
-					.createQuery("SELECT r FROM ReportsBssT r order by orderNum ")
+					.createQuery("SELECT r FROM ReportsBssT r "+sFilter+" order by orderNum ")
 					.getResultList();
-			
-		}
-		
-		return reportsList;
+		}		
+		return this.reportsList;
 	}
 
 	public void setReportsList(List<ReportsBssT> reportsList) {
 		this.reportsList = reportsList;
 	}
 
-// volatile prop to link form data 
-	/*
-	public String	getReportId() {
-		String sReportId = (String)Component.getInstance("currentReportId",ScopeType.SESSION);
-		return (sReportId==null)?"":sReportId; 
+	// NOTE: if reportId is a crap, then return false
+	public boolean checkReportRunning(String reportId) {
+		try {		
+			JasperReportService reporter = getReporter(reportId);
+			return reporter!=null && reporter.isRunning();
+		} catch (Exception e) {
+			log.error("reportsManager:getEnabledPollReportReady("+reportId+"):error:"+e);
+		}
+		return false;			
 	}
-	public void 	setReportId(String newValue) 	{ 
-		Contexts.getSessionContext().set("currentReportId", newValue);
+ 
+	// global prop (for all reports) 
+	public boolean  getEnabledPollReportReady() {
+		try {
+			Object oe=Component.getInstance("enabledPollReportReady",ScopeType.SESSION);
+			boolean bUpdateReportStatus=oe==null;
+			if(!bUpdateReportStatus) { // really?
+				Object ot=Component.getInstance("lastPollReportReadyTime",ScopeType.SESSION); // use cached value for improved performance
+				bUpdateReportStatus=(ot==null)?true:Math.abs((new Date()).getTime()-((Long)ot))>1000;
+			}
+			if(bUpdateReportStatus) {
+				boolean r=false;
+				HashMap<String, JasperReportService> reporters = getReporters();
+				for(String k: reporters.keySet()) {
+					JasperReportService reporter = reporters.get(k);
+					if(reporter.isRunning()) 
+						r=true;	
+				}
+				setEnabledPollReportReady(r);
+				return r;
+			} else return (Boolean)oe;
+		} catch (Exception e) {
+			log.error("reportsManager:getEnabledPollReportReady:error:"+e);
+		}
+		return false;		
 	}
-	*/
+	public void 	setEnabledPollReportReady(boolean newValue) { 
+		org.jboss.seam.contexts.Context ctx=Contexts.getSessionContext();
+		ctx.set("enabledPollReportReady",  newValue);
+		ctx.set("lastPollReportReadyTime", (new Date()).getTime());
+	}
+
 	public Date 	getReportDate1() 					{	return reportDate1;									}
 	public void 	setReportDate1(Date reportDate1) 	{	this.reportDate1 = reportDate1;						}
 
