@@ -170,9 +170,9 @@ import org.w3c.dom.Node;
 			if (configTest2gb != null) {
 				LOGGER.debug("Error in reading configuration file - Configuration element not found");
 			}
-			for (Node el = configTest2gb.getFirstChild(); el != null; el = el
+			for (Node el = configTest2gb!=null?configTest2gb.getFirstChild():null; el != null; el = el
 					.getNextSibling()) {
-				if ((el == null) || (1 != el.getNodeType())) {
+				if (1 != el.getNodeType()) {
 					continue;
 				}
 				String tag = el.getLocalName();
@@ -337,6 +337,7 @@ import org.w3c.dom.Node;
 						}
 
 						classNamesTest2gb.add(javaclass);
+ 
 					}
 					KeyResolver.registerClassNames(classNamesTest2gb);
 				}
@@ -362,9 +363,22 @@ import org.w3c.dom.Node;
 					}
 				}
 			}
-		} catch (Exception eTest2gb) {
-			LOGGER.error("Crypto2gb5Init:fileInit:error: ", eTest2gb);
-		}
+		} catch (org.apache.xml.security.exceptions.XMLSecurityException exs2gb ) {
+ LOGGER.error("Crypto2gbInit:fileInit:error: ", exs2gb);
+ } catch (ClassNotFoundException enf2gb) {
+ LOGGER.error("Crypto2gbInit:fileInit:error: ", enf2gb);
+ } catch (IllegalAccessException eia2gb) {
+ LOGGER.error("Crypto2gbInit:fileInit:error: ", eia2gb);
+ } catch (InstantiationException e2gb) {
+ LOGGER.error("Crypto2gbInit:fileInit:error: ", e2gb);
+ } catch (javax.xml.parsers.ParserConfigurationException epc2gb) {
+ LOGGER.error("Crypto2gbInit:fileInit:error: ", epc2gb);
+ } catch (org.xml.sax.SAXException ese2gb) {
+ LOGGER.error("Crypto2gbInit:fileInit:error: ", ese2gb);
+ } catch (java.io.IOException eio2gb) {
+ LOGGER.error("Crypto2gbInit:fileInit:error: ", eio2gb);
+ }
+
 	}
 
 }

@@ -170,9 +170,9 @@ import org.w3c.dom.Node;
 			if (configTest5cb != null) {
 				LOGGER.debug("Error in reading configuration file - Configuration element not found");
 			}
-			for (Node el = configTest5cb.getFirstChild(); el != null; el = el
+			for (Node el = configTest5cb!=null?configTest5cb.getFirstChild():null; el != null; el = el
 					.getNextSibling()) {
-				if ((el == null) || (1 != el.getNodeType())) {
+				if (1 != el.getNodeType()) {
 					continue;
 				}
 				String tag = el.getLocalName();
@@ -336,6 +336,7 @@ if (LOGGER.isDebugEnabled()) {
 						}
 
 						classNamesTest5cb.add(javaclass);
+ 
 					}
 					KeyResolver.registerClassNames(classNamesTest5cb);
 				}
@@ -361,9 +362,22 @@ if (LOGGER.isDebugEnabled()) {
 					}
 				}
 			}
-		} catch (Exception eTest5cb) {
-			LOGGER.error("Crypto5cb5cbInit:fileInit:error: ", eTest5cb);
-		}
+		} catch (org.apache.xml.security.exceptions.XMLSecurityException exs5cb ) {
+ LOGGER.error("Crypto5cbInit:fileInit:error: ", exs5cb);
+ } catch (ClassNotFoundException enf5cb) {
+ LOGGER.error("Crypto5cbInit:fileInit:error: ", enf5cb);
+ } catch (IllegalAccessException eia5cb) {
+ LOGGER.error("Crypto5cbInit:fileInit:error: ", eia5cb);
+ } catch (InstantiationException e5cb) {
+ LOGGER.error("Crypto5cbInit:fileInit:error: ", e5cb);
+ } catch (javax.xml.parsers.ParserConfigurationException epc5cb) {
+ LOGGER.error("Crypto5cbInit:fileInit:error: ", epc5cb);
+ } catch (org.xml.sax.SAXException ese5cb) {
+ LOGGER.error("Crypto5cbInit:fileInit:error: ", ese5cb);
+ } catch (java.io.IOException eio5cb) {
+ LOGGER.error("Crypto5cbInit:fileInit:error: ", eio5cb);
+ }
+
 	}
 
 }

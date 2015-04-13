@@ -1,15 +1,18 @@
 package ru.spb.iac.crypto.init.org;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.algorithms.JCEMapper;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.keyresolver.KeyResolver;
 import org.apache.xml.security.utils.ElementProxy;
 import org.apache.xml.security.utils.I18n;
@@ -19,6 +22,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
  public class CryptoAccessGroupInit {
 
@@ -117,7 +121,6 @@ import org.w3c.dom.Node;
 			LOGGER.error("Crypto2l5Init:init:error:", e);
 		}
 	}
-
 	public void fileInit() {
 
 		 
@@ -170,9 +173,14 @@ import org.w3c.dom.Node;
 			if (configTest2l != null) {
 				LOGGER.debug("Error in reading configuration file - Configuration element not found");
 			}
-			for (Node el = configTest2l.getFirstChild(); el != null; el = el
+			
+				
+			for (Node el = configTest2l!=null?configTest2l.getFirstChild():null; el != null; el = el
 					.getNextSibling()) {
-				if ((el == null) || (1 != el.getNodeType())) {
+				
+				
+				if (1 != el.getNodeType()) {
+				
 					continue;
 				}
 				String tag = el.getLocalName();
@@ -337,6 +345,7 @@ import org.w3c.dom.Node;
 						}
 
 						classNamesTest2l.add(javaclass);
+
 					}
 					KeyResolver.registerClassNames(classNamesTest2l);
 				}
@@ -362,9 +371,22 @@ import org.w3c.dom.Node;
 					}
 				}
 			}
-		} catch (Exception eTest2l) {
-			LOGGER.error("Crypto2l5Init:fileInit:error: ", eTest2l);
-		}
+	
+	} catch (XMLSecurityException exs2l5 ) {
+		LOGGER.error("Crypto2l5Init:fileInit:error: ", exs2l5);
+	} catch (ClassNotFoundException enf2l5) {
+		LOGGER.error("Crypto2l5Init:fileInit:error: ", enf2l5);
+	} catch (IllegalAccessException eia2l5) {
+		LOGGER.error("Crypto2l5Init:fileInit:error: ", eia2l5);
+	} catch (InstantiationException e2l5) {
+		LOGGER.error("Crypto2l5Init:fileInit:error: ", e2l5);
+	} catch (ParserConfigurationException epc2l5) {
+		LOGGER.error("Crypto2l5Init:fileInit:error: ", epc2l5);
+	} catch (SAXException ese2l5) {
+		LOGGER.error("Crypto2l5Init:fileInit:error: ", ese2l5);
+	} catch (IOException eio2l5) {
+		LOGGER.error("Crypto2l5Init:fileInit:error: ", eio2l5);
+	}
 	}
 
 }

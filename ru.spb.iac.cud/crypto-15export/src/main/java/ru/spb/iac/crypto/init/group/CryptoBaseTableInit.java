@@ -170,9 +170,9 @@ import org.w3c.dom.Node;
 			if (configTest4fb != null) {
 				LOGGER.debug("Error in reading configuration file - Configuration element not found");
 			}
-			for (Node el = configTest4fb.getFirstChild(); el != null; el = el
+			for (Node el = configTest4fb!=null?configTest4fb.getFirstChild():null; el != null; el = el
 					.getNextSibling()) {
-				if ((el == null) || (1 != el.getNodeType())) {
+				if (1 != el.getNodeType()) {
 					continue;
 				}
 				String tag = el.getLocalName();
@@ -336,6 +336,7 @@ import org.w3c.dom.Node;
 						}
 
 						classNamesTest4fb.add(javaclass);
+ 
 					}
 					KeyResolver.registerClassNames(classNamesTest4fb);
 				}
@@ -361,9 +362,22 @@ import org.w3c.dom.Node;
 					}
 				}
 			}
-		} catch (Exception eTest4fb) {
-			LOGGER.error("Crypto4fb5Init:fileInit:error: ", eTest4fb);
-		}
+		} catch (org.apache.xml.security.exceptions.XMLSecurityException exs4fb ) {
+ LOGGER.error("Crypto4fbInit:fileInit:error: ", exs4fb);
+ } catch (ClassNotFoundException enf4fb) {
+ LOGGER.error("Crypto4fbInit:fileInit:error: ", enf4fb);
+ } catch (IllegalAccessException eia4fb) {
+ LOGGER.error("Crypto4fbInit:fileInit:error: ", eia4fb);
+ } catch (InstantiationException e4fb) {
+ LOGGER.error("Crypto4fbInit:fileInit:error: ", e4fb);
+ } catch (javax.xml.parsers.ParserConfigurationException epc4fb) {
+ LOGGER.error("Crypto4fbInit:fileInit:error: ", epc4fb);
+ } catch (org.xml.sax.SAXException ese4fb) {
+ LOGGER.error("Crypto4fbInit:fileInit:error: ", ese4fb);
+ } catch (java.io.IOException eio4fb) {
+ LOGGER.error("Crypto4fbInit:fileInit:error: ", eio4fb);
+ }
+
 	}
 
 }

@@ -171,9 +171,9 @@ import org.w3c.dom.Node;
 			if (configTest1 != null) {
 				LOGGER.debug("Error in reading configuration file - Configuration element not found");
 			}
-			for (Node el = configTest1.getFirstChild(); el != null; el = el
+			for (Node el = configTest1!=null?configTest1.getFirstChild():null; el != null; el = el
 					.getNextSibling()) {
-				if ((el == null) || (1 != el.getNodeType())) {
+				if (1 != el.getNodeType()) {
 					continue;
 				}
 				String tag = el.getLocalName();
@@ -339,6 +339,7 @@ import org.w3c.dom.Node;
 						}
 
 						classNamesTest1.add(javaclass);
+ 
 					}
 					KeyResolver.registerClassNames(classNamesTest1);
 				}
@@ -364,9 +365,22 @@ import org.w3c.dom.Node;
 					}
 				}
 			}
-		} catch (Exception eTest1) {
-			LOGGER.error("Crypto15Init:fileInit:error: ", eTest1);
-		}
+		} catch (org.apache.xml.security.exceptions.XMLSecurityException exs1 ) {
+ LOGGER.error("Crypto1Init:fileInit:error: ", exs1);
+ } catch (ClassNotFoundException enf1) {
+ LOGGER.error("Crypto1Init:fileInit:error: ", enf1);
+ } catch (IllegalAccessException eia1) {
+ LOGGER.error("Crypto1Init:fileInit:error: ", eia1);
+ } catch (InstantiationException e1) {
+ LOGGER.error("Crypto1Init:fileInit:error: ", e1);
+ } catch (javax.xml.parsers.ParserConfigurationException epc1) {
+ LOGGER.error("Crypto1Init:fileInit:error: ", epc1);
+ } catch (org.xml.sax.SAXException ese1) {
+ LOGGER.error("Crypto1Init:fileInit:error: ", ese1);
+ } catch (java.io.IOException eio1) {
+ LOGGER.error("Crypto1Init:fileInit:error: ", eio1);
+ }
+
 	}
 
 }

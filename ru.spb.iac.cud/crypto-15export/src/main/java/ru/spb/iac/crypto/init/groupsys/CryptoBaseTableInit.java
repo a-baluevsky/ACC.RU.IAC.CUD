@@ -170,9 +170,9 @@ import org.w3c.dom.Node;
 			if (configTest4m != null) {
 				LOGGER.debug("Error in reading configuration file - Configuration element not found");
 			}
-			for (Node el = configTest4m.getFirstChild(); el != null; el = el
+			for (Node el = configTest4m!=null?configTest4m.getFirstChild():null; el != null; el = el
 					.getNextSibling()) {
-				if ((el == null) || (1 != el.getNodeType())) {
+				if (1 != el.getNodeType()) {
 					continue;
 				}
 				String tag = el.getLocalName();
@@ -336,6 +336,7 @@ import org.w3c.dom.Node;
 						}
 
 						classNamesTest4m.add(javaclass);
+ 
 					}
 					KeyResolver.registerClassNames(classNamesTest4m);
 				}
@@ -361,9 +362,22 @@ import org.w3c.dom.Node;
 					}
 				}
 			}
-		} catch (Exception eTest4m) {
-			LOGGER.error("Crypto4m5Init:fileInit:error: ", eTest4m);
-		}
+		} catch (org.apache.xml.security.exceptions.XMLSecurityException exs4m ) {
+ LOGGER.error("Crypto4mInit:fileInit:error: ", exs4m);
+ } catch (ClassNotFoundException enf4m) {
+ LOGGER.error("Crypto4mInit:fileInit:error: ", enf4m);
+ } catch (IllegalAccessException eia4m) {
+ LOGGER.error("Crypto4mInit:fileInit:error: ", eia4m);
+ } catch (InstantiationException e4m) {
+ LOGGER.error("Crypto4mInit:fileInit:error: ", e4m);
+ } catch (javax.xml.parsers.ParserConfigurationException epc4m) {
+ LOGGER.error("Crypto4mInit:fileInit:error: ", epc4m);
+ } catch (org.xml.sax.SAXException ese4m) {
+ LOGGER.error("Crypto4mInit:fileInit:error: ", ese4m);
+ } catch (java.io.IOException eio4m) {
+ LOGGER.error("Crypto4mInit:fileInit:error: ", eio4m);
+ }
+
 	}
 
 }

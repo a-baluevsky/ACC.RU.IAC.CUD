@@ -1,17 +1,20 @@
 package ru.spb.iac.crypto.export;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.algorithms.SignatureAlgorithm;
 import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.keyresolver.KeyResolver;
 import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.utils.ElementProxy;
@@ -22,11 +25,16 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
  public class Crypto15Init {
 
-	private static Log log = LogFactory.getLog(Crypto15Init.class);
+	private static final Log LOGGER = LogFactory.getLog(Crypto15Init.class);
 
+	public Crypto15Init(){
+		
+	}
+	
 	public static void init() {
 		try {
 
@@ -41,7 +49,7 @@ import org.w3c.dom.Node;
 			 
 
 		} catch (Exception e) {
-			log.error("Crypto15Init:init:error:", e);
+			LOGGER.error("Crypto15Init:init:error:", e);
 		}
 	}
 
@@ -75,12 +83,12 @@ import org.w3c.dom.Node;
 			}
 
 			if (config == null) {
-				log.error("Error in reading configuration file - Configuration element not found");
+				LOGGER.error("Error in reading configuration file - Configuration element not found");
 				return;
 			}
 			for (Node el = config.getFirstChild(); el != null; el = el
 					.getNextSibling()) {
-				if ((el == null) || (1 != el.getNodeType())) {
+				if (1 != el.getNodeType()) {
 					continue;
 				}
 				String tag = el.getLocalName();
@@ -106,26 +114,27 @@ import org.w3c.dom.Node;
 							"CanonicalizationMethod");
 
 					for (int i = 0; i < list.length; i++) {
-						String URI = list[i].getAttributeNS(null, "URI");
-						String JAVACLASS = list[i].getAttributeNS(null,
+						String uRI = list[i].getAttributeNS(null, "URI");
+						String jAVACLASS = list[i].getAttributeNS(null,
 								"JAVACLASS");
 						try {
-							Canonicalizer.register(URI, JAVACLASS);
-							if (log.isDebugEnabled()) {
-								log.debug("Canonicalizer.register(" + URI
-										+ ", " + JAVACLASS + ")");
+							Canonicalizer.register(uRI, jAVACLASS);
+							if (LOGGER.isDebugEnabled()) {
+								LOGGER.debug("Canonicalizer.register(" + uRI
+										+ ", " + jAVACLASS + ")");
 							}
 						} catch (ClassNotFoundException e) {
-							Object[] exArgs = { URI, JAVACLASS };
-							log.error(I18n.translate(
-									"algorithm.classDoesNotExist", exArgs));
+							Object[] exArgs = { uRI, jAVACLASS };
+							LOGGER.error(I18n.translate(
+									"algorithm.classDoesNotExist", exArgs), e);
 						} catch (Exception e1) {
 							// здесь будут ощибки, что алгоритм уже
 							// зарегистрирован
 							// это нормально, поэтому чтобы не увеличивать лог
 							// закомментируем
-								 
-						}
+							
+							LOGGER.debug("", e1);
+							
 					}
 				}
 
@@ -136,28 +145,30 @@ import org.w3c.dom.Node;
 							"TransformAlgorithm");
 
 					for (int i = 0; i < tranElem.length; i++) {
-						String URI = tranElem[i].getAttributeNS(null, "URI");
-						String JAVACLASS = tranElem[i].getAttributeNS(null,
+						String uRI = tranElem[i].getAttributeNS(null, "URI");
+						String jAVACLASS = tranElem[i].getAttributeNS(null,
 								"JAVACLASS");
 						try {
-							Transform.register(URI, JAVACLASS);
-							if (log.isDebugEnabled()) {
-								log.debug("Transform.register(" + URI + ", "
-										+ JAVACLASS + ")");
+							Transform.register(uRI, jAVACLASS);
+							if (LOGGER.isDebugEnabled()) {
+								LOGGER.debug("Transform.register(" + uRI + ", "
+										+ jAVACLASS + ")");
 							}
 						} catch (ClassNotFoundException e) {
-							Object[] exArgs = { URI, JAVACLASS };
+							Object[] exArgs = { uRI, jAVACLASS };
 
-							log.error(I18n.translate(
-									"algorithm.classDoesNotExist", exArgs));
+							LOGGER.error(I18n.translate(
+									"algorithm.classDoesNotExist", exArgs),e);
 						} catch (NoClassDefFoundError ex) {
-							log.warn("Not able to found dependencies for algorithm, I'll keep working.");
+							LOGGER.warn("Not able to found dependencies for algorithm, I'll keep working.", ex);
 						} catch (Exception e1) {
 							// здесь будут ощибки, что алгоритм уже
 							// зарегистрирован
 							// это нормально, поэтому чтобы не увеличивать лог
 							// закомментируем
-							 
+							
+								LOGGER.debug("", e1);
+							
 						}
 					}
 				}
@@ -202,26 +213,28 @@ import org.w3c.dom.Node;
 							"SignatureAlgorithm");
 
 					for (int i = 0; i < sigElems.length; i++) {
-						String URI = sigElems[i].getAttributeNS(null, "URI");
-						String JAVACLASS = sigElems[i].getAttributeNS(null,
+						String uRI = sigElems[i].getAttributeNS(null, "URI");
+						String jAVACLASS = sigElems[i].getAttributeNS(null,
 								"JAVACLASS");
 						try {
-							SignatureAlgorithm.register(URI, JAVACLASS);
-							if (log.isDebugEnabled()) {
-								log.debug("SignatureAlgorithm.register(" + URI
-										+ ", " + JAVACLASS + ")");
+							SignatureAlgorithm.register(uRI, jAVACLASS);
+							if (LOGGER.isDebugEnabled()) {
+								LOGGER.debug("SignatureAlgorithm.register(" + uRI
+										+ ", " + jAVACLASS + ")");
 							}
 						} catch (ClassNotFoundException e) {
-							Object[] exArgs = { URI, JAVACLASS };
+							Object[] exArgs = { uRI, jAVACLASS };
 
-							log.error(I18n.translate(
-									"algorithm.classDoesNotExist", exArgs));
+							LOGGER.error(I18n.translate(
+									"algorithm.classDoesNotExist", exArgs),e);
 						} catch (Exception e1) {
 							// здесь будут ощибки, что алгоритм уже
 							// зарегистрирован
 							// это нормально, поэтому чтобы не увеличивать лог
 							// закомментируем
-							 
+							
+							LOGGER.debug("", e1);
+							}	 
 						}
 					}
 				}
@@ -233,29 +246,29 @@ import org.w3c.dom.Node;
 							"Resolver");
 
 					for (int i = 0; i < resolverElem.length; i++) {
-						String JAVACLASS = resolverElem[i].getAttributeNS(null,
+						String jAVACLASS = resolverElem[i].getAttributeNS(null,
 								"JAVACLASS");
 
-						String Description = resolverElem[i].getAttributeNS(
+						String description = resolverElem[i].getAttributeNS(
 								null, "DESCRIPTION");
 
-						if ((Description != null) && (Description.length() > 0)) {
-							if (log.isDebugEnabled()) {
-								log.debug("Register Resolver: " + JAVACLASS
-										+ ": " + Description);
+						if ((description != null) && (description.length() > 0)) {
+							if (LOGGER.isDebugEnabled()) {
+								LOGGER.debug("Register Resolver: " + jAVACLASS
+										+ ": " + description);
 							}
 
-						} else if (log.isDebugEnabled()) {
-							log.debug("Register Resolver: " + JAVACLASS
+						} else if (LOGGER.isDebugEnabled()) {
+							LOGGER.debug("Register Resolver: " + jAVACLASS
 									+ ": For unknown purposes");
 						}
 
 						try {
-							ResourceResolver.register(JAVACLASS);
+							ResourceResolver.register(jAVACLASS);
 						} catch (Exception e) {
-							log.warn(
+							LOGGER.warn(
 									"Cannot register:"
-											+ JAVACLASS
+											+ jAVACLASS
 											+ " perhaps some needed jars are not installed",
 									e);
 						}
@@ -272,31 +285,31 @@ import org.w3c.dom.Node;
 
 					List classNames = new ArrayList(resolverElem.length);
 					for (int i = 0; i < resolverElem.length; i++) {
-						String JAVACLASS = resolverElem[i].getAttributeNS(null,
+						String jAVACLASS = resolverElem[i].getAttributeNS(null,
 								"JAVACLASS");
 
-						String Description = resolverElem[i].getAttributeNS(
+						String description = resolverElem[i].getAttributeNS(
 								null, "DESCRIPTION");
 
-						if ((Description != null) && (Description.length() > 0)) {
-							if (log.isDebugEnabled()) {
-								log.debug("Register Resolver: " + JAVACLASS
-										+ ": " + Description);
+						if ((description != null) && (description.length() > 0)) {
+							if (LOGGER.isDebugEnabled()) {
+								LOGGER.debug("Register Resolver: " + jAVACLASS
+										+ ": " + description);
 							}
 
-						} else if (log.isDebugEnabled()) {
-							log.debug("Register Resolver: " + JAVACLASS
+						} else if (LOGGER.isDebugEnabled()) {
+							LOGGER.debug("Register Resolver: " + jAVACLASS
 									+ ": For unknown purposes");
 						}
 
-						classNames.add(JAVACLASS);
+						classNames.add(jAVACLASS);
 					}
 					KeyResolver.registerClassNames(classNames);
 				}
 
 				if ("PrefixMappings".equals(tag)) {
-					if (log.isDebugEnabled()) {
-						log.debug("Now I try to bind prefixes:");
+					if (LOGGER.isDebugEnabled()) {
+						LOGGER.debug("Now I try to bind prefixes:");
 					}
 
 					Element[] nl = XMLUtils.selectNodes(el.getFirstChild(),
@@ -307,16 +320,29 @@ import org.w3c.dom.Node;
 						String namespace = nl[i].getAttributeNS(null,
 								"namespace");
 						String prefix = nl[i].getAttributeNS(null, "prefix");
-						if (log.isDebugEnabled()) {
-							log.debug("Now I try to bind " + prefix + " to "
+						if (LOGGER.isDebugEnabled()) {
+							LOGGER.debug("Now I try to bind " + prefix + " to "
 									+ namespace);
 						}
 						ElementProxy.setDefaultPrefix(namespace, prefix);
 					}
 				}
 			}
-		} catch (Exception e) {
-			log.error("Crypto15Init:fileInit:error: ", e);
+		
+		} catch (XMLSecurityException exs ) {
+			LOGGER.error("Crypto15Init:fileInit:error: ", exs);
+		} catch (ClassNotFoundException enf) {
+			LOGGER.error("Crypto15Init:fileInit:error: ", enf);
+		} catch (IllegalAccessException eia) {
+			LOGGER.error("Crypto15Init:fileInit:error: ", eia);
+		} catch (InstantiationException e) {
+			LOGGER.error("Crypto15Init:fileInit:error: ", e);
+		} catch (ParserConfigurationException epc) {
+			LOGGER.error("Crypto15Init:fileInit:error: ", epc);
+		} catch (SAXException ese) {
+			LOGGER.error("Crypto15Init:fileInit:error: ", ese);
+		} catch (IOException eio) {
+			LOGGER.error("Crypto15Init:fileInit:error: ", eio);
 		}
 	}
 

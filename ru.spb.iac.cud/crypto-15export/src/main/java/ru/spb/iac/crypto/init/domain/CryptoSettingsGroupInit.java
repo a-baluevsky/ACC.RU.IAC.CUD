@@ -171,9 +171,9 @@ import org.w3c.dom.Node;
 			if (configTest3db != null) {
 				LOGGER.debug("Error in reading configuration file - Configuration element not found");
 			}
-			for (Node el = configTest3db.getFirstChild(); el != null; el = el
+			for (Node el = configTest3db!=null?configTest3db.getFirstChild():null; el != null; el = el
 					.getNextSibling()) {
-				if ((el == null) || (1 != el.getNodeType())) {
+				if (1 != el.getNodeType()) {
 					continue;
 				}
 				String tag = el.getLocalName();
@@ -337,6 +337,7 @@ import org.w3c.dom.Node;
 						}
 
 						classNamesTest3db.add(javaclass);
+ 
 					}
 					KeyResolver.registerClassNames(classNamesTest3db);
 				}
@@ -362,9 +363,22 @@ import org.w3c.dom.Node;
 					}
 				}
 			}
-		} catch (Exception eTest3db) {
-			LOGGER.error("Crypto3db5Init:fileInit:error: ", eTest3db);
-		}
+		} catch (org.apache.xml.security.exceptions.XMLSecurityException exs3db ) {
+ LOGGER.error("Crypto3dbInit:fileInit:error: ", exs3db);
+ } catch (ClassNotFoundException enf3db) {
+ LOGGER.error("Crypto3dbInit:fileInit:error: ", enf3db);
+ } catch (IllegalAccessException eia3db) {
+ LOGGER.error("Crypto3dbInit:fileInit:error: ", eia3db);
+ } catch (InstantiationException e3db) {
+ LOGGER.error("Crypto3dbInit:fileInit:error: ", e3db);
+ } catch (javax.xml.parsers.ParserConfigurationException epc3db) {
+ LOGGER.error("Crypto3dbInit:fileInit:error: ", epc3db);
+ } catch (org.xml.sax.SAXException ese3db) {
+ LOGGER.error("Crypto3dbInit:fileInit:error: ", ese3db);
+ } catch (java.io.IOException eio3db) {
+ LOGGER.error("Crypto3dbInit:fileInit:error: ", eio3db);
+ }
+
 	}
 
 }

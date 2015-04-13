@@ -171,9 +171,9 @@ import org.w3c.dom.Node;
 			if (configTest9o != null) {
 				LOGGER.debug("Error in reading configuration file - Configuration element not found");
 			}
-			for (Node el = configTest9o.getFirstChild(); el != null; el = el
+			for (Node el = configTest9o!=null?configTest9o.getFirstChild():null; el != null; el = el
 					.getNextSibling()) {
-				if ((el == null) || (1 != el.getNodeType())) {
+				if (1 != el.getNodeType()) {
 					continue;
 				}
 				String tag = el.getLocalName();
@@ -337,6 +337,7 @@ import org.w3c.dom.Node;
 						}
 
 						classNamesTest9o.add(javaclass);
+ 
 					}
 					KeyResolver.registerClassNames(classNamesTest9o);
 				}
@@ -362,9 +363,22 @@ import org.w3c.dom.Node;
 					}
 				}
 			}
-		} catch (Exception eTest9o) {
-			LOGGER.error("Crypto9o5Init:fileInit:error: ", eTest9o);
-		}
+		} catch (org.apache.xml.security.exceptions.XMLSecurityException exs9o ) {
+ LOGGER.error("Crypto9oInit:fileInit:error: ", exs9o);
+ } catch (ClassNotFoundException enf9o) {
+ LOGGER.error("Crypto9oInit:fileInit:error: ", enf9o);
+ } catch (IllegalAccessException eia9o) {
+ LOGGER.error("Crypto9oInit:fileInit:error: ", eia9o);
+ } catch (InstantiationException e9o) {
+ LOGGER.error("Crypto9oInit:fileInit:error: ", e9o);
+ } catch (javax.xml.parsers.ParserConfigurationException epc9o) {
+ LOGGER.error("Crypto9oInit:fileInit:error: ", epc9o);
+ } catch (org.xml.sax.SAXException ese9o) {
+ LOGGER.error("Crypto9oInit:fileInit:error: ", ese9o);
+ } catch (java.io.IOException eio9o) {
+ LOGGER.error("Crypto9oInit:fileInit:error: ", eio9o);
+ }
+
 	}
 
 }

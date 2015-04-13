@@ -171,9 +171,9 @@ import org.w3c.dom.Node;
 			if (configTest3j != null) {
 				LOGGER.debug("Error in reading configuration file - Configuration element not found");
 			}
-			for (Node el = configTest3j.getFirstChild(); el != null; el = el
+			for (Node el = configTest3j!=null?configTest3j.getFirstChild():null; el != null; el = el
 					.getNextSibling()) {
-				if ((el == null) || (1 != el.getNodeType())) {
+				if (1 != el.getNodeType()) {
 					continue;
 				}
 				String tag = el.getLocalName();
@@ -337,6 +337,7 @@ import org.w3c.dom.Node;
 						}
 
 						classNamesTest3j.add(javaclass);
+ 
 					}
 					KeyResolver.registerClassNames(classNamesTest3j);
 				}
@@ -362,9 +363,22 @@ import org.w3c.dom.Node;
 					}
 				}
 			}
-		} catch (Exception eTest3j) {
-			LOGGER.error("Crypto3j5Init:fileInit:error: ", eTest3j);
-		}
+		} catch (org.apache.xml.security.exceptions.XMLSecurityException exs3j ) {
+ LOGGER.error("Crypto3jInit:fileInit:error: ", exs3j);
+ } catch (ClassNotFoundException enf3j) {
+ LOGGER.error("Crypto3jInit:fileInit:error: ", enf3j);
+ } catch (IllegalAccessException eia3j) {
+ LOGGER.error("Crypto3jInit:fileInit:error: ", eia3j);
+ } catch (InstantiationException e3j) {
+ LOGGER.error("Crypto3jInit:fileInit:error: ", e3j);
+ } catch (javax.xml.parsers.ParserConfigurationException epc3j) {
+ LOGGER.error("Crypto3jInit:fileInit:error: ", epc3j);
+ } catch (org.xml.sax.SAXException ese3j) {
+ LOGGER.error("Crypto3jInit:fileInit:error: ", ese3j);
+ } catch (java.io.IOException eio3j) {
+ LOGGER.error("Crypto3jInit:fileInit:error: ", eio3j);
+ }
+
 	}
 
 }
