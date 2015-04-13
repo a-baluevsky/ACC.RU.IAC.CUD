@@ -235,8 +235,8 @@
 		<action execute="#{identity.login}" />
 		<navigation from-action="#{identity.login}">
 			<rule if="#{identity.loggedIn}">
-				<redirect view-id="/main.xhtml" />
-				<!--redirect view-id="/context_pro/mc/usr/usr_list.seam?actSect=3&amp;actSectItem=002" /-->
+				<!--redirect view-id="/main.xhtml" /-->
+				<redirect view-id="/context_pro/mc/usr/usr_list.seam?actSect=3&amp;actSectItem=002" />
 			</rule>
 			<rule if="#{!identity.loggedIn}">
 				<redirect view-id="/welcome.xhtml" />
