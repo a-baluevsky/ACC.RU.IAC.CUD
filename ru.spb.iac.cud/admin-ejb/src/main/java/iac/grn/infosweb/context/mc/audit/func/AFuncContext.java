@@ -20,8 +20,8 @@ import java.util.List;
 	public List <BaseTableItem> getAuditItemsCollection() {
 		
 		List<BaseTableItem> btiList = new ArrayList<BaseTableItem>(this.auditItemsMap.values());
-		Collections.sort(btiList, new Comparator<BaseTableItem>() {
-
+		
+		Collections.sort(btiList,  new Comparator<BaseTableItem>() {			
 	        public int compare(BaseTableItem o1, BaseTableItem o2) {
 	        	
 	        	int sort1=o1.getItemSort();

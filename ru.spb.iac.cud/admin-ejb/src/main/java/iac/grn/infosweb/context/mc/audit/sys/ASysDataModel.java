@@ -5,6 +5,7 @@ import iac.grn.infosweb.session.table.BaseDataModel;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
 import javax.faces.context.FacesContext;
 
 import org.ajax4jsf.model.DataVisitor;
@@ -62,6 +63,7 @@ import org.jboss.seam.log.Log;
 		}
 		log.info("walk:end");
 	}
+	@Override
 	public int getRowCount2() {
 		log.info("auditDataModel:getRowCount2!!!");
 		return getRowCount();

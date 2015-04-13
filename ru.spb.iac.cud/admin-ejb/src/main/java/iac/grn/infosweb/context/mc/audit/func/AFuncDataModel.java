@@ -5,6 +5,7 @@ import iac.grn.infosweb.session.table.BaseDataModel;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
 import javax.faces.context.FacesContext;
 
 import org.ajax4jsf.model.DataVisitor;
@@ -114,6 +115,7 @@ import org.jboss.seam.log.Log;
 		return rowCount.intValue();
 	}
 
+	 @Override
 	 public void filterAction() {
 		 log.info("filterAction");
 		 this.cachedItems = null;
