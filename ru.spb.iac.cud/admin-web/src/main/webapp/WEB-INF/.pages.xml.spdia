@@ -192,8 +192,11 @@
   PATH="/context_pro/conf/hosts.xhtml" SHAPE="24,1809,0,0" TYPE="page" model-entity="SeamPagesDiagramItem"/>
  <item ID="#public.xhtml" NAME="#xpublic.xhtml" PATH="/public.xhtml"
   SHAPE="24,17,0,0" TYPE="page" model-entity="SeamPagesDiagramItem">
-  <output ID="/main.xhtml" NAME="output" PATH="/main.xhtml"
-   TARGET="#xmain.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
+  <output
+   ID="/context_pro/mc/usr/usr_list.seam?actSect=3&amp;actSectItem=002"
+   NAME="output"
+   PATH="/context_pro/mc/usr/usr_list.seam?actSect=3&amp;actSectItem=002"
+   TARGET="#xcontext_pro#xmc#xusr#xusr_list.seam?actSect=3&amp;actSectItem=002" model-entity="SeamPagesDiagramItemOutput"/>
   <output ID="/welcome.xhtml" NAME="output1" PATH="/welcome.xhtml"
    TARGET="#xwelcome.xhtml" model-entity="SeamPagesDiagramItemOutput"/>
  </item>
@@ -273,4 +276,11 @@
  </item>
  <item ID="#login_direct.xhtml" NAME="#xlogin_direct.xhtml"
   PATH="/login_direct.xhtml" SHAPE="24,2041,0,0" TYPE="page" model-entity="SeamPagesDiagramItem"/>
+ <item
+  NAME="#xcontext_pro#xmc#xusr#xusr_list.seam?actSect=3&amp;actSectItem=002"
+  PATH="/context_pro/mc/usr/usr_list.seam?actSect=3&amp;actSectItem=002"
+  SHAPE="24,2145,0,0" TYPE="page" model-entity="SeamPagesDiagramItem">
+  <output ID="/context_pro/*" NAME="output" PATH="/context_pro/*"
+   TARGET="#xcontext_pro#x*" model-entity="SeamPagesDiagramItemOutput"/>
+ </item>
 </diagram>
