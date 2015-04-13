@@ -35,6 +35,21 @@
         <dependent-module archiveName="richfaces-api-3.3.3.Final.jar" deploy-path="/lib" handle="module:/classpath/var/M2_REPO/org/richfaces/framework/richfaces-api/3.3.3.Final/richfaces-api-3.3.3.Final.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="httpclient-4.2.5.jar" deploy-path="/lib" handle="module:/classpath/var/M2_REPO/org/apache/httpcomponents/httpclient/4.2.5/httpclient-4.2.5.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-logging-1.1.1.jar" deploy-path="/lib" handle="module:/classpath/var/M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="httpcore-4.2.5.jar" deploy-path="/lib" handle="module:/classpath/var/M2_REPO/org/apache/httpcomponents/httpcore/4.2.5/httpcore-4.2.5.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="httpmime-4.2.5.jar" deploy-path="/lib" handle="module:/classpath/var/M2_REPO/org/apache/httpcomponents/httpmime/4.2.5/httpmime-4.2.5.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="log4j-1.2.12.jar" deploy-path="/lib" handle="module:/classpath/var/M2_REPO/log4j/log4j/1.2.12/log4j-1.2.12.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
 		<property name="component.inclusion.patterns"/>
         <property name="component.exclusion.patterns" value="lib/dom4j-1.6.1.jar,lib/slf4j-api-1.4.2.jar,lib/xml-apis-1.0.b2.jar,lib/commons-collections-3.2.jar"/>
 	</wb-module>

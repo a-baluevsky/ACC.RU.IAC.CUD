@@ -1,0 +1,6 @@
+eclipse.preferences.version=1
+extraProperties=sonar.jacoco.reportPath\=C\:\\jboss-as-7.1.3.Final-fighting-mvn\\git\\paa\\ru.spb.iac.cud\\admin-ejb/target/coverage-reports/jacoco-unit.exec\r\nsonar.language\=java\r\nsonar.jacoco.itReportPath\=C\:\\jboss-as-7.1.3.Final-fighting-mvn\\git\\paa\\ru.spb.iac.cud\\admin-ejb/target/coverage-reports/jacoco-it.exec\r\nsonar.core.codeCoveragePlugin\=jacoco\r\nsonar.jacoco.jar\=C\:\\jboss-as-7.1.3.Final-fighting-mvn\\git\\paa\\ru.spb.iac.cud\\admin-ejb/lib/jacocoagent.jar
+lastAnalysisDate=1428917265683
+projectKey=ru.spb.iac\:admin-ejb
+serverUrl=http\://localhost\:9000
+version=2
