@@ -1,14 +1,15 @@
 package iac.grn.infosweb.context.mc.audit.report;
+import mypackage.Configuration;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.EnumMap;
-import java.util.HashMap;
+import javaw.util.SerializableMap;
+import javaw.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -21,10 +22,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import mypackage.Configuration;
-
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -32,9 +32,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.jboss.seam.annotations.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.log.Log;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -42,20 +42,18 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-
 /**
  *
  * @author a.lapin, A.B.
  */
 @Name("reporter")
 public class JasperReportService implements Serializable {
-
 	public enum REPORTSTATUS { //ReportStatus
 		INITIAL,UNKNOWN,failed,DOWNLOADING,NOTFOUND,
 		queued,execution,cancelled,ready;
 
-		private static EnumMap<REPORTSTATUS, Integer> getIntMap(){
-			EnumMap<REPORTSTATUS, Integer> m = new EnumMap<REPORTSTATUS, Integer>(REPORTSTATUS.class);
+		private static SerializableMap<REPORTSTATUS, Integer> getIntMap(){
+			SerializableMap<REPORTSTATUS, Integer> m = new EnumMap<REPORTSTATUS, Integer>(REPORTSTATUS.class);
 			m.put(NOTFOUND,  -4);
 			m.put(cancelled, -3);
 			m.put(failed, -1);
@@ -67,8 +65,8 @@ public class JasperReportService implements Serializable {
 			m.put(INITIAL, 5);
 			return m;
 		}
-		private static EnumMap<REPORTSTATUS, String> getStrMsgMap1(){
-			EnumMap<REPORTSTATUS, String> m = new EnumMap<REPORTSTATUS, String>(REPORTSTATUS.class);
+		private static SerializableMap<REPORTSTATUS, String> getStrMsgMap1(){
+			SerializableMap<REPORTSTATUS, String> m = new EnumMap<REPORTSTATUS, String>(REPORTSTATUS.class);
 			m.put(INITIAL, 		"");
 			m.put(UNKNOWN, 		"Неизвестный статус...");
 			m.put(queued, 		"Поставлено в очередь на формирование отчёта");
@@ -79,8 +77,8 @@ public class JasperReportService implements Serializable {
 			m.put(NOTFOUND, 	"Отчёт не найден!");
 			return m;
 		}	
-		private static EnumMap<REPORTSTATUS, String> getStrMsgMap2(){
-			EnumMap<REPORTSTATUS, String> m = new EnumMap<REPORTSTATUS, String>(REPORTSTATUS.class);
+		private static SerializableMap<REPORTSTATUS, String> getStrMsgMap2(){
+			SerializableMap<REPORTSTATUS, String> m = new EnumMap<REPORTSTATUS, String>(REPORTSTATUS.class);
 			m.put(INITIAL, 		"");
 			m.put(UNKNOWN, 		"Формирование отчёта не начато. Возможно, произошла ошибка!");
 			m.put(cancelled, 	"Формирование отчёта отменено!");
@@ -88,13 +86,14 @@ public class JasperReportService implements Serializable {
 			m.put(execution, 	"Формирование отчёта запущено! Подождите, пока появится ссылка для загрузки документа.");
 			m.put(ready, 		"Формирование отчёта уже выполнено! Используйте ссылку для загрузки документа.");
 			m.put(failed, 		"Возникла ошибка при формировании отчёта! Повторите попытку в следующий раз.");
+			m.put(NOTFOUND, 	"Отчёт не найден! Проверьте путь к отчёту в таблице REPORTS_BSS_T конфигурационной базы данных.");
 			return m;
 		}			
-		private static final EnumMap<REPORTSTATUS, Integer> m_intMap = getIntMap();
-		private static final EnumMap<REPORTSTATUS, String> m_strMsgMap1 = getStrMsgMap1(), m_strMsgMap2 = getStrMsgMap2();		
-		private Object getFromMap(REPORTSTATUS status, EnumMap mapValue) {
-			if(mapValue.containsKey(this)) return mapValue.get(this);
-			else throw new AssertionError(this.getClass().getName()+ ".getFromMap: Unexpected enumerated value - "+this);			
+		private static final SerializableMap<REPORTSTATUS, Integer> m_intMap = getIntMap();
+		private static final SerializableMap<REPORTSTATUS, String> m_strMsgMap1 = getStrMsgMap1(), m_strMsgMap2 = getStrMsgMap2();		
+		private static Object getFromMap(REPORTSTATUS status, SerializableMap mapValue) {
+			if(mapValue.containsKey(status)) return mapValue.get(status);
+			else throw new AssertionError("REPORTSTATUS.getFromMap: Unexpected enumerated value - "+status);			
 		}
 		public int 	  toInt() 			{ return (Integer)	getFromMap(this, m_intMap); }
 		public String toShortText() 	{ return (String)	getFromMap(this, m_strMsgMap1);}
@@ -102,9 +101,8 @@ public class JasperReportService implements Serializable {
 		
 		public static REPORTSTATUS valueOf(int runReportFlag) {
 	        for (REPORTSTATUS rs : REPORTSTATUS.values())	        	
-	            if (m_intMap.containsKey(rs))
-	            	if(m_intMap.get(rs).equals(runReportFlag))
-	            		return rs;
+	            if (m_intMap.containsKey(rs) && m_intMap.get(rs).equals(runReportFlag))
+            		return rs;
 			return UNKNOWN;
 		}
 	}
@@ -117,43 +115,18 @@ public class JasperReportService implements Serializable {
 	protected static DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 	protected static DocumentBuilder docBuilder;	
 	protected static DocumentBuilder getDocBuilder() throws ParserConfigurationException {		
-		if(docBuilder!=null) return docBuilder;
-		return docBuilder = docFactory.newDocumentBuilder();
+		if(docBuilder==null) docBuilder = docFactory.newDocumentBuilder();
+		return docBuilder;
 	}
 	protected static Document getNewDocument() throws ParserConfigurationException {
 		return getDocBuilder().newDocument();
 	}
-	@Logger private Log log; private String loglinePrefix=this.getClass().getName()+": ";
-	protected void LOG(String label, String messageLine) {
-		LOG(label,messageLine,loglinePrefix);
-	}
-	protected static void LOG(String label, String messageLine, String loglinePrefix) {		
-		System.out.println((new StringBuffer(loglinePrefix))
-				.append(label).append(" - ").append(messageLine)
-				.toString());
-	}
 	
-    protected static void main(String[] argc) throws Exception {
-        String requestStr=null; /*= createJasperRequestString("2015-02-23", "2015-03-15", "xlsx")*/;        
-        HttpClient httpClient = new DefaultHttpClient();
-        Object[] oData = sendCreateReportRequest(requestStr, httpClient);
-        String answerStr = (String)oData[0]; 
-        Header[] headersForCookie = (Header[])oData[1]; // Здесь достанем куки из первого запроса
-        String SavedCookie = cookieHeaderToString(headersForCookie);
-        String[] aIDs = getIDsFromCreateReportResponse(answerStr);
-        String requestId = aIDs[0], exportId = aIDs[1]; 
-        REPORTSTATUS status=checkReportStatus(requestId, SavedCookie,httpClient);        
-        if(status==REPORTSTATUS.execution) {
-        	status=waitForReportReady(requestId, SavedCookie,httpClient);
-        }     
-        System.out.println("Document creation "+(status==REPORTSTATUS.ready?"succeeded":"failed")+"!");        
-        if(status==REPORTSTATUS.ready) {
-        	byte[] data = downloadReportFileAsync(requestId, exportId, SavedCookie);
-        	System.out.println("Downloaded: "+Arrays.toString(Arrays.copyOf(data, 20)));
-        }
-        httpClient.getConnectionManager().shutdown();
-    }
-    
+	
+	private static /*transient*/ final Logger log = LoggerFactory.getLogger(JasperReportService.class);; 
+	protected static void LOG(String label, String messageLine) {
+		log.info(label, " - ", messageLine);
+	}	
     private String m_SavedCookie, m_RequestId, m_ExportId, m_ReportFileName, m_ReportContentType;
     private REPORTSTATUS m_ReportStatus;
     public REPORTSTATUS getReportStatus() {
@@ -162,7 +135,7 @@ public class JasperReportService implements Serializable {
     public void setReportStatus(REPORTSTATUS newValue) {
 		m_ReportStatus = newValue;
 	}    
-	public JasperReportService(String reportCode, HashMap<String, String> reportParameters) 
+	public JasperReportService(String reportCode, SerializableMap<String, String> reportParameters) 
 	throws TransformerConfigurationException, ParserConfigurationException, 
 			TransformerException, IOException, SAXException, InterruptedException {
 		LOG(".ctor: Creating Jasper reporting service: ", reportParameters.toString());
@@ -172,44 +145,45 @@ public class JasperReportService implements Serializable {
 		String requestStr = createJasperRequestString(reportParameters, "xlsx");
 		LOG(".ctor: requestStr:", requestStr);
 		
-		Object[] oData = sendCreateReportRequest(requestStr, httpClient);
-		LOG(".ctor: oData:", Arrays.toString(oData));
-		
-		String[] aIDs = getIDsFromCreateReportResponse((String)oData[0]);
-		LOG(".ctor: aIDs:", Arrays.toString(aIDs));
-		
-		m_RequestId = aIDs[0]; m_ExportId = aIDs[1]; 
-		LOG(".ctor: m_RequestId:", m_RequestId);
-		LOG(".ctor: m_ExportId:",  m_ExportId);
-		
-		m_SavedCookie = cookieHeaderToString((Header[])oData[1]);		
-		m_ReportStatus=checkReportStatus(m_RequestId, m_SavedCookie, httpClient);
-		LOG(".ctor: m_SavedCookie:", m_SavedCookie);
+        HttpResponse response = sendCreateReportRequest(requestStr, httpClient);
+        String sResponse = EntityUtils.toString(response.getEntity());
+        StatusLine statusLine = response.getStatusLine();
+        LOG(".ctor: response: ", "StatusLine="+statusLine);
+        LOG(".ctor: response: ", "text: "+sResponse);
+        switch(statusLine.getStatusCode()) {
+	        case 404: //Not Found
+	        	m_ReportStatus = REPORTSTATUS.NOTFOUND;
+	        	break;
+	        case 200: // OK
+        		m_SavedCookie = cookieHeaderToString(response.getHeaders("Set-Cookie"));			
+				String[] aIDs = getIDsFromCreateReportResponse(sResponse);
+				LOG(".ctor: aIDs:", Arrays.toString(aIDs));	
+				m_RequestId = aIDs[0]; m_ExportId = aIDs[1];				
+				LOG(".ctor: m_RequestId:", m_RequestId);
+				LOG(".ctor: m_ExportId:",  m_ExportId);	
+				if(m_RequestId==null || m_ExportId==null) {
+					m_ReportStatus = REPORTSTATUS.failed;					
+				}
+				break;
+        	default:
+        		m_ReportStatus = REPORTSTATUS.failed;
+        }
+        if(!isFatal()) {
+			m_ReportStatus=checkReportStatus(m_RequestId, m_SavedCookie, httpClient);
+			LOG(".ctor: m_SavedCookie:", m_SavedCookie);	        	
+        }
 		LOG(".ctor: m_ReportStatus:",  m_ReportStatus.toString());	
-		
 		httpClient.getConnectionManager().shutdown();
-		if(m_ReportStatus!=REPORTSTATUS.execution) {
-			LOG(".ctor: Got result status", String.valueOf(m_ReportStatus));
-		}
     }
 	
 	public String getReportFileName() 	 {		return m_ReportFileName;	}
 	public String getReportContentType() {		return m_ReportContentType;	}
 	
-	//http://192.168.68.7:8080/jasperserver/rest_v2/reports/
-	//private static String jasperServer = Configuration.getJasperServer();	
-	//private static String jasperLogin = Configuration.getJasperLogin();	
-	//private static String jasperPassword = Configuration.getJasperPassword();
-	
-	//"http://report.tp.toris.vpn/jasperserver"
+	// ` "http://192.168.68.7:8080/jasperserver/rest_v2/reports/"
+	// ` "http://report.tp.toris.vpn/jasperserver"
 	private static final String csReportSvrRt=getReportSvrRt(Configuration.getJasperServer());
 	//"j_username=jasperadmin&j_password=jasperadmin"
 	private static final String csReportCredStr=getReportCredStr(Configuration.getJasperLogin(),Configuration.getJasperPassword());
-    //private static Header[] headersForCookie;
-    //private static String answerStr;
-    //private static String exportId;
-    //private static String requestId;
-
 
 	protected static String getReportCredStr(String username, String password) {
 		return (new StringBuffer("j_username=")).append(username)
@@ -239,7 +213,7 @@ public class JasperReportService implements Serializable {
      * @throws TransformerException
      */
     
-    public static String createJasperRequestString(HashMap<String, String> reportParameters, String TargetFormatFileExt) throws ParserConfigurationException, TransformerConfigurationException, TransformerException {
+    public static String createJasperRequestString(SerializableMap<String, String> reportParameters, String TargetFormatFileExt) throws ParserConfigurationException, TransformerConfigurationException, TransformerException {
         // root elements
         Document doc = getNewDocument();
         Element rootElement = doc.createElement("reportExecutionRequest");
@@ -299,18 +273,15 @@ public class JasperReportService implements Serializable {
         transformer.transform(source, result);
         return result.getWriter().toString();
     }
-    protected static Object[] sendCreateReportRequest(String requestStr, HttpClient httpClient) throws IOException {
+    protected static HttpResponse sendCreateReportRequest(String requestStr, HttpClient httpClient) throws IOException {
     	String sRqUrl=urlConcat(csReportSvrRt, "/rest_v2/reportExecutions?"+csReportCredStr);
-    	LOG("sRqUrl:", sRqUrl, "sendCreateReportRequest: ");
+    	LOG("sendCreateReportRequest: sRqUrl:", sRqUrl);
         //1.1        
         HttpPost httppost = new HttpPost(sRqUrl);
         StringEntity stringEntity = new StringEntity(requestStr);
         stringEntity.setContentType("application/xml");
         httppost.setEntity(stringEntity);
-        HttpResponse response = httpClient.execute(httppost);
-
-        return new Object[]{EntityUtils.toString(response.getEntity()),
-        					response.getHeaders("Set-Cookie")};
+        return httpClient.execute(httppost);
     }
     
     protected static Document parseXmlDoc(String xmlData) throws SAXException, IOException, ParserConfigurationException {
@@ -319,14 +290,14 @@ public class JasperReportService implements Serializable {
     
     // Return: [0]: requestId, [1]: exportId
     protected static String[] getIDsFromCreateReportResponse(String responseString) throws SAXException, IOException, ParserConfigurationException {
-    	HashMap<String, String> hmResult = extractXmlTagData(responseString, new String[]{"requestId", "id"});
+    	SerializableMap<String, String> hmResult = extractXmlTagData(responseString, new String[]{"requestId", "id"});
     	return new String[]{ hmResult.get("requestId"), hmResult.get("id") };
     }    
-    protected static HashMap<String, String> extractXmlTagData(String xmlData, String[] targetTagNames) throws SAXException, IOException, ParserConfigurationException {
+    protected static SerializableMap<String, String> extractXmlTagData(String xmlData, String[] targetTagNames) throws SAXException, IOException, ParserConfigurationException {
         return extractXmlTagData(parseXmlDoc(xmlData), targetTagNames);
     }    
-    protected static HashMap<String, String> extractXmlTagData(Document document, String[] targetTagNames) {
-    	HashMap<String, String> hmResult = new HashMap<String, String>(); 
+    protected static SerializableMap<String, String> extractXmlTagData(Document document, String[] targetTagNames) {
+    	SerializableMap<String, String> hmResult = new HashMap<String, String>(); 
       	for(String tagName: targetTagNames) {
       		String strValue = null;
 	        NodeList elements = document.getElementsByTagName(tagName);
@@ -370,14 +341,17 @@ public class JasperReportService implements Serializable {
     long m_lastChkTimeReportStatus=0;
     // result:  -1: failed, 0: in progress, 1: ready
     public REPORTSTATUS checkReportStatus() throws ParserConfigurationException, InterruptedException, SAXException, IOException {
-    	m_lastChkTimeReportStatus=(new Date()).getTime();
-    	return m_ReportStatus=checkReportStatus(m_RequestId, m_SavedCookie, null);
+    	if(!isFatal()) {
+    		m_lastChkTimeReportStatus=(new Date()).getTime();
+    		m_ReportStatus=checkReportStatus(m_RequestId, m_SavedCookie, null);
+    	}
+    	return m_ReportStatus;
     }
     public static REPORTSTATUS checkReportStatus(String requestId, String SavedCookie, HttpClient httpClient) 
     throws ParserConfigurationException, InterruptedException, SAXException, IOException {
     	if(requestId!=null) {
 	    	String sUrl=urlConcat(csReportSvrRt, "/rest_v2/reportExecutions/"+requestId+"/status?"+csReportCredStr);
-	    	LOG("sUrl:", sUrl, "checkReportStatus: ");
+	    	LOG("checkReportStatus: sUrl:", sUrl);
 	    	HttpResponse r = (httpClient!=null)?httpClient.execute(new HttpGet(sUrl)):getNewHttpClientResponse(sUrl,SavedCookie);
 	    	return checkReportStatus(EntityUtils.toString(r.getEntity()));
     	} else {
@@ -389,7 +363,7 @@ public class JasperReportService implements Serializable {
     throws ParserConfigurationException, SAXException, IOException {        
         NodeList elementStatus = parseXmlDoc(answerStr2).getElementsByTagName("status");
         String sStatus=fetchTextContent(elementStatus,"UNKNOWN");
-        System.out.println("checkReportStatus: sStatus="+sStatus);
+        LOG("checkReportStatus: ", "sStatus="+sStatus);
         return REPORTSTATUS.valueOf(sStatus);
     }
     
@@ -408,14 +382,14 @@ public class JasperReportService implements Serializable {
     }
     
     public byte[] downloadReportFile() throws IOException {
-    	return downloadReportFileAsync(m_RequestId, m_ExportId, m_SavedCookie);
+    	return (isFatal())?null:downloadReportFileAsync(m_RequestId, m_ExportId, m_SavedCookie);
     }
     
     public static byte[] downloadReportFileAsync(String requestId, String exportId, String SavedCookie) throws IOException {
     	if(requestId!=null && exportId!=null) {
 	    	String sUrl=urlConcat(csReportSvrRt,"/rest_v2/reportExecutions/"+requestId+
 	        		"/exports/"+exportId+"/outputResource?"+csReportCredStr);
-	    	LOG("sUrl:", sUrl, "downloadReportFileAsync: ");    	
+	    	LOG("downloadReportFileAsync: sUrl:", sUrl);    	
 	        HttpClient httpClient2 = new DefaultHttpClient();
 	        HttpResponse response3 = httpClient2.execute(RestoreCookieGet(sUrl, SavedCookie));
 	        byte[] r=EntityUtils.toByteArray(response3.getEntity());
@@ -429,8 +403,12 @@ public class JasperReportService implements Serializable {
 		return Math.abs((new Date()).getTime()-m_lastChkTimeReportStatus) > 1000;
     }
     // isRunning is cached with a timeout; e.g. it is kept actual automatically (within the timeout), but with improved performance on multiple prop access
-	public boolean isRunning() throws ParserConfigurationException, InterruptedException, SAXException, IOException {		
+	public boolean isRunning() throws ParserConfigurationException, InterruptedException, SAXException, IOException {
+		if(isFatal()) return false;		
 		REPORTSTATUS rs = this.isStatusExpired()?this.checkReportStatus():m_ReportStatus;
 		return REPORTSTATUS.queued.equals(rs)||REPORTSTATUS.execution.equals(rs);
+	}
+	public boolean isFatal() {
+		return m_ReportStatus==REPORTSTATUS.NOTFOUND ||  m_ReportStatus==REPORTSTATUS.failed;
 	}
 }
