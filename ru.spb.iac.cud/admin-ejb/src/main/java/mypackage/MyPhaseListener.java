@@ -19,7 +19,7 @@ import org.jboss.seam.annotations.Name;
  public class MyPhaseListener implements PhaseListener {
 
 	
-	private Logger log = Logger.getLogger(MyPhaseListener.class);
+	private transient log = Logger.getLogger(MyPhaseListener.class);
 	
     private Long phaseTime;
     private Long requestTime;

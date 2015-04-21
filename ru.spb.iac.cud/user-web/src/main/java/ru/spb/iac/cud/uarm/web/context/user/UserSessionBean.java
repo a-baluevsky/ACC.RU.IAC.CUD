@@ -1,7 +1,7 @@
 package ru.spb.iac.cud.uarm.web.context.user;
 
 import java.io.Serializable;
-import java.util.Map;
+import javaw.util.SerializableMap;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -12,17 +12,17 @@ import javax.faces.bean.SessionScoped;
  
     private static final long serialVersionUID = 1L;
  
-    private Map<Long, String> sumRoles;
+    private SerializableMap<Long, String> sumRoles;
 
-    private Map<Long, String> sumGroups;
+    private SerializableMap<Long, String> sumGroups;
     
     private String userEmailReg;
     
-    public Map<Long, String> getSumRoles() {
+    public SerializableMap<Long, String> getSumRoles() {
 		return sumRoles;
 	}
 
-	public void setSumRoles(Map<Long, String> sumRoles) {
+	public void setSumRoles(SerializableMap<Long, String> sumRoles) {
 		this.sumRoles = sumRoles;
 	}
 
@@ -34,11 +34,11 @@ import javax.faces.bean.SessionScoped;
 		this.userEmailReg = userEmailReg;
 	}
 
-	public Map<Long, String> getSumGroups() {
+	public SerializableMap<Long, String> getSumGroups() {
 		return sumGroups;
 	}
 
-	public void setSumGroups(Map<Long, String> sumGroups) {
+	public void setSumGroups(SerializableMap<Long, String> sumGroups) {
 		this.sumGroups = sumGroups;
 	}
 

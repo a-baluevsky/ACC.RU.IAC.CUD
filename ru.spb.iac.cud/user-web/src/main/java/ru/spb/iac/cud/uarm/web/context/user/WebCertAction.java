@@ -22,12 +22,12 @@ import java.security.cert.X509CertSelector;
 import java.security.cert.X509Certificate;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import javaw.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import javaw.util.HashSet;
+import javaw.util.SerializableList;
+import javaw.util.SerializableSet;
 
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -354,10 +354,10 @@ public static boolean chain_check(Certificate pcert) {
 	    certs[0] = crt;
 	    certs[1] = tr;  //root
 
-	    final Set trust = new HashSet(0);
+	    final SerializableSet trust = new HashSet(0);
 	    trust.add(new TrustAnchor((X509Certificate) tr, null));
 
-	    final List cert = new ArrayList(0);
+	    final SerializableList cert = new ArrayList(0);
 	    for (int i = 0; i < certs.length; i++) {
 			cert.add(certs[i]);
 		}

@@ -10,13 +10,13 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import javaw.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javaw.util.HashMap;
+import javaw.util.SerializableList;
+import javaw.util.SerializableMap;
 import java.util.regex.Pattern;
 
 import javax.ejb.EJB;
@@ -66,37 +66,37 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
     
     private AcUsersKnlT user;
 
-    private List<AcIsBssT> listArm;
+    private SerializableList<AcIsBssT> listArm;
     
-    private List<AcIsBssT> listArmFull;
+    private SerializableList<AcIsBssT> listArmFull;
     
-    private List<AcRolesBssT> listRolesFromArm;
+    private SerializableList<AcRolesBssT> listRolesFromArm;
     
-    private List<GroupUsersKnlT> listGroupsFromArm;
+    private SerializableList<GroupUsersKnlT> listGroupsFromArm;
     
-    private List<JournAppAccessBssT> listAppAccess;
+    private SerializableList<JournAppAccessBssT> listAppAccess;
     
-    private List<JournAppAccessBssT> listAppAccessGroups;
+    private SerializableList<JournAppAccessBssT> listAppAccessGroups;
     
-    private List<JournAppAdminUserSysBssT> listAppAdminUserSys;
+    private SerializableList<JournAppAdminUserSysBssT> listAppAdminUserSys;
     
-    private List<JournAppOrgManagerBssT> listAppOrgMan;
+    private SerializableList<JournAppOrgManagerBssT> listAppOrgMan;
         
-    private List<AcRolesBssT> listRolesAdminSys;
+    private SerializableList<AcRolesBssT> listRolesAdminSys;
     
     private Boolean renderedRolesTable;
     
     private Boolean renderedGroupsTable;
     
-    private List<String> sumRoles;
+    private SerializableList<String> sumRoles;
     
-    private List<String> sumGroups;
+    private SerializableList<String> sumGroups;
     
     private Part certFile; 
     
-    private List<GroupUsersKnlT> userGroups;
+    private SerializableList<GroupUsersKnlT> userGroups;
     
-    private List<BaseItem> userCertList;
+    private SerializableList<BaseItem> userCertList;
     
 	public AcUsersKnlT getUser() {
 		
@@ -126,7 +126,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 		this.user = user;
 	}
 
-	public List<AcIsBssT> getListArm() {
+	public SerializableList<AcIsBssT> getListArm() {
 		
 		HttpSession hs = (HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false); 
 		Long authUserID = (Long) hs.getAttribute(CUDUserConsoleConstants.authUserID);
@@ -144,11 +144,11 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 		return listArm;
 	}
 
-	public void setListArm(List<AcIsBssT> listArm) {
+	public void setListArm(SerializableList<AcIsBssT> listArm) {
 		this.listArm = listArm;
 	}
 
-	public List<AcIsBssT> getListArmFull() {
+	public SerializableList<AcIsBssT> getListArmFull() {
 		
 		LOGGER.debug("UserManagerBean:getListArmFull:01");
 		
@@ -172,11 +172,11 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 		return listArmFull;
 	}
 
-	public void setListArmFull(List<AcIsBssT> listArmFull) {
+	public void setListArmFull(SerializableList<AcIsBssT> listArmFull) {
 		this.listArmFull = listArmFull;
 	}
 
-	public List<JournAppAccessBssT> getListAppAccess() {
+	public SerializableList<JournAppAccessBssT> getListAppAccess() {
 		
 	    LOGGER.debug("UserManagerBean:getListAppAccess:01");
 		
@@ -193,11 +193,11 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 		return listAppAccess;
 	}
 
-	public void setListAppAccess(List<JournAppAccessBssT> listAppAccess) {
+	public void setListAppAccess(SerializableList<JournAppAccessBssT> listAppAccess) {
 		this.listAppAccess = listAppAccess;
 	}
 
-    public List<JournAppAccessBssT> getListAppAccessGroups() {
+    public SerializableList<JournAppAccessBssT> getListAppAccessGroups() {
 		
 	    LOGGER.debug("UserManagerBean:getListAppAccessGroups:01");
 		
@@ -214,11 +214,11 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 		return listAppAccessGroups;
 	}
 
-	public void setListAppAccessGroups(List<JournAppAccessBssT> listAppAccessGroups) {
+	public void setListAppAccessGroups(SerializableList<JournAppAccessBssT> listAppAccessGroups) {
 		this.listAppAccessGroups = listAppAccessGroups;
 	}
 	
-	public List<AcRolesBssT> getListRolesFromArm() {
+	public SerializableList<AcRolesBssT> getListRolesFromArm() {
 		
 		if(listRolesFromArm==null){
 			
@@ -245,11 +245,11 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 		return listRolesFromArm;
 	}
 
-	public void setListRolesFromArm(List<AcRolesBssT> listRolesFromArm) {
+	public void setListRolesFromArm(SerializableList<AcRolesBssT> listRolesFromArm) {
 		this.listRolesFromArm = listRolesFromArm;
 	}
    
-   public List<GroupUsersKnlT> getListGroupsFromArm() {
+   public SerializableList<GroupUsersKnlT> getListGroupsFromArm() {
 		
 		if(listGroupsFromArm==null){
 			
@@ -276,7 +276,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 		return listGroupsFromArm;
 	}
 
-	public void setListGroupsFromArm(List<GroupUsersKnlT> listGroupsFromArm) {
+	public void setListGroupsFromArm(SerializableList<GroupUsersKnlT> listGroupsFromArm) {
 		this.listGroupsFromArm = listGroupsFromArm;
 	}
 	
@@ -291,7 +291,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 			 LOGGER.debug("UserManagerBean:addRole:02:"+nameRole);
 			 
 			 if(userSessionBean.getSumRoles()==null){
-				Map<Long, String> sumRoles = new  HashMap<Long, String>();
+				SerializableMap<Long, String> sumRoles = new  HashMap<Long, String>();
 				userSessionBean.setSumRoles(sumRoles);
 			 }
 			 
@@ -317,7 +317,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 			 LOGGER.debug("UserManagerBean:addGroup:02:"+nameGroup);
 			 
 			 if(userSessionBean.getSumGroups()==null){
-				Map<Long, String> sumGroups = new  HashMap<Long, String>();
+				SerializableMap<Long, String> sumGroups = new  HashMap<Long, String>();
 				userSessionBean.setSumGroups(sumGroups);
 			 }
 			 
@@ -332,7 +332,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 		}
 	}
 	
-	public List<String> getSumRoles() {
+	public SerializableList<String> getSumRoles() {
 		try{
 			 LOGGER.debug("UserManagerBean:getSumRoles:01");
 			 
@@ -353,11 +353,11 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 		return this.sumRoles;
 	}
 	
-	public void setSumRoles(List<String> sumRoles) {
+	public void setSumRoles(SerializableList<String> sumRoles) {
 		this.sumRoles = sumRoles;
 	}
 	
-	public List<String> getSumGroups() {
+	public SerializableList<String> getSumGroups() {
 		try{
 			 LOGGER.debug("UserManagerBean:getSumGroups:01");
 			 
@@ -378,7 +378,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 		return this.sumGroups;
 	}
 	
-	public void setSumGroups(List<String> sumGroups) {
+	public void setSumGroups(SerializableList<String> sumGroups) {
 		this.sumGroups = sumGroups;
 	}
 	
@@ -475,7 +475,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 		this.userSessionBean = userSessionBean;
 	}
 
-	public List<JournAppAdminUserSysBssT> getListAppAdminUserSys() {
+	public SerializableList<JournAppAdminUserSysBssT> getListAppAdminUserSys() {
 		
      LOGGER.debug("UserManagerBean:getListAppAdminUserSys:01");
 		
@@ -492,11 +492,11 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 	}
 
 	public void setListAppAdminUserSys(
-			List<JournAppAdminUserSysBssT> listAppAdminUserSys) {
+			SerializableList<JournAppAdminUserSysBssT> listAppAdminUserSys) {
 		this.listAppAdminUserSys = listAppAdminUserSys;
 	}
 
-	public List<JournAppOrgManagerBssT> getListAppOrgMan() {
+	public SerializableList<JournAppOrgManagerBssT> getListAppOrgMan() {
 		
 	     LOGGER.debug("UserManagerBean:getListAppOrgMan:01");
 			
@@ -513,7 +513,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 		}
 
 		public void setListAppOrgMan(
-				List<JournAppOrgManagerBssT> listAppAOrgMan) {
+				SerializableList<JournAppOrgManagerBssT> listAppAOrgMan) {
 			this.listAppOrgMan = listAppOrgMan;
 		}
 	/**
@@ -521,7 +521,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
      * выбрать роль на консоле администрирования ЦУД
      * @return
      */
-	public List<AcRolesBssT> getListRolesAdminSys() {
+	public SerializableList<AcRolesBssT> getListRolesAdminSys() {
 		
 		if(listRolesAdminSys==null){
 			listRolesAdminSys=userManagerEJB.getListRolesFromArm(CUD_ID);
@@ -529,7 +529,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 		return listRolesAdminSys;
 	}
 
-	public void setListRolesAdminSys(List<AcRolesBssT> listRolesAdminSys) {
+	public void setListRolesAdminSys(SerializableList<AcRolesBssT> listRolesAdminSys) {
 		this.listRolesAdminSys = listRolesAdminSys;
 	}
     
@@ -740,7 +740,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 		 return result;
 	 }
 
-	public List<GroupUsersKnlT> getUserGroups() {
+	public SerializableList<GroupUsersKnlT> getUserGroups() {
 		
 		if(userGroups==null){
 			
@@ -764,12 +764,12 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 		return userGroups;
 	}
 
-	public void setUserGroups(List<GroupUsersKnlT> userGroups) {
+	public void setUserGroups(SerializableList<GroupUsersKnlT> userGroups) {
 		this.userGroups = userGroups;
 	}
 	
 
-	public List<BaseItem> getUserCertList() {
+	public SerializableList<BaseItem> getUserCertList() {
 		
 		if(this.userCertList==null){
 			
@@ -787,7 +787,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 		return userCertList;
 	}
 
-	public void setUserCertList(List<BaseItem> userCertList) {
+	public void setUserCertList(SerializableList<BaseItem> userCertList) {
 		this.userCertList = userCertList;
 	}
 	 

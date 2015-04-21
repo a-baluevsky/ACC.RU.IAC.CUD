@@ -2,12 +2,12 @@ package iac.grn.infosweb.context.app.user.accmodify;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import javaw.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Map;
-import java.util.List;
-import java.util.Set;
+import javaw.util.SerializableMap;
+import javaw.util.SerializableList;
+import javaw.util.SerializableSet;
 
 import javax.faces.context.FacesContext;
 import javax.persistence.NoResultException;
@@ -28,14 +28,15 @@ import iac.grn.serviceitems.BaseTableItem;
 import iac.grn.serviceitems.HeaderTableItem;
 
 @Name("appUserAccModifyManager")
- public class AppUserAccModifyManager extends BaseManager{
+ public class AppUserAccModifyManager extends BaseManager implements java.io.Serializable {
 
 	
 	private String rejectReason;
 	private String commentText;
 	
-	private List<HeaderTableItem> headerItemsListContextCREATE;
+	private SerializableList<HeaderTableItem> headerItemsListContextCREATE;
 	
+	@Override
 	public void invokeLocal(String type, int firstRow, int numberOfRows,
 	           String sessionId) {
 		
@@ -46,14 +47,14 @@ import iac.grn.serviceitems.HeaderTableItem;
 			 
 			 AppUserAccModifyStateHolder appUserAccModifyStateHolder = (AppUserAccModifyStateHolder)
 					  Component.getInstance("appUserAccModifyStateHolder",ScopeType.SESSION);
-			 Map<String, String> filterMap = appUserAccModifyStateHolder.getColumnFilterValues();
+			 SerializableMap<String, String> filterMap = appUserAccModifyStateHolder.getColumnFilterValues();
 			 String st=null;
 			  
 			 if("list".equals(type)){
 				 log.info("invokeLocal:list:01");
 				 
-				 Set<Map.Entry<String, String>> set = appUserAccModifyStateHolder.getSortOrders().entrySet();
-                 for (Map.Entry<String, String> me : set) {
+				 SerializableSet<SerializableMap.Entry<String, String>> set = appUserAccModifyStateHolder.getSortOrders().entrySet();
+                 for (SerializableMap.Entry<String, String> me : set) {
       		       log.info("me.getKey+:"+me.getKey());
       		       log.info("me.getValue:"+me.getValue());
       		       
@@ -66,8 +67,8 @@ import iac.grn.serviceitems.HeaderTableItem;
                  log.info("invokeLocal:list:orderQueryAppUserAcc:"+orderQueryAppUserAcc);
                  
                  if(filterMap!=null){
-    	    		 Set<Map.Entry<String, String>> setFilterAppUserAcc = filterMap.entrySet();
-    	              for (Map.Entry<String, String> me : setFilterAppUserAcc) {
+    	    		 SerializableSet<SerializableMap.Entry<String, String>> setFilterAppUserAcc = filterMap.entrySet();
+    	              for (SerializableMap.Entry<String, String> me : setFilterAppUserAcc) {
     	            	  log.info("me.getKey+:"+me.getKey());
     	            	  log.info("me.getValue:"+me.getValue());
     	   		      
@@ -89,7 +90,7 @@ import iac.grn.serviceitems.HeaderTableItem;
                  log.info("AppUserAcc:invokeLocal:list:filterQuery:"+st);
 
              
-               List<Object[]> lo=null;
+               SerializableList<Object[]> lo=null;
                AppUserAccModifyItem ui = null;
                DateFormat df = new SimpleDateFormat ("dd.MM.yy HH:mm:ss");
                
@@ -219,8 +220,8 @@ import iac.grn.serviceitems.HeaderTableItem;
 				 
                  
                  if(filterMap!=null){
-    	    		 Set<Map.Entry<String, String>> setFilterAppUserAcc = filterMap.entrySet();
-    	              for (Map.Entry<String, String> me : setFilterAppUserAcc) {
+    	    		 SerializableSet<SerializableMap.Entry<String, String>> setFilterAppUserAcc = filterMap.entrySet();
+    	              for (SerializableMap.Entry<String, String> me : setFilterAppUserAcc) {
     	            	
     	            	  
     	              if("t1_iogv_bind_type".equals(me.getKey())&&(me.getValue()!=null && "-2".equals(me.getValue()))){
@@ -324,7 +325,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 		   }
 		   
 		   try{
-	           List<Object[]> lo=null;
+	           SerializableList<Object[]> lo=null;
 	           AppUserAccModifyItem ui = null;
 	           DateFormat df = new SimpleDateFormat ("dd.MM.yy HH:mm:ss");
 	           
@@ -626,6 +627,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 		   }
 	   } 
 	 
+	 @Override
 	 public void forViewUpdDel() {
 		 try{
 		     String sessionId = FacesContext.getCurrentInstance().getExternalContext()
@@ -678,7 +680,8 @@ import iac.grn.serviceitems.HeaderTableItem;
 		 this.commentText=commentText;
 	 }
 	 
-	 public List <BaseTableItem> getAuditItemsListSelect() {
+	 @Override
+	 public SerializableList <BaseTableItem> getAuditItemsListSelect() {
 		   log.info("getAuditItemsListSelect:01");
 		   AppUserAccModifyContext ac= new AppUserAccModifyContext();
 		   if( auditItemsListSelect==null){
@@ -695,8 +698,8 @@ import iac.grn.serviceitems.HeaderTableItem;
   }
   
 
-  
-  public List <BaseTableItem> getAuditItemsListContext() {
+  @Override
+  public SerializableList <BaseTableItem> getAuditItemsListContext() {
 	   log.info("AppUserAccModifyManager:getAuditItemsListContext");
 	   if(auditItemsListContext==null){
 		   AppUserAccModifyContext ac= new AppUserAccModifyContext();
@@ -709,7 +712,8 @@ import iac.grn.serviceitems.HeaderTableItem;
 	   return this.auditItemsListContext;
   }
   
-  public List<HeaderTableItem> getHeaderItemsListContext() {
+  @Override
+  public SerializableList<HeaderTableItem> getHeaderItemsListContext() {
 	  
 	  if(headerItemsListContext==null){
 		   AppUserAccModifyContext ac= new AppUserAccModifyContext();
@@ -723,7 +727,7 @@ import iac.grn.serviceitems.HeaderTableItem;
   }
   
   
-  public List<HeaderTableItem> getHeaderItemsListContext(String ids) {
+  public SerializableList<HeaderTableItem> getHeaderItemsListContext(String ids) {
 	  
 	 	AppUserAccModifyContext ac= new AppUserAccModifyContext();
 		
@@ -734,7 +738,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	 				
 	 	    
 	 	
-	 	     List<String> idsList =  Arrays.asList(ids.split(","));
+	 	     SerializableList<String> idsList =  Arrays.asList(ids.split(","));
 	 	   
 	    	for(HeaderTableItem hti :ac.getHeaderItemsList()){
 			
@@ -750,7 +754,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	   return this.headerItemsListContext;
  }
   
-  public List<HeaderTableItem> getHeaderItemsListContextCREATE(String ids) {
+  public SerializableList<HeaderTableItem> getHeaderItemsListContextCREATE(String ids) {
 	  
 	 	AppUserAccModifyContext ac= new AppUserAccModifyContext();
 		
@@ -761,7 +765,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	 				
 	 	    
 	 	
-	 	     List<String> idsList =  Arrays.asList(ids.split(","));
+	 	     SerializableList<String> idsList =  Arrays.asList(ids.split(","));
 	 	   
 	    	for(HeaderTableItem hti :ac.getHeaderItemsList()){
 			

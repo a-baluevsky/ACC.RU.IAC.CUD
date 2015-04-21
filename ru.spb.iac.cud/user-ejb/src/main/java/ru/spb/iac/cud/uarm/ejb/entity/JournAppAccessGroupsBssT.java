@@ -5,7 +5,7 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 import java.util.Date;
-import java.util.List;
+import javaw.util.SerializableList;
 
 
 /**
@@ -51,7 +51,7 @@ import java.util.List;
 	private AcUsersKnlT acUsersKnlT1;
 
 	@OneToMany(mappedBy="journAppAccessGroupsBssT", cascade={CascadeType.PERSIST/*, CascadeType.REFRESH, CascadeType.REMOVE*/})
-	private List<GroupsAppAccessGrBssT> groupsAppAccessGrBssTs;
+	private SerializableList<GroupsAppAccessGrBssT> groupsAppAccessGrBssTs;
 
 	@ManyToOne
 	@JoinColumn(name="UP_IS_APP", insertable=false, updatable=false)
@@ -133,11 +133,11 @@ import java.util.List;
 		this.status = status;
 	}
 
-	public List<GroupsAppAccessGrBssT> getGroupsAppAccessGrBssTs() {
+	public SerializableList<GroupsAppAccessGrBssT> getGroupsAppAccessGrBssTs() {
 		return this.groupsAppAccessGrBssTs;
 	}
 
-	public void setGroupsAppAccessGrBssTs(List<GroupsAppAccessGrBssT> groupsAppAccessGrBssTs) {
+	public void setGroupsAppAccessGrBssTs(SerializableList<GroupsAppAccessGrBssT> groupsAppAccessGrBssTs) {
 		this.groupsAppAccessGrBssTs = groupsAppAccessGrBssTs;
 	}
 

@@ -5,7 +5,7 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 import java.util.Date;
-import java.util.List;
+import javaw.util.SerializableList;
 
 
 /**
@@ -44,22 +44,22 @@ import java.util.List;
 	private String signObject;
 
 	@OneToMany(mappedBy="acIsBssT")
-	private List<AcRolesBssT> acRolesBssTs;
+	private SerializableList<AcRolesBssT> acRolesBssTs;
 
 	@OneToMany(mappedBy="acIsBssT")
-	private List<JournAppAccessBssT> journAppAccessBssTs;
+	private SerializableList<JournAppAccessBssT> journAppAccessBssTs;
 
 	@OneToMany(mappedBy="acIsBssT")
-	private List<JournAppAccessGroupsBssT> journAppAccessGroupsBssTs;
+	private SerializableList<JournAppAccessGroupsBssT> journAppAccessGroupsBssTs;
 	
 	@OneToMany(mappedBy="acIsBssT")
-	private List<LinkAdminUserSys> linkAdminUserSys;
+	private SerializableList<LinkAdminUserSys> linkAdminUserSys;
 
 	@OneToMany(mappedBy="acIsBssT")
-	private List<JournAppAdminUserSysBssT> journAppAdminUserSysBssTs;
+	private SerializableList<JournAppAdminUserSysBssT> journAppAdminUserSysBssTs;
 	
 	@Transient
-	private List<GroupUsersKnlT> groups;
+	private SerializableList<GroupUsersKnlT> groups;
 	
 	public AcIsBssT() {
 	}
@@ -128,11 +128,11 @@ import java.util.List;
 		this.signObject = signObject;
 	}
 
-	public List<AcRolesBssT> getAcRolesBssTs() {
+	public SerializableList<AcRolesBssT> getAcRolesBssTs() {
 		return this.acRolesBssTs;
 	}
 
-	public void setAcRolesBssTs(List<AcRolesBssT> acRolesBssTs) {
+	public void setAcRolesBssTs(SerializableList<AcRolesBssT> acRolesBssTs) {
 		this.acRolesBssTs = acRolesBssTs;
 	}
 
@@ -149,19 +149,19 @@ import java.util.List;
 
 		return acRolesBssT;
 	}
-	public List<JournAppAccessBssT> getJournAppAccessBssTs() {
+	public SerializableList<JournAppAccessBssT> getJournAppAccessBssTs() {
 		return this.journAppAccessBssTs;
 	}
 
-	public void setJournAppAccessBssTs(List<JournAppAccessBssT> journAppAccessBssTs) {
+	public void setJournAppAccessBssTs(SerializableList<JournAppAccessBssT> journAppAccessBssTs) {
 		this.journAppAccessBssTs = journAppAccessBssTs;
 	}
 
-	public List<LinkAdminUserSys> getLinkAdminUserSys() {
+	public SerializableList<LinkAdminUserSys> getLinkAdminUserSys() {
 		return this.linkAdminUserSys;
 	}
 
-	public void setLinkAdminUserSys(List<LinkAdminUserSys> linkAdminUserSys) {
+	public void setLinkAdminUserSys(SerializableList<LinkAdminUserSys> linkAdminUserSys) {
 		this.linkAdminUserSys = linkAdminUserSys;
 	}
 
@@ -180,12 +180,12 @@ import java.util.List;
 	}
 
 	
-	public List<JournAppAdminUserSysBssT> getJournAppAdminUserSysBssTs() {
+	public SerializableList<JournAppAdminUserSysBssT> getJournAppAdminUserSysBssTs() {
 		return journAppAdminUserSysBssTs;
 	}
 
 	public void setJournAppAdminUserSysBssTs(
-			List<JournAppAdminUserSysBssT> journAppAdminUserSysBssTs) {
+			SerializableList<JournAppAdminUserSysBssT> journAppAdminUserSysBssTs) {
 		this.journAppAdminUserSysBssTs = journAppAdminUserSysBssTs;
 	}
 
@@ -203,20 +203,20 @@ import java.util.List;
 		return journAppAdminUserSysBssT;
 	}
 
-	public List<JournAppAccessGroupsBssT> getJournAppAccessGroupsBssTs() {
+	public SerializableList<JournAppAccessGroupsBssT> getJournAppAccessGroupsBssTs() {
 		return journAppAccessGroupsBssTs;
 	}
 
 	public void setJournAppAccessGroupsBssTs(
-			List<JournAppAccessGroupsBssT> journAppAccessGroupsBssTs) {
+			SerializableList<JournAppAccessGroupsBssT> journAppAccessGroupsBssTs) {
 		this.journAppAccessGroupsBssTs = journAppAccessGroupsBssTs;
 	}
 
-	public List<GroupUsersKnlT> getGroups() {
+	public SerializableList<GroupUsersKnlT> getGroups() {
 		return groups;
 	}
 
-	public void setGroups(List<GroupUsersKnlT> groups) {
+	public void setGroups(SerializableList<GroupUsersKnlT> groups) {
 		this.groups = groups;
 	}
 }

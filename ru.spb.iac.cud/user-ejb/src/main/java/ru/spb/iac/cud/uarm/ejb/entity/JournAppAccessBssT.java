@@ -4,7 +4,7 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 import java.util.Date;
-import java.util.List;
+import javaw.util.SerializableList;
 
 
 /**
@@ -68,7 +68,7 @@ import java.util.List;
 	private Long acUsersKnlT3Long;
 	
 	@OneToMany(mappedBy="journAppAccessBssT", cascade={CascadeType.PERSIST/*, CascadeType.REFRESH, CascadeType.REMOVE*/})
-	private List<RolesAppAccessBssT> rolesAppAccessBssTs;
+	private SerializableList<RolesAppAccessBssT> rolesAppAccessBssTs;
 
 	
 	@Column(name="UP_USER")
@@ -195,11 +195,11 @@ import java.util.List;
 		this.acUsersKnlT3 = acUsersKnlT3;
 	}
 
-	public List<RolesAppAccessBssT> getRolesAppAccessBssTs() {
+	public SerializableList<RolesAppAccessBssT> getRolesAppAccessBssTs() {
 		return this.rolesAppAccessBssTs;
 	}
 
-	public void setRolesAppAccessBssTs(List<RolesAppAccessBssT> rolesAppAccessBssTs) {
+	public void setRolesAppAccessBssTs(SerializableList<RolesAppAccessBssT> rolesAppAccessBssTs) {
 		this.rolesAppAccessBssTs = rolesAppAccessBssTs;
 	}
 

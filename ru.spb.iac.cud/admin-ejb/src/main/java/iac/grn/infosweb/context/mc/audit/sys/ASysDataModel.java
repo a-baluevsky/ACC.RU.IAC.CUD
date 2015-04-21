@@ -4,7 +4,7 @@ import iac.cud.infosweb.dataitems.BaseItem;
 import iac.grn.infosweb.session.table.BaseDataModel;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import javaw.util.ArrayList;
 
 import javax.faces.context.FacesContext;
 
@@ -22,7 +22,7 @@ import org.jboss.seam.log.Log;
 @Name("aSysDataModel")
  public class ASysDataModel extends BaseDataModel<BaseItem, Long>  {
 	
-	@Logger private Log log;
+	@Logger private transient Log log;
 	
 	@In(create=true)
 	private ASysDataProvider aSysDataProvider;

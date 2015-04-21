@@ -4,9 +4,9 @@ import iac.cud.infosweb.dataitems.BaseItem;
 import iac.grn.infosweb.session.table.BaseDataModel;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import javaw.util.ArrayList;
+import javaw.util.HashMap;
+import javaw.util.SerializableMap;
 
 import javax.faces.context.FacesContext;
 
@@ -24,7 +24,7 @@ import org.jboss.seam.log.Log;
 @Name("usrDataModel")
  public class UsrDataModel extends BaseDataModel<BaseItem, Long>  {
 	
-	@Logger private Log log;
+	@Logger private transient Log log;
 	
 	@In(create=true)
 	private UsrDataProvider usrDataProvider;
@@ -139,7 +139,7 @@ import org.jboss.seam.log.Log;
 		return usrDataProvider;
 	}
 		    
-	   public Map<String, String> getFilterColumnValues() {
+	   public SerializableMap<String, String> getFilterColumnValues() {
 		   if(filterColumnValues!=null){
 		       log.info("getFilterColumnValues:01:"+filterColumnValues.size());
 		   }else{

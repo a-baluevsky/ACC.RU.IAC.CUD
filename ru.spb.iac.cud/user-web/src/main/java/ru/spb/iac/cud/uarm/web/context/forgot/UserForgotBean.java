@@ -1,7 +1,7 @@
 package ru.spb.iac.cud.uarm.web.context.forgot;
 
 import java.io.Serializable;
-import java.util.List;
+import javaw.util.SerializableList;
 import java.util.regex.Pattern;
 
 import javax.ejb.EJB;
@@ -126,7 +126,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
     	HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
     	String context_url=request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath();
 			
-    	List<String> emails = userForgotEJB.step1(userLoginFact, this.userEmail, context_url);
+    	SerializableList<String> emails = userForgotEJB.step1(userLoginFact, this.userEmail, context_url);
         //при уточнении email, emails будет = этому уточненнному email  
     	
     	if(emails==null||emails.isEmpty()){

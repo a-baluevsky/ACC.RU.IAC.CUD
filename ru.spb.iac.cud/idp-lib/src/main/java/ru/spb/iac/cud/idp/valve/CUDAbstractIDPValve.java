@@ -20,12 +20,12 @@ import java.security.GeneralSecurityException;
 import java.security.Principal;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
+import javaw.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import javaw.util.HashMap;
+import javaw.util.SerializableList;
+import javaw.util.SerializableMap;
+import javaw.util.SerializableSet;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.locks.Lock;
@@ -157,11 +157,11 @@ public abstract class CUDAbstractIDPValve extends ValveBase {
 
 	private TrustKeyManager keyManager;
 
-	private transient DelegatedAttributeManager attribManager = new DelegatedAttributeManager();
+	private DelegatedAttributeManager attribManager = new DelegatedAttributeManager();
 
-	private final List<String> attributeKeys = new ArrayList<String>();
+	private final SerializableList<String> attributeKeys = new ArrayList<String>();
 
-	private transient SAML2HandlerChain chain = null;
+	private SAML2HandlerChain chain = null;
 
 	private static final String cookieLogin = "cudLogin";
 	private static final String cookieAuthType = "cudAuthType";
@@ -189,7 +189,7 @@ public abstract class CUDAbstractIDPValve extends ValveBase {
 	 */
 	private final Lock chainLock = new ReentrantLock();
 
-	private Map<String, SPSSODescriptorType> spSSOMetadataMap = new HashMap<String, SPSSODescriptorType>();
+	private SerializableMap<String, SPSSODescriptorType> spSSOMetadataMap = new HashMap<String, SPSSODescriptorType>();
 	private SSLAuthenticator sslAuthenticator;
 	private Handlers handlers;
 
@@ -1164,7 +1164,7 @@ public abstract class CUDAbstractIDPValve extends ValveBase {
 					GeneralConstants.ASSERTION_ID);
 
 			// Set the options on the handler request
-			Map<String, Object> requestOptions = new HashMap<String, Object>();
+			SerializableMap<String, Object> requestOptions = new HashMap<String, Object>();
 
 			if (StringUtil.isNotNull(loginType)) {
 				requestOptions.put(GeneralConstants.LOGIN_TYPE, loginType);
@@ -1211,18 +1211,18 @@ public abstract class CUDAbstractIDPValve extends ValveBase {
 
 				((CUDRoleGenerator) roleGenerator).setSystemCode(codeSystem);
 
-				List<String> roles = roleGenerator.generateRoles(userPrincipal);
+				SerializableList<String> roles = roleGenerator.generateRoles(userPrincipal);
 				session.getSession().setAttribute(GeneralConstants.ROLES_ID,
 						roles);
 
 				// точка включения/отключения передачи ресурсов - подсистем
 				// пока закомментировали
-				// List<String>/ resources =
+				// SerializableList<String>/ resources =
 				// ((CUDRoleGenerator/)roleGenerator)/.generateResources(userPrincipal);
 				// session/.getSession()/.setAttribute("CUD_RESOURCES",
 				// resources);
 
-				Map<String, Object> attribs = this.attribManager.getAttributes(
+				SerializableMap<String, Object> attribs = this.attribManager.getAttributes(
 						userPrincipal, attributeKeys);
 				requestOptions.put(GeneralConstants.ATTRIBUTES, attribs);
 			}
@@ -1477,7 +1477,7 @@ public abstract class CUDAbstractIDPValve extends ValveBase {
 			SAML2HandlerRequest saml2HandlerRequest = new DefaultSAML2HandlerRequest(
 					protocolContext, idpIssuer.getIssuer(), samlDocumentHolder,
 					HANDLER_TYPE.IDP);
-			Map<String, Object> options = new HashMap<String, Object>();
+			SerializableMap<String, Object> options = new HashMap<String, Object>();
 
 			if (this.idpConfiguration.isSupportsSignature()
 					|| this.idpConfiguration.isEncrypt()) {
@@ -1756,7 +1756,7 @@ public abstract class CUDAbstractIDPValve extends ValveBase {
 
 			chain.addAll(HandlerUtil.getHandlers(this.handlers));
 
-			Map<String, Object> chainConfigOptions = new HashMap<String, Object>();
+			SerializableMap<String, Object> chainConfigOptions = new HashMap<String, Object>();
 			chainConfigOptions.put(GeneralConstants.ROLE_GENERATOR,
 					roleGenerator);
 			chainConfigOptions.put(GeneralConstants.CONFIGURATION,
@@ -1795,7 +1795,7 @@ public abstract class CUDAbstractIDPValve extends ValveBase {
 				this.keyManager = CoreConfigUtil
 						.getTrustKeyManager(keyProvider);
 
-				List<AuthPropertyType> authProperties = CoreConfigUtil
+				SerializableList<AuthPropertyType> authProperties = CoreConfigUtil
 						.getKeyProviderProperties(keyProvider);
 				keyManager.setAuthProperties(authProperties);
 				keyManager.setValidatingAlias(keyProvider.getValidatingAlias());
@@ -1947,7 +1947,7 @@ public abstract class CUDAbstractIDPValve extends ValveBase {
 			}
 
 			// Read SP Metadata if provided
-			List<EntityDescriptorType> entityDescriptors = CoreConfigUtil
+			SerializableList<EntityDescriptorType> entityDescriptors = CoreConfigUtil
 					.getMetadataConfiguration(idpConfiguration, getContext()
 							.getServletContext());
 			if (entityDescriptors != null) {
@@ -2090,7 +2090,7 @@ public abstract class CUDAbstractIDPValve extends ValveBase {
 	 * @return
 	 */
 	private SAML11AttributeStatementType createAttributeStatement(
-			List<String> roles) {
+			SerializableList<String> roles) {
 		SAML11AttributeStatementType attrStatement = null;
 		for (String role : roles) {
 			if (attrStatement == null) {

@@ -1,8 +1,8 @@
 package ru.spb.iac.cud.uarm.web.context.reg;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import javaw.util.ArrayList;
+import javaw.util.SerializableList;
 
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -70,7 +70,7 @@ import ru.spb.iac.cud.uarm.web.context.user.UserSessionBean;
 			t1.setCodeSystem("**2");
 			t1.setLoginUser("**3");
 			
-			List<RolesAppAccessBssT> raa_list = new ArrayList<RolesAppAccessBssT>();
+			SerializableList<RolesAppAccessBssT> raa_list = new ArrayList<RolesAppAccessBssT>();
 			
 			for (Long idRole : userSessionBean.getSumRoles().keySet()){
 			  
@@ -130,7 +130,7 @@ import ru.spb.iac.cud.uarm.web.context.user.UserSessionBean;
 			//кому назначаются группы
 			t1.setAcUsersKnlT3Long(authUserID);
 			
-			List<GroupsAppAccessGrBssT> raa_list = new ArrayList<GroupsAppAccessGrBssT>();
+			SerializableList<GroupsAppAccessGrBssT> raa_list = new ArrayList<GroupsAppAccessGrBssT>();
 			
 			for (Long idGroup : userSessionBean.getSumGroups().keySet()){
 			  

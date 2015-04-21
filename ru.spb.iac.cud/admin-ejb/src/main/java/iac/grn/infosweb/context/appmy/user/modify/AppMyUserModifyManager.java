@@ -2,12 +2,12 @@ package iac.grn.infosweb.context.appmy.user.modify;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import javaw.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Map;
-import java.util.List;
-import java.util.Set;
+import javaw.util.SerializableMap;
+import javaw.util.SerializableList;
+import javaw.util.SerializableSet;
 
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
@@ -27,7 +27,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	private String rejectReason;
 	private String commentText;
 	
-	private List<HeaderTableItem> headerItemsListContextCREATE;
+	private SerializableList<HeaderTableItem> headerItemsListContextCREATE;
 	
 	public void invokeLocal(String type, int firstRow, int numberOfRows,
 	           String sessionId) {
@@ -39,14 +39,14 @@ import iac.grn.serviceitems.HeaderTableItem;
 			 
 			 AppMyUserModifyStateHolder appMyUserModifyStateHolder = (AppMyUserModifyStateHolder)
 					  Component.getInstance("appMyUserModifyStateHolder",ScopeType.SESSION);
-			 Map<String, String> filterMapMyUserMod = appMyUserModifyStateHolder.getColumnFilterValues();
+			 SerializableMap<String, String> filterMapMyUserMod = appMyUserModifyStateHolder.getColumnFilterValues();
 			 String st=null;
 			  
 			 if("list".equals(type)){
 				 log.info("AppMyUserMod:invokeLocal:list:01");
 				 
-				 Set<Map.Entry<String, String>> set = appMyUserModifyStateHolder.getSortOrders().entrySet();
-                 for (Map.Entry<String, String> me : set) {
+				 SerializableSet<SerializableMap.Entry<String, String>> set = appMyUserModifyStateHolder.getSortOrders().entrySet();
+                 for (SerializableMap.Entry<String, String> me : set) {
       		       log.info("me.getKey+:"+me.getKey());
       		       log.info("me.getValue:"+me.getValue());
       		       
@@ -59,8 +59,8 @@ import iac.grn.serviceitems.HeaderTableItem;
                  log.info("AppMyUserMod:invokeLocal:list:orderQuery:"+orderQuery);
                  
                  if(filterMapMyUserMod!=null){
-    	    		 Set<Map.Entry<String, String>> setFilterAppMyUserMod = filterMapMyUserMod.entrySet();
-    	              for (Map.Entry<String, String> me : setFilterAppMyUserMod) {
+    	    		 SerializableSet<SerializableMap.Entry<String, String>> setFilterAppMyUserMod = filterMapMyUserMod.entrySet();
+    	              for (SerializableMap.Entry<String, String> me : setFilterAppMyUserMod) {
     	               
     	   		     if("t1_crt_date".equals(me.getKey())){  
     	        	   
@@ -80,7 +80,7 @@ import iac.grn.serviceitems.HeaderTableItem;
                  log.info("AppMyUserMod:invokeLocal:list:filterQuery:"+st);
 
              
-               List<Object[]> loMyUserMod=null;
+               SerializableList<Object[]> loMyUserMod=null;
                AppUserModifyItem ui = null;
                DateFormat df = new SimpleDateFormat ("dd.MM.yy HH:mm:ss");
                
@@ -231,8 +231,8 @@ import iac.grn.serviceitems.HeaderTableItem;
 				 
                  
                  if(filterMapMyUserMod!=null){
-    	    		 Set<Map.Entry<String, String>> setFilterAppMyUserMod = filterMapMyUserMod.entrySet();
-    	              for (Map.Entry<String, String> me : setFilterAppMyUserMod) {
+    	    		 SerializableSet<SerializableMap.Entry<String, String>> setFilterAppMyUserMod = filterMapMyUserMod.entrySet();
+    	              for (SerializableMap.Entry<String, String> me : setFilterAppMyUserMod) {
     	              	
     	            	  
     	              if("t1_iogv_bind_type".equals(me.getKey())&&(me.getValue()!=null && "-2".equals(me.getValue()))){
@@ -348,7 +348,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	 
 	
 	 
-	 public List <BaseTableItem> getAuditItemsListSelect() {
+	 public SerializableList <BaseTableItem> getAuditItemsListSelect() {
 		   log.info("getAuditItemsListSelect:01");
 		   AppMyUserModifyContext acMyUserMod= new AppMyUserModifyContext();
 		   if( auditItemsListSelect==null){
@@ -372,7 +372,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 		 this.commentText=commentText;
 	 }
   
-  public List <BaseTableItem> getAuditItemsListContext() {
+  public SerializableList <BaseTableItem> getAuditItemsListContext() {
 	   log.info("AppMyUserModifyManager:getAuditItemsListContext");
 	   if(auditItemsListContext==null){
 		   AppMyUserModifyContext acMyUserMod= new AppMyUserModifyContext();
@@ -385,7 +385,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	   return this.auditItemsListContext;
   }
   
-  public List<HeaderTableItem> getHeaderItemsListContext() {
+  public SerializableList<HeaderTableItem> getHeaderItemsListContext() {
 	  
 	  if(headerItemsListContext==null){
 		   AppMyUserModifyContext acMyUserMod= new AppMyUserModifyContext();
@@ -399,7 +399,7 @@ import iac.grn.serviceitems.HeaderTableItem;
   }
   
   
-  public List<HeaderTableItem> getHeaderItemsListContext(String ids) {
+  public SerializableList<HeaderTableItem> getHeaderItemsListContext(String ids) {
 	  
 	 	AppMyUserModifyContext acMyUserMod= new AppMyUserModifyContext();
 		
@@ -410,7 +410,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	 				
 	 	    
 	 	
-	 	     List<String> idsList =  Arrays.asList(ids.split(","));
+	 	     SerializableList<String> idsList =  Arrays.asList(ids.split(","));
 	 	   
 	    	for(HeaderTableItem hti :acMyUserMod.getHeaderItemsList()){
 			
@@ -426,7 +426,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	   return this.headerItemsListContext;
  }
   
-  public List<HeaderTableItem> getHeaderItemsListContextCREATE(String ids) {
+  public SerializableList<HeaderTableItem> getHeaderItemsListContextCREATE(String ids) {
 	  
 	 	AppMyUserModifyContext acMyUserMod= new AppMyUserModifyContext();
 		
@@ -437,7 +437,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	 				
 	 	    
 	 	
-	 	     List<String> idsList =  Arrays.asList(ids.split(","));
+	 	     SerializableList<String> idsList =  Arrays.asList(ids.split(","));
 	 	   
 	    	for(HeaderTableItem hti :acMyUserMod.getHeaderItemsList()){
 			

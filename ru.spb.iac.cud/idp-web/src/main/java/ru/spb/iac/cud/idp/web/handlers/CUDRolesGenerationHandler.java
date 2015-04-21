@@ -27,11 +27,11 @@ import javax.servlet.http.HttpSession;
 
 import java.security.Principal;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import javaw.util.SerializableList;
+import javaw.util.SerializableMap;
 
  public class CUDRolesGenerationHandler extends BaseSAML2Handler {
-	private transient RoleGenerator roleGenerator = new EmptyRoleGenerator();
+	private RoleGenerator roleGenerator = new EmptyRoleGenerator();
 
 	private static final Logger LOGGERSLF4J = LoggerFactory
 			.getLogger(CUDRolesGenerationHandler.class);
@@ -74,7 +74,7 @@ import java.util.Map;
 		HTTPContext httpContext = (HTTPContext) request.getContext();
 		HttpSession session = httpContext.getRequest().getSession(false);
 
-		Map<String, Object> requestOptions = request.getOptions();
+		SerializableMap<String, Object> requestOptions = request.getOptions();
 		PicketLinkAuditHelper auditHelper = (PicketLinkAuditHelper) requestOptions
 				.get(GeneralConstants.AUDIT_HELPER);
 		String contextPath = (String) requestOptions
@@ -82,12 +82,12 @@ import java.util.Map;
 
 		Principal userPrincipal = (Principal) session
 				.getAttribute(GeneralConstants.PRINCIPAL_ID);
-		List<String> roles = (List<String>) session
+		SerializableList<String> roles = (SerializableList<String>) session
 				.getAttribute(GeneralConstants.ROLES_ID);
 
 		// закомментировано, так как до вызова handler
 		// в /AbstractIDPValve:processSAMLRequestMessage уже идёт установка
-		// List /roles = /this/.roleGenerator/.generateRoles(userPrincipal);
+		// SerializableList /roles = /this/.roleGenerator/.generateRoles(userPrincipal);
 		// session.getSession()/.setAttribute("picketlink.roles", roles);
 
 		// if (/roles == null/) {

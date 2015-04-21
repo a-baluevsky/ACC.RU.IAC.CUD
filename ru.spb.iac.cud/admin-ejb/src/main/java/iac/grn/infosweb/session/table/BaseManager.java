@@ -3,7 +3,7 @@ package iac.grn.infosweb.session.table;
 import org.jboss.seam.annotations.Name;
 
 
-	import org.jboss.seam.ScopeType;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.contexts.Contexts;
@@ -16,9 +16,12 @@ import iac.grn.infosweb.session.audit.actions.ResourcesMap;
 import iac.grn.infosweb.session.audit.export.AuditExportData;
 import iac.grn.infosweb.session.navig.LinksMap;
 
-import java.util.*;
+import javaw.util.SerializableList;
+import javaw.util.ArrayList;
+import javaw.util.SerializableList;
 
-	import org.jboss.seam.Component;
+
+import org.jboss.seam.Component;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 
@@ -36,7 +39,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	//bindBeanView-> contextBeanView
 	
 	@Name("baseManager")
-	 public class BaseManager {
+	 public class BaseManager implements java.io.Serializable {
 		
 		@Logger 
 		protected Log log;
@@ -45,17 +48,17 @@ import iac.grn.serviceitems.HeaderTableItem;
 	    @In 
 	    protected EntityManager entityManager;
 		 
-		protected List<BaseItem> auditList; 
+		protected SerializableList<BaseItem> auditList; 
 		
 		protected Long auditCount;
 		
-		protected List <BaseTableItem> auditItemsListSelect;
+		protected SerializableList <BaseTableItem> auditItemsListSelect;
 		
-		protected List <BaseTableItem> auditItemsListContext;
+		protected SerializableList <BaseTableItem> auditItemsListContext;
 		
-		//protected HashMap<String, List<BaseTableItem>> headerItemsListContext;
+		//protected HashMap<String, SerializableList<BaseTableItem>> headerItemsListContext;
 		
-		protected List<HeaderTableItem> headerItemsListContext;
+		protected SerializableList<HeaderTableItem> headerItemsListContext;
 		
 		protected Boolean evaluteForList;
 		protected Boolean evaluteForListFooter;  
@@ -67,7 +70,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 		private String dellMessage = null;
 		
 		
-		public List<BaseItem> getAuditList(int firstRow, int numberOfRows){
+		public SerializableList<BaseItem> getAuditList(int firstRow, int numberOfRows){
 		  String remoteAudit = FacesContext.getCurrentInstance().getExternalContext()
 		             .getRequestParameterMap()
 		             .get("remoteAudit");
@@ -77,7 +80,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 		  log.info("baseManager:getAuditList:firstRow:"+firstRow);
 		  log.info("baseManager:getAuditList:numberOfRows:"+numberOfRows);
 		  
-		  List<BaseItem> contextListCached = (List<BaseItem>)
+		  SerializableList<BaseItem> contextListCached = (SerializableList<BaseItem>)
 				  Component.getInstance("contextListCached",ScopeType.SESSION);
 		  if(auditList==null){
 			  log.info("baseManager:getAuditList:01");
@@ -96,7 +99,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 				    log.info("baseManager:getAuditList:03:"+this.auditList.size());
 				}
 			 	
-			 	ArrayList<String> contextSelRec = (ArrayList<String>)
+			 	SerializableList<String> contextSelRec = (ArrayList<String>)
 						  Component.getInstance("contextSelRec",ScopeType.SESSION);
 			 	if(this.auditList!=null && contextSelRec!=null) {
 			 		 for(BaseItem it:this.auditList){
@@ -111,7 +114,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 			}
 			return this.auditList;
 		}
-		public void setAuditList(List<BaseItem> auditList){
+		public void setAuditList(SerializableList<BaseItem> auditList){
 			this.auditList=auditList;
 		}
 		public void invokeLocal(String type, int firstRow, int numberOfRows,
@@ -145,7 +148,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	   protected BaseItem searchBean(String sessionId){
 	    	
 	      if(sessionId!=null){
-	    	 List<BaseItem> contextListCached = (List<BaseItem>)
+	    	 SerializableList<BaseItem> contextListCached = (SerializableList<BaseItem>)
 					  Component.getInstance("contextListCached",ScopeType.SESSION);
 			if(contextListCached!=null){
 				for(BaseItem it : contextListCached){
@@ -190,19 +193,19 @@ import iac.grn.serviceitems.HeaderTableItem;
 		   log.info("forViewUpdDel");
 	   } 
 	   
-	   public List <BaseTableItem> getAuditItemsListSelect() {
+	   public SerializableList <BaseTableItem> getAuditItemsListSelect() {
 	       return this.auditItemsListSelect;
 	   }
 	   
-	   public void setAuditItemsListSelect(List <BaseTableItem> auditItemsListSelect) {
+	   public void setAuditItemsListSelect(SerializableList <BaseTableItem> auditItemsListSelect) {
 			this.auditItemsListSelect=auditItemsListSelect;
 	   }
 	   
-	   public List <BaseTableItem> getAuditItemsListContext() {
+	   public SerializableList <BaseTableItem> getAuditItemsListContext() {
 		   return this.auditItemsListContext;
 	   }
 	      
-	   public List<HeaderTableItem> getHeaderItemsListContext() {
+	   public SerializableList<HeaderTableItem> getHeaderItemsListContext() {
 		   return this.headerItemsListContext;
 	   }
 	  
@@ -213,20 +216,14 @@ import iac.grn.serviceitems.HeaderTableItem;
 		   
 		    
 		   //  forView(); //!!!
-		    ArrayList<String> contextSelRec = (ArrayList<String>)
+		    SerializableList<String> contextSelRec = (ArrayList<String>)
 					  Component.getInstance("contextSelRec",ScopeType.SESSION);
 		    
 		    if(contextSelRec==null){
 		    	contextSelRec = new ArrayList<String>();
-		       
 		    }
 		    
-		   
-		  
-		    
 		    BaseItem au = new BaseItem();
-		    
-		 
 		    
 		    if(au!=null){ 
 		     if(contextSelRec.contains(sessionId)){

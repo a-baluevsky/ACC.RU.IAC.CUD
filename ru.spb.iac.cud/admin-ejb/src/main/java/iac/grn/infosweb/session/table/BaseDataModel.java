@@ -1,10 +1,10 @@
 package iac.grn.infosweb.session.table;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javaw.util.ArrayList;
+import javaw.util.HashMap;
+import javaw.util.SerializableList;
+import javaw.util.SerializableMap;
 
 import javax.faces.context.FacesContext;
 
@@ -24,11 +24,11 @@ import org.richfaces.model.SortField2;
 	@Logger protected Log log;
 	
 	protected U currentPk;
-	protected Map<U, T> wrappedData = new HashMap<U, T>();
-	protected List<U> wrappedKeys = null;
+	protected SerializableMap<U, T> wrappedData = new HashMap<U, T>();
+	protected SerializableList<U> wrappedKeys = null;
 
 	
-	protected List<T> cachedItems=new ArrayList<T>();
+	protected SerializableList<T> cachedItems=new ArrayList<T>();
 	protected Integer rowCount;
 	
 	protected HashMap<String, String> filterColumnValues = new HashMap<String, String>();
@@ -116,7 +116,7 @@ import org.richfaces.model.SortField2;
 		return null;
 	}
 	
-	public List<T> findObjects(int firstRow, int numberOfRows, String sortField, 
+	public SerializableList<T> findObjects(int firstRow, int numberOfRows, String sortField, 
             boolean ascending, String modelType){
 		return null;
 	}
@@ -192,7 +192,7 @@ import org.richfaces.model.SortField2;
 		}
 	}
 	//@Override
-	 public void modify(List<FilterField> filterFields, List<SortField2> sortFields) {
+	 public void modify(SerializableList<FilterField> filterFields, SerializableList<SortField2> sortFields) {
 		 log.info("!!!modify!!!");
 	
 		
@@ -305,7 +305,7 @@ import org.richfaces.model.SortField2;
 		this.auctionDataProviderExpressionString = auctionDataProviderExpressionString;
 	}
 	    
-	   public Map<String, String> getFilterColumnValues() {
+	   public SerializableMap<String, String> getFilterColumnValues() {
 		   if(filterColumnValues!=null){
 		       log.info("getFilterColumnValues:01:"+filterColumnValues.size());
 		   }else{

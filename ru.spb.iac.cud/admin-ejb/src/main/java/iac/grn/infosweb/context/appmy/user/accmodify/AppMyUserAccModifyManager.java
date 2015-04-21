@@ -2,12 +2,12 @@ package iac.grn.infosweb.context.appmy.user.accmodify;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import javaw.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Map;
-import java.util.List;
-import java.util.Set;
+import javaw.util.SerializableMap;
+import javaw.util.SerializableList;
+import javaw.util.SerializableSet;
 
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
@@ -27,7 +27,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	private String rejectReason;
 	private String commentText;
 	
-	private List<HeaderTableItem> headerItemsListContextCREATE;
+	private SerializableList<HeaderTableItem> headerItemsListContextCREATE;
 	
 	public void invokeLocal(String type, int firstRow, int numberOfRows,
 	           String sessionId) {
@@ -39,14 +39,14 @@ import iac.grn.serviceitems.HeaderTableItem;
 			 
 			 AppMyUserAccModifyStateHolder appMyUserAccModifyStateHolder = (AppMyUserAccModifyStateHolder)
 					  Component.getInstance("appMyUserAccModifyStateHolder",ScopeType.SESSION);
-			 Map<String, String> filterMapMyUserAccMod = appMyUserAccModifyStateHolder.getColumnFilterValues();
+			 SerializableMap<String, String> filterMapMyUserAccMod = appMyUserAccModifyStateHolder.getColumnFilterValues();
 			 String st=null;
 			  
 			 if("list".equals(type)){
 				 log.info("AppMyUserAcc:invokeLocal:list:01");
 				 
-				 Set<Map.Entry<String, String>> set = appMyUserAccModifyStateHolder.getSortOrders().entrySet();
-                 for (Map.Entry<String, String> me : set) {
+				 SerializableSet<SerializableMap.Entry<String, String>> set = appMyUserAccModifyStateHolder.getSortOrders().entrySet();
+                 for (SerializableMap.Entry<String, String> me : set) {
       		       log.info("me.getKey+:"+me.getKey());
       		       log.info("me.getValue:"+me.getValue());
       		       
@@ -59,8 +59,8 @@ import iac.grn.serviceitems.HeaderTableItem;
                  log.info("invokeLocal:list:orderQuery:"+orderQuery);
                  
                  if(filterMapMyUserAccMod!=null){
-    	    		 Set<Map.Entry<String, String>> setFilterAppMyUserAcc = filterMapMyUserAccMod.entrySet();
-    	              for (Map.Entry<String, String> me : setFilterAppMyUserAcc) {
+    	    		 SerializableSet<SerializableMap.Entry<String, String>> setFilterAppMyUserAcc = filterMapMyUserAccMod.entrySet();
+    	              for (SerializableMap.Entry<String, String> me : setFilterAppMyUserAcc) {
     	    	      
     	   		     if("t1_crt_date".equals(me.getKey())){  
     	        	   
@@ -80,7 +80,7 @@ import iac.grn.serviceitems.HeaderTableItem;
                  log.info("AppMyUserAcc:invokeLocal:list:filterQuery:"+st);
 
              
-               List<Object[]> loMyUserAccMod=null;
+               SerializableList<Object[]> loMyUserAccMod=null;
                AppUserAccModifyItem ui = null;
                DateFormat df = new SimpleDateFormat ("dd.MM.yy HH:mm:ss");
                
@@ -212,8 +212,8 @@ import iac.grn.serviceitems.HeaderTableItem;
 				 
                  
                  if(filterMapMyUserAccMod!=null){
-    	    		 Set<Map.Entry<String, String>> setFilterAppMyUserAcc = filterMapMyUserAccMod.entrySet();
-    	              for (Map.Entry<String, String> me : setFilterAppMyUserAcc) {
+    	    		 SerializableSet<SerializableMap.Entry<String, String>> setFilterAppMyUserAcc = filterMapMyUserAccMod.entrySet();
+    	              for (SerializableMap.Entry<String, String> me : setFilterAppMyUserAcc) {
     	            
     	            	
     	            	  
@@ -321,7 +321,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	 
 	
 	 
-	 public List <BaseTableItem> getAuditItemsListSelect() {
+	 public SerializableList <BaseTableItem> getAuditItemsListSelect() {
 		   log.info("getAuditItemsListSelect:01");
 		   AppMyUserAccModifyContext acMyUserAccMod= new AppMyUserAccModifyContext();
 		   if( auditItemsListSelect==null){
@@ -339,7 +339,7 @@ import iac.grn.serviceitems.HeaderTableItem;
   
 
   
-  public List <BaseTableItem> getAuditItemsListContext() {
+  public SerializableList <BaseTableItem> getAuditItemsListContext() {
 	   log.info("AppMyUserAccModifyManager:getAuditItemsListContext");
 	   if(auditItemsListContext==null){
 		   AppMyUserAccModifyContext acMyUserAccMod= new AppMyUserAccModifyContext();
@@ -356,7 +356,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 		 this.commentText=commentText;
 	 }
 	 
-  public List<HeaderTableItem> getHeaderItemsListContext() {
+  public SerializableList<HeaderTableItem> getHeaderItemsListContext() {
 	  
 	  if(headerItemsListContext==null){
 		   AppMyUserAccModifyContext acMyUserAccMod= new AppMyUserAccModifyContext();
@@ -367,7 +367,7 @@ import iac.grn.serviceitems.HeaderTableItem;
   }
   
   
-  public List<HeaderTableItem> getHeaderItemsListContext(String ids) {
+  public SerializableList<HeaderTableItem> getHeaderItemsListContext(String ids) {
 	  
 	 	AppMyUserAccModifyContext acMyUserAccMod= new AppMyUserAccModifyContext();
 		
@@ -377,7 +377,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	 		headerItemsListContext=new ArrayList<HeaderTableItem>();
 	 				
 	 	
-	 	     List<String> idsList =  Arrays.asList(ids.split(","));
+	 	     SerializableList<String> idsList =  Arrays.asList(ids.split(","));
 	 	   
 	    	for(HeaderTableItem hti :acMyUserAccMod.getHeaderItemsList()){
 			
@@ -391,7 +391,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	   return this.headerItemsListContext;
  }
   
-  public List<HeaderTableItem> getHeaderItemsListContextCREATE(String ids) {
+  public SerializableList<HeaderTableItem> getHeaderItemsListContextCREATE(String ids) {
 	  
 	 	AppMyUserAccModifyContext acMyUserAccMod= new AppMyUserAccModifyContext();
 		
@@ -402,7 +402,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	 				
 	 	    
 	 	
-	 	     List<String> idsList =  Arrays.asList(ids.split(","));
+	 	     SerializableList<String> idsList =  Arrays.asList(ids.split(","));
 	 	   
 	    	for(HeaderTableItem hti :acMyUserAccMod.getHeaderItemsList()){
 			

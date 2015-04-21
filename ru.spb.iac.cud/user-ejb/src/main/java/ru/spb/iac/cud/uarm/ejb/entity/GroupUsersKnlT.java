@@ -6,7 +6,7 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 import java.util.Date;
-import java.util.List;
+import javaw.util.SerializableList;
 
 
 /**
@@ -40,13 +40,13 @@ import java.util.List;
 	private Date modified;
 
 	@OneToMany(mappedBy="groupUsersKnlT")
-	private List<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs;
+	private SerializableList<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs;
 
 	@OneToMany(mappedBy="groupUsersKnlT")
-	private List<LinkGroupUsersUsersKnlT> linkGroupUsersUsersKnlTs;
+	private SerializableList<LinkGroupUsersUsersKnlT> linkGroupUsersUsersKnlTs;
 
 	@OneToMany(mappedBy="groupUsersKnlT")
-	private List<GroupsAppAccessGrBssT> groupsAppAccessGrBssTs;
+	private SerializableList<GroupsAppAccessGrBssT> groupsAppAccessGrBssTs;
 	
 	@Column(name="SIGN_OBJECT")
 	private String signObject;
@@ -55,7 +55,7 @@ import java.util.List;
 	private Boolean checked;
 	
 	@Transient
-	private List<AcIsBssT> armList;
+	private SerializableList<AcIsBssT> armList;
 	
 	public GroupUsersKnlT() {
 	}
@@ -116,11 +116,11 @@ import java.util.List;
 		this.modified = modified;
 	}
 
-	public List<LinkGroupUsersRolesKnlT> getLinkGroupUsersRolesKnlTs() {
+	public SerializableList<LinkGroupUsersRolesKnlT> getLinkGroupUsersRolesKnlTs() {
 		return this.linkGroupUsersRolesKnlTs;
 	}
 
-	public void setLinkGroupUsersRolesKnlTs(List<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs) {
+	public void setLinkGroupUsersRolesKnlTs(SerializableList<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs) {
 		this.linkGroupUsersRolesKnlTs = linkGroupUsersRolesKnlTs;
 	}
 
@@ -138,11 +138,11 @@ import java.util.List;
 		return linkGroupUsersRolesKnlT;
 	}
 
-	public List<LinkGroupUsersUsersKnlT> getLinkGroupUsersUsersKnlTs() {
+	public SerializableList<LinkGroupUsersUsersKnlT> getLinkGroupUsersUsersKnlTs() {
 		return this.linkGroupUsersUsersKnlTs;
 	}
 
-	public void setLinkGroupUsersUsersKnlTs(List<LinkGroupUsersUsersKnlT> linkGroupUsersUsersKnlTs) {
+	public void setLinkGroupUsersUsersKnlTs(SerializableList<LinkGroupUsersUsersKnlT> linkGroupUsersUsersKnlTs) {
 		this.linkGroupUsersUsersKnlTs = linkGroupUsersUsersKnlTs;
 	}
 
@@ -160,12 +160,12 @@ import java.util.List;
 		return linkGroupUsersUsersKnlT;
 	}
 
-	public List<GroupsAppAccessGrBssT> getGroupsAppAccessGrBssTs() {
+	public SerializableList<GroupsAppAccessGrBssT> getGroupsAppAccessGrBssTs() {
 		return groupsAppAccessGrBssTs;
 	}
 
 	public void setGroupsAppAccessGrBssTs(
-			List<GroupsAppAccessGrBssT> groupsAppAccessGrBssTs) {
+			SerializableList<GroupsAppAccessGrBssT> groupsAppAccessGrBssTs) {
 		this.groupsAppAccessGrBssTs = groupsAppAccessGrBssTs;
 	}
 	
@@ -185,11 +185,11 @@ import java.util.List;
 		this.signObject = signObject;
 	}
 
-	public List<AcIsBssT> getArmList() {
+	public SerializableList<AcIsBssT> getArmList() {
 		return armList;
 	}
 
-	public void setArmList(List<AcIsBssT> armList) {
+	public void setArmList(SerializableList<AcIsBssT> armList) {
 		this.armList = armList;
 	}
 

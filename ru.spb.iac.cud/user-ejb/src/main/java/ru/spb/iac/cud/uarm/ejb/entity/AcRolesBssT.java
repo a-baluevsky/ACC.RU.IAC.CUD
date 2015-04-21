@@ -3,7 +3,7 @@ package ru.spb.iac.cud.uarm.ejb.entity;
 import java.io.Serializable;
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
+import javaw.util.SerializableList;
 
 
 /**
@@ -46,14 +46,14 @@ import java.util.List;
 
 	//bi-directional many-to-one association to AcUsersLinkKnlT
 	@OneToMany(mappedBy="acRolesBssT")
-	private List<AcUsersLinkKnlT> acUsersLinkKnlTs;
+	private SerializableList<AcUsersLinkKnlT> acUsersLinkKnlTs;
 
 	//bi-directional many-to-one association to LinkGroupUsersRolesKnlT
 	@OneToMany(mappedBy="acRolesBssT")
-	private List<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs;
+	private SerializableList<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs;
 
 	@OneToMany(mappedBy="acRolesBssT")
-	private List<RolesAppAccessBssT> rolesAppAccessBssTs;
+	private SerializableList<RolesAppAccessBssT> rolesAppAccessBssTs;
 
 	@Transient
 	private Boolean checked;
@@ -133,11 +133,11 @@ import java.util.List;
 		this.acIsBssT = acIsBssT;
 	}
 
-	public List<AcUsersLinkKnlT> getAcUsersLinkKnlTs() {
+	public SerializableList<AcUsersLinkKnlT> getAcUsersLinkKnlTs() {
 		return this.acUsersLinkKnlTs;
 	}
 
-	public void setAcUsersLinkKnlTs(List<AcUsersLinkKnlT> acUsersLinkKnlTs) {
+	public void setAcUsersLinkKnlTs(SerializableList<AcUsersLinkKnlT> acUsersLinkKnlTs) {
 		this.acUsersLinkKnlTs = acUsersLinkKnlTs;
 	}
 
@@ -155,11 +155,11 @@ import java.util.List;
 		return acUsersLinkKnlT;
 	}
 
-	public List<LinkGroupUsersRolesKnlT> getLinkGroupUsersRolesKnlTs() {
+	public SerializableList<LinkGroupUsersRolesKnlT> getLinkGroupUsersRolesKnlTs() {
 		return this.linkGroupUsersRolesKnlTs;
 	}
 
-	public void setLinkGroupUsersRolesKnlTs(List<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs) {
+	public void setLinkGroupUsersRolesKnlTs(SerializableList<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs) {
 		this.linkGroupUsersRolesKnlTs = linkGroupUsersRolesKnlTs;
 	}
 
@@ -185,11 +185,11 @@ import java.util.List;
 		this.checked = checked;
 	}
 
-	public List<RolesAppAccessBssT> getRolesAppAccessBssTs() {
+	public SerializableList<RolesAppAccessBssT> getRolesAppAccessBssTs() {
 		return this.rolesAppAccessBssTs;
 	}
 
-	public void setRolesAppAccessBssTs(List<RolesAppAccessBssT> rolesAppAccessBssTs) {
+	public void setRolesAppAccessBssTs(SerializableList<RolesAppAccessBssT> rolesAppAccessBssTs) {
 		this.rolesAppAccessBssTs = rolesAppAccessBssTs;
 	}
 }

@@ -9,12 +9,12 @@ import iac.grn.serviceitems.HeaderTableItem;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import javaw.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import javaw.util.SerializableList;
+import javaw.util.SerializableMap;
+import javaw.util.SerializableSet;
 
 import javax.faces.context.FacesContext;
 
@@ -31,7 +31,7 @@ import org.jboss.seam.faces.FacesMessages;
 	private String rejectReason;
 	private String commentText;
 	
-	private List<HeaderTableItem> headerItemsListContextCREATE;
+	private SerializableList<HeaderTableItem> headerItemsListContextCREATE;
 	
 	public void invokeLocal(String type, int firstRow, int numberOfRows,
 	           String sessionId) {
@@ -43,14 +43,14 @@ import org.jboss.seam.faces.FacesMessages;
 			 
 			 AppMyUserCertModifyStateHolder appMyUserCertModifyStateHolder = (AppMyUserCertModifyStateHolder)
 					  Component.getInstance("appMyUserCertModifyStateHolder",ScopeType.SESSION);
-			 Map<String, String> filterMap = appMyUserCertModifyStateHolder.getColumnFilterValues();
+			 SerializableMap<String, String> filterMap = appMyUserCertModifyStateHolder.getColumnFilterValues();
 			 String st=null;
 			  
 			 if("list".equals(type)){
 				 log.info("AppMyCertinvokeLocal:list:01");
 				 
-				 Set<Map.Entry<String, String>> set = appMyUserCertModifyStateHolder.getSortOrders().entrySet();
-                 for (Map.Entry<String, String> me : set) {
+				 SerializableSet<SerializableMap.Entry<String, String>> set = appMyUserCertModifyStateHolder.getSortOrders().entrySet();
+                 for (SerializableMap.Entry<String, String> me : set) {
       		       log.info("me.getKey+:"+me.getKey());
       		       log.info("me.getValue:"+me.getValue());
       		       
@@ -63,8 +63,8 @@ import org.jboss.seam.faces.FacesMessages;
                  log.info("AppMyCert:invokeLocal:list:orderQuery:"+orderQuery);
                  
                  if(filterMap!=null){
-    	    		 Set<Map.Entry<String, String>> setFilterAppMyCert = filterMap.entrySet();
-    	              for (Map.Entry<String, String> me : setFilterAppMyCert) {
+    	    		 SerializableSet<SerializableMap.Entry<String, String>> setFilterAppMyCert = filterMap.entrySet();
+    	              for (SerializableMap.Entry<String, String> me : setFilterAppMyCert) {
     	      	      
     	   		     if("t1_crt_date".equals(me.getKey())){  
     	        	   
@@ -84,7 +84,7 @@ import org.jboss.seam.faces.FacesMessages;
                  log.info("AppMyCert:invokeLocal:list:filterQuery:"+st);
 
              
-               List<Object[]> lo=null;
+               SerializableList<Object[]> lo=null;
                AppUserCertModifyItem ui = null;
                DateFormat df = new SimpleDateFormat ("dd.MM.yy HH:mm:ss");
                
@@ -214,12 +214,12 @@ import org.jboss.seam.faces.FacesMessages;
              log.info("AppMyCert:invokeLocal:list:02");
              
 			 } else if("count".equals(type)){
-				 log.info("AppMyCert:List:count:01");
+				 log.info("AppMyCert:SerializableList:count:01");
 				 
                  
                  if(filterMap!=null){
-    	    		 Set<Map.Entry<String, String>> setFilterAppMyCert = filterMap.entrySet();
-    	              for (Map.Entry<String, String> me : setFilterAppMyCert) {
+    	    		 SerializableSet<SerializableMap.Entry<String, String>> setFilterAppMyCert = filterMap.entrySet();
+    	              for (SerializableMap.Entry<String, String> me : setFilterAppMyCert) {
     	              	
     	            	  
     	              if("t1_iogv_bind_type".equals(me.getKey())&&(me.getValue()!=null && "-2".equals(me.getValue()))){
@@ -375,7 +375,7 @@ import org.jboss.seam.faces.FacesMessages;
 		 this.commentText=commentText;
 	 }
 	 
-	 public List <BaseTableItem> getAuditItemsListSelect() {
+	 public SerializableList <BaseTableItem> getAuditItemsListSelect() {
 		   log.info("getAuditItemsListSelect:01");
 		   AppMyUserCertModifyContext ac= new AppMyUserCertModifyContext();
 		   if( auditItemsListSelect==null){
@@ -393,7 +393,7 @@ import org.jboss.seam.faces.FacesMessages;
   
 
   
-  public List <BaseTableItem> getAuditItemsListContext() {
+  public SerializableList <BaseTableItem> getAuditItemsListContext() {
 	   log.info("AppMyUserCertModifyManager:getAuditItemsListContext");
 	   if(auditItemsListContext==null){
 		   AppMyUserCertModifyContext ac= new AppMyUserCertModifyContext();
@@ -406,7 +406,7 @@ import org.jboss.seam.faces.FacesMessages;
 	   return this.auditItemsListContext;
   }
   
-  public List<HeaderTableItem> getHeaderItemsListContext() {
+  public SerializableList<HeaderTableItem> getHeaderItemsListContext() {
 	  
 	  if(headerItemsListContext==null){
 		   AppMyUserCertModifyContext ac= new AppMyUserCertModifyContext();
@@ -420,7 +420,7 @@ import org.jboss.seam.faces.FacesMessages;
   }
   
   
-  public List<HeaderTableItem> getHeaderItemsListContext(String ids) {
+  public SerializableList<HeaderTableItem> getHeaderItemsListContext(String ids) {
 	  
 	 	AppMyUserCertModifyContext ac= new AppMyUserCertModifyContext();
 		
@@ -431,7 +431,7 @@ import org.jboss.seam.faces.FacesMessages;
 	 				
 	 	    
 	 	
-	 	     List<String> idsList =  Arrays.asList(ids.split(","));
+	 	     SerializableList<String> idsList =  Arrays.asList(ids.split(","));
 	 	   
 	    	for(HeaderTableItem hti :ac.getHeaderItemsList()){
 			
@@ -447,7 +447,7 @@ import org.jboss.seam.faces.FacesMessages;
 	   return this.headerItemsListContext;
  }
   
-  public List<HeaderTableItem> getHeaderItemsListContextCREATE(String ids) {
+  public SerializableList<HeaderTableItem> getHeaderItemsListContextCREATE(String ids) {
 	  
 	 	AppMyUserCertModifyContext ac= new AppMyUserCertModifyContext();
 		
@@ -458,7 +458,7 @@ import org.jboss.seam.faces.FacesMessages;
 	 				
 	 	    
 	 	
-	 	     List<String> idsList =  Arrays.asList(ids.split(","));
+	 	     SerializableList<String> idsList =  Arrays.asList(ids.split(","));
 	 	   
 	    	for(HeaderTableItem hti :ac.getHeaderItemsList()){
 			

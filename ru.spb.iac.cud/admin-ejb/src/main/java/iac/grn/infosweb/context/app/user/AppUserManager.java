@@ -18,11 +18,11 @@ import iac.grn.serviceitems.HeaderTableItem;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import javaw.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import javaw.util.SerializableList;
+import javaw.util.SerializableMap;
+import javaw.util.SerializableSet;
 
 import javax.faces.context.FacesContext;
 
@@ -33,14 +33,15 @@ import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.faces.FacesMessages;
 
 @Name("appUserManager")
- public class AppUserManager extends BaseManager{
+ public class AppUserManager extends BaseManager implements java.io.Serializable {
 
 	
 	private String rejectReason;
 	private String commentText;
 	
-	private List<AcApplication> listUsrArmForView = null;
+	private SerializableList<AcApplication> listUsrArmForView = null;
 	
+	@Override
 	public void invokeLocal(String type, int firstRow, int numberOfRows,
 	           String sessionId) {
 		
@@ -51,14 +52,14 @@ import org.jboss.seam.faces.FacesMessages;
 			 
 			 AppUserStateHolder appUserStateHolder = (AppUserStateHolder)
 					  Component.getInstance("appUserStateHolder",ScopeType.SESSION);
-			 Map<String, String> filterMap = appUserStateHolder.getColumnFilterValues();
+			 SerializableMap<String, String> filterMap = appUserStateHolder.getColumnFilterValues();
 			 String st=null;
 			  
 			 if("list".equals(type)){
 				 log.info("invokeLocal:list:01");
 				 
-				 Set<Map.Entry<String, String>> set = appUserStateHolder.getSortOrders().entrySet();
-                 for (Map.Entry<String, String> me : set) {
+				 SerializableSet<SerializableMap.Entry<String, String>> set = appUserStateHolder.getSortOrders().entrySet();
+                 for (SerializableMap.Entry<String, String> me : set) {
       		       log.info("me.getKey+:"+me.getKey());
       		       log.info("me.getValue:"+me.getValue());
       		       
@@ -71,8 +72,8 @@ import org.jboss.seam.faces.FacesMessages;
                  log.info("AppUser:invokeLocal:list:orderQuery:"+orderQuery);
                  
                  if(filterMap!=null){
-    	    		 Set<Map.Entry<String, String>> setFilterAppUser = filterMap.entrySet();
-    	              for (Map.Entry<String, String> me : setFilterAppUser) {
+    	    		 SerializableSet<SerializableMap.Entry<String, String>> setFilterAppUser = filterMap.entrySet();
+    	              for (SerializableMap.Entry<String, String> me : setFilterAppUser) {
     	              
     	   		     if("t1_crt_date".equals(me.getKey())){  
     	        	   
@@ -92,7 +93,7 @@ import org.jboss.seam.faces.FacesMessages;
                  log.info("AppUser:invokeLocal:list:filterQuery:"+st);
 
              
-               List<Object[]> lo=null;
+               SerializableList<Object[]> lo=null;
                AppUserItem ui = null;
                DateFormat df = new SimpleDateFormat ("dd.MM.yy HH:mm:ss");
                
@@ -197,8 +198,8 @@ import org.jboss.seam.faces.FacesMessages;
 				 
                  
                  if(filterMap!=null){
-    	    		 Set<Map.Entry<String, String>> setFilterAppUser = filterMap.entrySet();
-    	              for (Map.Entry<String, String> me : setFilterAppUser) {
+    	    		 SerializableSet<SerializableMap.Entry<String, String>> setFilterAppUser = filterMap.entrySet();
+    	              for (SerializableMap.Entry<String, String> me : setFilterAppUser) {
     	            	
     	            	  
     	              if("t1_iogv_bind_type".equals(me.getKey())&&(me.getValue()!=null && "-2".equals(me.getValue()))){
@@ -275,7 +276,7 @@ import org.jboss.seam.faces.FacesMessages;
 		   }
 		   
 		   try{
-	           List<Object[]> lo=null;
+	           SerializableList<Object[]> lo=null;
 	           AppUserItem ui = null;
 	           DateFormat df = new SimpleDateFormat ("dd.MM.yy HH:mm:ss");
 	           
@@ -602,7 +603,7 @@ import org.jboss.seam.faces.FacesMessages;
 	   } 
 	 
 	
-	 
+	 @Override
 	 public void forViewUpdDel() {
 		 try{
 		     String sessionId = FacesContext.getCurrentInstance().getExternalContext()
@@ -655,7 +656,8 @@ import org.jboss.seam.faces.FacesMessages;
 		 this.commentText=commentText;
 	 }
 	 
-	 public List <BaseTableItem> getAuditItemsListSelect() {
+	 @Override
+	 public SerializableList <BaseTableItem> getAuditItemsListSelect() {
 		   log.info("getAuditItemsListSelect:01");
 		   AppUserContext ac= new AppUserContext();
 		   if( auditItemsListSelect==null){
@@ -672,8 +674,8 @@ import org.jboss.seam.faces.FacesMessages;
   }
   
 
-  
-  public List <BaseTableItem> getAuditItemsListContext() {
+  @Override
+  public SerializableList <BaseTableItem> getAuditItemsListContext() {
 	   log.info("AppUserManager:getAuditItemsListContext");
 	   if(auditItemsListContext==null){
 		   AppUserContext ac= new AppUserContext();
@@ -686,7 +688,8 @@ import org.jboss.seam.faces.FacesMessages;
 	   return this.auditItemsListContext;
   }
   
-  public List<HeaderTableItem> getHeaderItemsListContext() {
+  @Override
+  public SerializableList<HeaderTableItem> getHeaderItemsListContext() {
 	  
 	  if(headerItemsListContext==null){
 		   AppUserContext ac= new AppUserContext();
@@ -699,7 +702,7 @@ import org.jboss.seam.faces.FacesMessages;
 	   return this.headerItemsListContext;
   }
   
-  public List<AcApplication> getListUsrArmForView() throws Exception{
+  public SerializableList<AcApplication> getListUsrArmForView() throws Exception{
 	    log.info("AppUsrManager:getListUsrArmForView:01");
 	   
 	    String sessionIdApp = FacesContext.getCurrentInstance().getExternalContext()
@@ -707,7 +710,7 @@ import org.jboss.seam.faces.FacesMessages;
 		        .get("sessionId");
 	    
 	    log.info("AppUsrManager:getListUsrArmForView:sessionIdApp:"+sessionIdApp);
-	    List<Object[]> loApp=null;
+	    SerializableList<Object[]> loApp=null;
 	    AcApplication app = null;
 	    AcRole rolApp = null;
 	    
