@@ -8,9 +8,12 @@ import javax.persistence.*;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Role;
 
+import javaw.util.SerializableSet;
+import javaw.util.SerializableList;
+
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import javaw.util.SerializableList;
+import javaw.util.SerializableSet;
 
 /**
  * Сущность Роль
@@ -60,13 +63,13 @@ import java.util.Set;
 	private String sign;
 	
 	@OneToMany(mappedBy="acRole", cascade={CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
-	private Set<AcLinkRoleAppPagePrmssn> acLinkRoleAppPagePrmssns;
+	private SerializableSet<AcLinkRoleAppPagePrmssn> acLinkRoleAppPagePrmssns;
 
 	@OneToMany(mappedBy="acRole", cascade={CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
-	private List<AcLinkUserToRoleToRaion> acLinkUserToRoleToRaions;
+	private SerializableList<AcLinkUserToRoleToRaion> acLinkUserToRoleToRaions;
 
 	@OneToMany(mappedBy="acRolesBssT", cascade=CascadeType.REMOVE)
-	private List<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs;
+	private SerializableList<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs;
 	
 	@ManyToOne
 	@JoinColumn(name="UP_IS", insertable=false, updatable=false)
@@ -96,6 +99,7 @@ import java.util.Set;
 	public AcRole() {
     }
 	
+	@Override
 	public Long getBaseId() {
 	   return this.idRol;
 	} 
@@ -172,19 +176,19 @@ import java.util.Set;
 		this.sign = sign;
 	}
 	
-	public Set<AcLinkRoleAppPagePrmssn> getAcLinkRoleAppPagePrmssns() {
+	public SerializableSet<AcLinkRoleAppPagePrmssn> getAcLinkRoleAppPagePrmssns() {
 		return this.acLinkRoleAppPagePrmssns;
 	}
 
-	public void setAcLinkRoleAppPagePrmssns(Set<AcLinkRoleAppPagePrmssn> acLinkRoleAppPagePrmssns) {
+	public void setAcLinkRoleAppPagePrmssns(SerializableSet<AcLinkRoleAppPagePrmssn> acLinkRoleAppPagePrmssns) {
 		this.acLinkRoleAppPagePrmssns = acLinkRoleAppPagePrmssns;
 	}
 	
-	public List<AcLinkUserToRoleToRaion> getAcLinkUserToRoleToRaions() {
+	public SerializableList<AcLinkUserToRoleToRaion> getAcLinkUserToRoleToRaions() {
 		return this.acLinkUserToRoleToRaions;
 	}
 
-	public void setAcLinkUserToRoleToRaions(List<AcLinkUserToRoleToRaion> acLinkUserToRoleToRaions) {
+	public void setAcLinkUserToRoleToRaions(SerializableList<AcLinkUserToRoleToRaion> acLinkUserToRoleToRaions) {
 		this.acLinkUserToRoleToRaions = acLinkUserToRoleToRaions;
 	}
 	public Boolean getUsrChecked(){
@@ -207,10 +211,8 @@ import java.util.Set;
 		this.acApplication2 = acApplication2;
 	}
 	public String getArmName() {
-		if(this.armName==null){
-			if(this.acApplication2!=null){
-			  this.armName = this.acApplication2.getName();
-			}
+		if(this.armName==null && this.acApplication2!=null) {
+ 		   this.armName = this.acApplication2.getName();
 		}
 		return this.armName;
 	}
@@ -218,10 +220,8 @@ import java.util.Set;
 		this.armName = armName;
 	}
 	public String getCrtUserName() {
-		if(this.crtUserName==null){
-			if(this.crtUser!=null){
-			  this.crtUserName = this.crtUser.getFio();
-			}
+		if(this.crtUserName==null && this.crtUser!=null){
+ 		   this.crtUserName = this.crtUser.getFio();
 		}
 		return this.crtUserName;
 	}
@@ -230,10 +230,8 @@ import java.util.Set;
 	}
 	
 	public String getUpdUserName() {
-		if(this.updUserName==null){
-			if(this.updUser!=null){
-			  this.updUserName = this.updUser.getFio();
-			}
+		if(this.updUserName==null && this.updUser!=null){
+ 		   this.updUserName = this.updUser.getFio();
 		}
 		return this.updUserName;
 	}
@@ -255,10 +253,10 @@ import java.util.Set;
 		this.isSysAdminRole = isSysAdminRole;
 	}
 
-	public List<LinkGroupUsersRolesKnlT> getLinkGroupUsersRolesKnlTs() {
+	public SerializableList<LinkGroupUsersRolesKnlT> getLinkGroupUsersRolesKnlTs() {
 		return this.linkGroupUsersRolesKnlTs;
 	}
-    public void setLinkGroupUsersRolesKnlTs(List<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs) {
+    public void setLinkGroupUsersRolesKnlTs(SerializableList<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs) {
 		this.linkGroupUsersRolesKnlTs = linkGroupUsersRolesKnlTs;
 	}
 }

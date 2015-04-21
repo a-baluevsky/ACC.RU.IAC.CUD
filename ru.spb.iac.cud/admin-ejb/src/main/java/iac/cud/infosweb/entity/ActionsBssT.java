@@ -4,7 +4,8 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 import java.util.Date;
-import java.util.Set;
+import javaw.util.SerializableSet;
+import javaw.util.SerializableSet;
 
 
 /**
@@ -49,7 +50,7 @@ import java.util.Set;
 	private AcApplication acIsBssT2;
     
 	@OneToMany(mappedBy="actionsBssT")
-	private Set<ActionsLogKnlT> actionsLogKnlTs;
+	private SerializableSet<ActionsLogKnlT> actionsLogKnlTs;
 
     public ActionsBssT() {
     }
@@ -133,11 +134,11 @@ import java.util.Set;
 		this.acIsBssT2 = acIsBssT2;
 	}
 	
-	public Set<ActionsLogKnlT> getActionsLogKnlTs() {
+	public SerializableSet<ActionsLogKnlT> getActionsLogKnlTs() {
 		return this.actionsLogKnlTs;
 	}
 
-	public void setActionsLogKnlTs(Set<ActionsLogKnlT> actionsLogKnlTs) {
+	public void setActionsLogKnlTs(SerializableSet<ActionsLogKnlT> actionsLogKnlTs) {
 		this.actionsLogKnlTs = actionsLogKnlTs;
 	}
 	
