@@ -2,7 +2,8 @@ package iac.grn.infosweb.context.app.access;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import javaw.util.ArrayList;
+import javaw.util.SerializableList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
@@ -32,7 +33,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	private String rejectReason;
 	private String commentText;
 	
-	private List<AcRole> listRolesAppForView = null;
+	private SerializableList<AcRole> listRolesAppForView = null;
 	
 	public void invokeLocal(String type, int firstRow, int numberOfRows,
 	           String sessionId) {
@@ -741,13 +742,13 @@ import iac.grn.serviceitems.HeaderTableItem;
 		 this.commentText=commentText;
 	 }
 	 
-	public void setListRolesAppForView(List<AcRole> listRolesAppForView) {
+	public void setListRolesAppForView(SerializableList<AcRole> listRolesAppForView) {
 			this.listRolesAppForView = listRolesAppForView;
 	}
 		
 	
 	 
-	 public List <BaseTableItem> getAuditItemsListSelect() {
+	 public SerializableList<BaseTableItem> getAuditItemsListSelect() {
 		   log.info("getAuditItemsListSelect:01");
 		   AppAccessContext acAppAccess= new AppAccessContext();
 		   if( auditItemsListSelect==null){
@@ -770,24 +771,20 @@ import iac.grn.serviceitems.HeaderTableItem;
 		 this.rejectReason=rejectReason;
 	 }
   
-  public List <BaseTableItem> getAuditItemsListContext() {
+  public SerializableList <BaseTableItem> getAuditItemsListContext() {
 	   log.info("AppAccessManager:getAuditItemsListContext");
 	   if(auditItemsListContext==null){
 		   AppAccessContext acAppAccess= new AppAccessContext();
-		  
-		   
-		   
-		   auditItemsListContext=acAppAccess.getAuditItemsCollection();
-		   
+		   auditItemsListContext=new ArrayList<BaseTableItem>(acAppAccess.getAuditItemsCollection());
 	   }
 	   return this.auditItemsListContext;
   }
   
-  public List<HeaderTableItem> getHeaderItemsListContext() {
+  public SerializableList<HeaderTableItem> getHeaderItemsListContext() {
 	  
 	  if(headerItemsListContext==null){
 		   AppAccessContext acAppAccess= new AppAccessContext();
-			   headerItemsListContext=acAppAccess.getHeaderItemsList();
+			   headerItemsListContext=new ArrayList<HeaderTableItem>(acAppAccess.getHeaderItemsList());
 		   
 	   }
 	

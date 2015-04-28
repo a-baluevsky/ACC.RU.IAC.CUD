@@ -2,7 +2,7 @@ package iac.grn.infosweb.context.appmy.block;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import javaw.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
@@ -336,22 +336,17 @@ import iac.grn.serviceitems.HeaderTableItem;
 		  
 		   
 		   
-		   auditItemsListContext=ac.getAuditItemsCollection();
+		   auditItemsListContext=new ArrayList<BaseTableItem>(ac.getAuditItemsCollection());
 		   
 	   }
 	   return this.auditItemsListContext;
   }
   
   public List<HeaderTableItem> getHeaderItemsListContext() {
-	  
 	  if(headerItemsListContext==null){
 		   AppMyBlockContext ac= new AppMyBlockContext();
-		   headerItemsListContext=ac.getHeaderItemsList();
-		   
-		
-		   
+		   headerItemsListContext=new ArrayList<HeaderTableItem>(ac.getHeaderItemsList());
 	   }
-	  
 	   return this.headerItemsListContext;
   }
   

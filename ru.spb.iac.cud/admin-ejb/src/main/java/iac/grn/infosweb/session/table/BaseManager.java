@@ -1,5 +1,7 @@
 package iac.grn.infosweb.session.table;
 
+import java.util.List;
+
 import org.jboss.seam.annotations.Name;
 
 
@@ -15,13 +17,14 @@ import iac.grn.infosweb.session.audit.actions.ActionsMap;
 import iac.grn.infosweb.session.audit.actions.ResourcesMap;
 import iac.grn.infosweb.session.audit.export.AuditExportData;
 import iac.grn.infosweb.session.navig.LinksMap;
-
 import javaw.util.SerializableList;
 import javaw.util.ArrayList;
 import javaw.util.SerializableList;
 
 
+
 import org.jboss.seam.Component;
+
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 
@@ -46,7 +49,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 		
 		
 	    @In 
-	    protected EntityManager entityManager;
+	    protected /*transient*/ EntityManager entityManager;
 		 
 		protected SerializableList<BaseItem> auditList; 
 		
@@ -193,7 +196,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 		   log.info("forViewUpdDel");
 	   } 
 	   
-	   public SerializableList <BaseTableItem> getAuditItemsListSelect() {
+	   public List<BaseTableItem> getAuditItemsListSelect() {
 	       return this.auditItemsListSelect;
 	   }
 	   
@@ -201,11 +204,11 @@ import iac.grn.serviceitems.HeaderTableItem;
 			this.auditItemsListSelect=auditItemsListSelect;
 	   }
 	   
-	   public SerializableList <BaseTableItem> getAuditItemsListContext() {
+	   public List<BaseTableItem> getAuditItemsListContext() {
 		   return this.auditItemsListContext;
 	   }
 	      
-	   public SerializableList<HeaderTableItem> getHeaderItemsListContext() {
+	   public List<HeaderTableItem> getHeaderItemsListContext() {
 		   return this.headerItemsListContext;
 	   }
 	  

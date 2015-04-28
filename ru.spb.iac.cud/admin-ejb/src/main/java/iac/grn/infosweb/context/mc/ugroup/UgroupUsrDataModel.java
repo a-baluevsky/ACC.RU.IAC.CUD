@@ -48,7 +48,7 @@ import org.jboss.seam.log.Log;
 		//טה¸ע גלוסעו ס - ג filterAction(): setAuditList(null);
 	
 			log.info("ugroupUsrDataModel:walk:cachedItems:02");
-			 this.cachedItems=getDataProvider().getItemsByrange(firstRow, numberOfRows, null, true);
+			 this.cachedItems=new ArrayList<BaseItem>(getDataProvider().getItemsByrange(firstRow, numberOfRows, null, true));
 		log.info("ugroupUsrDataModel:walk:cachedItems:03");
 		if(this.cachedItems!=null){
 		  for (BaseItem itemUgroupUsr:cachedItems) {

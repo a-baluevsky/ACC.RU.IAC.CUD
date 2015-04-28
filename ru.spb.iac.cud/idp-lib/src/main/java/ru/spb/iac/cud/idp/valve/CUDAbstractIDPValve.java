@@ -20,12 +20,19 @@ import java.security.GeneralSecurityException;
 import java.security.Principal;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
+
 import javaw.util.ArrayList;
+
 import java.util.Arrays;
+
 import javaw.util.HashMap;
 import javaw.util.SerializableList;
 import javaw.util.SerializableMap;
 import javaw.util.SerializableSet;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.locks.Lock;
@@ -1211,7 +1218,7 @@ public abstract class CUDAbstractIDPValve extends ValveBase {
 
 				((CUDRoleGenerator) roleGenerator).setSystemCode(codeSystem);
 
-				SerializableList<String> roles = roleGenerator.generateRoles(userPrincipal);
+				List<String> roles = roleGenerator.generateRoles(userPrincipal);
 				session.getSession().setAttribute(GeneralConstants.ROLES_ID,
 						roles);
 
@@ -1222,7 +1229,7 @@ public abstract class CUDAbstractIDPValve extends ValveBase {
 				// session/.getSession()/.setAttribute("CUD_RESOURCES",
 				// resources);
 
-				SerializableMap<String, Object> attribs = this.attribManager.getAttributes(
+				Map<String, Object> attribs = this.attribManager.getAttributes(
 						userPrincipal, attributeKeys);
 				requestOptions.put(GeneralConstants.ATTRIBUTES, attribs);
 			}
@@ -1795,7 +1802,7 @@ public abstract class CUDAbstractIDPValve extends ValveBase {
 				this.keyManager = CoreConfigUtil
 						.getTrustKeyManager(keyProvider);
 
-				SerializableList<AuthPropertyType> authProperties = CoreConfigUtil
+				List<AuthPropertyType> authProperties = CoreConfigUtil
 						.getKeyProviderProperties(keyProvider);
 				keyManager.setAuthProperties(authProperties);
 				keyManager.setValidatingAlias(keyProvider.getValidatingAlias());
@@ -1947,7 +1954,7 @@ public abstract class CUDAbstractIDPValve extends ValveBase {
 			}
 
 			// Read SP Metadata if provided
-			SerializableList<EntityDescriptorType> entityDescriptors = CoreConfigUtil
+			List<EntityDescriptorType> entityDescriptors = CoreConfigUtil
 					.getMetadataConfiguration(idpConfiguration, getContext()
 							.getServletContext());
 			if (entityDescriptors != null) {
@@ -2090,7 +2097,7 @@ public abstract class CUDAbstractIDPValve extends ValveBase {
 	 * @return
 	 */
 	private SAML11AttributeStatementType createAttributeStatement(
-			SerializableList<String> roles) {
+			List<String> roles) {
 		SAML11AttributeStatementType attrStatement = null;
 		for (String role : roles) {
 			if (attrStatement == null) {

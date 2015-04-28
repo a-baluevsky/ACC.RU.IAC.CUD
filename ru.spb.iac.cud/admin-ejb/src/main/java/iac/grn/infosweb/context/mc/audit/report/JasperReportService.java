@@ -8,6 +8,8 @@ import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.EnumMap;
+
+import javaw.util.SerializableEnumMap;
 import javaw.util.SerializableMap;
 import javaw.util.HashMap;
 
@@ -53,7 +55,7 @@ public class JasperReportService implements Serializable {
 		queued,execution,cancelled,ready;
 
 		private static SerializableMap<REPORTSTATUS, Integer> getIntMap(){
-			SerializableMap<REPORTSTATUS, Integer> m = new EnumMap<REPORTSTATUS, Integer>(REPORTSTATUS.class);
+			SerializableMap<REPORTSTATUS, Integer> m = new SerializableEnumMap<REPORTSTATUS, Integer>(REPORTSTATUS.class);
 			m.put(NOTFOUND,  -4);
 			m.put(cancelled, -3);
 			m.put(failed, -1);
@@ -66,7 +68,7 @@ public class JasperReportService implements Serializable {
 			return m;
 		}
 		private static SerializableMap<REPORTSTATUS, String> getStrMsgMap1(){
-			SerializableMap<REPORTSTATUS, String> m = new EnumMap<REPORTSTATUS, String>(REPORTSTATUS.class);
+			SerializableMap<REPORTSTATUS, String> m = new SerializableEnumMap<REPORTSTATUS, String>(REPORTSTATUS.class);
 			m.put(INITIAL, 		"");
 			m.put(UNKNOWN, 		"Неизвестный статус...");
 			m.put(queued, 		"Поставлено в очередь на формирование отчёта");
@@ -78,7 +80,7 @@ public class JasperReportService implements Serializable {
 			return m;
 		}	
 		private static SerializableMap<REPORTSTATUS, String> getStrMsgMap2(){
-			SerializableMap<REPORTSTATUS, String> m = new EnumMap<REPORTSTATUS, String>(REPORTSTATUS.class);
+			SerializableMap<REPORTSTATUS, String> m = new SerializableEnumMap<REPORTSTATUS, String>(REPORTSTATUS.class);
 			m.put(INITIAL, 		"");
 			m.put(UNKNOWN, 		"Формирование отчёта не начато. Возможно, произошла ошибка!");
 			m.put(cancelled, 	"Формирование отчёта отменено!");

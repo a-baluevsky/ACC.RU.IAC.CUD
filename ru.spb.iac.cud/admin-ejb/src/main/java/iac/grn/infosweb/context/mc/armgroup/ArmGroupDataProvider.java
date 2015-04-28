@@ -3,8 +3,11 @@ package iac.grn.infosweb.context.mc.armgroup;
 import iac.cud.infosweb.dataitems.BaseItem;
 
 import java.io.Serializable;
+import java.util.List;
+
 import javaw.util.ArrayList;
 import javaw.util.SerializableList;
+
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -12,7 +15,7 @@ import org.jboss.seam.log.Log;
 
 
 @Name("armGroupDataProvider")
- public class ArmGroupDataProvider implements Serializable{
+ public class ArmGroupDataProvider implements Serializable {
 	
 	@Logger private transient Log log;
 	
@@ -21,13 +24,10 @@ import org.jboss.seam.log.Log;
 
 	
 	
-	public SerializableList<BaseItem> getItemsByrange(int firstRow, int numberOfRows, String sortField, 
+	public List<BaseItem> getItemsByrange(int firstRow, int numberOfRows, String sortField, 
 			                                   boolean ascending) {
-		SerializableList<BaseItem> ret = new ArrayList<BaseItem>();
-	
 		log.info("AuditDataProvider:getItemsByrange");
-		ret=armGroupManager.getAuditList(firstRow, numberOfRows);
-		return ret;
+		return armGroupManager.getAuditList(firstRow, numberOfRows);
 	}
 	
 	public void update() {

@@ -1,6 +1,7 @@
 package javaw.util;
 
 import java.util.Collection;
+import java.util.List;
 
 // Wrapper to deal with SONAR CWE-594 issue.
 // http://cwe.mitre.org/data/definitions/594.html
@@ -17,6 +18,12 @@ public class ArrayList<K> extends java.util.ArrayList<K> implements Serializable
 	}
 	public ArrayList(Collection<K> values) {
 		super(values);
+	}
+	public ArrayList(int i) {
+		super(i);
+	}
+	public ArrayList(List<K> list) {
+		super(list);
 	}
 };
 

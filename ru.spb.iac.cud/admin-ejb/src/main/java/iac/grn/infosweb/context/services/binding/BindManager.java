@@ -33,15 +33,33 @@ import iac.grn.infosweb.session.navig.LinksMap;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+import javaw.util.HashMap;
+import javaw.util.SerializableList;
+import javaw.util.ArrayList;
+import javaw.util.SerializableMap;
+import javaw.util.SerializableSet;
+
+
+
+
+
+
+
 
 import org.jboss.seam.Component;
 
 import ru.spb.iac.cud.core.util.CUDConstants;
+
 import javax.faces.context.FacesContext;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
+
 import iac.grn.serviceitems.BaseTableItem;
 
 import javax.persistence.NoResultException;
@@ -52,7 +70,7 @@ import javax.persistence.NoResultException;
  *
  */
 @Name("bindManager")
- public class BindManager {
+ public class BindManager implements java.io.Serializable {
 	
 	 @Logger private Log log;
 	
@@ -64,13 +82,13 @@ import javax.persistence.NoResultException;
      * для отображения
      */
 		
-	private List<BaseItem> auditList;
+	private SerializableList<BaseItem> auditList;
 	
 	private Long auditCount;
 	
-	private List <BaseTableItem> auditItemsListSelect;
+	private SerializableList <BaseTableItem> auditItemsListSelect;
 	
-	private List <BaseTableItem> auditItemsListContext;
+	private SerializableList <BaseTableItem> auditItemsListContext;
 	
 	private int connectError=0;
 	private Boolean evaluteForList;
@@ -80,22 +98,22 @@ import javax.persistence.NoResultException;
 	  
 	private boolean addLoginExist=false;
 	
-	private List<AcApplication> listBindArm = null;
-	private List<AcApplication> listBindArmEdit = null;
-	private List<AcApplication> listBindArmForView = null;
+	private SerializableList<AcApplication> listBindArm = null;
+	private SerializableList<AcApplication> listBindArmEdit = null;
+	private SerializableList<AcApplication> listBindArmForView = null;
 	
-	private List<BaseItem> historyBindingList = null;
+	private SerializableList<BaseItem> historyBindingList = null;
 	
 	private Long historyBindingValue = null;
 	
-	private List<GroupUsersKnlT> listBindGroupForView = null;
+	private SerializableList<GroupUsersKnlT> listBindGroupForView = null;
 	
 	private LinksMap linksMap = null;
 	private AcUser currentUser = null;
 	
-	private List<BaseItem> roleList;
+	private SerializableList<BaseItem> roleList;
 	
-	private List<BaseItem> applicantList;
+	private SerializableList<BaseItem> applicantList;
 	
 	private String dellMessage = null;
 	
@@ -112,7 +130,7 @@ import javax.persistence.NoResultException;
 	    return addLoginExist;
 	}
 	
-	public List<BaseItem> getAuditList(int firstRow, int numberOfRows){
+	public SerializableList<BaseItem> getAuditList(int firstRow, int numberOfRows){
 	  String remoteAudit = FacesContext.getCurrentInstance().getExternalContext()
 	             .getRequestParameterMap()
 	             .get("remoteAudit");
@@ -122,7 +140,7 @@ import javax.persistence.NoResultException;
 	  log.info("getAuditList:firstRow:"+firstRow);
 	  log.info("getAuditList:numberOfRows:"+numberOfRows);
 	  
-	  List<BaseItem> bindListCached = (List<BaseItem>)
+	  SerializableList<BaseItem> bindListCached = (SerializableList<BaseItem>)
 			  Component.getInstance("bindListCached",ScopeType.SESSION);
 	  if(auditList==null){
 		  log.info("getAuditList:01");
@@ -141,7 +159,7 @@ import javax.persistence.NoResultException;
 			    log.info("getAuditList:03:"+this.auditList.size());
 			}
 		 	
-		 	List<String>  selRecBind = (ArrayList<String>)
+		 	SerializableList<String>  selRecBind = (ArrayList<String>)
 					  Component.getInstance("selRecBind",ScopeType.SESSION);
 		 	if(this.auditList!=null && selRecBind!=null) {
 		 		 for(BaseItem it:this.auditList){
@@ -156,13 +174,13 @@ import javax.persistence.NoResultException;
 		}
 		return this.auditList;
 	}
-	public void setAuditList(List<BaseItem> auditList){
+	public void setAuditList(SerializableList<BaseItem> auditList){
 		this.auditList=auditList;
 	}
 	public void invokeLocal(String type, int firstRow, int numberOfRows,
 	           String sessionId) {
 		
-		Map<String, BaseItem> resultIds = new HashMap<String, BaseItem>();
+		SerializableMap<String, BaseItem> resultIds = new HashMap<String, BaseItem>();
 		String idRec=null;
 		
 		try{
@@ -171,14 +189,14 @@ import javax.persistence.NoResultException;
 			 
 			 BindStateHolder bindStateHolder = (BindStateHolder)
 					  Component.getInstance("bindStateHolder",ScopeType.SESSION);
-			 Map<String, String> filterMap = bindStateHolder.getColumnFilterValues();
+			 SerializableMap<String, String> filterMap = bindStateHolder.getColumnFilterValues();
 			 String st=null;
 			  
 			 if("list".equals(type)){
 				 log.info("Bind:invokeLocal:list:01");
 				 
-				 Set<Map.Entry<String, String>> set = bindStateHolder.getSortOrders().entrySet();
-                 for (Map.Entry<String, String> me : set) {
+				 Set<SerializableMap.Entry<String, String>> set = bindStateHolder.getSortOrders().entrySet();
+                 for (SerializableMap.Entry<String, String> me : set) {
       		       
       		       if(orderQuery==null){
       		    	 orderQuery="order by "+me.getKey()+" "+me.getValue();
@@ -189,8 +207,8 @@ import javax.persistence.NoResultException;
                  log.info("Bind:invokeLocal:list:orderQuery:"+orderQuery);
                  
                  if(filterMap!=null){
-    	    		 Set<Map.Entry<String, String>> setFilterBind = filterMap.entrySet();
-    	              for (Map.Entry<String, String> me : setFilterBind) {
+    	    		 Set<SerializableMap.Entry<String, String>> setFilterBind = filterMap.entrySet();
+    	              for (SerializableMap.Entry<String, String> me : setFilterBind) {
     	               
     	   		     if("t1_crt_date".equals(me.getKey())){  
     	        	   //делаем фильтр на начало  
@@ -453,8 +471,8 @@ import javax.persistence.NoResultException;
 				 
                  
                  if(filterMap!=null){
-    	    		 Set<Map.Entry<String, String>> setFilterBind = filterMap.entrySet();
-    	              for (Map.Entry<String, String> me : setFilterBind) {
+    	    		 Set<SerializableMap.Entry<String, String>> setFilterBind = filterMap.entrySet();
+    	              for (SerializableMap.Entry<String, String> me : setFilterBind) {
     	             
     	           
     	              if("t1_iogv_bind_type".equals(me.getKey())&&(me.getValue()!=null && "-2".equals(me.getValue()))){
@@ -585,7 +603,7 @@ import javax.persistence.NoResultException;
    private BaseItem searchBean(String sessionId){
     	
       if(sessionId!=null){
-    	 List<BaseItem> bindListCached = (List<BaseItem>)
+    	 SerializableList<BaseItem> bindListCached = (SerializableList<BaseItem>)
 				  Component.getInstance("bindListCached",ScopeType.SESSION);
 		if(bindListCached!=null){
 			for(BaseItem it : bindListCached){
@@ -818,8 +836,8 @@ import javax.persistence.NoResultException;
 	   
 	   log.info("bindManager:updBindRole:01");
 	   
-	   List<AcLinkUserToRoleToRaion> arList = new ArrayList<AcLinkUserToRoleToRaion>();
-	   List<AcLinkUserToRoleToRaion> arRemovedList = new ArrayList<AcLinkUserToRoleToRaion>();
+	   SerializableList<AcLinkUserToRoleToRaion> arList = new ArrayList<AcLinkUserToRoleToRaion>();
+	   SerializableList<AcLinkUserToRoleToRaion> arRemovedList = new ArrayList<AcLinkUserToRoleToRaion>();
 	   
 	   AcUser bindBean = (AcUser)
 				  Component.getInstance("bindBean",ScopeType.CONVERSATION);
@@ -1145,7 +1163,7 @@ import javax.persistence.NoResultException;
 	     
 	     UserItem au = (UserItem)searchBean(sessionId);
 	     
-	     List<Object[]> applicant_list  = (List<Object[]>) entityManager.createNativeQuery(
+	     SerializableList<Object[]> applicant_list  = (SerializableList<Object[]>) entityManager.createNativeQuery(
 					      
              	 "select t1.t1_id, t1.t1_login, t1.t1_cert, t1.t1_usr_code, t1.t1_fio, t1.t1_tel, t1.t1_email,t1.t1_pos, t1.t1_dep_name, "+ 
 	    		 "t1.t1_org_code, t1.t1_org_name, t1.t1_org_adr, t1.t1_org_tel, t1.t1_start, t1.t1_end, t1.t1_status, "+ 
@@ -1620,7 +1638,7 @@ import javax.persistence.NoResultException;
 	   }    
    }
     
-    public List<BaseItem> getHistoryBindingList() throws Exception{
+    public SerializableList<BaseItem> getHistoryBindingList() throws Exception{
 	    log.info("BindManager:getHistoryBindingList:01");
 	    
 	    List<Object[]> bindings  = null;
@@ -1707,7 +1725,7 @@ import javax.persistence.NoResultException;
 	     }
 	    return historyBindingList;
    }
-   public void setHistoryBindingList(List<BaseItem> historyBindingList){
+   public void setHistoryBindingList(SerializableList<BaseItem> historyBindingList){
 	   this.historyBindingList=historyBindingList;
    } 
   
@@ -1779,7 +1797,7 @@ import javax.persistence.NoResultException;
 	   
 	      BindStateHolder bindStateHolder = (BindStateHolder)
 				  Component.getInstance("bindStateHolder",ScopeType.SESSION);
-	      Map<String, String> filterMap = bindStateHolder.getColumnFilterValues();
+	      SerializableMap<String, String> filterMap = bindStateHolder.getColumnFilterValues();
 	   
 	      if(filterMap!=null){
 		   //при любом переключении t1_iogv_bind_type сбрасываем t1_bin_flag
@@ -1860,7 +1878,7 @@ import javax.persistence.NoResultException;
   
    
   
-   public List<AcApplication> getListBindArm() throws Exception{
+   public SerializableList<AcApplication> getListBindArm() throws Exception{
 	    log.info("BindManager:getListBindArm:01");
 	    try {
 	    	if(listBindArm==null){
@@ -1876,9 +1894,9 @@ import javax.persistence.NoResultException;
 	      		if(!cau.getIsSysAdmin().equals(1L)){ //если не с ролью сист админ
 	    			query+="and o.idArm!="+appCode;
 	    		}
-	    		listBindArm=entityManager
+	    		listBindArm=new ArrayList<AcApplication>(entityManager
 	    				.createQuery(query)
-	    				.getResultList();
+	    				.getResultList());
 				
 	    	}
 	     } catch (Exception e) {
@@ -1887,11 +1905,11 @@ import javax.persistence.NoResultException;
 	     }
 	    return listBindArm;
    }
-   public void setListBindArm(List<AcApplication> listBindArm){
+   public void setListBindArm(SerializableList<AcApplication> listBindArm){
 	   this.listBindArm=listBindArm;
    }
    
-   public List<AcApplication> getListBindArmEdit() throws Exception{
+   public SerializableList<AcApplication> getListBindArmEdit() throws Exception{
 	    log.info("BindManager:getListBindArmEdit:01");
 	   
 	    String  idBind = FacesContext.getCurrentInstance().getExternalContext()
@@ -1909,9 +1927,9 @@ import javax.persistence.NoResultException;
                 //перенесли на disabled chekbox
 	      
 	    		
-	    		listBindArmEdit=entityManager
+	    		listBindArmEdit=new ArrayList<AcApplication>(entityManager
 	    				.createQuery(query)
-	    				.getResultList();
+	    				.getResultList());
 	      		
 	      		
 	      		saveEditFlag= FacesContext.getCurrentInstance().getExternalContext()
@@ -1950,12 +1968,12 @@ import javax.persistence.NoResultException;
 	    return listBindArmEdit;
    }
    
-   public void setListBindArmEdit(List<AcApplication> listBindArmEdit){
+   public void setListBindArmEdit(SerializableList<AcApplication> listBindArmEdit){
 	   this.listBindArmEdit=listBindArmEdit;
    }
   
    
-   public List<AcApplication> getListBindArmForView() throws Exception{
+   public SerializableList<AcApplication> getListBindArmForView() throws Exception{
 	    log.info("BindManager:getListBindArmForView:01");
 	   
 	    String sessionId = FacesContext.getCurrentInstance().getExternalContext()
@@ -2011,7 +2029,7 @@ import javax.persistence.NoResultException;
   }
   
    
-   public List<GroupUsersKnlT> getListBindGroupForView() throws Exception{
+   public SerializableList<GroupUsersKnlT> getListBindGroupForView() throws Exception{
 	    log.info("BindManager:getListBindGroupForView:01");
 	   
 	    List<Object[]> lo=null;
@@ -2079,7 +2097,7 @@ import javax.persistence.NoResultException;
 	    return listBindGroupForView;
  }
    
-   public List<BaseItem> getRoleList(){
+   public SerializableList<BaseItem> getRoleList(){
 	   if(this.roleList==null){
 		   String idArm = FacesContext.getCurrentInstance().getExternalContext()
 			        .getRequestParameterMap()
@@ -2098,9 +2116,9 @@ import javax.persistence.NoResultException;
 			   return this.roleList;
 		   }
 		   
-		   this.roleList = entityManager.createQuery("select o from AcRole o where o.acApplication= :idArm order by o.roleTitle ")
+		   this.roleList = new ArrayList<BaseItem>(entityManager.createQuery("select o from AcRole o where o.acApplication= :idArm order by o.roleTitle ")
 				   .setParameter("idArm", new Long(idArm))
-                   .getResultList();
+                   .getResultList());
 		 
 		   if(remoteAudit!=null&&remoteAudit.equals("armSelectFact")){
 		   
@@ -2118,16 +2136,16 @@ import javax.persistence.NoResultException;
 	   return this.roleList;
    }
    
-   public void setRoleList(List<BaseItem> roleList){
+   public void setRoleList(SerializableList<BaseItem> roleList){
 	   this.roleList=roleList;
    }
    
-   public List<BaseItem> getApplicantList(){
+   public SerializableList<BaseItem> getApplicantList(){
 	
 	   return this.applicantList;
    }
    
-   public void setApplicantList(List<BaseItem> applicantList){
+   public void setApplicantList(SerializableList<BaseItem> applicantList){
 	   this.applicantList=applicantList;
    }
    
@@ -2145,7 +2163,7 @@ import javax.persistence.NoResultException;
 	public void setSearchOrgExact(Boolean searchOrgExact){
 		this.searchOrgExact=searchOrgExact;
 	}
-	public void setAuditItemsListSelect(List <BaseTableItem> auditItemsListSelect) {
+	public void setAuditItemsListSelect(SerializableList <BaseTableItem> auditItemsListSelect) {
 		    this.auditItemsListSelect=auditItemsListSelect;
  }
 
@@ -2153,7 +2171,7 @@ import javax.persistence.NoResultException;
 	   return connectError;
    }
    
-   public List <BaseTableItem> getAuditItemsListSelect() {
+   public SerializableList <BaseTableItem> getAuditItemsListSelect() {
 		   
 	
 	    BindContext acBind= new BindContext();
@@ -2172,12 +2190,11 @@ import javax.persistence.NoResultException;
    }
    
     
-   public List <BaseTableItem> getAuditItemsListContext() {
+   public SerializableList <BaseTableItem> getAuditItemsListContext() {
 	   log.info("bindManager:getAuditItemsListContext");
 	   if(auditItemsListContext==null){
-		   BindContext acBind= new BindContext();
-		   auditItemsListContext = new ArrayList<BaseTableItem>();
-		   auditItemsListContext=acBind.getAuditItemsCollection();
+		   BindContext acBind= new BindContext();		   
+		   auditItemsListContext= new ArrayList<BaseTableItem>(acBind.getAuditItemsCollection());
 	   }
 	   return this.auditItemsListContext;
    }
@@ -2210,7 +2227,7 @@ import javax.persistence.NoResultException;
 	    log.info("selectRecord:sessionId="+sessionId);
 	    
 	   //  forView(); //!!!
-	    List<String>  selRecBind = (ArrayList<String>)
+	    SerializableList<String>  selRecBind = (ArrayList<String>)
 				  Component.getInstance("selRecBind",ScopeType.SESSION);
 	    
 	    if(selRecBind==null){

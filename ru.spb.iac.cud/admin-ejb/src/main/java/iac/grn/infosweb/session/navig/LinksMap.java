@@ -8,7 +8,8 @@ import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.log.Log;
 
-import java.util.*;
+import javaw.util.SerializableMap;
+import javaw.util.HashMap;
 
 import javax.faces.context.FacesContext;
 
@@ -21,14 +22,14 @@ import javax.faces.context.FacesContext;
 @Name("linksMap")
 @Scope(ScopeType.APPLICATION)
 @Startup
- public class LinksMap {
+ public class LinksMap implements java.io.Serializable {
 
-	 @Logger private Log log;
+	 @Logger private transient Log log;
 	 
 	/**
 	 * Список предоставляемых приложением ресурсов
 	 */
-	 private Map lm= new HashMap();
+	 private SerializableMap lm = new HashMap();
 
 	 /**
 	  * Идентификационный код приложения

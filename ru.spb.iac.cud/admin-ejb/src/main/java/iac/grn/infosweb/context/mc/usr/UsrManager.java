@@ -64,7 +64,7 @@ import org.slf4j.LoggerFactory;
 @Name("usrManager")
  public class UsrManager extends QuerySvc {
 	
-	 @Logger private Log log;
+	 @Logger private static transient Log log;
 	
 	 final static  org.slf4j.Logger logger = LoggerFactory.getLogger(UsrManager.class);
 	 

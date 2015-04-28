@@ -27,6 +27,10 @@ import javax.servlet.http.HttpSession;
 
 import java.security.Principal;
 import java.util.Arrays;
+import java.util.Map;
+import java.util.List;
+
+import javaw.util.ArrayList;
 import javaw.util.SerializableList;
 import javaw.util.SerializableMap;
 
@@ -74,7 +78,7 @@ import javaw.util.SerializableMap;
 		HTTPContext httpContext = (HTTPContext) request.getContext();
 		HttpSession session = httpContext.getRequest().getSession(false);
 
-		SerializableMap<String, Object> requestOptions = request.getOptions();
+		Map<String, Object> requestOptions = request.getOptions();
 		PicketLinkAuditHelper auditHelper = (PicketLinkAuditHelper) requestOptions
 				.get(GeneralConstants.AUDIT_HELPER);
 		String contextPath = (String) requestOptions
@@ -101,7 +105,9 @@ import javaw.util.SerializableMap;
 
 		((RolesManager) this.roleGenerator).setSystemCode(codeSystem);
 
-		roles = roleGenerator.generateRoles(userPrincipal);
+		roles = new ArrayList<String>(
+						roleGenerator.generateRoles(userPrincipal));
+		
 		if (auditHelper != null) {
 			PicketLinkAuditEvent auditEvent = new PicketLinkAuditEvent(
 					AuditLevel.INFO);

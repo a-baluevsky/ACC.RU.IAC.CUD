@@ -21,8 +21,18 @@ import iac.grn.infosweb.session.audit.actions.ActionsMap;
 import iac.grn.infosweb.session.audit.actions.ResourcesMap;
 import iac.grn.infosweb.session.audit.export.AuditExportData;
 import iac.grn.infosweb.session.navig.LinksMap;
+import javaw.util.SerializableList;
+import javaw.util.SerializableMap;
+import javaw.util.SerializableSet;
+import javaw.util.ArrayList;
+import javaw.util.HashMap;
+import javaw.util.HashSet;
 
-import java.util.*;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.jboss.seam.Component;
 
@@ -39,28 +49,28 @@ import iac.grn.serviceitems.BaseTableItem;
 @Name("rolManager")
  public class RolManager extends QuerySvc {
 	
-	 @Logger private Log log;
+	 @Logger private static transient Log log;
 	
 	 @In 
 	 EntityManager entityManager;
 	 
 	
-	 private List <BaseTableItem> auditItemsListSelect;
+	 private SerializableList <BaseTableItem> auditItemsListSelect;
 		
-	private List <BaseTableItem> auditItemsListContext;
+	private SerializableList <BaseTableItem> auditItemsListContext;
 		
 		
-	private List<BaseItem> auditList; 
+	private SerializableList<BaseItem> auditList; 
 	
 	private Long auditCount;
 	
 	
 	
-	private List<AcApplication> listRolArm = null;
-	private List<AcAppPage> listRolRes = null;
-	private List<AcAppPage> listRolResEdit = null;
-	private List<AcPermissionsList> listRolPerm = null;
-	private List<Long> checkboxPerm = null;
+	private SerializableList<AcApplication> listRolArm = null;
+	private SerializableList<AcAppPage> listRolRes = null;
+	private SerializableList<AcAppPage> listRolResEdit = null;
+	private SerializableList<AcPermissionsList> listRolPerm = null;
+	private SerializableList<Long> checkboxPerm = null;
 	
 	private int connectError=0;
 	private Boolean evaluteForList;
@@ -68,14 +78,14 @@ import iac.grn.serviceitems.BaseTableItem;
 	private Boolean evaluteForBean;
 
 	
-	private List<AcApplication> listArm = null;
+	private SerializableList<AcApplication> listArm = null;
 	
 	
-	private List<AcApplication> listArmUgroup = null;
+	private SerializableList<AcApplication> listArmUgroup = null;
 	
-    private List<BaseItem> usrAlfList;
+    private SerializableList<BaseItem> usrAlfList;
 	
-	private List<AcUser> usrSelectListForView;
+	private SerializableList<AcUser> usrSelectListForView;
 	
 	
 	private boolean roleCodeExist=false;
@@ -105,7 +115,7 @@ import iac.grn.serviceitems.BaseTableItem;
 			    "onSelColSaveFact".equals(remoteAudit))&&
 			    rolListCached!=null){
 		 		log.info("getAuditList:02:"+rolListCached.size());
-			    	this.auditList=rolListCached;
+			    	this.auditList=new ArrayList<BaseItem>( rolListCached);
 			}else{
 				log.info("getAuditList:03");
 		    	invokeLocal("list", firstRow, numberOfRows, null);
@@ -175,21 +185,22 @@ import iac.grn.serviceitems.BaseTableItem;
                 AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
 	    		 
  	    		if(au.getAllowedSys()!=null){
- 	    			 auditList = entityManager.createQuery("select o from AcRole o "+
+ 	    			 auditList = new ArrayList<BaseItem>( entityManager.createQuery("select o from AcRole o "+
  	    					"where o.acApplication in (:idsArm) "+
  	    					(st!=null ? " and "+st :"")+
  	    				    (orderQueryRol!=null ? orderQueryRol+", o.idRol " : " order by o.idRol "))
  	                           .setFirstResult(firstRow)
  	                           .setMaxResults(numberOfRows)
  	                           .setParameter("idsArm", au.getAllowedSys())
- 	                           .getResultList();
+ 	                           .getResultList());
  	    		}else{
- 	    			 auditList = entityManager.createQuery("select o from AcRole o "+
+ 	    			 auditList = new ArrayList<BaseItem>( entityManager.createQuery("select o from AcRole o "+
  	    					(st!=null ? " where "+st :"")+
  	    				    (orderQueryRol!=null ? orderQueryRol+", o.idRol " : " order by o.idRol "))
  	                           .setFirstResult(firstRow)
  	                           .setMaxResults(numberOfRows)
- 	                           .getResultList();
+ 	                           .getResultList()
+ 	                         );
  	    		}
                 
  	    		// 17.02.15: AB: MANTIS-4954
@@ -249,7 +260,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	}
 
 	public void setAuditList(List<BaseItem> auditList){
-		this.auditList=auditList;
+		this.auditList=new ArrayList<BaseItem>(auditList);
 	}
    public void forView(String modelType) {
 	   String  rolId = FacesContext.getCurrentInstance().getExternalContext()
@@ -628,7 +639,9 @@ import iac.grn.serviceitems.BaseTableItem;
 	    log.info("RolManager:getListRolArm:01");
 	    try {
 	    	if(listRolArm==null){
-	     		listRolArm=entityManager.createQuery("select o from AcApplication o where o.acRoles IS NOT EMPTY order by o.name ").getResultList();
+	     		listRolArm=new ArrayList<AcApplication>(
+	     				entityManager.createQuery("select o from AcApplication o where o.acRoles IS NOT EMPTY order by o.name ").getResultList()
+	     		);
 	    	}
 	     } catch (Exception e) {
 	    	 log.error("RolManager:getListRolArm:ERROR:"+e);
@@ -637,7 +650,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	    return listRolArm;
  }
    public void setListRolArm(List<AcApplication> listRolArm){
-	   this.listRolArm=listRolArm;
+	   this.listRolArm=new ArrayList<AcApplication>(listRolArm);
    }
    
    public List<AcAppPage> getListRolRes() throws Exception{
@@ -669,13 +682,14 @@ import iac.grn.serviceitems.BaseTableItem;
 	    		//идём сюда:
 	    		//1)при ajax смене АРМ(pidArm!=null)
 	    		//2)при нажатии Сохранить (pidArm!=null)
-	    		listRolRes=entityManager.createQuery("select o from AcAppPage o where " +
+	    		listRolRes=new ArrayList<AcAppPage>(
+	    				entityManager.createQuery("select o from AcAppPage o where " +
 	    				"o.idResCollection is empty and "+
 	    				"o.visible=1 and "+
 	    		    	"o.acApplication = :idArm and " +
 	    				"o.idParent2 !=1 and o.pageCode is not null ")
 	    				.setParameter("idArm", (pidArm!=null ? new Long(pidArm) : rolBeanCrt.getAcApplication()))
-	    				.getResultList();
+	    				.getResultList());
 	   		   for(AcAppPage aap:listRolRes){
 	   			  log.info("RolManager:getListRolRes:Cicle:1");
 	   			  String st=aap.getPageName();
@@ -699,7 +713,7 @@ import iac.grn.serviceitems.BaseTableItem;
    }
    
    public void setListRolRes(List<AcAppPage> listRolRes){
-	   this.listRolRes=listRolRes;
+	   this.listRolRes=new ArrayList<AcAppPage>(listRolRes);
    }
    
    public List<AcAppPage> getListRolResEdit() throws Exception{
@@ -740,13 +754,15 @@ import iac.grn.serviceitems.BaseTableItem;
 	    		//2)при ajax смене АРМ (pidArm!=null)
 	    		//3)при нажатии Сохранить (pidArm!=null)
 		    	
-	    		listRolResEdit=entityManager.createQuery("select o from AcAppPage o where " +
+	    		listRolResEdit=new ArrayList<AcAppPage>(
+	    				entityManager.createQuery("select o from AcAppPage o where " +
 	    				"o.idResCollection is empty and " +
 	    				"o.visible=1 and "+
 	    				"o.acApplication = :idArm and " +
 	    				"o.idParent2 !=1 and o.pageCode is not null ")
 	    				.setParameter("idArm",(pidArm!=null ? new Long(pidArm) : rolBean.getAcApplication()))
-	    				.getResultList();
+	    				.getResultList()
+	    				);
 	    		saveEditFlag= FacesContext.getCurrentInstance().getExternalContext()
 	 			        .getRequestParameterMap()
 	 			        .get("saveEditFlag");
@@ -805,14 +821,16 @@ import iac.grn.serviceitems.BaseTableItem;
    }
    public void setListRolResEdit( List<AcAppPage> listRolResEdit ){
 	   log.info("RolManager:setListRolResEdit");
-	   this.listRolResEdit=listRolResEdit;
+	   this.listRolResEdit=new ArrayList<AcAppPage>(listRolResEdit);
    }
 
    public List<AcPermissionsList> getListRolPerm() throws Exception{
 	    log.info("getListRolPerm_01");
 	    try {
 	    	if(listRolPerm==null){
-	     		listRolPerm=entityManager.createQuery("select o from AcPermissionsList o").getResultList();
+	     		listRolPerm=new ArrayList<AcPermissionsList>(
+	     				entityManager.createQuery("select o from AcPermissionsList o").getResultList()
+	     		);
 	       	}
 	    	if(listRolPerm!=null){
 	    	  log.info("getListRolPerm:size:"+listRolPerm.size());
@@ -837,7 +855,7 @@ import iac.grn.serviceitems.BaseTableItem;
   }
   public void setCheckboxPerm(List<Long> checkboxPerm) throws Exception{
 	    log.info("setCheckboxPerm_01");
-	    this.checkboxPerm=checkboxPerm;
+	    this.checkboxPerm=new ArrayList<Long>(checkboxPerm);
   }
   
   
@@ -905,7 +923,7 @@ import iac.grn.serviceitems.BaseTableItem;
         	return this.usrSelectListForView;
      }
   public void setAuditItemsListSelect(List <BaseTableItem> auditItemsListSelect) {
-	    this.auditItemsListSelect=auditItemsListSelect;
+	    this.auditItemsListSelect=new ArrayList<BaseTableItem>(auditItemsListSelect);
 }
   
    public int getConnectError(){
@@ -935,10 +953,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	   log.info("usrManager:getAuditItemsListContext");
 	   if(auditItemsListContext==null){
 		   RolContext acRol= new RolContext();
-		   auditItemsListContext = new ArrayList<BaseTableItem>();
-		   
-		   
-		   auditItemsListContext=acRol.getAuditItemsCollection();
+		   auditItemsListContext=new ArrayList<BaseTableItem>(acRol.getAuditItemsCollection());
 	   }
 	   return this.auditItemsListContext;
    }
@@ -959,17 +974,20 @@ import iac.grn.serviceitems.BaseTableItem;
 	    		}
 	    		
 	    		if(cau.getAllowedSys()!=null){
-	    			listArm=entityManager.createQuery(
+	    			listArm=new ArrayList<AcApplication>(
+	    					entityManager.createQuery(
 	    					"select o from AcApplication o "+
 	    				    "where o.idArm in (:idsArm) " +
 	    				    (query!=null?" and "+query:" ")+" order by o.name ")
 	       				    .setParameter("idsArm", cau.getAllowedSys())
-	    					.getResultList();
+	    					.getResultList()
+	    					);
 	    		}else{
-	    			listArm=entityManager.createQuery(
+	    			listArm=new ArrayList<AcApplication>(
+	    					entityManager.createQuery(
 	    					"select o from AcApplication o "+
 	    					(query!=null?" where "+query:" ")+" order by o.name ")
-	    					.getResultList();
+	    					.getResultList());
 	    		}
 	    		
 	      	}
@@ -999,13 +1017,17 @@ import iac.grn.serviceitems.BaseTableItem;
 	    		String query="select o from AcApplication o where o.idArm!="+appCode+" ";
 	    		
 	    		if(cau.getAllowedSys()!=null){
-	    			listArmUgroup=entityManager.createQuery(
+	    			listArmUgroup=new ArrayList<AcApplication>(
+	    					entityManager.createQuery(
 	    					      query+
 	    					      " and o.idArm in (:idsArm) order by o.name" )
 	    					      .setParameter("idsArm", cau.getAllowedSys())
-                                  .getResultList();
+                                  .getResultList()
+                            );
 	    		}else{
-	    			listArmUgroup=entityManager.createQuery(query+" order by o.name").getResultList();
+	    			listArmUgroup=new ArrayList<AcApplication>(
+	    					entityManager.createQuery(query+" order by o.name").getResultList()
+	    				);
 	    		}
 	    		
 	    	}
@@ -1118,7 +1140,7 @@ import iac.grn.serviceitems.BaseTableItem;
    	return this.usrAlfList;
    }
    public void setUsrAlfList(List<BaseItem> usrAlfList){
- 	   this.usrAlfList=usrAlfList;
+ 	   this.usrAlfList=new ArrayList<BaseItem>(usrAlfList);
    }
    
    

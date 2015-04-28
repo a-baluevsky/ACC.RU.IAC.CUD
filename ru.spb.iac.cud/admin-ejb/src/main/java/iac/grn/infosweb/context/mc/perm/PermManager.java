@@ -1,5 +1,7 @@
 package iac.grn.infosweb.context.mc.perm;
 
+import java.util.List;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -10,12 +12,18 @@ import org.jboss.seam.log.Log;
 
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.entity.AcPermissionsList;
-import java.util.*;
 
 import org.jboss.seam.Component;
+
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
+
 import iac.grn.serviceitems.BaseTableItem;
+
+import javaw.util.SerializableList;
+import javaw.util.ArrayList;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * ”правл€ющий Ѕин
@@ -23,9 +31,14 @@ import iac.grn.serviceitems.BaseTableItem;
  *
  */
 @Name("permManager")
- public class PermManager {
+ public class PermManager implements java.io.Serializable {
 	
-	 @Logger private Log log;
+	 /**
+	 * 
+	 */
+	private static final long serialVersionUID = 446402688513644327L;
+
+	@Logger private static Log log;
 	
 	 @In 
 	 EntityManager entityManager;
@@ -33,9 +46,9 @@ import iac.grn.serviceitems.BaseTableItem;
 	
 	private String dellMessage;
 	 
-	private List<BaseItem> auditList; 
+	private SerializableList<BaseItem> auditList; 
 	
-	private List <BaseTableItem> auditItemsListContext;
+	private SerializableList <BaseTableItem> auditItemsListContext;
 
 	
 	private Long auditCount;
@@ -44,7 +57,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	private Boolean evaluteForListFooter;  
 	private Boolean evaluteForBean;
 
-	private List <BaseTableItem> auditItemsListSelect;
+	private SerializableList <BaseTableItem> auditItemsListSelect;
 	
 	
 	private int connectError=0;
@@ -70,7 +83,7 @@ import iac.grn.serviceitems.BaseTableItem;
 			    "clSelOneFact".equals(remoteAudit)||
 			    "onSelColSaveFact".equals(remoteAudit))&&
 			    permListCached!=null){
-		 	    	this.auditList=permListCached;
+		 	    	this.auditList=new ArrayList<BaseItem>(permListCached);
 			}else{
 				log.info("getAuditList:03");
 		    	invokeLocal("list", firstRow, numberOfRows, null);
@@ -118,10 +131,10 @@ import iac.grn.serviceitems.BaseTableItem;
       		     }
                  log.info("Perm:invokeLocal:list:orderQuery:"+orderQuery);
                  
-					 auditList = entityManager.createQuery("select o from AcPermissionsList o "+(orderQuery!=null ? orderQuery+", orderNum " : " order by orderNum "))
+					 auditList = new ArrayList<BaseItem>( entityManager.createQuery("select o from AcPermissionsList o "+(orderQuery!=null ? orderQuery+", orderNum " : " order by orderNum "))
                        .setFirstResult(firstRow)
                        .setMaxResults(numberOfRows)
-                       .getResultList();
+                       .getResultList());
              log.info("invokeLocal:list:02");
   
 			 } else if("count".equals(type)){
@@ -161,7 +174,7 @@ import iac.grn.serviceitems.BaseTableItem;
    }
    
    public void setAuditList(List<BaseItem> auditList){
-		this.auditList=auditList;
+		this.auditList=new ArrayList<BaseItem>( auditList);
 	}
    
    private  AcPermissionsList searchBean(String sessionId){
@@ -326,17 +339,15 @@ import iac.grn.serviceitems.BaseTableItem;
    }
    
    public void setAuditItemsListSelect(List <BaseTableItem> auditItemsListSelect) {
-		    this.auditItemsListSelect=auditItemsListSelect;
+		this.auditItemsListSelect=new ArrayList<BaseTableItem>(auditItemsListSelect);
    }
    
    public List <BaseTableItem> getAuditItemsListContext() {
 	   log.info("orgManager:getAuditItemsListContext");
 	   if(auditItemsListContext==null){
 		   PermContext acPerm= new PermContext();
-		   auditItemsListContext = new ArrayList<BaseTableItem>();
-		   
-		   
-		   auditItemsListContext=acPerm.getAuditItemsCollection();
+		   auditItemsListContext=new ArrayList<BaseTableItem>(
+				   acPerm.getAuditItemsCollection());
 	   }
 	   return this.auditItemsListContext;
    }

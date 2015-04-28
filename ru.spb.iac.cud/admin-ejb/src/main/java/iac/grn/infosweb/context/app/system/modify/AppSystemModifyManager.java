@@ -2,9 +2,15 @@ package iac.grn.infosweb.context.app.system.modify;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
 import javaw.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Map;
+import java.util.Set;
+
+import javaw.util.HashSet;
 import javaw.util.SerializableMap;
 import javaw.util.SerializableList;
 import javaw.util.SerializableSet;
@@ -16,6 +22,8 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.faces.FacesMessages;
+
+
 
 
 import iac.cud.infosweb.dataitems.AppSystemModifyItem;
@@ -50,8 +58,8 @@ import iac.grn.serviceitems.HeaderTableItem;
 			 if("list".equals(type)){
 				 log.info("AppSys:invokeLocal:list:01");
 				 
-				 SerializableSet<SerializableMap.Entry<String, String>> set = appSystemModifyStateHolder.getSortOrders().entrySet();
-                 for (SerializableMap.Entry<String, String> me : set) {
+				 Set<Map.Entry<String, String>> set = appSystemModifyStateHolder.getSortOrders().entrySet();
+                 for (Map.Entry<String, String> me : set) {
       		       log.info("me.getKey+:"+me.getKey());
       		       log.info("me.getValue:"+me.getValue());
       		       
@@ -64,8 +72,8 @@ import iac.grn.serviceitems.HeaderTableItem;
                  log.info("invokeLocal:list:orderQueryAppSys:"+orderQueryAppSys);
                  
                  if(filterMap!=null){
-    	    		 SerializableSet<SerializableMap.Entry<String, String>> setFilterAppSys = filterMap.entrySet();
-    	              for (SerializableMap.Entry<String, String> me : setFilterAppSys) {
+    	    		 Set<SerializableMap.Entry<String, String>> setFilterAppSys = filterMap.entrySet();
+    	              for (Map.Entry<String, String> me : setFilterAppSys) {
     	            	 
     	   		     if("t1_crt_date".equals(me.getKey())){  
     	        	   
@@ -90,43 +98,43 @@ import iac.grn.serviceitems.HeaderTableItem;
                DateFormat df = new SimpleDateFormat ("dd.MM.yy HH:mm:ss");
                
 
-             lo=entityManager.createNativeQuery(
-             "select t1.t1_id, t1.t1_created, t1.t1_full_name, t1.t1_short_name, t1.t1_description, "+
-             "t1.t1_status, t1_org_name,  t1_user_fio, t1_reject_reason, " +
-             "t1_arm_id, t1_arm_code, t1_arm_name, t1_arm_description, t1_comment "+
-              "from( "+ 
-             "select JAS.ID_SRV t1_id, JAS.CREATED t1_created, JAS.FULL_NAME t1_full_name, "+ 
-             "JAS.SHORT_NAME t1_short_name, JAS.DESCRIPTION t1_description, "+ 
-             "JAS.STATUS t1_status,  CL_ORG_FULL.FULL_ t1_org_name, "+
-              "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_user_fio, " +
-              "JAS.REJECT_REASON t1_reject_reason, " +
-              "ARM.ID_SRV t1_arm_id, ARM.SIGN_OBJECT t1_arm_code, ARM.FULL_ t1_arm_name, ARM.DESCRIPTION  t1_arm_description, " +
-              "JAS.COMMENT_ t1_comment "+
-             "from JOURN_APP_SYSTEM_MODIFY_BSS_T jas, "+
-               "AC_USERS_KNL_T au_FULL, "+  
-                "ISP_BSS_T cl_org_full, "+
-                 "ISP_BSS_T cl_usr_full, " +
-                 "AC_IS_BSS_T arm, "+
-              "(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE "+ 
-                "from ISP_BSS_T cl_org "+
-                "where  CL_ORG.SIGN_OBJECT LIKE '%00000' "+
-                "group by CL_ORG.SIGN_OBJECT) t03, "+
-                 "(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "+ 
-                            "from ISP_BSS_T cl_usr "+
-                            "where CL_USR.FIO is not null "+
-                            "group by CL_usr.SIGN_OBJECT) t02 "+  
-                "where JAS.UP_USER=AU_FULL.ID_SRV "+
-                "and AU_FULL.UP_SIGN=t03.CL_ORG_CODE "+
-                "and CL_ORG_FULL.ID_SRV=t03.CL_ORG_ID "+
-                "and AU_FULL.UP_SIGN_USER=t02.CL_USR_CODE(+) "+
-                "and CL_USR_FULL.ID_SRV(+)=t02.CL_USR_ID " +
-                "and ARM.ID_SRV(+)=JAS.UP_IS_APP "+
-             ") t1 "+
-              (st!=null ? " where "+st :" ")+
-              (orderQueryAppSys!=null ? orderQueryAppSys+", t1_id desc " : " order by t1_id desc "))
-              .setFirstResult(firstRow)
-              .setMaxResults(numberOfRows)
-              .getResultList();
+             lo=new ArrayList<Object[]>(entityManager.createNativeQuery(
+                     "select t1.t1_id, t1.t1_created, t1.t1_full_name, t1.t1_short_name, t1.t1_description, "+
+                             "t1.t1_status, t1_org_name,  t1_user_fio, t1_reject_reason, " +
+                             "t1_arm_id, t1_arm_code, t1_arm_name, t1_arm_description, t1_comment "+
+                              "from( "+ 
+                             "select JAS.ID_SRV t1_id, JAS.CREATED t1_created, JAS.FULL_NAME t1_full_name, "+ 
+                             "JAS.SHORT_NAME t1_short_name, JAS.DESCRIPTION t1_description, "+ 
+                             "JAS.STATUS t1_status,  CL_ORG_FULL.FULL_ t1_org_name, "+
+                              "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_user_fio, " +
+                              "JAS.REJECT_REASON t1_reject_reason, " +
+                              "ARM.ID_SRV t1_arm_id, ARM.SIGN_OBJECT t1_arm_code, ARM.FULL_ t1_arm_name, ARM.DESCRIPTION  t1_arm_description, " +
+                              "JAS.COMMENT_ t1_comment "+
+                             "from JOURN_APP_SYSTEM_MODIFY_BSS_T jas, "+
+                               "AC_USERS_KNL_T au_FULL, "+  
+                                "ISP_BSS_T cl_org_full, "+
+                                 "ISP_BSS_T cl_usr_full, " +
+                                 "AC_IS_BSS_T arm, "+
+                              "(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE "+ 
+                                "from ISP_BSS_T cl_org "+
+                                "where  CL_ORG.SIGN_OBJECT LIKE '%00000' "+
+                                "group by CL_ORG.SIGN_OBJECT) t03, "+
+                                 "(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "+ 
+                                            "from ISP_BSS_T cl_usr "+
+                                            "where CL_USR.FIO is not null "+
+                                            "group by CL_usr.SIGN_OBJECT) t02 "+  
+                                "where JAS.UP_USER=AU_FULL.ID_SRV "+
+                                "and AU_FULL.UP_SIGN=t03.CL_ORG_CODE "+
+                                "and CL_ORG_FULL.ID_SRV=t03.CL_ORG_ID "+
+                                "and AU_FULL.UP_SIGN_USER=t02.CL_USR_CODE(+) "+
+                                "and CL_USR_FULL.ID_SRV(+)=t02.CL_USR_ID " +
+                                "and ARM.ID_SRV(+)=JAS.UP_IS_APP "+
+                             ") t1 "+
+                              (st!=null ? " where "+st :" ")+
+                              (orderQueryAppSys!=null ? orderQueryAppSys+", t1_id desc " : " order by t1_id desc "))
+                              .setFirstResult(firstRow)
+                              .setMaxResults(numberOfRows)
+                              .getResultList());
                auditList = new ArrayList<BaseItem>();
                
                for(Object[] objectArray :lo){
@@ -159,8 +167,8 @@ import iac.grn.serviceitems.HeaderTableItem;
 				 
                  
                  if(filterMap!=null){
-    	    		 SerializableSet<SerializableMap.Entry<String, String>> setFilterAppSys = filterMap.entrySet();
-    	              for (SerializableMap.Entry<String, String> me : setFilterAppSys) {
+    	    		 Set<Map.Entry<String, String>> setFilterAppSys = filterMap.entrySet();
+    	              for (Map.Entry<String, String> me : setFilterAppSys) {
     	             	
     	            	  
     	              if("t1_iogv_bind_type".equals(me.getKey())&&(me.getValue()!=null && "-2".equals(me.getValue()))){
@@ -230,7 +238,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	           AppSystemModifyItem ui = null;
 	           DateFormat df = new SimpleDateFormat ("dd.MM.yy HH:mm:ss");
 	           
-	           lo=entityManager.createNativeQuery(
+	           lo=new ArrayList<Object[]>(entityManager.createNativeQuery(
 	        		   "select t1.t1_id, t1.t1_created, t1.t1_full_name, t1.t1_short_name, t1.t1_description, "+
 	        		             "t1.t1_status, t1_org_name,  t1_user_fio, t1_reject_reason, " +
 	        		             "t1_arm_id, t1_arm_code, t1_arm_name, t1_arm_description, t1_comment "+
@@ -264,7 +272,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	        		                "and JAS.ID_SRV=? "+
 	        		             ") t1 ")
 	         .setParameter(1, idUser)
-	         .getResultList();
+	         .getResultList());
 	           
 	           for(Object[] objectArray :lo){
 	        	   try{
@@ -504,7 +512,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 		  
 		   
 		   
-		   auditItemsListContext=ac.getAuditItemsCollection();
+		   auditItemsListContext=new ArrayList<BaseTableItem>(ac.getAuditItemsCollection());
 		   
 	   }
 	   return this.auditItemsListContext;
@@ -514,7 +522,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	  
 	  if(headerItemsListContext==null){
 		   AppSystemModifyContext ac= new AppSystemModifyContext();
-		   headerItemsListContext=ac.getHeaderItemsList();
+		   headerItemsListContext=new ArrayList<HeaderTableItem>(ac.getHeaderItemsList());
 		   
 	
 		   
@@ -535,7 +543,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	 				
 	 	    
 	 	
-	 	     SerializableList<String> idsList =  Arrays.asList(ids.split(","));
+	 	     SerializableList<String> idsList =  new ArrayList<String>(Arrays.asList(ids.split(",")));
 	 	   
 	    	for(HeaderTableItem hti :ac.getHeaderItemsList()){
 			
@@ -562,7 +570,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	 				
 	 	    
 	 	
-	 	     SerializableList<String> idsList =  Arrays.asList(ids.split(","));
+	 	     SerializableList<String> idsList =  new ArrayList<String>(Arrays.asList(ids.split(",")));
 	 	   
 	    	for(HeaderTableItem hti :ac.getHeaderItemsList()){
 			

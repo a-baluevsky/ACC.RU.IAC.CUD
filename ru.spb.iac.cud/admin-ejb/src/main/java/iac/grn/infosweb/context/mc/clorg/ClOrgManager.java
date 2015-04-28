@@ -6,7 +6,11 @@ import iac.cud.infosweb.entity.AcUser;
 import iac.cud.infosweb.entity.IspBssT;
 import iac.grn.serviceitems.BaseTableItem;
 
-import java.util.ArrayList;
+import javaw.util.SerializableList;
+import javaw.util.SerializableMap;
+import javaw.util.SerializableSet;
+
+import javaw.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +34,7 @@ import org.jboss.seam.log.Log;
  *
  */
 @Name("clOrgManager")
- public class ClOrgManager {
+ public class ClOrgManager implements java.io.Serializable {
 	
 	 @Logger private Log log;
 	
@@ -42,24 +46,24 @@ import org.jboss.seam.log.Log;
      * для отображения
      */
 	
-	 private String dellMessage;
+	private String dellMessage;
 	 
-	private List<BaseItem> auditList; 
+	private SerializableList<BaseItem> auditList; 
 	
 	private Long auditCount;
 	
-	private List <BaseTableItem> auditItemsListSelect;
+	private SerializableList <BaseTableItem> auditItemsListSelect;
 	
-	private List <BaseTableItem> auditItemsListContext;
+	private SerializableList <BaseTableItem> auditItemsListContext;
 	
 	private int connectError=0;
 	private Boolean evaluteForList;
 	private Boolean evaluteForListFooter;  
 	private Boolean evaluteForBean;
 	
-	private List<AcLegalEntityType> listLET = null;
+	private SerializableList<AcLegalEntityType> listLET = null;
 	
-	private List<IspBssT> listOrg = null;
+	private SerializableList<IspBssT> listOrg = null;
 	
  	public List<BaseItem> getAuditList(int firstRow, int numberOfRows){
 	  String remoteAudit = FacesContext.getCurrentInstance().getExternalContext()
@@ -81,7 +85,7 @@ import org.jboss.seam.log.Log;
 			    "clSelOneFact".equals(remoteAudit)||
 			    "onSelColSaveFact".equals(remoteAudit))&&
 			    clOrgListCached!=null){
-			    	this.auditList=clOrgListCached;
+			    	this.auditList=new ArrayList<BaseItem>(clOrgListCached);
 			}else{
 				log.info("getAuditList:03");
 		    	invokeLocal("list", firstRow, numberOfRows, null);
@@ -105,7 +109,7 @@ import org.jboss.seam.log.Log;
 		return this.auditList;
 	}
 	public void setAuditList(List<BaseItem> auditList){
-		this.auditList=auditList;
+		this.auditList=new ArrayList<BaseItem>(auditList);
 	}
 	public void invokeLocal(String type, int firstRow, int numberOfRows,
 	           String sessionId) {
@@ -129,12 +133,12 @@ import org.jboss.seam.log.Log;
       		     }
                  log.info("ClOrg:invokeLocal:list:orderQueryClOrg:"+orderQueryClOrg);
                  
-				 auditList = entityManager.createQuery(
+				 auditList = new ArrayList<BaseItem>(entityManager.createQuery(
 					"select o from IspBssT o  " +
 					 (orderQueryClOrg!=null ? orderQueryClOrg : ""))
                        .setFirstResult(firstRow)
                        .setMaxResults(numberOfRows)
-                       .getResultList();
+                       .getResultList());
 				 
              log.info("ClOrg:invokeLocal:list:02");
   
@@ -310,7 +314,9 @@ import org.jboss.seam.log.Log;
 	   log.info("getLET");
 	    try {
 	    	if(listLET==null){
-	    	  listLET = entityManager.createQuery("select r from AcLegalEntityType r").getResultList();
+	    	  listLET = new ArrayList<AcLegalEntityType>(
+	    			entityManager.createQuery("select r from AcLegalEntityType r").getResultList()
+	    		);
 	    	 }
 	    	} catch (Exception e) {
 	    	 log.error("getLET:ERROR="+e);
@@ -324,7 +330,9 @@ import org.jboss.seam.log.Log;
 	    try {
 	    	if(listOrg==null){
 	    		log.info("getListOrg:02");
-	    		listOrg=entityManager.createQuery("select o from IspBssT o where o.status='A' and o.signObject like '%00000' ").getResultList();
+	    		listOrg=new ArrayList<IspBssT>(
+	    				entityManager.createQuery("select o from IspBssT o where o.status='A' and o.signObject like '%00000' ").getResultList()
+   				);
 	    	}
 	     } catch (Exception e) {
 	    	 log.error("getListOrg:ERROR:"+e);
@@ -379,7 +387,7 @@ import org.jboss.seam.log.Log;
 	    		
 	    		AcUser  cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
 	    		
-	    		listOrg=entityManager.createQuery(
+	    		listOrg=new ArrayList<IspBssT>(entityManager.createQuery(
 	    				"select o from IspBssT o where o.status='A' " +
 	    				"and o.signObject like '%00000' " +
 	    				"and ( 1 = :orgAccFlag  or o.signObject = :orgCode) " +
@@ -389,7 +397,7 @@ import org.jboss.seam.log.Log;
 	    				.setParameter("pref", pref+"%")
 	    				.setParameter("orgAccFlag", cau.getIsAccOrgManagerValue() ? -1 : 1)
 	    				.setParameter("orgCode", cau.getUpSign()!=null? cau.getUpSign():"")
-	    				.getResultList();
+	    				.getResultList());
 	    		
 	    		log.info("autocomplete:03:size:"+listOrg.size());
 	    	}
@@ -421,7 +429,7 @@ import org.jboss.seam.log.Log;
    }
    
    public void setAuditItemsListSelect(List <BaseTableItem> auditItemsListSelect) {
-		    this.auditItemsListSelect=auditItemsListSelect;
+		    this.auditItemsListSelect=new ArrayList<BaseTableItem>(auditItemsListSelect);
    }
    
    public List <BaseTableItem> getAuditItemsListContext() {
@@ -431,7 +439,7 @@ import org.jboss.seam.log.Log;
 		   auditItemsListContext = new ArrayList<BaseTableItem>();
 		   
 		   
-		   auditItemsListContext=acClOrg.getAuditItemsCollection();
+		   auditItemsListContext=new ArrayList<BaseTableItem>( acClOrg.getAuditItemsCollection());
 	   }
 	   return this.auditItemsListContext;
    }

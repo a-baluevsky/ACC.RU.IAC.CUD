@@ -2,7 +2,7 @@ package iac.grn.infosweb.context.app.orgman;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import javaw.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
@@ -646,10 +646,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	   log.info("AppOrgManManager:getAuditItemsListContext");
 	   if(auditItemsListContext==null){
 		   AppOrgManContext ac= new AppOrgManContext();
-		  
-		   
-		   
-		   auditItemsListContext=ac.getAuditItemsCollection();
+		   auditItemsListContext=new ArrayList<BaseTableItem>(ac.getAuditItemsCollection());
 		   
 	   }
 	   return this.auditItemsListContext;
@@ -659,10 +656,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	  
 	  if(headerItemsListContext==null){
 		   AppOrgManContext ac= new AppOrgManContext();
-		   headerItemsListContext=ac.getHeaderItemsList();
-		   
-		
-		   
+		   headerItemsListContext=new ArrayList<HeaderTableItem>(ac.getHeaderItemsList());
 	   }
 	
 	   return this.headerItemsListContext;

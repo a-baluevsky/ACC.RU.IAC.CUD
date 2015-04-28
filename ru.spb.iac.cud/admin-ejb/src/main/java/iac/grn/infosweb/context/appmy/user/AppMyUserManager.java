@@ -2,7 +2,7 @@ package iac.grn.infosweb.context.appmy.user;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import javaw.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 import java.util.List;
@@ -297,11 +297,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	   log.info("AppMyUserManager:getAuditItemsListContext");
 	   if(auditItemsListContext==null){
 		   AppMyUserContext ac= new AppMyUserContext();
-		  
-		   
-		   
-		   auditItemsListContext=ac.getAuditItemsCollection();
-		   
+		   auditItemsListContext=new ArrayList<BaseTableItem>(ac.getAuditItemsCollection());
 	   }
 	   return this.auditItemsListContext;
   }
@@ -310,9 +306,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	  
 	  if(headerItemsListContext==null){
 		   AppMyUserContext ac= new AppMyUserContext();
-		   headerItemsListContext=ac.getHeaderItemsList();
-		   
-		
+		   headerItemsListContext=new ArrayList<HeaderTableItem>(ac.getHeaderItemsList());
 		   
 	   }
 	  

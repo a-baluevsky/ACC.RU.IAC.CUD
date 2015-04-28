@@ -18,11 +18,14 @@ import iac.grn.serviceitems.BaseTableItem;
 import java.io.BufferedWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import javaw.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javaw.util.SerializableList;
+import javaw.util.SerializableMap;
+import javaw.util.SerializableSet;
 
 import javax.faces.context.FacesContext;
 import javax.naming.Context;
@@ -59,22 +62,22 @@ import org.jboss.seam.log.Log;
 		
 	private String dellMessage;
 	 
-	private List<BaseItem> auditList; 
+	private SerializableList<BaseItem> auditList; 
 	
 	
-	private List<AuditFuncItem> auditReportCubeList;
+	private SerializableList<AuditFuncItem> auditReportCubeList;
 	
 		
-	private List <BaseTableItem> auditItemsListSelect;
+	private SerializableList <BaseTableItem> auditItemsListSelect;
 	
-	private List <BaseTableItem> auditItemsListContext;
+	private SerializableList <BaseTableItem> auditItemsListContext;
 	
 	private int connectError=0;
 	
 	private Date clearDate1;
 	private Date clearDate2;
 	
-	private List<BaseItem> auditReportList;
+	private SerializableList<BaseItem> auditReportList;
 	
 	
     private Date reportDate1;
@@ -93,7 +96,7 @@ import org.jboss.seam.log.Log;
 	
 	private Long archiveParamValue=null;
 	
-	public List<BaseItem> getAuditList(int firstRow, int numberOfRows){
+	public SerializableList<BaseItem> getAuditList(int firstRow, int numberOfRows){
 	  String remoteAudit = FacesContext.getCurrentInstance().getExternalContext()
 	             .getRequestParameterMap()
 	             .get("remoteAudit");
@@ -103,7 +106,7 @@ import org.jboss.seam.log.Log;
 	  log.info("getAuditList:firstRow:"+firstRow);
 	  log.info("getAuditList:numberOfRows:"+numberOfRows);
 	  
-	  List<BaseItem> aFuncListCached = (List<BaseItem>)
+	  SerializableList<BaseItem> aFuncListCached = (SerializableList<BaseItem>)
 			  Component.getInstance("aFuncListCached",ScopeType.SESSION);
 	  if(auditList==null){
 		  log.info("getAuditList:01");
@@ -118,10 +121,11 @@ import org.jboss.seam.log.Log;
 				log.info("getAuditList:03");
 		    	invokeLocal("list", firstRow, numberOfRows, null);
 			    Contexts.getSessionContext().set("aFuncListCached", this.auditList);
-			    log.info("getAuditList:03:"+this.auditList.size());
+			    int auListSize=(this.auditList!=null)?this.auditList.size():0;
+			    log.info("getAuditList:03:"+auListSize);
 			}
 		 	
-		 	List<String>  selRecArmFunc = (ArrayList<String>)
+		 	SerializableList<String>  selRecArmFunc = (ArrayList<String>)
 					  Component.getInstance("selRecaFunc",ScopeType.SESSION);
 		 	
 		 	if(this.auditList!=null && selRecArmFunc!=null) {
@@ -139,7 +143,7 @@ import org.jboss.seam.log.Log;
 	}
 	
 	
-	public List<BaseItem> getAuditReportList(){
+	public SerializableList<BaseItem> getAuditReportList(){
 		
 		  String date2 = FacesContext.getCurrentInstance().getExternalContext()
 			        .getRequestParameterMap()
@@ -175,7 +179,7 @@ import org.jboss.seam.log.Log;
 	}
 	
 
-	public List<AuditFuncItem> getAuditReportCubeList(){
+	public SerializableList<AuditFuncItem> getAuditReportCubeList(){
 		try{
 			if(this.auditReportCubeList==null){
 				 invokeLocal("listReportCube", 0, 0, null);
@@ -193,7 +197,7 @@ import org.jboss.seam.log.Log;
 			 String sQuerySql; javax.persistence.Query query;
 			 AFuncStateHolder aFuncStateHolder = (AFuncStateHolder)
 					  Component.getInstance("aFuncStateHolder",ScopeType.SESSION);
-			 Map<String, String> filterMap = aFuncStateHolder.getColumnFilterValues();
+			 SerializableMap<String, String> filterMap = aFuncStateHolder.getColumnFilterValues();
 			 resetWhereConditions();
 			 // TODO: use QuerySvc to analyze filter data and produce consistent SQL-query	
 			 AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
@@ -225,7 +229,7 @@ import org.jboss.seam.log.Log;
 			 log.info("AFunc:invokeLocal:list:orderQuery:"+orderQuery);  			 
              if(filterMap!=null){
 	    		 Set<Map.Entry<String, String>> setFilterAFunc = filterMap.entrySet();
-	              for (Map.Entry<String, String> me : setFilterAFunc) {  
+	              for (SerializableMap.Entry<String, String> me : setFilterAFunc) {  
 	            	  String sKey=me.getKey();
 	              //у нас act_dat_value переведена в строку уже в запросе	            	  
 	   		      if(sKey.equals("arm_id")){ 
@@ -290,14 +294,14 @@ import org.jboss.seam.log.Log;
            	 }  else if(type.equals("listReport")){
 				 log.info("AFunc:invokeLocal:listReport:01");
                  
-				 auditReportList = entityManager.createQuery(
+				 auditReportList = new ArrayList<BaseItem>(entityManager.createQuery(
 						 "select o from ActionsLogKnlT o  " +
 						 "where o.dateAction >= :date1 " +
 						 "and o.dateAction <= :date2 " +
 						 "order by o.idSrv desc ")
 						 .setParameter("date1", this.reportDate1)
     	                 .setParameter("date2", this.reportDate2)
-	                     .getResultList();
+	                     .getResultList());
 					 
 	             log.info("invokeLocal:listReport:02:size:"+auditReportList.size());
 				 
@@ -331,7 +335,7 @@ import org.jboss.seam.log.Log;
 		}
 	}
 	
-	public void setAuditList(List<BaseItem> auditList){
+	public void setAuditList(SerializableList<BaseItem> auditList){
 		this.auditList=auditList;
 	}
 	
@@ -364,7 +368,7 @@ import org.jboss.seam.log.Log;
    private  ActionsLogKnlT searchBean(String sessionId){
     	
       if(sessionId!=null){
-    	 List<ActionsLogKnlT> aFuncListCached = (List<ActionsLogKnlT>)
+    	 SerializableList<ActionsLogKnlT> aFuncListCached = (SerializableList<ActionsLogKnlT>)
 				  Component.getInstance("aFuncListCached",ScopeType.SESSION);
     	 
 		if(aFuncListCached!=null){
@@ -414,7 +418,7 @@ import org.jboss.seam.log.Log;
    }
   
    
-   public List <BaseTableItem> getAuditItemsListSelect() {
+   public SerializableList <BaseTableItem> getAuditItemsListSelect() {
 		 log.info("getAuditItemsListSelect:01");
 	
 	    AFuncContext ac= new AFuncContext();
@@ -431,18 +435,18 @@ import org.jboss.seam.log.Log;
 	       return this.auditItemsListSelect;
    }
    
-   public void setAuditItemsListSelect(List <BaseTableItem> auditItemsListSelect) {
+   public void setAuditItemsListSelect(SerializableList <BaseTableItem> auditItemsListSelect) {
 		    this.auditItemsListSelect=auditItemsListSelect;
    }
    
-   public List <BaseTableItem> getAuditItemsListContext() {
+   public SerializableList <BaseTableItem> getAuditItemsListContext() {
 	   log.info("orgManager:getAuditItemsListContext");
 	   if(auditItemsListContext==null){
 		   AFuncContext ac= new AFuncContext();
 		   auditItemsListContext = new ArrayList<BaseTableItem>();
 		   
 		   
-		   auditItemsListContext=ac.getAuditItemsCollection();
+		   auditItemsListContext=new ArrayList<BaseTableItem>(ac.getAuditItemsCollection());
 	   }
 	   return this.auditItemsListContext;
    }
@@ -456,7 +460,7 @@ import org.jboss.seam.log.Log;
 	    log.info("selectRecord:sessionIdAFunc="+sessionIdAFunc);
 	    
 	  
-	    List<String>  selRecFunc = (ArrayList<String>)
+	    SerializableList<String>  selRecFunc = (ArrayList<String>)
 				  Component.getInstance("selRecaFunc",ScopeType.SESSION);
 	    
 	    if(selRecFunc==null){

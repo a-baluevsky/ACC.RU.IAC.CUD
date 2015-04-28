@@ -17,11 +17,12 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import javaw.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javaw.util.SerializableList;
 
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
@@ -43,7 +44,7 @@ import org.jboss.seam.transaction.Transaction;
  *
  */
 @Name("armManager")
- public class ArmManager {
+ public class ArmManager implements java.io.Serializable {
 	
 	 @Logger private Log log;
 	
@@ -60,13 +61,13 @@ import org.jboss.seam.transaction.Transaction;
 		
 		
 		
-	private List<BaseItem> auditList; 
+	private SerializableList<BaseItem> auditList; 
 	
 	private Long auditCount;
 	
-	private List <BaseTableItem> auditItemsListSelect;
+	private SerializableList <BaseTableItem> auditItemsListSelect;
 	
-	private List <BaseTableItem> auditItemsListContext;
+	private SerializableList <BaseTableItem> auditItemsListContext;
 	
 	private Boolean evaluteForListFooter;  
 	private Boolean evaluteForBean;
@@ -75,11 +76,11 @@ import org.jboss.seam.transaction.Transaction;
 	private int delNot=0;
 
 	
-	private List<AcApplication> listArm = null;
+	private SerializableList<AcApplication> listArm = null;
 	
 	private boolean armCodeExist=false;
 	
-	private List<AcUser> adminListForView;
+	private SerializableList<AcUser> adminListForView;
 	
 	private String commentApp = null;
 	
@@ -95,8 +96,9 @@ import org.jboss.seam.transaction.Transaction;
 	  log.info("ArmManager:getAuditList:firstRow:"+firstRow);
 	  log.info("ArmManager:getAuditList:numberOfRows:"+numberOfRows);
 	  
-	  List<BaseItem> armListCached = (List<BaseItem>)
-			  Component.getInstance("armListCached",ScopeType.SESSION);
+	  SerializableList<BaseItem> armListCached = new ArrayList<BaseItem>( 
+			  	(List<BaseItem>)
+			  	Component.getInstance("armListCached",ScopeType.SESSION));
 	  if(auditList==null){
 		  log.info("getAuditList:01");
 		 	if(("rowSelectFact".equals(remoteAudit)||
@@ -130,7 +132,7 @@ import org.jboss.seam.transaction.Transaction;
 		return this.auditList;
 	}
 	public void setAuditList(List<BaseItem> auditList){
-		this.auditList=auditList;
+		this.auditList=new ArrayList<BaseItem>(auditList);
 	}
 	public void invokeLocal(String type, int firstRow, int numberOfRows,
 	           String sessionId) {
@@ -169,12 +171,14 @@ import org.jboss.seam.transaction.Transaction;
     	    	   }
                  log.info("Arm:invokeLocal:list:filterQuery:"+st);
                  
-				 auditList = entityManager.createQuery("select o from AcApplication o "+
+				 auditList = new ArrayList<BaseItem>(
+						 entityManager.createQuery("select o from AcApplication o "+
 						 (st!=null ? " where "+st :"")+
 						 (orderQueryArm!=null ? orderQueryArm+", o.idArm " : " order by o.idArm "))
-                       .setFirstResult(firstRow)
-                       .setMaxResults(numberOfRows)
-                       .getResultList();
+	                       .setFirstResult(firstRow)
+	                       .setMaxResults(numberOfRows)
+	                       .getResultList()
+                       );
              log.info("Arm:invokeLocal:list:02");
   
 			 } else if("count".equals(type)){
@@ -692,18 +696,15 @@ import org.jboss.seam.transaction.Transaction;
 	    		AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
 	    		 
 	    		if(au.getAllowedSys()!=null){
-	    			
-	    		   
-	    			 
-	    			listArm=entityManager.createQuery(
+	    			listArm=new ArrayList<AcApplication>(entityManager.createQuery(
 		       				  "select o from AcApplication o " +
 		       				  "where o.idArm in (:idsArm) order by o.name ")
 		       				  .setParameter("idsArm", au.getAllowedSys())
-		       				  .getResultList();
+		       				  .getResultList());
 	    		}else{
-	       		   listArm=entityManager.createQuery(
+	       		   listArm=new ArrayList<AcApplication>(entityManager.createQuery(
 	       				  "select o from AcApplication o  order by o.name ")
-	       				  .getResultList();
+	       				  .getResultList());
 	    		}
 	    	}
 	     } catch (Exception eArm) {
@@ -714,7 +715,7 @@ import org.jboss.seam.transaction.Transaction;
   }
    
    public void setAuditItemsListSelect(List <BaseTableItem> auditItemsListSelect) {
-	    this.auditItemsListSelect=auditItemsListSelect;
+	    this.auditItemsListSelect=new ArrayList<BaseTableItem>(auditItemsListSelect);
 }
 
    
@@ -739,10 +740,7 @@ import org.jboss.seam.transaction.Transaction;
 	   log.info("orgManager:getAuditItemsListContext");
 	   if(auditItemsListContext==null){
 		   ArmContext acArm= new ArmContext();
-		   auditItemsListContext = new ArrayList<BaseTableItem>();
-		   
-		   
-		   auditItemsListContext=acArm.getAuditItemsCollection();
+		   auditItemsListContext=new ArrayList<BaseTableItem>(acArm.getAuditItemsCollection());
 	   }
 	   return this.auditItemsListContext;
    }
@@ -811,7 +809,7 @@ import org.jboss.seam.transaction.Transaction;
 	   return adminListForView;
 	}
 	public void setAdminListForView(List<AcUser> adminListForView) {
-		this.adminListForView = adminListForView;
+		this.adminListForView = new ArrayList<AcUser>(adminListForView);
 	}
 	
     

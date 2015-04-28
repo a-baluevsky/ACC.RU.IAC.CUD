@@ -10,7 +10,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import javaw.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -679,11 +679,7 @@ import org.jboss.seam.faces.FacesMessages;
 	   log.info("AppAdminSysManager:getAuditItemsListContext");
 	   if(auditItemsListContext==null){
 		   AppAdminSysContext ac= new AppAdminSysContext();
-		  
-		   
-		   
-		   auditItemsListContext=ac.getAuditItemsCollection();
-		   
+		   auditItemsListContext=new ArrayList<BaseTableItem>(ac.getAuditItemsCollection());	   
 	   }
 	   return this.auditItemsListContext;
   }
@@ -692,10 +688,7 @@ import org.jboss.seam.faces.FacesMessages;
 	  
 	  if(headerItemsListContext==null){
 		   AppAdminSysContext ac= new AppAdminSysContext();
-		   headerItemsListContext=ac.getHeaderItemsList();
-		   
-	
-		   
+		   headerItemsListContext=new ArrayList<HeaderTableItem>(ac.getHeaderItemsList());
 	   }
 	
 	   return this.headerItemsListContext;

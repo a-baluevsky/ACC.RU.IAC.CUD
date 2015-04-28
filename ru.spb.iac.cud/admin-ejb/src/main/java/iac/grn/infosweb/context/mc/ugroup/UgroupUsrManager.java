@@ -11,8 +11,10 @@ import iac.grn.infosweb.session.audit.actions.ActionsMap;
 import iac.grn.infosweb.session.audit.actions.ResourcesMap;
 import iac.grn.serviceitems.BaseTableItem;
 
-import java.util.ArrayList;
+
 import java.util.Date;
+import javaw.util.SerializableList;
+import javaw.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,9 +33,9 @@ import org.jboss.seam.log.Log;
  
 
 @Name("ugroupUsrManager")
- public class UgroupUsrManager {
+ public class UgroupUsrManager implements java.io.Serializable {
 	
-	@Logger private Log log;
+	@Logger private static transient Log log;
 	
 	@In 
 	EntityManager entityManager;
@@ -42,9 +44,9 @@ import org.jboss.seam.log.Log;
 	private Boolean evaluteForListFooter;  
 	
 	
-	private List <BaseTableItem> auditItemsListSelect;
+	private SerializableList <BaseTableItem> auditItemsListSelect;
 	
-    private List<BaseItem> auditList; 
+    private SerializableList<BaseItem> auditList; 
 	
 	private Long auditCount;
 	
@@ -76,7 +78,7 @@ import org.jboss.seam.log.Log;
 				    "onSelColSaveFact".equals(remoteAuditUgroupUsr))&&
 				    ugroupUsrListCached!=null){
 			 		log.info("ugroupUsrManager:getAuditList:02:"+ugroupUsrListCached.size());
-				    	this.auditList=ugroupUsrListCached;
+				    	this.auditList=new ArrayList<BaseItem>(ugroupUsrListCached);
 				}else{
 					log.info("ugroupUsrManager:getAuditList:03");
 			    	invokeLocal("list", firstRow, numberOfRows, null);
@@ -110,7 +112,7 @@ import org.jboss.seam.log.Log;
 			return this.auditList;
 		}
 		public void setAuditList(List<BaseItem> auditList){
-			this.auditList=auditList;
+			this.auditList=new ArrayList<BaseItem>(auditList);
 		}
 		public void invokeLocal(String type, int firstRow, int numberOfRows,
 		           String sessionId) {
@@ -166,7 +168,7 @@ import org.jboss.seam.log.Log;
 	               
 	             
 	               
-	               auditList = rolUsrManager.getSharedUserList( orderQuery, st, firstRow, numberOfRows);
+	               auditList = new ArrayList<BaseItem>(rolUsrManager.getSharedUserList( orderQuery, st, firstRow, numberOfRows));
 	               
 	               
 	               
@@ -325,7 +327,8 @@ import org.jboss.seam.log.Log;
  }
  
  public void setAuditItemsListSelect(List <BaseTableItem> auditItemsListSelect) {
-		    this.auditItemsListSelect=auditItemsListSelect;
+		    this.auditItemsListSelect=new ArrayList<BaseTableItem>(auditItemsListSelect);
+		    
  }
  
  public Boolean getEvaluteForList() {

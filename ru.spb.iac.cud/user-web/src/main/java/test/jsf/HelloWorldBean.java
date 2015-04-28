@@ -14,7 +14,7 @@ import test.ejb.HomeBean;
  
 
 	@EJB(beanName = "CUDUserConsole-ejb.jar#HomeBean")
-	private HomeBean homeBean;
+	private /*transient*/ HomeBean homeBean;
 	
     private static final long serialVersionUID = 1L;
  

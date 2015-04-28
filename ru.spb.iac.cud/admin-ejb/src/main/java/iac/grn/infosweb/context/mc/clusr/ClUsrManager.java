@@ -17,7 +17,7 @@ import iac.grn.infosweb.session.audit.actions.ResourcesMap;
 import iac.grn.infosweb.session.audit.export.AuditExportData;
 import iac.grn.serviceitems.BaseTableItem;
 
-import java.util.ArrayList;
+import javaw.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +37,9 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
-
+import javaw.util.SerializableList;
+import javaw.util.SerializableMap;
+import javaw.util.SerializableSet;
 
 /**
  * Управляющий Бин
@@ -45,7 +47,7 @@ import org.jboss.seam.log.Log;
  *
  */
 @Name("clUsrManager")
- public class ClUsrManager {
+ public class ClUsrManager implements java.io.Serializable {
 	
 	 @Logger private Log log;
 	
@@ -65,24 +67,24 @@ import org.jboss.seam.log.Log;
 	 
 	private String classifExistVersion = "Не установлена";
 	
-	private List<BaseItem> auditList; 
+	private SerializableList<BaseItem> auditList; 
 	
 	private Long auditCount;
 	
-	private List <BaseTableItem> auditItemsListSelect;
+	private SerializableList <BaseTableItem> auditItemsListSelect;
 	
-	private List <BaseTableItem> auditItemsListContext;
+	private SerializableList <BaseTableItem> auditItemsListContext;
 	
 	private int connectError=0;
 	private Boolean evaluteForList;
 	private Boolean evaluteForListFooter;  
 	private Boolean evaluteForBean;
 	
-	private List<AcLegalEntityType> listLET = null;
+	private SerializableList<AcLegalEntityType> listLET = null;
 	
-	private List<IspTempBssT> listOrg = null;
+	private SerializableList<IspTempBssT> listOrg = null;
 	
-	private List<IspBssT> listUsrAutocomplete = null;
+	private SerializableList<IspBssT> listUsrAutocomplete = null;
 	
 	private String loadMessage;
 	private int loadFlag =0;
@@ -109,7 +111,7 @@ import org.jboss.seam.log.Log;
 			    "clSelOneFact".equals(remoteAudit)||
 			    "onSelColSaveFact".equals(remoteAudit))&&
 			    clUsrListCached!=null){
-		 	    	this.auditList=clUsrListCached;
+		 	    	this.auditList=new ArrayList<BaseItem>(clUsrListCached);
 			}else{
 				log.info("getAuditList:03");
 		    	invokeLocal("list", firstRow, numberOfRows, null);
@@ -157,12 +159,12 @@ import org.jboss.seam.log.Log;
       		     }
                  log.info("CLUser:invokeLocal:list:orderQueryCLUser:"+orderQueryCLUser);
                  
-				 auditList = entityManager.createQuery(
+				 auditList = new ArrayList<BaseItem>( entityManager.createQuery(
 					"select o from IspTempBssT o " +
 					 (orderQueryCLUser!=null ? orderQueryCLUser : ""))
                        .setFirstResult(firstRow)
                        .setMaxResults(numberOfRows)
-                       .getResultList();
+                       .getResultList() );
              log.info("invokeLocal:list:02");
   
 			 } else if("count".equals(type)){
@@ -182,7 +184,7 @@ import org.jboss.seam.log.Log;
 	}
 	 
 	public void setAuditList(List<BaseItem> auditList){
-		this.auditList=auditList;
+		this.auditList=new ArrayList<BaseItem>(auditList);
 	}
    public void forView(String modelType) {
 	   String  clUsrId = FacesContext.getCurrentInstance().getExternalContext()
@@ -574,7 +576,9 @@ import org.jboss.seam.log.Log;
 	   log.info("getLET");
 	    try {
 	    	if(listLET==null){
-	    	  listLET = entityManager.createQuery("select r from AcLegalEntityType r").getResultList();
+	    	  listLET = new ArrayList<AcLegalEntityType>(
+	    			  entityManager.createQuery("select r from AcLegalEntityType r").getResultList()
+	    			  );
 	    	 }
 	    	} catch (Exception e) {
 	    	 log.error("getLET:ERROR="+e);
@@ -591,7 +595,9 @@ import org.jboss.seam.log.Log;
 	    try {
 	    	if(listOrg==null){
 	    		log.info("getListOrg:02");
-	    		listOrg=entityManager.createQuery("select o from IspTempBssT o").getResultList();
+	    		listOrg=new ArrayList<IspTempBssT>(
+	    				entityManager.createQuery("select o from IspTempBssT o").getResultList()
+	    		);
 	    	}
 	     } catch (Exception eClUsr) {
 	    	 log.error("getListOrg:ERROR:"+eClUsr);
@@ -601,7 +607,7 @@ import org.jboss.seam.log.Log;
    }
     
     public void setAuditItemsListSelect(List <BaseTableItem> auditItemsListSelect) {
-	    this.auditItemsListSelect=auditItemsListSelect;
+	    this.auditItemsListSelect=new ArrayList<BaseTableItem>(auditItemsListSelect);
    }
    public List <BaseTableItem> getAuditItemsListSelect() {
 		   
@@ -629,7 +635,8 @@ import org.jboss.seam.log.Log;
 		   auditItemsListContext = new ArrayList<BaseTableItem>();
 		   
 		   
-		   auditItemsListContext=acClUsr.getAuditItemsCollection();
+		   auditItemsListContext=new ArrayList<BaseTableItem>(
+				   acClUsr.getAuditItemsCollection());
 	   }
 	   return this.auditItemsListContext;
    }
@@ -734,7 +741,7 @@ import org.jboss.seam.log.Log;
 	    try {
 	    	if(listUsrAutocomplete==null){
 	    		log.info("Usr:autocomplete:02");
-	    		listUsrAutocomplete=entityManager.createQuery(
+	    		listUsrAutocomplete=new ArrayList<IspBssT>(entityManager.createQuery(
 	    				"select o from IspBssT o where o.status='A' and o.signObject not like '%000' " +
 	    			//	"and o.full like '"+pref+"%' " +
 	    				"and upper(o.fio) like upper(:pref) " +
@@ -742,7 +749,7 @@ import org.jboss.seam.log.Log;
 	    				"order by o.fio ")
 	    				.setParameter("pref", pref+"%")
 	    				.setParameter("codeOrg", codeOrg)
-	    				.getResultList();
+	    				.getResultList());
 	    		log.info("Usr:autocomplete:03:size:"+listUsrAutocomplete.size());
 	    	}
 	     } catch (Exception e) {
@@ -939,7 +946,7 @@ public List<IspBssT> getListUsrAutocomplete() {
 	return listUsrAutocomplete;
 }
 public void setListUsrAutocomplete(List<IspBssT> listUsrAutocomplete) {
-	this.listUsrAutocomplete = listUsrAutocomplete;
+	this.listUsrAutocomplete = new ArrayList<IspBssT>(listUsrAutocomplete);
 }
 
 public void audit(ResourcesMap resourcesMap, ActionsMap actionsMap){

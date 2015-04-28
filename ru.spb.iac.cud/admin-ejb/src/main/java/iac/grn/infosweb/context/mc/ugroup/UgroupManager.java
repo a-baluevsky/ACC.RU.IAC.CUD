@@ -11,11 +11,12 @@ import iac.grn.infosweb.session.audit.actions.ResourcesMap;
 import iac.grn.infosweb.session.audit.export.AuditExportData;
 import iac.grn.serviceitems.BaseTableItem;
 
-import java.util.ArrayList;
-import java.util.Date;
+import javaw.util.SerializableList;
+import javaw.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Date;
 
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
@@ -36,9 +37,9 @@ import org.jboss.seam.log.Log;
  *
  */
 @Name("ugroupManager")
- public class UgroupManager {
+ public class UgroupManager implements java.io.Serializable {
 	
-	 @Logger private Log log;
+	 @Logger private static transient Log log;
 	
 	 @In 
 	 EntityManager entityManager;
@@ -49,29 +50,29 @@ import org.jboss.seam.log.Log;
 	private Boolean evaluteForBean;
 
 	
-	private List <BaseTableItem> auditItemsListSelect;
+	private SerializableList <BaseTableItem> auditItemsListSelect;
 		
-	private List <BaseTableItem> auditItemsListContext;
+	private SerializableList <BaseTableItem> auditItemsListContext;
 		
 	private String dellMessage;
 	 
-	private List<BaseItem> auditList; 
+	private SerializableList<BaseItem> auditList; 
 	
 	private Long auditCount;
 	
 	
-    private List<BaseItem> roleList;
+    private SerializableList<BaseItem> roleList;
 	
-	private List<AcApplication> listGroupArmForView = null;
+	private SerializableList<AcApplication> listGroupArmForView = null;
 
 		
-	private List<AcUser> usrList;
+	private SerializableList<AcUser> usrList;
 	
-	private List<String> usrSelectList;
+	private SerializableList<String> usrSelectList;
 	
-	private List<String> usrSelectEditList;
+	private SerializableList<String> usrSelectEditList;
 	
-	private List<AcUser> usrSelectListForView;
+	private SerializableList<AcUser> usrSelectListForView;
 	
 		
 	 
@@ -95,7 +96,7 @@ import org.jboss.seam.log.Log;
 			    "clSelOneFact".equals(remoteAudit)||
 			    "onSelColSaveFact".equals(remoteAudit))&&
 			    ugroupListCached!=null){
-		 	    	this.auditList=ugroupListCached;
+		 	    	this.auditList=new ArrayList<BaseItem>(ugroupListCached);
 			}else{
 				log.info("getAuditList:03");
 		    	invokeLocal("list", firstRow, numberOfRows, null);
@@ -142,10 +143,11 @@ import org.jboss.seam.log.Log;
       		     }
                  log.info("Ugroup:invokeLocal:list:orderQueryUgroup:"+orderQueryUgroup);
                  
-				 auditList = entityManager.createQuery("select o from GroupUsersKnlT o "+(orderQueryUgroup!=null ? orderQueryUgroup+", o.idSrv " : " order by o.idSrv "))
+				 auditList = new ArrayList<BaseItem>( 
+						entityManager.createQuery("select o from GroupUsersKnlT o "+(orderQueryUgroup!=null ? orderQueryUgroup+", o.idSrv " : " order by o.idSrv "))
                        .setFirstResult(firstRow)
                        .setMaxResults(numberOfRows)
-                       .getResultList();
+                       .getResultList());
              log.info("Ugr:invokeLocal:list:02");
   
 			 } else if("count".equals(type)){
@@ -192,7 +194,7 @@ import org.jboss.seam.log.Log;
    }
    
    public void setAuditList(List<BaseItem> auditList){
-		this.auditList=auditList;
+		this.auditList=new ArrayList<BaseItem>(auditList);
 	}
    
    public boolean isAllowedSys(Long idGr){
@@ -580,7 +582,7 @@ import org.jboss.seam.log.Log;
        	return this.usrSelectList;
     }
     public void setUsrSelectList(List<String> usrSelectList){
-    	this.usrSelectList=usrSelectList;
+    	this.usrSelectList=new ArrayList<String>(usrSelectList);
     }
     
     public List<String> getUsrSelectEditList(){
@@ -603,11 +605,11 @@ import org.jboss.seam.log.Log;
 	        log.info("ugroupManager:getUsrSelectEditList:sessionId:"+sessionId);
 	        
 	        if(!"UpdFact".equals(remoteAudit)){
-		      this.usrSelectEditList=entityManager.createQuery(
+		      this.usrSelectEditList=new ArrayList<String>(entityManager.createQuery(
 		    		"select o.pk.acUser from LinkGroupUsersUsersKnlT o " +
 		      		"where o.pk.groupUser = :sessionId ")
 		      		.setParameter("sessionId", new Long(sessionId))
-				 .getResultList();
+				 .getResultList());
 	    	}
     	 }
     	}catch(Exception e){
@@ -616,7 +618,7 @@ import org.jboss.seam.log.Log;
        	return this.usrSelectEditList;
     }
     public void setUsrSelectEditList(List<String> usrSelectEditList){
-    	this.usrSelectEditList=usrSelectEditList;
+    	this.usrSelectEditList=new ArrayList<String>(usrSelectEditList);
     }
     
   
@@ -731,13 +733,14 @@ import org.jboss.seam.log.Log;
  		   log.info("UgroupManager:getGroupList:st:"+st);
  		   
  		   
- 		   this.roleList = entityManager.createQuery(
+ 		   this.roleList = new ArrayList<BaseItem> ( 
+ 				   entityManager.createQuery(
  				   "select o from AcRole o where o.acApplication= :idArm " +
  					(st!=null ? " and "+st :" ")+
  				   "order by o.roleTitle ")
  				   .setParameter("idArm", new Long(idArm))
-                    .getResultList();
- 		   
+                    .getResultList()
+                  ); 		   
  		   List<AcRole> listUsrRol=entityManager.createQuery(
 		    		 "select o from AcRole o,  LinkGroupUsersRolesKnlT o1 " +
 		    		 "where o1.pk.acRole = o.idRol " +
@@ -756,7 +759,7 @@ import org.jboss.seam.log.Log;
     
     
     public void setRoleList(List<BaseItem> roleList){
- 	   this.roleList=roleList;
+ 	   this.roleList=new ArrayList<BaseItem>(roleList);
     }
     
     public void ugroupRoleReset(){
@@ -828,7 +831,7 @@ import org.jboss.seam.log.Log;
     }
     
     public void setAuditItemsListSelect(List <BaseTableItem> auditItemsListSelect) {
-	    this.auditItemsListSelect=auditItemsListSelect;
+	    this.auditItemsListSelect=new ArrayList<BaseTableItem>(auditItemsListSelect);
   }
    public List <BaseTableItem> getAuditItemsListSelect() {
 		 log.info("getAuditItemsListSelect:01");
@@ -845,16 +848,12 @@ import org.jboss.seam.log.Log;
 	       return this.auditItemsListSelect;
    }
    
-  
-   
+ 
    public List <BaseTableItem> getAuditItemsListContext() {
 	   log.info("GroupManager:getAuditItemsListContext");
 	   if(auditItemsListContext==null){
 		   UgroupContext acUgr= new UgroupContext();
-		   auditItemsListContext = new ArrayList<BaseTableItem>();
-		   
-		   
-		   auditItemsListContext=acUgr.getAuditItemsCollection();
+		   auditItemsListContext=new ArrayList<BaseTableItem>(acUgr.getAuditItemsCollection());
 	   }
 	   return this.auditItemsListContext;
    }

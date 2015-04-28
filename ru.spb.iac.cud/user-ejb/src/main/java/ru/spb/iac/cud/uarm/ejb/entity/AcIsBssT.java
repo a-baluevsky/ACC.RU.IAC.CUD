@@ -4,7 +4,10 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
+import javaw.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 import javaw.util.SerializableList;
 
 
@@ -132,8 +135,8 @@ import javaw.util.SerializableList;
 		return this.acRolesBssTs;
 	}
 
-	public void setAcRolesBssTs(SerializableList<AcRolesBssT> acRolesBssTs) {
-		this.acRolesBssTs = acRolesBssTs;
+	public void setAcRolesBssTs(List<AcRolesBssT> acRolesBssTs) {
+		this.acRolesBssTs = new ArrayList(acRolesBssTs);
 	}
 
 	public AcRolesBssT addAcRolesBssT(AcRolesBssT acRolesBssT) {
@@ -216,7 +219,7 @@ import javaw.util.SerializableList;
 		return groups;
 	}
 
-	public void setGroups(SerializableList<GroupUsersKnlT> groups) {
-		this.groups = groups;
+	public void setGroups(List<GroupUsersKnlT> groups) {
+		this.groups = new ArrayList<GroupUsersKnlT>(groups);
 	}
 }

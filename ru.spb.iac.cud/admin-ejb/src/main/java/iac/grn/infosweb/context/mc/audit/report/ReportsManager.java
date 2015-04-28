@@ -10,6 +10,9 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
+
+import javaw.util.ArrayList;
 import javaw.util.HashMap;
 import javaw.util.SerializableList;
 import javaw.util.SerializableMap;
@@ -29,9 +32,9 @@ import org.jboss.seam.log.Log;
 
 
 @Name("reportsManager")
- public class ReportsManager {
+ public class ReportsManager implements java.io.Serializable {
    
-   @Logger private static Log LOG;
+   @Logger private static transient Log LOG;
    
    @In EntityManager entityManager;
    
@@ -96,7 +99,7 @@ import org.jboss.seam.log.Log;
       return reporters;
    }
    
-   private SerializableMap<String,String> getExternalContextParameters() {
+   private Map<String,String> getExternalContextParameters() {
       return FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
    }
    
@@ -215,9 +218,9 @@ import org.jboss.seam.log.Log;
    public SerializableList<ReportsBssT> getReportsList() {
       if(this.reportsList==null){
          String sFilter=("*".equals(this.getOrgCode()))?"":"WHERE idSrv IN(2)";
-         this.reportsList = entityManager
-               .createQuery("SELECT r FROM ReportsBssT r "+sFilter+" order by orderNum ")
-               .getResultList();
+         this.reportsList = new ArrayList<ReportsBssT>(entityManager
+                 .createQuery("SELECT r FROM ReportsBssT r "+sFilter+" order by orderNum ")
+                 .getResultList());
       }      
       return this.reportsList;
    }

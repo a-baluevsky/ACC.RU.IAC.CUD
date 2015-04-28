@@ -1,2 +1,11 @@
 package javaw.util;
-public interface SerializableList<K> extends java.io.Serializable,  java.util.List<K> {};
+
+
+
+import java.util.List;
+
+public interface SerializableList<K> extends java.io.Serializable,  java.util.List<K> {
+
+
+	
+}

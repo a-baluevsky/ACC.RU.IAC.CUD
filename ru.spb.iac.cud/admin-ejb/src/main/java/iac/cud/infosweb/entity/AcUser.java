@@ -4,6 +4,9 @@ import iac.cud.infosweb.dataitems.BaseItem;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+
+import javaw.util.ArrayList;
 import javaw.util.SerializableList;
 import javaw.util.SerializableList;
 
@@ -437,8 +440,8 @@ import org.jboss.seam.annotations.Role;
 		return this.rolesInfoList;
 	}
 
-	public void setRolesInfoList(SerializableList<String> rolesInfoList) {
-		this.rolesInfoList= rolesInfoList;
+	public void setRolesInfoList(List<String> rolesInfoList) {
+		this.rolesInfoList = new ArrayList<String>(rolesInfoList);
 	}
 	
 	public String getDepartment() {
@@ -527,8 +530,8 @@ import org.jboss.seam.annotations.Role;
 		return allowedSys;
 	}
 
-	public void setAllowedSys(SerializableList<Long> allowedSys) {
-		this.allowedSys = allowedSys;
+	public void setAllowedSys(List<Long> allowedSys) {
+		this.allowedSys = new ArrayList<Long>(allowedSys);
 	}
 	
 	public boolean isAllowedSys(Long idSys) {
@@ -540,12 +543,12 @@ import org.jboss.seam.annotations.Role;
 		return false;
 	}
 	
-	public SerializableList<String> getAllowedReestr() {
-			return allowedReestr;
+	public List<String> getAllowedReestr() {
+		return allowedReestr;
 	}
 
-	public void setAllowedReestr(SerializableList<String> allowedReestr) {
-			this.allowedReestr = allowedReestr;
+	public void setAllowedReestr(List<String> allowedReestr) {
+		this.allowedReestr = new ArrayList<String>(allowedReestr);
 	}
 	
 	//проверка только для текущего (вошедшего) пользователя

@@ -92,7 +92,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
     
     private SerializableList<String> sumGroups;
     
-    private Part certFile; 
+    private /*transient*/ Part certFile; 
     
     private SerializableList<GroupUsersKnlT> userGroups;
     
@@ -134,7 +134,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 		LOGGER.debug("UserManagerBean:getListArm:01:"+authUserID);
 		
 		if(this.listArm==null){
-			this.listArm =userManagerEJB.getUserRoles(authUserID);
+			this.listArm =new ArrayList<AcIsBssT>(userManagerEJB.getUserRoles(authUserID));
 		}
 		
 		if(this.listArm!=null){
@@ -162,7 +162,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 		LOGGER.debug("UserManagerBean:getListArmFull:01_2:"+onArmSelectOpen);
 		
 		if(this.listArmFull==null){
-				this.listArmFull =userManagerEJB.getArmList();
+				this.listArmFull =new ArrayList<AcIsBssT>(userManagerEJB.getArmList());
 		}
 		
 		if(this.listArmFull!=null){
@@ -187,7 +187,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 			
 			LOGGER.debug("UserManagerBean:getListAppAccess:02:"+authUserID);
 		
-			this.listAppAccess =userManagerEJB.getAppAccessList(authUserID);
+			this.listAppAccess =new ArrayList<JournAppAccessBssT>(userManagerEJB.getAppAccessList(authUserID));
 		}
 		
 		return listAppAccess;
@@ -208,7 +208,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 			
 			LOGGER.debug("UserManagerBean:getListAppAccessGroups:02:"+authUserID);
 		
-			this.listAppAccessGroups =userManagerEJB.getAppAccessGroupsList(authUserID);
+			this.listAppAccessGroups =new ArrayList<JournAppAccessBssT>(userManagerEJB.getAppAccessGroupsList(authUserID));
 		}
 		
 		return listAppAccessGroups;
@@ -227,7 +227,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 			
 			LOGGER.debug("UserManagerBean:getListRolesFromArm:01:"+pidArm);
 			
-			listRolesFromArm = userManagerEJB.getListRolesFromArm(new Long(pidArm));
+			listRolesFromArm = new ArrayList<AcRolesBssT>(userManagerEJB.getListRolesFromArm(new Long(pidArm)));
 			
 			if(userSessionBean.getSumRoles()!=null&&this.listRolesFromArm!=null){
 				
@@ -258,7 +258,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 			
 			LOGGER.debug("UserManagerBean:getListGroupsFromArm:01:"+pidArm);
 			
-			listGroupsFromArm = userManagerEJB.getListGroupsFromArm(new Long(pidArm));
+			listGroupsFromArm = new ArrayList<GroupUsersKnlT>(userManagerEJB.getListGroupsFromArm(new Long(pidArm)));
 			
 			if(userSessionBean.getSumGroups()!=null&&this.listGroupsFromArm!=null){
 				
@@ -486,7 +486,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 			
 			LOGGER.debug("UserManagerBean:getListAppAdminUserSys:02:"+authUserID);
 		
-			this.listAppAdminUserSys =userManagerEJB.getAppAdminUserSysList(authUserID);
+			this.listAppAdminUserSys =new ArrayList<JournAppAdminUserSysBssT>(userManagerEJB.getAppAdminUserSysList(authUserID));
 		}
 		return listAppAdminUserSys;
 	}
@@ -507,7 +507,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 				
 				LOGGER.debug("UserManagerBean:getListAppOrgMan:02:"+authUserID);
 			
-				this.listAppOrgMan =userManagerEJB.getAppOrgManList(authUserID);
+				this.listAppOrgMan =new ArrayList<JournAppOrgManagerBssT>(userManagerEJB.getAppOrgManList(authUserID));
 			}
 			return listAppOrgMan;
 		}
@@ -524,7 +524,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 	public SerializableList<AcRolesBssT> getListRolesAdminSys() {
 		
 		if(listRolesAdminSys==null){
-			listRolesAdminSys=userManagerEJB.getListRolesFromArm(CUD_ID);
+			listRolesAdminSys=new ArrayList<AcRolesBssT>(userManagerEJB.getListRolesFromArm(CUD_ID));
 		}
 		return listRolesAdminSys;
 	}
@@ -750,7 +750,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 				
 			LOGGER.debug("UserManagerBean:getUserGroups:01:"+authUserID);
 		
-			userGroups = userManagerEJB.getUserGroups(authUserID);
+			userGroups = new ArrayList<GroupUsersKnlT>(userManagerEJB.getUserGroups(authUserID));
 			
 			} catch(Exception e){
 				 LOGGER.error("UserManagerBean:getUserGroups:error:"+e);
@@ -777,7 +777,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 			   HttpSession hs = (HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false); 
 			   Long authUserID = (Long) hs.getAttribute(CUDUserConsoleConstants.authUserID);
 			
-     		   this.userCertList =userManagerEJB.getUserCertList(authUserID);
+     		   this.userCertList =new ArrayList<BaseItem>(userManagerEJB.getUserCertList(authUserID));
 			
 			}catch(Exception e){
 				 LOGGER.error("UserManagerBean:getUserCertList:error:"+e);

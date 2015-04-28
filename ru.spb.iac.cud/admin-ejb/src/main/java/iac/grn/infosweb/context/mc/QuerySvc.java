@@ -21,7 +21,7 @@ import org.jboss.seam.ScopeType;
 import com.sun.xml.bind.v2.runtime.reflect.ListIterator;
 
 
-public class QuerySvc {
+public class QuerySvc implements java.io.Serializable {
 	//17.02.15: AB: MANTIS-4954
 	protected long[] m_QueryStats;	
 	public String getQueryStatText() {

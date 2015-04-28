@@ -1,28 +1,28 @@
 package iac.grn.infosweb.session.table;
 
-import java.util.ArrayList;
-import java.util.HashMap; import java.util.Map;
-import java.util.List;
+import javaw.util.ArrayList;
+import javaw.util.HashMap; import javaw.util.SerializableMap;
+import javaw.util.SerializableList;
 
 
- public class BaseStateHolder {
+ public class BaseStateHolder implements java.io.Serializable {
 	
-	   protected Map<String, String> sortOrders = new HashMap<String, String>();
-       protected Map<String, String> columnFilterValues = new HashMap<String, String>();
+	   protected SerializableMap<String, String> sortOrders = new HashMap<String, String>();
+       protected SerializableMap<String, String> columnFilterValues = new HashMap<String, String>();
       
-       protected List <String> auditFieldListSelect = new ArrayList<String>();
+       protected SerializableList <String> auditFieldListSelect = new ArrayList<String>();
        
        protected int pageNumber;
 
      
        
-       public List <String> getAuditFieldListSelect() {
+       public SerializableList <String> getAuditFieldListSelect() {
     	   return this.auditFieldListSelect;
        }
-       public void setAuditFieldListSelect(List <String> auditFieldListSelect) {
+       public void setAuditFieldListSelect(SerializableList <String> auditFieldListSelect) {
     	   this.auditFieldListSelect=auditFieldListSelect;
        }
-       public Map<String, String> getColumnFilterValues() {
+       public SerializableMap<String, String> getColumnFilterValues() {
     	 
            return columnFilterValues;
        }
@@ -30,7 +30,7 @@ import java.util.List;
     	  
     	   this.columnFilterValues = columnFilterValues;
        }
-       public Map<String, String> getSortOrders() {
+       public SerializableMap<String, String> getSortOrders() {
                return sortOrders;
        }
        public void setSortOrders(HashMap<String, String> sortOrders) {

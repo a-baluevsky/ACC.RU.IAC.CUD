@@ -1,6 +1,10 @@
 package iac.grn.infosweb.session.table;
 
+import iac.cud.infosweb.dataitems.BaseItem;
+
 import java.io.IOException;
+import java.util.List;
+
 import javaw.util.ArrayList;
 import javaw.util.HashMap;
 import javaw.util.SerializableList;
@@ -19,7 +23,7 @@ import org.richfaces.model.FilterField;
 import org.richfaces.model.SortField2;
 
 @Name("baseDataModel")
- public class BaseDataModel<T, U> extends SerializableDataModel {
+ public class BaseDataModel<T, U extends java.io.Serializable> extends SerializableDataModel {
 
 	@Logger protected Log log;
 	
@@ -88,8 +92,11 @@ import org.richfaces.model.SortField2;
 		wrappedKeys = new ArrayList<U>();
 		if(this.cachedItems==null){
 			log.info("walk:cachedItems:02");
-			 this.cachedItems=findObjects(firstRow, numberOfRows, null, true, 
-					 modelType);
+			 this.cachedItems=
+					 (SerializableList) 
+					 new ArrayList<BaseItem>(
+							 findObjects(firstRow, numberOfRows, null, true, 
+							 modelType));
 			
 		}
 		log.info("walk:cachedItems:03");
@@ -116,7 +123,7 @@ import org.richfaces.model.SortField2;
 		return null;
 	}
 	
-	public SerializableList<T> findObjects(int firstRow, int numberOfRows, String sortField, 
+	public List<BaseItem> findObjects(int firstRow, int numberOfRows, String sortField, 
             boolean ascending, String modelType){
 		return null;
 	}

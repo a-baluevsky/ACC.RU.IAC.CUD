@@ -1,5 +1,10 @@
 package iac.grn.infosweb.context.mc.org;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -7,16 +12,23 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
+
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.entity.AcLegalEntityType;
 import iac.cud.infosweb.entity.AcOrganization;
 import iac.cud.infosweb.entity.AcUser;
-import java.util.*;
 
 import org.jboss.seam.Component;
+
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
+
 import iac.grn.serviceitems.BaseTableItem;
+import javaw.util.SerializableList;
+import javaw.util.SerializableMap;
+import javaw.util.SerializableSet;
+import javaw.util.SerializableList;
+import javaw.util.ArrayList;
 
 /**
  * ”правл€ющий Ѕин
@@ -24,7 +36,7 @@ import iac.grn.serviceitems.BaseTableItem;
  *
  */
 @Name("orgManager")
- public class OrgManager {
+ public class OrgManager implements java.io.Serializable {
 	
 	 @Logger private Log log;
 	
@@ -32,22 +44,22 @@ import iac.grn.serviceitems.BaseTableItem;
 	 EntityManager entityManager;
 	 
 	
-	 private List <BaseTableItem> auditItemsListSelect;
+	 private SerializableList <BaseTableItem> auditItemsListSelect;
 		
-	private List <BaseTableItem> auditItemsListContext;
+	private SerializableList <BaseTableItem> auditItemsListContext;
 		
 	 private String dellMessage;
 	 
-	private List<BaseItem> auditList; 
+	private SerializableList<BaseItem> auditList; 
 	
 	private Long auditCount;
 	
 	
 	private int connectError=0;
 	
-	private List<AcLegalEntityType> listLET = null;
+	private SerializableList<AcLegalEntityType> listLET = null;
 	
-	private List<AcOrganization> listOrg = null;
+	private SerializableList<AcOrganization> listOrg = null;
 	
 	private Boolean evaluteForList;
 	private Boolean evaluteForListFooter;  
@@ -74,7 +86,7 @@ import iac.grn.serviceitems.BaseTableItem;
 			    "clSelOneFact".equals(remoteAudit)||
 			    "onSelColSaveFact".equals(remoteAudit))&&
 			    orgListCached!=null){
-		 	    	this.auditList=orgListCached;
+		 	    	this.auditList=new ArrayList<BaseItem>(orgListCached);
 			}else{
 				log.info("getAuditList:03");
 		    	invokeLocal("list", firstRow, numberOfRows, null);
@@ -98,7 +110,7 @@ import iac.grn.serviceitems.BaseTableItem;
 		return this.auditList;
 	}
 	public void setAuditList(List<BaseItem> auditList){
-		this.auditList=auditList;
+		this.auditList=new ArrayList<BaseItem>(auditList);
 	}
 	public void invokeLocal(String type, int firstRow, int numberOfRows,
 	           String sessionId) {
@@ -122,10 +134,10 @@ import iac.grn.serviceitems.BaseTableItem;
       		     }
                  log.info("invokeLocal:list:orderQueryOrg:"+orderQueryOrg);
                  
-				 auditList = entityManager.createQuery("select o from AcOrganization o "+(orderQueryOrg!=null ? orderQueryOrg : ""))
+				 auditList = new ArrayList(entityManager.createQuery("select o from AcOrganization o "+(orderQueryOrg!=null ? orderQueryOrg : ""))
                        .setFirstResult(firstRow)
                        .setMaxResults(numberOfRows)
-                       .getResultList();
+                       .getResultList());
              log.info("invokeLocal:list:02");
   
 			 } else if("count".equals(type)){
@@ -312,7 +324,9 @@ import iac.grn.serviceitems.BaseTableItem;
 	   log.info("getLET");
 	    try {
 	    	if(listLET==null){
-	    	  listLET = entityManager.createQuery("select r from AcLegalEntityType r").getResultList();
+	    	  listLET = new ArrayList<AcLegalEntityType>(
+	    			entityManager.createQuery("select r from AcLegalEntityType r").getResultList()
+	    		);
 	    	 }
 	    	} catch (Exception e) {
 	    	 log.error("getLET:ERROR="+e);
@@ -326,7 +340,9 @@ import iac.grn.serviceitems.BaseTableItem;
 	    try {
 	    	if(listOrg==null){
 	    		log.info("getListOrg:02");
-	    		listOrg=entityManager.createQuery("select o from AcOrganization o").getResultList();
+	    		listOrg=new ArrayList<AcOrganization>(
+	    				entityManager.createQuery("select o from AcOrganization o").getResultList()
+	    		);
 	    	}
 	     } catch (Exception e) {
 	    	 log.error("getListOrg:ERROR:"+e);
@@ -358,7 +374,7 @@ import iac.grn.serviceitems.BaseTableItem;
    }
    
    public void setAuditItemsListSelect(List <BaseTableItem> auditItemsListSelect) {
-		    this.auditItemsListSelect=auditItemsListSelect;
+		    this.auditItemsListSelect=new ArrayList<BaseTableItem>(auditItemsListSelect);
    }
    
    public List <BaseTableItem> getAuditItemsListContext() {
@@ -368,7 +384,7 @@ import iac.grn.serviceitems.BaseTableItem;
 		   auditItemsListContext = new ArrayList<BaseTableItem>();
 		   
 		   
-		   auditItemsListContext=acOrg.getAuditItemsCollection();
+		   auditItemsListContext=new ArrayList<BaseTableItem>(acOrg.getAuditItemsCollection());
 	   }
 	   return this.auditItemsListContext;
    }

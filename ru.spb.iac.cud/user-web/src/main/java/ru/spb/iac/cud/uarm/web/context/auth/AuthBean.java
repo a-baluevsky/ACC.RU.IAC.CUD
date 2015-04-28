@@ -22,7 +22,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
  public class AuthBean implements Serializable {
  
 	@EJB(beanName = "CUDUserConsole-ejb.jar#AuthEJB")
-	private AuthEJB authEJB;
+	private /*transient*/ AuthEJB authEJB;
 	
 		
     private static final long serialVersionUID = 1L;

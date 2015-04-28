@@ -10,8 +10,10 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Role;
 
 import java.util.Date;
+import java.util.List;
+import javaw.util.ArrayList;
 import javaw.util.SerializableList;
-import javaw.util.SerializableList;
+
 
 
 /**
@@ -146,8 +148,8 @@ import javaw.util.SerializableList;
     public SerializableList<AcApplication> getArmList() {
         return this.armList;
     }
-    public void setArmList(SerializableList<AcApplication> armList) {
-        this.armList = armList;
+    public void setArmList(List<AcApplication> armList) {
+        this.armList = new ArrayList<AcApplication>(armList);
     }
     
     public Boolean getUsrChecked(){

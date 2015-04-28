@@ -45,7 +45,7 @@ import ru.spb.iac.cud.core.util.CUDConstants;
  *
  */
 @Name("armGroupManager")
- public class ArmGroupManager {
+ public class ArmGroupManager implements java.io.Serializable {
 	
 	 @Logger private Log log;
 	

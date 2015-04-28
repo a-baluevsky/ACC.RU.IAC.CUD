@@ -40,7 +40,7 @@ import iac.grn.serviceitems.BaseTableItem;
  *
  */
 @Name("armSubManager")
- public class ArmSubManager {
+ public class ArmSubManager implements java.io.Serializable {
 	
 	 @Logger private Log log;
 	

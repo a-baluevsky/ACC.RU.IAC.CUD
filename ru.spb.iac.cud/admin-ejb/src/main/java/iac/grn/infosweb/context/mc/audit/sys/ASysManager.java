@@ -39,7 +39,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  */
 @Name("aSysManager")
- public class ASysManager {
+ public class ASysManager implements java.io.Serializable {
 	
 	 @Logger private Log log;
 	

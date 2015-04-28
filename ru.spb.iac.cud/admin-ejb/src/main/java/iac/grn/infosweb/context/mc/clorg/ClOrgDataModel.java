@@ -19,7 +19,7 @@ import org.jboss.seam.log.Log;
 @Name("clOrgDataModel")
  public class ClOrgDataModel extends BaseDataModel<BaseItem, Long>{
 	
-	@Logger private transient Log log;
+	@Logger private static transient Log log;
 	
 	@In(create=true)
 	private ClOrgDataProvider clOrgDataProvider;
@@ -48,7 +48,7 @@ import org.jboss.seam.log.Log;
 		wrappedKeys = new ArrayList<Long>();
 		if(this.cachedItems==null){
 			log.info("walk:cachedItems:02:");
-			 this.cachedItems=getDataProvider().getItemsByrange(firstRow, numberOfRows, null, true);
+			 this.cachedItems=new ArrayList<BaseItem>(getDataProvider().getItemsByrange(firstRow, numberOfRows, null, true));
 		}
 		log.info("walk:cachedItems:03:");
 		if(this.cachedItems!=null){

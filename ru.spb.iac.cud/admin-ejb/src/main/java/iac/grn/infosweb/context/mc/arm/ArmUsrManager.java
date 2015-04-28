@@ -32,7 +32,7 @@ import org.jboss.seam.log.Log;
  
 
 @Name("armUsrManager")
- public class ArmUsrManager {
+ public class ArmUsrManager implements java.io.Serializable {
 	
 	@Logger private Log log;
 	

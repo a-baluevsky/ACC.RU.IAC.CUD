@@ -5,7 +5,10 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
+import javaw.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 import javaw.util.SerializableList;
 
 
@@ -189,8 +192,8 @@ import javaw.util.SerializableList;
 		return armList;
 	}
 
-	public void setArmList(SerializableList<AcIsBssT> armList) {
-		this.armList = armList;
+	public void setArmList(List<AcIsBssT> armList) {
+		this.armList = new ArrayList(armList);
 	}
 
 
