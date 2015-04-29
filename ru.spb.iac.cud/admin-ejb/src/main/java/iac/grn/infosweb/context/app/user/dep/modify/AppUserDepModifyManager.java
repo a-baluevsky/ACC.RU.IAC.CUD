@@ -183,7 +183,7 @@ import iac.grn.serviceitems.HeaderTableItem;
             		   
 
                 	     ui= new AppUserDepModifyItem(
-            	    		objectArray[0]!=null?new Long(objectArray[0].toString()):null,
+            	    		objectArray[0]!=null?Long.valueOf(objectArray[0].toString()):null,
             				objectArray[1]!=null?df.format((Date)objectArray[1]) :"",
             				objectArray[2]!=null?Integer.parseInt(objectArray[2].toString()):0,	
             				objectArray[3]!=null?objectArray[3].toString():"",
@@ -194,7 +194,7 @@ import iac.grn.serviceitems.HeaderTableItem;
             				objectArray[7]!=null?objectArray[7].toString():"",
 	            			 
 	            			objectArray[8]!=null?objectArray[8].toString():"",
-	            			objectArray[9]!=null?new Long(objectArray[9].toString()):null,
+	            			objectArray[9]!=null?Long.valueOf(objectArray[9].toString()):null,
 	            			objectArray[10]!=null?objectArray[10].toString():"",
 	            			objectArray[11]!=null?objectArray[11].toString():"",
 	            			objectArray[12]!=null?objectArray[12].toString():"",
@@ -411,7 +411,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	        		   log.info("AppUserDepModifyManager:getUserItem:login:"+objectArray[1].toString());
 	        		   
 	        		   ui= new AppUserDepModifyItem(
-	            	    		objectArray[0]!=null?new Long(objectArray[0].toString()):null,
+	            	    		objectArray[0]!=null?Long.valueOf(objectArray[0].toString()):null,
 	            				objectArray[1]!=null?df.format((Date)objectArray[1]) :"",
 	            				objectArray[2]!=null?Integer.parseInt(objectArray[2].toString()):0,	
 	            				objectArray[3]!=null?objectArray[3].toString():"",
@@ -422,7 +422,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	            				objectArray[7]!=null?objectArray[7].toString():"",
 	            				 
 	            				objectArray[8]!=null?objectArray[8].toString():"",
-		            			objectArray[9]!=null?new Long(objectArray[9].toString()):null,
+		            			objectArray[9]!=null?Long.valueOf(objectArray[9].toString()):null,
 		            			objectArray[10]!=null?objectArray[10].toString():"",
 		            			objectArray[11]!=null?objectArray[11].toString():"",
 		            			objectArray[12]!=null?objectArray[12].toString():"",
@@ -458,7 +458,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	       
 		   try{
 			   
-			   idApp =  new Long(sessionIdAppUserDepModify); 
+			   idApp =  Long.valueOf(sessionIdAppUserDepModify); 
 			   
 			   Object[] app=(Object[]) entityManager.createNativeQuery(
 			    			  "select JAS.UP_USER_APP, " +
@@ -468,7 +468,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 			    			.setParameter(1, idApp)
 			    			.getSingleResult();  
 				 
-			   idUser=new Long(app[0].toString());
+			   idUser=Long.valueOf(app[0].toString());
 			 
 			   AcUser aam = entityManager.find(AcUser.class, idUser);
 				  
@@ -487,10 +487,10 @@ import iac.grn.serviceitems.HeaderTableItem;
 	 	     		   "set t1.STATUS=1, t1.UP_USER_EXEC=? " +
 	 	     		   "where t1.ID_SRV=? ")
 	 	     		 .setParameter(1, getCurrentUser().getBaseId())
-	 	     		 .setParameter(2, new Long(sessionIdAppUserDepModify))
+	 	     		 .setParameter(2, Long.valueOf(sessionIdAppUserDepModify))
 	         	 	 .executeUpdate();
 		    
-		     AppUserDepModifyItem ui = getUserItem(new Long(sessionIdAppUserDepModify));
+		     AppUserDepModifyItem ui = getUserItem(Long.valueOf(sessionIdAppUserDepModify));
 		     
 		     Contexts.getEventContext().set("contextBeanView", ui);
 		     
@@ -515,10 +515,10 @@ import iac.grn.serviceitems.HeaderTableItem;
 	 	     		   "where t1.ID_SRV=? ")
 	 	     		 .setParameter(1, this.rejectReason)
 	 	     		 .setParameter(2, getCurrentUser().getBaseId())
-	 	     		 .setParameter(3, new Long(sessionId))
+	 	     		 .setParameter(3, Long.valueOf(sessionId))
 	 	     	 	 .executeUpdate();
 		     
-             AppUserDepModifyItem ui = getUserItem(new Long(sessionId)); 
+             AppUserDepModifyItem ui = getUserItem(Long.valueOf(sessionId)); 
 		     
 		     Contexts.getEventContext().set("contextBeanView", ui);
 		     
@@ -542,10 +542,10 @@ import iac.grn.serviceitems.HeaderTableItem;
 	 	     		   "set t1.COMMENT_=? " +
 	 	     		   "where t1.ID_SRV=? ")
 	 	     		 .setParameter(1, this.commentText)
-	 	     		 .setParameter(2, new Long(sessionId))
+	 	     		 .setParameter(2, Long.valueOf(sessionId))
 	 	     	 	 .executeUpdate();
 		     
-           AppUserDepModifyItem ui = getUserItem(new Long(sessionId)); 
+           AppUserDepModifyItem ui = getUserItem(Long.valueOf(sessionId)); 
 		     
 		   Contexts.getEventContext().set("contextBeanView", ui);
 		     
@@ -561,7 +561,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 				        .get("sessionId");
 		     log.info("AppUserDepModifyManager:forViewCrt:sessionId:"+sessionId);
 		     
-		     AppUserDepModifyItem ui = getUserItem(new Long(sessionId));
+		     AppUserDepModifyItem ui = getUserItem(Long.valueOf(sessionId));
 	    		
 	    	 Contexts.getEventContext().set("contextBeanView", ui);
 		     
@@ -580,7 +580,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 		     if(sessionId!=null){
 		    	
 		     	 
-		    	 AppUserDepModifyItem ui = getUserItem(new Long(sessionId));
+		    	 AppUserDepModifyItem ui = getUserItem(Long.valueOf(sessionId));
 		        	 
 		   	 Contexts.getEventContext().set("appUserDepModifyBean", ui);
 		     }
@@ -599,7 +599,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 			     if(sessionId!=null){
 			    	
 			     	 
-			    	 AppUserDepModifyItem ui = getUserItem(new Long(sessionId));
+			    	 AppUserDepModifyItem ui = getUserItem(Long.valueOf(sessionId));
 			    	 
 			    	 this.commentText=ui.getComment();
 

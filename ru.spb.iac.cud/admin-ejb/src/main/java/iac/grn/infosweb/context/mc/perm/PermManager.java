@@ -246,7 +246,7 @@ import java.util.Set;
 	
 	   try {
 		    
-		  AcPermissionsList aam = entityManager.find(AcPermissionsList.class, new Long(sessionId));
+		  AcPermissionsList aam = entityManager.find(AcPermissionsList.class, Long.valueOf(sessionId));
 		  
 		  aam.setPermName(permBean.getPermName());
 		  aam.setPermDescr(permBean.getPermDescr());
@@ -295,7 +295,7 @@ import java.util.Set;
 			        .get("sessionId");
 	     log.info("forViewUpdDel:sessionId:"+sessionId);
 	     if(sessionId!=null){
-	    	 AcPermissionsList ao = entityManager.find(AcPermissionsList.class, new Long(sessionId));
+	    	 AcPermissionsList ao = entityManager.find(AcPermissionsList.class, Long.valueOf(sessionId));
 	    	 Contexts.getEventContext().set("permBean", ao);
 	   	 }
 	   }catch(Exception e){
@@ -309,7 +309,7 @@ import java.util.Set;
 				.get("sessionId");
 		  log.info("forViewDel:sessionId:"+sessionIdPerm);
 		  if(sessionIdPerm!=null){
-			 AcPermissionsList aa = entityManager.find(AcPermissionsList.class, new Long(sessionIdPerm));
+			 AcPermissionsList aa = entityManager.find(AcPermissionsList.class, Long.valueOf(sessionIdPerm));
 			 if((aa.getAcLinkRoleAppPagePrmssns()!=null&&!aa.getAcLinkRoleAppPagePrmssns().isEmpty())){
 				dellMessage="У разрешения есть порождённые записи! При удалении они будут удалены!";
 			 }

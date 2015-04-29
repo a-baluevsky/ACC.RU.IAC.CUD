@@ -59,7 +59,7 @@ import ru.spb.iac.cud.uarm.web.context.user.UserSessionBean;
 			
 			JournAppAccessBssT t1 = new JournAppAccessBssT();
 			
-			t1.setAcIsBssTLong(new Long(pidArm));
+			t1.setAcIsBssTLong(Long.valueOf(pidArm));
 			t1.setModeExec(1L); //ADD
 			t1.setStatus(0L);
 			//заявитель
@@ -122,7 +122,7 @@ import ru.spb.iac.cud.uarm.web.context.user.UserSessionBean;
 			
 			JournAppAccessGroupsBssT t1 = new JournAppAccessGroupsBssT();
 			
-			t1.setAcIsBssTLong(new Long(pidArm));
+			t1.setAcIsBssTLong(Long.valueOf(pidArm));
 			t1.setModeExec(1L); //ADD
 			t1.setStatus(0L);
 			//заявитель

@@ -75,7 +75,7 @@ import org.jboss.seam.log.Log;
 		    		  monthInterval="6";
 		    	  }	    	 
 			     
-		    	  beanSettings.setParamActualData(new Long(monthInterval));
+		    	  beanSettings.setParamActualData(Long.valueOf(monthInterval));
 		    	  
 			      Contexts.getEventContext().set("procBindNoActSettingsBean", beanSettings);
 			     

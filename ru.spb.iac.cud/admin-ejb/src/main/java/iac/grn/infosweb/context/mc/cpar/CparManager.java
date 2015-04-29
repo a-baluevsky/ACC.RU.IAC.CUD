@@ -223,7 +223,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	
 	   try {
 			   
-		  SettingsKnlT aam = entityManager.find(SettingsKnlT.class, new Long(sessionId));
+		  SettingsKnlT aam = entityManager.find(SettingsKnlT.class, Long.valueOf(sessionId));
 		  
 		  aam.setValueParam(cparBean.getValueParam());
 				  
@@ -247,7 +247,7 @@ import iac.grn.serviceitems.BaseTableItem;
 			        .get("sessionId");
 	     log.info("forViewUpdDel:sessionId:"+sessionId);
 	     if(sessionId!=null){
-	    	 SettingsKnlT ao = entityManager.find(SettingsKnlT.class, new Long(sessionId));
+	    	 SettingsKnlT ao = entityManager.find(SettingsKnlT.class, Long.valueOf(sessionId));
 	    	 Contexts.getEventContext().set("cparBean", ao);
 	   	 }
 	   }catch(Exception e){

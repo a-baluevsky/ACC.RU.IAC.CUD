@@ -218,7 +218,7 @@ import iac.grn.serviceitems.BaseTableItem;
 		
 		 AcSubsystemCertBssT ar = searchBean(armSubId);
 		 
-		 if(!isAllowedSys(new Long(armSubId))){
+		 if(!isAllowedSys(Long.valueOf(armSubId))){
 			 log.info("armSubManager:forView:02");
 			 ar.setIsAllowedSys(false);
 		 }		 
@@ -348,11 +348,11 @@ import iac.grn.serviceitems.BaseTableItem;
 	
 	   try {
 		   
-		 if(!armSubCodeExistUpd(armSubBean.getAcIsBssTLong(), armSubBean.getSubsystemCode().trim(), new Long(sessionId))){  
+		 if(!armSubCodeExistUpd(armSubBean.getAcIsBssTLong(), armSubBean.getSubsystemCode().trim(), Long.valueOf(sessionId))){  
 		
 		 AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
 		   
-		  AcSubsystemCertBssT aam = entityManager.find(AcSubsystemCertBssT.class, new Long(sessionId));
+		  AcSubsystemCertBssT aam = entityManager.find(AcSubsystemCertBssT.class, Long.valueOf(sessionId));
 		  
 		  aam.setSubsystemName(armSubBean.getSubsystemName().trim());
 		  aam.setSubsystemCode(armSubBean.getSubsystemCode().trim());
@@ -427,7 +427,7 @@ import iac.grn.serviceitems.BaseTableItem;
  		   entityManager.createNativeQuery("update AC_SUBSYSTEM_CERT_BSS_T t1 " + 
  		   		                           "set T1.CERT_DATE=null " + 
  		   		                           "where t1.ID_SRV=? ")
- 		   .setParameter(1, new Long(sessionIdArmSub))
+ 		   .setParameter(1, Long.valueOf(sessionIdArmSub))
  		   .executeUpdate();  
  			 
  			   
@@ -468,7 +468,7 @@ import iac.grn.serviceitems.BaseTableItem;
 			        .get("sessionId");
 	     log.info("forViewUpdDel:sessionId:"+sessionId);
 	     if(sessionId!=null){
-	    	 AcSubsystemCertBssT ao = entityManager.find(AcSubsystemCertBssT.class, new Long(sessionId));
+	    	 AcSubsystemCertBssT ao = entityManager.find(AcSubsystemCertBssT.class, Long.valueOf(sessionId));
 	    	 Contexts.getEventContext().set("armSubBean", ao);
 	   	 }
 	   }catch(Exception e){
@@ -484,7 +484,7 @@ import iac.grn.serviceitems.BaseTableItem;
 		  if(sessionId!=null){
 		
 			  
-			  AcSubsystemCertBssT aa = entityManager.find(AcSubsystemCertBssT.class, new Long(sessionId));
+			  AcSubsystemCertBssT aa = entityManager.find(AcSubsystemCertBssT.class, Long.valueOf(sessionId));
 			
 			  
 			 
@@ -510,7 +510,7 @@ import iac.grn.serviceitems.BaseTableItem;
  	    			 "select to_char(T1.CERT_DATE) " + 
  	    	 		 "from AC_SUBSYSTEM_CERT_BSS_T t1 " + 
  	    	 		 "where T1.ID_SRV=? ")
-                 .setParameter(1, new Long(sessionIdArmSub))
+                 .setParameter(1, Long.valueOf(sessionIdArmSub))
                  .getSingleResult();
  	    	
  	    	 log.info("forViewCert:cert_data:"+certDataX); 

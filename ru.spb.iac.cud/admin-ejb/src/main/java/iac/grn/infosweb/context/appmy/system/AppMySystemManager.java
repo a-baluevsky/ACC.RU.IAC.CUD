@@ -127,7 +127,7 @@ import iac.grn.serviceitems.HeaderTableItem;
                for(Object[] objectArray :lo){
             	   try{
             	     ui= new AppSystemItem(
-            			  objectArray[0]!=null?new Long(objectArray[0].toString()):null,
+            			  objectArray[0]!=null?Long.valueOf(objectArray[0].toString()):null,
             			  objectArray[1]!=null?df.format((Date)objectArray[1]) :"",
             			  objectArray[5]!=null?Integer.parseInt(objectArray[5].toString()):0,
             			  objectArray[2]!=null?objectArray[2].toString():"",
@@ -136,7 +136,7 @@ import iac.grn.serviceitems.HeaderTableItem;
             			  objectArray[6]!=null?objectArray[6].toString():"",
             			  objectArray[7]!=null?objectArray[7].toString():"",
             			  objectArray[8]!=null?objectArray[8].toString():"",
-            			  objectArray[9]!=null?new Long(objectArray[9].toString()):null,
+            			  objectArray[9]!=null?Long.valueOf(objectArray[9].toString()):null,
             			  objectArray[10]!=null?objectArray[10].toString():"",
             			  objectArray[11]!=null?objectArray[11].toString():"",
             			  objectArray[12]!=null?objectArray[12].toString():"",

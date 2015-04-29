@@ -180,7 +180,7 @@ import org.jboss.seam.faces.FacesMessages;
             		   
 
                 	     ui= new AppUserCertModifyItem(
-            	    		objectArray[0]!=null?new Long(objectArray[0].toString()):null,
+            	    		objectArray[0]!=null?Long.valueOf(objectArray[0].toString()):null,
             				objectArray[1]!=null?df.format((Date)objectArray[1]) :"",
             				objectArray[2]!=null?Integer.parseInt(objectArray[2].toString()):0,	
             				objectArray[3]!=null?objectArray[3].toString():"",
@@ -195,7 +195,7 @@ import org.jboss.seam.faces.FacesMessages;
 	            			 "",
 	            			 
 	            			objectArray[7]!=null?objectArray[7].toString():"",
-	            			objectArray[8]!=null?new Long(objectArray[8].toString()):null,
+	            			objectArray[8]!=null?Long.valueOf(objectArray[8].toString()):null,
 	            			objectArray[9]!=null?objectArray[9].toString():"",
 	            			objectArray[10]!=null?objectArray[10].toString():"",
 	            			objectArray[11]!=null?objectArray[11].toString():"",
@@ -348,7 +348,7 @@ import org.jboss.seam.faces.FacesMessages;
 		  log.info("AppMyUserCertModifyManager:forView:sessionId:"+sessionId);
 		   if(sessionId!=null ){
 			   
-			  AppUserCertModifyItem au = getUserItem(new Long(sessionId)); 
+			  AppUserCertModifyItem au = getUserItem(Long.valueOf(sessionId)); 
 			   
 			 /* 
 			  //как вариант

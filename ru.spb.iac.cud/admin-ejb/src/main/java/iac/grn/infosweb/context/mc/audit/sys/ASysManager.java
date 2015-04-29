@@ -240,7 +240,7 @@ import javax.servlet.http.HttpServletResponse;
                 		 
                 	  ServicesLogKnlT sl = new ServicesLogKnlT();
                       
-                      sl.setIdSrv(new Long(objectArray[0].toString()));
+                      sl.setIdSrv(Long.valueOf(objectArray[0].toString()));
                       sl.setCreatedValue(df.format((Date)objectArray[1]));
                       sl.setServName(objectArray[2]!=null?objectArray[2].toString():"");
                       sl.setInputParam(objectArray[3]!=null?objectArray[3].toString():"");

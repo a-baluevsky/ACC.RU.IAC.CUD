@@ -93,7 +93,7 @@ import org.jboss.seam.log.Log;
 	   	 		    		 "select o.idUser from AcUser o,  LinkGroupUsersUsersKnlT o1 " +
 	   	 		    		 "where o1.pk.acUser = o.idUser " +
 	   	 		    		 "and o1.pk.groupUser = :groupUser ")
-	   	 					 .setParameter("groupUser", new Long(sessionId))
+	   	 					 .setParameter("groupUser", Long.valueOf(sessionId))
 	   	 		      		 .getResultList();
 	   	 		 
 	   	    	   
@@ -233,7 +233,7 @@ import org.jboss.seam.log.Log;
 			   try {
 				   AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
 				   
-				   GroupUsersKnlT aum = entityManager.find(GroupUsersKnlT.class, new Long(sessionId));
+				   GroupUsersKnlT aum = entityManager.find(GroupUsersKnlT.class, Long.valueOf(sessionId));
 				   
 				   List<LinkGroupUsersUsersKnlT> oldLinkList = aum.getLinkGroupUsersUsersKnlTs();
 				   
@@ -247,7 +247,7 @@ import org.jboss.seam.log.Log;
 					  if(((UserItem)user).getUsrChecked().booleanValue()){ //отмечен
 						
 						 
-						 lguu=new LinkGroupUsersUsersKnlT(user.getBaseId(), new Long(sessionId));
+						 lguu=new LinkGroupUsersUsersKnlT(user.getBaseId(), Long.valueOf(sessionId));
 						 if(oldLinkList.contains(lguu)){  
 						 
 						 }else{//нет в базе
@@ -261,13 +261,13 @@ import org.jboss.seam.log.Log;
 					  }else{
 						  //не отмечен
 						 //есть в базе
-						 lguu=new LinkGroupUsersUsersKnlT(user.getBaseId(), new Long(sessionId));
+						 lguu=new LinkGroupUsersUsersKnlT(user.getBaseId(), Long.valueOf(sessionId));
 						 if(oldLinkList.contains(lguu)){ 
 							oldLinkList.remove(lguu);
 							entityManager.createQuery("DELETE FROM LinkGroupUsersUsersKnlT gu " +
 									                  "WHERE gu.pk.groupUser=:groupUser " +
 									                  "and gu.pk.acUser=:acUser ")
-							    .setParameter("groupUser", new Long(sessionId))
+							    .setParameter("groupUser", Long.valueOf(sessionId))
 							    .setParameter("acUser", user.getBaseId())
 							    .executeUpdate();
 						  }else{

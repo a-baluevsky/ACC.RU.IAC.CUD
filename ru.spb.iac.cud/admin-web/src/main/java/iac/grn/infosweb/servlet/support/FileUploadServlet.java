@@ -67,7 +67,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 				return;
 			}
 
-			Long id_sys = new Long(id_sys_param);
+			Long id_sys = Long.valueOf(id_sys_param);
 
 			FileItemFactory factory = new DiskFileItemFactory();
 			ServletFileUpload upload = new ServletFileUpload(factory);

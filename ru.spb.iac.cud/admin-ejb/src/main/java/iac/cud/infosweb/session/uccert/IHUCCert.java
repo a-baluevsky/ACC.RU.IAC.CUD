@@ -463,7 +463,7 @@ import org.slf4j.LoggerFactory;
 				i++;
 			}
 
-			ucr.setCreator(new Long(1));
+			ucr.setCreator(Long.valueOf(1));
 			ucr.setCreated(new Date());
 
 		 if(!"".equals(ucr.getUserFio())) { //принудительно не даём загружать без ФИО

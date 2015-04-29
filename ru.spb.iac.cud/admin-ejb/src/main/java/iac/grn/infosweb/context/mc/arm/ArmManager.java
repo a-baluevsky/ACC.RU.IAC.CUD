@@ -319,7 +319,7 @@ import org.jboss.seam.transaction.Transaction;
 			      AcAppPage ap= new AcAppPage();
 		    	  ap.setAcApplication(armBeanCrt.getIdArm());
 		    	  ap.setPageName("ROOT_NODE - "+armBeanCrt.getName());
-		    	  ap.setIdParent2(new Long(1));
+		    	  ap.setIdParent2(Long.valueOf(1));
 		    	  entityManager.persist(ap);
 		    	  
 			      
@@ -380,9 +380,9 @@ import org.jboss.seam.transaction.Transaction;
 	
 	   try {
 		   
-		 if(!armCodeExistUpd(armBean.getCode().trim(), new Long(sessionId))){  
+		 if(!armCodeExistUpd(armBean.getCode().trim(), Long.valueOf(sessionId))){  
 			   
-		  AcApplication aam = entityManager.find(AcApplication.class, new Long(sessionId));
+		  AcApplication aam = entityManager.find(AcApplication.class, Long.valueOf(sessionId));
 		  
 		  aam.setName(armBean.getName().trim());
 		  aam.setCode(armBean.getCode().trim());
@@ -503,7 +503,7 @@ import org.jboss.seam.transaction.Transaction;
   		   entityManager.createNativeQuery("update AC_IS_BSS_T t1 " + 
   		   		                           "set T1.CERT_DATE=null " + 
   		   		                           "where t1.ID_SRV=? ")
-  		   .setParameter(1, new Long(sessionIdArm))
+  		   .setParameter(1, Long.valueOf(sessionIdArm))
   		   .executeUpdate();  
   			 
   		 audit(ResourcesMap.IS, ActionsMap.REMOVE_CERT); 
@@ -545,7 +545,7 @@ import org.jboss.seam.transaction.Transaction;
 			        .get("sessionId");
 	     log.info("forViewUpdDel:sessionId:"+sessionId);
 	     if(sessionId!=null){
-	    	 AcApplication ao = entityManager.find(AcApplication.class, new Long(sessionId));
+	    	 AcApplication ao = entityManager.find(AcApplication.class, Long.valueOf(sessionId));
 	    	 Contexts.getEventContext().set("armBean", ao);
 	    	 
 	    	//устанавливаем на 1 страницу пагинатор в модальном окне
@@ -568,7 +568,7 @@ import org.jboss.seam.transaction.Transaction;
 		
 			  DateFormat df = new SimpleDateFormat ("dd.MM.yy");
 			  
-			  AcApplication aa = entityManager.find(AcApplication.class, new Long(sessionId));
+			  AcApplication aa = entityManager.find(AcApplication.class, Long.valueOf(sessionId));
 			  
 		      List<Object[]> lo = (List<Object[]>) entityManager.createNativeQuery(
 		    		                          "select JAS.ID_SRV, JAS.CREATED "+
@@ -576,7 +576,7 @@ import org.jboss.seam.transaction.Transaction;
                                               "AC_IS_BSS_T arm "+
                                               "where ARM.ID_SRV =JAS.UP_IS "+
                                               "and ARM.ID_SRV=? ")
-                           .setParameter(1, new Long(sessionId))
+                           .setParameter(1, Long.valueOf(sessionId))
                            .getResultList();
 			  
 		      if(lo.size()==0){
@@ -647,7 +647,7 @@ import org.jboss.seam.transaction.Transaction;
  	    			 "select to_char(T1.CERT_DATE) " + 
  	    	 		 "from AC_IS_BSS_T t1 " + 
  	    	 		 "where T1.ID_SRV=? ")
-                 .setParameter(1, new Long(sessionIdArm))
+                 .setParameter(1, Long.valueOf(sessionIdArm))
                  .getSingleResult();
  	    	
  	    	 log.info("forViewCert:cert_data:"+certDataX); 
@@ -785,7 +785,7 @@ import org.jboss.seam.transaction.Transaction;
 	                     "and UUL.UP_SYS=? "+
 	                     "order by t1_fio "+ 
 	                     ") t1 ")
-			      		.setParameter(1, new Long(sessionId))
+			      		.setParameter(1, Long.valueOf(sessionId))
 					 .getResultList();
 	 	    	 
 	 	         

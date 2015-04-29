@@ -88,7 +88,7 @@ import org.jboss.seam.log.Log;
 			 		List<Long> listUsr=entityManager.createQuery(
 	   	 		    		 "select o.pk.upUser from LinkAdminUserSys o " +
 	   	 		    		 "where o.pk.upSys = :upSys ")
-	   	 					 .setParameter("upSys", new Long(sessionId))
+	   	 					 .setParameter("upSys", Long.valueOf(sessionId))
 	   	 		      		 .getResultList();
 	   	 		 
 	   	    	     for(BaseItem user :this.auditList){
@@ -229,7 +229,7 @@ import org.jboss.seam.log.Log;
 	               for(Object[] objectArray :lo){
 	            	   try{
 	            	     ui= new UserItem(
-	            			  objectArray[0]!=null?new Long(objectArray[0].toString()):null,
+	            			  objectArray[0]!=null?Long.valueOf(objectArray[0].toString()):null,
 	            			  objectArray[1]!=null?objectArray[1].toString():"",
 	            			  objectArray[2]!=null?objectArray[2].toString():"",
 	            			  objectArray[3]!=null?objectArray[3].toString():"",
@@ -244,7 +244,7 @@ import org.jboss.seam.log.Log;
 	            			  objectArray[12]!=null?objectArray[12].toString():"",
 	            			  objectArray[13]!=null?objectArray[13].toString():"",
 	            			  objectArray[14]!=null?objectArray[14].toString():"",
-	            			  objectArray[15]!=null?new Long(objectArray[15].toString()):null,
+	            			  objectArray[15]!=null?Long.valueOf(objectArray[15].toString()):null,
 	            			  objectArray[16]!=null?df.format((Date)objectArray[16]) :"",
 	            			  objectArray[17]!=null?objectArray[17].toString():"",
 	            			  objectArray[18]!=null?objectArray[18].toString():"",
@@ -253,7 +253,7 @@ import org.jboss.seam.log.Log;
 	            			  objectArray[21]!=null?objectArray[21].toString():"",
 	            			  objectArray[22]!=null?objectArray[22].toString():"",
 	            			  objectArray[23]!=null?objectArray[23].toString():"",
-	            			  objectArray[24]!=null?new Long(objectArray[24].toString()):null
+	            			  objectArray[24]!=null?Long.valueOf(objectArray[24].toString()):null
 	            			   );
 	            	     auditList.add(ui);
 	            	   }catch(Exception e1){
@@ -375,7 +375,7 @@ import org.jboss.seam.log.Log;
 			   try {
 				   AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
 				   
-				   AcApplication aum = entityManager.find(AcApplication.class, new Long(sessionId));
+				   AcApplication aum = entityManager.find(AcApplication.class, Long.valueOf(sessionId));
 				   
 				   List<LinkAdminUserSys> oldLinkList = aum.getLinkAdminUserSys();
 				   
@@ -389,7 +389,7 @@ import org.jboss.seam.log.Log;
 					  if(((UserItem)user).getUsrChecked().booleanValue()){ //отмечен
 						
 						 
-						 lguu=new LinkAdminUserSys(user.getBaseId(), new Long(sessionId));
+						 lguu=new LinkAdminUserSys(user.getBaseId(), Long.valueOf(sessionId));
 						 if(oldLinkList.contains(lguu)){  
 						 
 						 }else{//нет в базе
@@ -403,13 +403,13 @@ import org.jboss.seam.log.Log;
 						  
 					  }else{
 						  //не отмечен
-						 lguu=new LinkAdminUserSys(user.getBaseId(), new Long(sessionId));
+						 lguu=new LinkAdminUserSys(user.getBaseId(), Long.valueOf(sessionId));
 						 if(oldLinkList.contains(lguu)){ 
 							oldLinkList.remove(lguu);
 							entityManager.createQuery("DELETE FROM LinkAdminUserSys gu " +
 					                  "WHERE gu.pk.upSys=:upSys " +
 					                  "and gu.pk.upUser=:upUser ")
-			                         .setParameter("upSys", new Long(sessionId))
+			                         .setParameter("upSys", Long.valueOf(sessionId))
 			                         .setParameter("upUser", user.getBaseId())
 							    .executeUpdate();
 						  }else{

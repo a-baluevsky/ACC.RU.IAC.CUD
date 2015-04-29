@@ -250,13 +250,13 @@ import org.slf4j.LoggerFactory;
 									+ "and (AU.START_ACCOUNT is null or au.START_ACCOUNT <= sysdate) "
 									+ "and (AU.START_ACCOUNT is null or au.START_ACCOUNT > sysdate) "
 									+ "and AU.STATUS = 1 ")
-					.setParameter(1, new Long(uid)).getSingleResult());
+					.setParameter(1, Long.valueOf(uid)).getSingleResult());
 
 			LOGGER.debug("authenticate_login_obo:loginUser:"
 					+ loginUser);
 
 			sys_audit(authModeValue, "uid:" + uid + "; passw:***", "true",
-					IPAddress, new Long(uid), codeSys);
+					IPAddress, Long.valueOf(uid), codeSys);
 
 			return loginUser;
 
@@ -270,7 +270,7 @@ import org.slf4j.LoggerFactory;
 		} catch (Exception e) {
 
 			sys_audit(authModeValue, "uid:" + uid + "; passw:***", "error",
-					IPAddress, new Long(uid), codeSys);
+					IPAddress, Long.valueOf(uid), codeSys);
 
 			LOGGER.error("authenticate_uid_obo:Error:", e);
 			throw new GeneralFailure(e.getMessage());
@@ -408,7 +408,7 @@ import org.slf4j.LoggerFactory;
 			idIS = get_id_is(codeSys);
 			// решили определять пользователей извне ЦУД по их ИД, а не логинам
 			
-			idUserSubject = new Long(login);
+			idUserSubject = Long.valueOf(login);
 
 			LOGGER.debug("audit:02:idIS:" + idIS);
 			LOGGER.debug("audit:03:idUserSubject:" + idUserSubject);
@@ -464,7 +464,7 @@ import org.slf4j.LoggerFactory;
 					"                                              and  SUBSYS.UP_IS(+) =SYS.ID_SRV  " + 
 					"                                        group by  ROL.FULL_, ROL.SIGN_OBJECT  " + 
 					"                                        ) t1_roles) t1")
-					.setParameter("idRec", new Long(idRec))
+					.setParameter("idRec", Long.valueOf(idRec))
 					.setParameter("idUserSubject", idUserSubject)
 					.setParameter("codeSys", codeSys)
 				 	.executeUpdate();
@@ -499,7 +499,7 @@ import org.slf4j.LoggerFactory;
 							.setParameter(3, func.getDateFunction(),
 									TemporalType.TIMESTAMP)
 							.setParameter(4, func.getDetailsFunction())
-							.setParameter(5, new Long(idRec))
+							.setParameter(5, Long.valueOf(idRec))
 							.executeUpdate();
 				}
 			}

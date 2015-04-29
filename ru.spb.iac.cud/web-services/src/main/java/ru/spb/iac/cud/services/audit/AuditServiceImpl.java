@@ -84,7 +84,7 @@ import ru.spb.iac.cud.items.AuditFunction;
 	        			!request.getSession().getAttribute("user_id_principal").toString().isEmpty()){
 	        	
 	        	  //это заявитель
-	        		idUser = new Long((String)request.getSession().getAttribute("user_id_principal")); 
+	        		idUser = Long.valueOf((String)request.getSession().getAttribute("user_id_principal")); 
 	            
 	             
 	        

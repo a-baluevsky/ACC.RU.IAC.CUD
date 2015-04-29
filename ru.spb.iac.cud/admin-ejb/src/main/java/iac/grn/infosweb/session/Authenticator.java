@@ -258,7 +258,7 @@ import ru.spb.iac.crypto.export.Crypto15Init;
                  "ap.acApplication=:acApplication and " +
                  "au.idUser=:idUser " )
                  .setParameter("pageCode", pageCode)
-                 .setParameter("idPerm", new Long(permCode))
+                 .setParameter("idPerm", Long.valueOf(permCode))
                  .setParameter("acApplication", linksMap.getAppCode())
                  .setParameter("idUser", currentUser.getIdUser())
                  .getResultList();
@@ -533,7 +533,7 @@ import ru.spb.iac.crypto.export.Crypto15Init;
 		  //временная мера
 		  //в дальнейшем перейти на проверку наличия у пользователя определённой супер роли
 		  
-		  currentUser.setIdUser(new Long(uid));
+		  currentUser.setIdUser(Long.valueOf(uid));
 		  
 		  
 		  //ограничение администрирования по ИС
@@ -543,7 +543,7 @@ import ru.spb.iac.crypto.export.Crypto15Init;
 		  //в таблице администрирования
 		  if(!roles.contains(ROLE_SYS_ADMIN_CUD)){
 			  
-			  List<Long> allowedSys = allowedSys(new Long(uid));
+			  List<Long> allowedSys = allowedSys(Long.valueOf(uid));
 			  
 			  if(allowedSys!=null){
 				  
@@ -559,7 +559,7 @@ import ru.spb.iac.crypto.export.Crypto15Init;
 			  //и админ ИС, и менеджером ролевой политики организации
 			  //сейчас - это вычисляется параллельно, значит - может.
 			  
-			  boolean isAccOrgManager = isAccOrgManager(new Long(uid));
+			  boolean isAccOrgManager = isAccOrgManager(Long.valueOf(uid));
 			  if(isAccOrgManager){
 				  currentUser.setIsAccOrgManager(1L);
 				  
@@ -567,7 +567,7 @@ import ru.spb.iac.crypto.export.Crypto15Init;
 			  
 			  if(allowedSys!=null || isAccOrgManager) {
 				  
-               List<String> allowedReestr = allowedReestr(new Long(uid));
+               List<String> allowedReestr = allowedReestr(Long.valueOf(uid));
 				  
 				  if(allowedReestr!=null&&!allowedReestr.isEmpty()){
 					  

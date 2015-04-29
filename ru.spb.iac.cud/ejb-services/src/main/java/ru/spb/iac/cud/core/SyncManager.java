@@ -1454,7 +1454,7 @@ import ru.spb.iac.cud.items.Role;
 				       
 				       for(Object[] objectArray :lo){
 				    	   res_cl.put(objectArray[0]!=null?objectArray[0].toString():"", 
-				        			   objectArray[1]!=null? new Long(objectArray[1].toString()):-1L);
+				        			   objectArray[1]!=null? Long.valueOf(objectArray[1].toString()):-1L);
 				       }
 				       
 			    	   

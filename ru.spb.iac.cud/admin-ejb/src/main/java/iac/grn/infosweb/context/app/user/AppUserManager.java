@@ -167,7 +167,7 @@ import org.jboss.seam.faces.FacesMessages;
                for(Object[] objectArray :lo){
             	   try{
             		 ui= new AppUserItem(
-            				objectArray[0]!=null?new Long(objectArray[0].toString()):null,
+            				objectArray[0]!=null?Long.valueOf(objectArray[0].toString()):null,
             				objectArray[1]!=null?df.format((Date)objectArray[1]) :"",
             				objectArray[2]!=null?Integer.parseInt(objectArray[2].toString()):0,	
             				objectArray[3]!=null?objectArray[3].toString():"",
@@ -186,7 +186,7 @@ import org.jboss.seam.faces.FacesMessages;
             				objectArray[15]!=null?objectArray[15].toString():"",
             				objectArray[16]!=null?objectArray[16].toString():"",
             				objectArray[17]!=null?objectArray[17].toString():"",
-            				objectArray[18]!=null?new Long(objectArray[18].toString()):null,
+            				objectArray[18]!=null?Long.valueOf(objectArray[18].toString()):null,
               			    objectArray[19]!=null?objectArray[19].toString():"",
               			    objectArray[20]!=null?objectArray[20].toString():""
             				);  
@@ -351,7 +351,7 @@ import org.jboss.seam.faces.FacesMessages;
 	        		   log.info("AppUserManager:getUserItem:login:"+objectArray[1].toString());
 	        		   
 	        		   ui= new AppUserItem(
-	            				objectArray[0]!=null?new Long(objectArray[0].toString()):null,
+	            				objectArray[0]!=null?Long.valueOf(objectArray[0].toString()):null,
 	            				objectArray[1]!=null?df.format((Date)objectArray[1]) :"",
 	            				objectArray[2]!=null?Integer.parseInt(objectArray[2].toString()):0,	
 	            				objectArray[3]!=null?objectArray[3].toString():"",
@@ -370,7 +370,7 @@ import org.jboss.seam.faces.FacesMessages;
 	            				objectArray[15]!=null?objectArray[15].toString():"",
 	            				objectArray[16]!=null?objectArray[16].toString():"",
 	            				objectArray[17]!=null?objectArray[17].toString():"",
-	            				objectArray[18]!=null?new Long(objectArray[18].toString()):null,
+	            				objectArray[18]!=null?Long.valueOf(objectArray[18].toString()):null,
 	              			    objectArray[19]!=null?objectArray[19].toString():"",
 	              			    objectArray[20]!=null?objectArray[20].toString():""
 	            				);  
@@ -416,7 +416,7 @@ import org.jboss.seam.faces.FacesMessages;
 		    	"group by app_roles.UP_ROLE")
 		    	  .setParameter("idUser", idUserCrt)
 	     		  .setParameter("creator", getCurrentUser().getBaseId())
-	     		  .setParameter("idApp", new Long(sessionIdAppUser))
+	     		  .setParameter("idApp", Long.valueOf(sessionIdAppUser))
         	 	  .executeUpdate();	 
 		    		 
 		    		 
@@ -430,10 +430,10 @@ import org.jboss.seam.faces.FacesMessages;
 	 	     		   "where t1.ID_SRV=? ")
 	 	     		 .setParameter(1, usrBeanCrt.getBaseId())
 	 	     		 .setParameter(2, getCurrentUser().getBaseId())
-	 	     		 .setParameter(3, new Long(sessionIdAppUser))
+	 	     		 .setParameter(3, Long.valueOf(sessionIdAppUser))
 	         	 	 .executeUpdate();
 		    
-		     AppUserItem ui = getUserItem(new Long(sessionIdAppUser));
+		     AppUserItem ui = getUserItem(Long.valueOf(sessionIdAppUser));
 		     
 		     Contexts.getEventContext().set("contextBeanView", ui);
 		     
@@ -460,10 +460,10 @@ import org.jboss.seam.faces.FacesMessages;
 	 	     		   "where t1.ID_SRV=? ")
 	 	     		 .setParameter(1, this.rejectReason)
 	 	     		 .setParameter(2, getCurrentUser().getBaseId())
-	 	     		 .setParameter(3, new Long(sessionId))
+	 	     		 .setParameter(3, Long.valueOf(sessionId))
 	 	     	 	 .executeUpdate();
 		     
-             AppUserItem ui = getUserItem(new Long(sessionId)); 
+             AppUserItem ui = getUserItem(Long.valueOf(sessionId)); 
 		     
 		     Contexts.getEventContext().set("contextBeanView", ui);
 		     
@@ -489,10 +489,10 @@ import org.jboss.seam.faces.FacesMessages;
 	 	     		   "set t1.COMMENT_=? " +
 	 	     		   "where t1.ID_SRV=? ")
 	 	     		 .setParameter(1, this.commentText)
-	 	     		 .setParameter(2, new Long(sessionId))
+	 	     		 .setParameter(2, Long.valueOf(sessionId))
 	 	     	 	 .executeUpdate();
 		     
-           AppUserItem ui = getUserItem(new Long(sessionId)); 
+           AppUserItem ui = getUserItem(Long.valueOf(sessionId)); 
 		     
 		   Contexts.getEventContext().set("contextBeanView", ui);
 		     
@@ -511,7 +511,7 @@ import org.jboss.seam.faces.FacesMessages;
 				        .get("sessionId");
 		     log.info("AppUserManager:forViewCrt:sessionId:"+sessionId);
 		     
-		     AppUserItem ui = getUserItem(new Long(sessionId));
+		     AppUserItem ui = getUserItem(Long.valueOf(sessionId));
 	    
 		     ClUsrManager clUsrManager = (ClUsrManager)
                     Component.getInstance("clUsrManager", ScopeType.EVENT);
@@ -618,7 +618,7 @@ import org.jboss.seam.faces.FacesMessages;
 		     if(sessionId!=null){
 		    	
 		     	 
-		    	 AppUserItem ui = getUserItem(new Long(sessionId));
+		    	 AppUserItem ui = getUserItem(Long.valueOf(sessionId));
 		        	 
 		   	 Contexts.getEventContext().set("appUserBean", ui);
 		     }
@@ -637,7 +637,7 @@ import org.jboss.seam.faces.FacesMessages;
 			     if(sessionId!=null){
 			    	
 			     	 
-			    	 AppUserItem ui = getUserItem(new Long(sessionId));
+			    	 AppUserItem ui = getUserItem(Long.valueOf(sessionId));
 			    	 
 			    	 this.commentText=ui.getComment();
 
@@ -729,7 +729,7 @@ import org.jboss.seam.faces.FacesMessages;
 		    	    			" where ROL.UP_IS=arm.ID_SRV and app_roles.UP_ROLE=ROL.ID_SRV and APP_ROLES.UP_APP_USER= ? " + 
 		    	    			" group by arm.FULL_, arm.ID_SRV, ROL.FULL_ " + 
 		    	    			" order by arm.FULL_, arm.ID_SRV, ROL.FULL_ ")
-		    	    				 .setParameter(1, new Long(sessionIdApp))
+		    	    				 .setParameter(1, Long.valueOf(sessionIdApp))
 		    	    				.getResultList());
 
 	    		 listUsrArmForView = new ArrayList<AcApplication>();
@@ -741,7 +741,7 @@ import org.jboss.seam.faces.FacesMessages;
 	    			   
 	    			   listUsrArmForView.add(app);
 	    			   
-	    			   app.setIdArm(new Long(objectArray[0].toString()));
+	    			   app.setIdArm(Long.valueOf(objectArray[0].toString()));
 	    			   app.setName(objectArray[1]!=null?objectArray[1].toString():"");
 	    			   app.setRolList(new ArrayList<AcRole>());
 	    			 }

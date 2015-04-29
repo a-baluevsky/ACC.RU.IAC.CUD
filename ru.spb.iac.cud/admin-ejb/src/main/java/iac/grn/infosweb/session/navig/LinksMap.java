@@ -34,9 +34,9 @@ import javax.faces.context.FacesContext;
 	 /**
 	  * Идентификационный код приложения
 	  */
-	 private Long appCode=new Long(1);
+	 private Long appCode=Long.valueOf(1);
 	 
-	 private Long superUserCode=new Long(1);
+	 private Long superUserCode=Long.valueOf(1);
 	 
 	 
 	 private String main="-1";

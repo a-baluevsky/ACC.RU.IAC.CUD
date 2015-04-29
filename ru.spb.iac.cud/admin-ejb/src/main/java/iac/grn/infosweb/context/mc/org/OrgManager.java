@@ -248,7 +248,7 @@ import javaw.util.ArrayList;
 		   AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
 		   
 		 
-		  AcOrganization aom = entityManager.find(AcOrganization.class, new Long(sessionId));
+		  AcOrganization aom = entityManager.find(AcOrganization.class, Long.valueOf(sessionId));
 		  
 		  aom.setFullName(orgBean.getFullName());
 		  aom.setShortName(orgBean.getShortName());
@@ -301,7 +301,7 @@ import javaw.util.ArrayList;
 			        .get("sessionId");
 	     log.info("forViewUpdDel:sessionId:"+sessionId);
 	     if(sessionId!=null){
-	    	 AcOrganization ao = entityManager.find(AcOrganization.class, new Long(sessionId));
+	    	 AcOrganization ao = entityManager.find(AcOrganization.class, Long.valueOf(sessionId));
 	    	 Contexts.getEventContext().set("orgBean", ao);
 	   	 }
 	   }catch(Exception e){
@@ -315,7 +315,7 @@ import javaw.util.ArrayList;
 				.get("sessionId");
 		  log.info("forViewDel:sessionId:"+sessionId);
 		  if(sessionId!=null){
-			 AcOrganization ao = entityManager.find(AcOrganization.class, new Long(sessionId));
+			 AcOrganization ao = entityManager.find(AcOrganization.class, Long.valueOf(sessionId));
 					dellMessage="У организации есть порождённые записи! При удалении они будут удалены!";
 			 Contexts.getEventContext().set("orgBean", ao);
 		 }	

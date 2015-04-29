@@ -83,7 +83,7 @@ import org.slf4j.LoggerFactory;
 									ServiceReestrAction.PROCESS_START.name());
 
 							bpi.put("startDate", df.parse(startDate));
-							bpi.put("period", new Long(period));
+							bpi.put("period", Long.valueOf(period));
 
 							((IRemoteFrontageLocal) ctx.lookup(jndiBinding))
 									.run(bpi);

@@ -357,7 +357,7 @@ import ru.spb.iac.cud.util.TIDEncode;
 			utx.begin();
 
 			// решили определять пользователей извне ЦУД по их ИД, а не логинам
-			Long idUserApp = new Long(loginUser);
+			Long idUserApp = Long.valueOf(loginUser);
 			Long idSystemApp = system_exist(codeSystem);
 		
 			int modeAcRs = 1;
@@ -466,7 +466,7 @@ import ru.spb.iac.cud.util.TIDEncode;
 
 			// решили определять пользователей извне ЦУД по их ИД, а не логинам
 			// Long idUserApp = user_exist(loginUser);
-			Long idUserApp = new Long(loginUser);
+			Long idUserApp = Long.valueOf(loginUser);
 			// idUserApp - это кому назначаются роли
 			Long idSystemApp = system_exist(codeSystem);
 			int mode = 1;
@@ -581,7 +581,7 @@ import ru.spb.iac.cud.util.TIDEncode;
 
 			// решили определять пользователей извне ЦУД по их ИД, а не логинам
 			// Long idUserApp = user_exist(loginUser);
-			Long idUserApp = new Long(loginUser);
+			Long idUserApp = Long.valueOf(loginUser);
 
 			int mode = 0;
 
@@ -803,9 +803,9 @@ import ru.spb.iac.cud.util.TIDEncode;
 									 * loginUser)
 									 */
 									"where usr.ID_SRV=? ")
-					.setParameter(1, new Long(loginUser)).getSingleResult();
+					.setParameter(1, Long.valueOf(loginUser)).getSingleResult();
 
-			Long idUserApp = new Long(user_info[0].toString());// user_exist(loginUser);
+			Long idUserApp = Long.valueOf(user_info[0].toString());// user_exist(loginUser);
 
 			List results = em.createNativeQuery(
 					"select JOURN_APP_USER_MODIFY_SEQ.nextval from dual ")

@@ -74,7 +74,7 @@ import org.jboss.seam.log.Log;
 		    		  monthInterval="6";
 		    	  }	    	 
 			     
-		    	  beanSettingsBindUnBind.setParamActualData(new Long(monthInterval));
+		    	  beanSettingsBindUnBind.setParamActualData(Long.valueOf(monthInterval));
 		    	  
 			      Contexts.getEventContext().set("procBindUnBindSettingsBean", beanSettingsBindUnBind);
 			     

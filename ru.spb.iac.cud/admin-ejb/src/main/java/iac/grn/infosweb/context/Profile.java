@@ -18,92 +18,92 @@ import org.jboss.seam.ScopeType;
 	 * определяет количество отображаемых 
 	 * строк в таблице Организации
 	 */
-	 private Long rowsCountOrg=new Long(10);
+	 private Long rowsCountOrg=Long.valueOf(10);
 	 
-	 private Long rowsCountClOrg=new Long(10);
+	 private Long rowsCountClOrg=Long.valueOf(10);
 	 /**
 	   * определяет количество отображаемых 
 	   * строк в таблице Пользователи
 	   */
-	 private Long rowsCountUsr=new Long(10);
+	 private Long rowsCountUsr=Long.valueOf(10);
 	 
-	 private Long rowsCountBind=new Long(10);
+	 private Long rowsCountBind=Long.valueOf(10);
 	 
-	 private Long rowsCountAppSystem=new Long(10);
+	 private Long rowsCountAppSystem=Long.valueOf(10);
 	 
-	 private Long rowsCountAppUser = new Long(10);
+	 private Long rowsCountAppUser = Long.valueOf(10);
 	 
-	 private Long rowsCountAppAccess= new Long(10);
+	 private Long rowsCountAppAccess= Long.valueOf(10);
 	 
-	 private Long rowsCountAppBlock= new Long(10);
+	 private Long rowsCountAppBlock= Long.valueOf(10);
 	 
-	 private Long rowsCountAppSystemModify=new Long(10);
+	 private Long rowsCountAppSystemModify=Long.valueOf(10);
 	 
-	 private Long rowsCountAppUserModify=new Long(10);
+	 private Long rowsCountAppUserModify=Long.valueOf(10);
 	 
-	 private Long rowsCountAppUserAccModify=new Long(10);
+	 private Long rowsCountAppUserAccModify=Long.valueOf(10);
 	 
-	 private Long rowsCountAppUserCertModify=new Long(10);
+	 private Long rowsCountAppUserCertModify=Long.valueOf(10);
 	 
-	 private Long rowsCountAppUserDepModify=new Long(10);
+	 private Long rowsCountAppUserDepModify=Long.valueOf(10);
 	 
-	 private Long rowsCountAppMySystem=new Long(10);
+	 private Long rowsCountAppMySystem=Long.valueOf(10);
 	 
-	 private Long rowsCountAppMyUser = new Long(10);
+	 private Long rowsCountAppMyUser = Long.valueOf(10);
 	 
-	 private Long rowsCountAppMyBlock= new Long(10);
+	 private Long rowsCountAppMyBlock= Long.valueOf(10);
 	 
-     private Long rowsCountAppMyUserModify=new Long(10);
+     private Long rowsCountAppMyUserModify=Long.valueOf(10);
 	 
-	 private Long rowsCountAppMyUserAccModify=new Long(10);
+	 private Long rowsCountAppMyUserAccModify=Long.valueOf(10);
 	 
-	 private Long rowsCountAppMyUserCertModify=new Long(10);
+	 private Long rowsCountAppMyUserCertModify=Long.valueOf(10);
 	 
-	 private Long rowsCountAppAdminSys=new Long(10);
+	 private Long rowsCountAppAdminSys=Long.valueOf(10);
 	 
-	 private Long rowsCountAppOrgMan=new Long(10);
+	 private Long rowsCountAppOrgMan=Long.valueOf(10);
 	 
-	 private Long rowsCountClUsr=new Long(10);
+	 private Long rowsCountClUsr=Long.valueOf(10);
 	 
-	 private Long rowsCountAFunc=new Long(10);
+	 private Long rowsCountAFunc=Long.valueOf(10);
 	   /**
 		 * определяет количество отображаемых 
 		 * строк в таблице Консоли
 		 */ 
-	 private Long rowsCountCpar=new Long(10);
+	 private Long rowsCountCpar=Long.valueOf(10);
 	
-	 private Long rowsCountUgroup=new Long(10);
+	 private Long rowsCountUgroup=Long.valueOf(10);
 	 
-	 private Long rowsCountArm=new Long(10);
+	 private Long rowsCountArm=Long.valueOf(10);
 	 
-	 private Long rowsCountArmSub=new Long(10);
+	 private Long rowsCountArmSub=Long.valueOf(10);
 	 
-	 private Long rowsCountArmGroup=new Long(10);
+	 private Long rowsCountArmGroup=Long.valueOf(10);
 	   /**
 		 * определяет количество отображаемых 
 		 * строк в таблице Роли
 		 */
-	 private Long rowsCountRol=new Long(10);
+	 private Long rowsCountRol=Long.valueOf(10);
 	
-	 private Long rowsCountPerm=new Long(10);
+	 private Long rowsCountPerm=Long.valueOf(10);
 
 	     /**
 			 * определяет количество отображаемых 
 			 * строк в таблице Аудита УФМС
 			 */ 
-	 private Long rowsCountAudit=new Long(10);
+	 private Long rowsCountAudit=Long.valueOf(10);
 	 
-	 private Long rowsCountAuditSearch=new Long(10);
+	 private Long rowsCountAuditSearch=Long.valueOf(10);
 	 
-	 private Long rowsCountRai=new Long(10);
+	 private Long rowsCountRai=Long.valueOf(10);
 	 
-	 private Long rowsCountRepos=new Long(10);
+	 private Long rowsCountRepos=Long.valueOf(10);
 	 
-	 private Long rowsCountHosts=new Long(10);
+	 private Long rowsCountHosts=Long.valueOf(10);
 	 
-	 private Long rowsCountDocs=new Long(10);
+	 private Long rowsCountDocs=Long.valueOf(10);
 	 
-	 private Long rowsCountSupport=new Long(10);
+	 private Long rowsCountSupport=Long.valueOf(10);
 	 
 	 public Long getRowsCountArmSub() {
 		return rowsCountArmSub;

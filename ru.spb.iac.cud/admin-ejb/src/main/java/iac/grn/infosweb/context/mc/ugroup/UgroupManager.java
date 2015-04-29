@@ -184,7 +184,7 @@ import org.jboss.seam.log.Log;
 			
 		 GroupUsersKnlT ar = searchBean(uGroupId);
 		 
-		 if(!isAllowedSys(new Long(uGroupId))){
+		 if(!isAllowedSys(Long.valueOf(uGroupId))){
 			 log.info("ugroupManager:forView:02");
 			 ar.setIsAllowedSys(false);
 		 }
@@ -335,7 +335,7 @@ import org.jboss.seam.log.Log;
 	   try {
 		  AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
 		   
-		  GroupUsersKnlT aam = entityManager.find(GroupUsersKnlT.class, new Long(sessionId));
+		  GroupUsersKnlT aam = entityManager.find(GroupUsersKnlT.class, Long.valueOf(sessionId));
 		  
 		  aam.setFull(ugroupBean.getFull());
 		  
@@ -386,7 +386,7 @@ import org.jboss.seam.log.Log;
 	
 	   try {
 		   
-		  GroupUsersKnlT aum = entityManager.find(GroupUsersKnlT.class, new Long(sessionId));
+		  GroupUsersKnlT aum = entityManager.find(GroupUsersKnlT.class, Long.valueOf(sessionId));
 			
 		  List<LinkGroupUsersRolesKnlT> guuExistList =  aum.getLinkGroupUsersRolesKnlTs();
 		  
@@ -397,9 +397,9 @@ import org.jboss.seam.log.Log;
 	    			  log.info("ugroupManager:updUgroupRole:"+((AcRole)rol).getUsrChecked());
 	    			  
 	    			  if(((AcRole)rol).getUsrChecked().booleanValue()){ //отмечен
-	    				  LinkGroupUsersRolesKnlT au = new LinkGroupUsersRolesKnlT(((AcRole)rol).getIdRol(), new Long(sessionId));
+	    				  LinkGroupUsersRolesKnlT au = new LinkGroupUsersRolesKnlT(((AcRole)rol).getIdRol(), Long.valueOf(sessionId));
 	    			            au.setCreated(new Date());
-	    			            au.setCreator(new Long(1));
+	    			            au.setCreator(Long.valueOf(1));
 	    			            
 	    			            if(guuExistList.contains(au)){
 	    			            	//есть в базе
@@ -411,7 +411,7 @@ import org.jboss.seam.log.Log;
 		    			            log.info("ugroupManager:updUgroupRole:03");
 		    			        }
 	    			  }else{ //не отмечен
-	    				  LinkGroupUsersRolesKnlT au = new LinkGroupUsersRolesKnlT(((AcRole)rol).getIdRol(), new Long(sessionId));
+	    				  LinkGroupUsersRolesKnlT au = new LinkGroupUsersRolesKnlT(((AcRole)rol).getIdRol(), Long.valueOf(sessionId));
 			               
 			                if(guuExistList.contains(au)){
 			                	//есть в базе
@@ -422,7 +422,7 @@ import org.jboss.seam.log.Log;
 			                		"delete from LinkGroupUsersRolesKnlT lgu " +
 			                		"where lgu.pk.groupUser = :groupUser " +
 			                		"and lgu.pk.acRole = :acRole ")
-			                	.setParameter("groupUser", new Long(sessionId))
+			                	.setParameter("groupUser", Long.valueOf(sessionId))
 			                	.setParameter("acRole", ((AcRole)rol).getIdRol())
 			                	.executeUpdate();
 			                	
@@ -485,7 +485,7 @@ import org.jboss.seam.log.Log;
 			        .get("sessionId");
 	     log.info("forViewUpdDel:sessionId:"+sessionId);
 	     if(sessionId!=null){
-	    	 GroupUsersKnlT ao = entityManager.find(GroupUsersKnlT.class, new Long(sessionId));
+	    	 GroupUsersKnlT ao = entityManager.find(GroupUsersKnlT.class, Long.valueOf(sessionId));
 	    	 Contexts.getEventContext().set("ugroupBean", ao);
 	    	 
 	    	//устанавливаем на 1 страницу пагинатор в модальном окне
@@ -505,7 +505,7 @@ import org.jboss.seam.log.Log;
 				.get("sessionId");
 		  log.info("forViewDel:sessionId:"+sessionId);
 		  if(sessionId!=null){
-			  GroupUsersKnlT aa = entityManager.find(GroupUsersKnlT.class, new Long(sessionId));
+			  GroupUsersKnlT aa = entityManager.find(GroupUsersKnlT.class, Long.valueOf(sessionId));
 			
 			 Contexts.getEventContext().set("ugroupBean", aa);
 		 }	
@@ -566,7 +566,7 @@ import org.jboss.seam.log.Log;
    	    	 
    	    	 this.usrList.add(au);
    	    	 
-   	    	 au.setIdUser(new Long(objectArray[0].toString()));
+   	    	 au.setIdUser(Long.valueOf(objectArray[0].toString()));
    	    	 au.setFio(objectArray[2]!=null?objectArray[2].toString():"");
    	    	 au.setLogin(objectArray[1]!=null?objectArray[1].toString():"");
    	       }
@@ -608,7 +608,7 @@ import org.jboss.seam.log.Log;
 		      this.usrSelectEditList=new ArrayList<String>(entityManager.createQuery(
 		    		"select o.pk.acUser from LinkGroupUsersUsersKnlT o " +
 		      		"where o.pk.groupUser = :sessionId ")
-		      		.setParameter("sessionId", new Long(sessionId))
+		      		.setParameter("sessionId", Long.valueOf(sessionId))
 				 .getResultList());
 	    	}
     	 }
@@ -665,7 +665,7 @@ import org.jboss.seam.log.Log;
 					 "and AU_FULL.STATUS !=3 "+
                       "order by t1_fio "+ 
                       ") t1")
- 		      		.setParameter(1, new Long(sessionId))
+ 		      		.setParameter(1, Long.valueOf(sessionId))
  				 .getResultList();
   	    		         
   	       this.usrSelectListForView=new ArrayList<AcUser>();
@@ -738,14 +738,14 @@ import org.jboss.seam.log.Log;
  				   "select o from AcRole o where o.acApplication= :idArm " +
  					(st!=null ? " and "+st :" ")+
  				   "order by o.roleTitle ")
- 				   .setParameter("idArm", new Long(idArm))
+ 				   .setParameter("idArm", Long.valueOf(idArm))
                     .getResultList()
                   ); 		   
  		   List<AcRole> listUsrRol=entityManager.createQuery(
 		    		 "select o from AcRole o,  LinkGroupUsersRolesKnlT o1 " +
 		    		 "where o1.pk.acRole = o.idRol " +
 		    		 "and o1.pk.groupUser = :groupUser ")
-					 .setParameter("groupUser", new Long(sessionId))
+					 .setParameter("groupUser", Long.valueOf(sessionId))
 		      		 .getResultList();
  		   
  		     for(BaseItem role :this.roleList){
@@ -795,7 +795,7 @@ import org.jboss.seam.log.Log;
                         "where  LUR.UP_GROUP_USERS=? and ROL.ID_SRV=LUR.UP_ROLES "+
                         "and APP.ID_SRV=ROL.UP_IS "+
                         "order by  APP.FULL_, APP.ID_SRV, ROL.FULL_ ")
-	    				.setParameter(1, new Long(sessionId))
+	    				.setParameter(1, Long.valueOf(sessionId))
 	    				.getResultList();
 	    		
 	    		listGroupArmForView=new ArrayList<AcApplication>();
@@ -808,7 +808,7 @@ import org.jboss.seam.log.Log;
 	    			   
 	    		       listGroupArmForView.add(app);
 	    			   
-	    			   app.setIdArm(new Long(objectArray[0].toString()));
+	    			   app.setIdArm(Long.valueOf(objectArray[0].toString()));
 	    			   app.setName(objectArray[1]!=null?objectArray[1].toString():"");
 	    			   app.setRolList(new ArrayList<AcRole>());
 	    			 }

@@ -167,7 +167,7 @@ import org.jboss.seam.faces.FacesMessages;
                for(Object[] objectArray :lo){
             	   try{
             	     ui= new AppAdminSysItem(
-            	    		objectArray[0]!=null?new Long(objectArray[0].toString()):null,
+            	    		objectArray[0]!=null?Long.valueOf(objectArray[0].toString()):null,
             				objectArray[1]!=null?df.format((Date)objectArray[1]) :"",
             				objectArray[2]!=null?Integer.parseInt(objectArray[2].toString()):0,	
             				objectArray[3]!=null?objectArray[3].toString():"",
@@ -175,14 +175,14 @@ import org.jboss.seam.faces.FacesMessages;
             				objectArray[5]!=null?objectArray[5].toString():"",
             				objectArray[6]!=null?objectArray[6].toString():"",
             				 
-            				objectArray[7]!=null?new Long(objectArray[7].toString()):null,
+            				objectArray[7]!=null?Long.valueOf(objectArray[7].toString()):null,
 	            			objectArray[8]!=null?objectArray[8].toString():"",
 	            			objectArray[9]!=null?objectArray[9].toString():"",
 	            			objectArray[10]!=null?objectArray[10].toString():"",
 	            			 
 	            			objectArray[11]!=null?objectArray[11].toString():"",
 	            			 
-	            			objectArray[12]!=null?new Long(objectArray[12].toString()):null,
+	            			objectArray[12]!=null?Long.valueOf(objectArray[12].toString()):null,
 	            			 
 	            			objectArray[13]!=null?objectArray[13].toString():"",
 	            			objectArray[14]!=null?objectArray[14].toString():"",
@@ -386,7 +386,7 @@ import org.jboss.seam.faces.FacesMessages;
 	        		   log.info("AppAdminSysManager:getUserItem:login:"+objectArray[1].toString());
 	        		   
 	        		   ui= new AppAdminSysItem(
-	        				  objectArray[0]!=null?new Long(objectArray[0].toString()):null,
+	        				  objectArray[0]!=null?Long.valueOf(objectArray[0].toString()):null,
 	            				objectArray[1]!=null?df.format((Date)objectArray[1]) :"",
 	            				objectArray[2]!=null?Integer.parseInt(objectArray[2].toString()):0,	
 	            				objectArray[3]!=null?objectArray[3].toString():"",
@@ -394,14 +394,14 @@ import org.jboss.seam.faces.FacesMessages;
 	            				objectArray[5]!=null?objectArray[5].toString():"",
 	            				objectArray[6]!=null?objectArray[6].toString():"",
 	            				 
-	            				objectArray[7]!=null?new Long(objectArray[7].toString()):null,
+	            				objectArray[7]!=null?Long.valueOf(objectArray[7].toString()):null,
 		            			objectArray[8]!=null?objectArray[8].toString():"",
 		            			objectArray[9]!=null?objectArray[9].toString():"",
 		            			objectArray[10]!=null?objectArray[10].toString():"",
 		            			 
 		            			objectArray[11]!=null?objectArray[11].toString():"",
 		            			 
-		            			objectArray[12]!=null?new Long(objectArray[12].toString()):null,
+		            			objectArray[12]!=null?Long.valueOf(objectArray[12].toString()):null,
 		            			 
 		            			objectArray[13]!=null?objectArray[13].toString():"",
 		            			objectArray[14]!=null?objectArray[14].toString():"",
@@ -445,7 +445,7 @@ import org.jboss.seam.faces.FacesMessages;
 				  return;
 			 }
 			   
-			 idApp =  new Long(sessionId); 
+			 idApp =  Long.valueOf(sessionId); 
 			   
 			 Object[] app=(Object[]) entityManager.createNativeQuery(
 		    			  "select JAS.UP_USER_APP, JAS.UP_SYS, JAS.MODE_EXEC "+
@@ -454,8 +454,8 @@ import org.jboss.seam.faces.FacesMessages;
 		    			.setParameter(1, idApp)
 		    			.getSingleResult();  
 			 
-			 idUser=new Long(app[0].toString());
-			 idArm=new Long(app[1].toString());
+			 idUser=Long.valueOf(app[0].toString());
+			 idArm=Long.valueOf(app[1].toString());
 			 modeExec=Integer.parseInt(app[2].toString());
 			 
 			 log.info("AppAdminSysManager:createAdminSys:idUser:"+idUser);
@@ -522,7 +522,7 @@ import org.jboss.seam.faces.FacesMessages;
 	 	     		 .setParameter(2, idApp)
 	         	 	 .executeUpdate();
 		    
-		     AppAdminSysItem ui = getUserItem(new Long(sessionId));
+		     AppAdminSysItem ui = getUserItem(Long.valueOf(sessionId));
 		     
 		     Contexts.getEventContext().set("contextBeanView", ui);
 		     
@@ -547,10 +547,10 @@ import org.jboss.seam.faces.FacesMessages;
 	 	     		   "where t1.ID_SRV=? ")
 	 	     		 .setParameter(1, this.rejectReason)
 	 	     		 .setParameter(2, getCurrentUser().getBaseId())
-	 	     		 .setParameter(3, new Long(sessionId))
+	 	     		 .setParameter(3, Long.valueOf(sessionId))
 	 	     	 	 .executeUpdate();
 		     
-             AppAdminSysItem ui = getUserItem(new Long(sessionId)); 
+             AppAdminSysItem ui = getUserItem(Long.valueOf(sessionId)); 
 		     
 		     Contexts.getEventContext().set("contextBeanView", ui);
 		     
@@ -574,10 +574,10 @@ import org.jboss.seam.faces.FacesMessages;
 	 	     		   "set t1.COMMENT_=? " +
 	 	     		   "where t1.ID_SRV=? ")
 	 	     		 .setParameter(1, this.commentText)
-	 	     		 .setParameter(2, new Long(sessionId))
+	 	     		 .setParameter(2, Long.valueOf(sessionId))
 	 	     	 	 .executeUpdate();
 		     
-           AppAdminSysItem ui = getUserItem(new Long(sessionId)); 
+           AppAdminSysItem ui = getUserItem(Long.valueOf(sessionId)); 
 		     
 		   Contexts.getEventContext().set("contextBeanView", ui);
 		     
@@ -593,7 +593,7 @@ import org.jboss.seam.faces.FacesMessages;
 				        .get("sessionId");
 		     log.info("AppAdminSysManager:forViewCrt:sessionId:"+sessionId);
 		     
-		     AppAdminSysItem ui = getUserItem(new Long(sessionId));
+		     AppAdminSysItem ui = getUserItem(Long.valueOf(sessionId));
 	    		
 	         Contexts.getEventContext().set("contextBeanView", ui);
 		     
@@ -611,7 +611,7 @@ import org.jboss.seam.faces.FacesMessages;
 		     if(sessionId!=null){
 		    	
 		     	 
-		    	 AppAdminSysItem ui = getUserItem(new Long(sessionId));
+		    	 AppAdminSysItem ui = getUserItem(Long.valueOf(sessionId));
 		        	 
 		   	 Contexts.getEventContext().set("appAdminSysBean", ui);
 		     }
@@ -630,7 +630,7 @@ import org.jboss.seam.faces.FacesMessages;
 			     if(sessionId!=null){
 			    	
 			     	 
-			    	 AppAdminSysItem ui = getUserItem(new Long(sessionId));
+			    	 AppAdminSysItem ui = getUserItem(Long.valueOf(sessionId));
 			    	 
 			    	 this.commentText=ui.getComment();
 

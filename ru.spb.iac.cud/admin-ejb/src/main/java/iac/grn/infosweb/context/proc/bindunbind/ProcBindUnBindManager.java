@@ -153,7 +153,7 @@ import org.jboss.seam.log.Log;
 		    	 if(startDateValue!=null&&periodValue!=null&&status!=null){
 		    		 if("active".equals(status)||"pause".equals(status)){
 		    			 procBUBBean.setStartDate(dfBub.parse(startDateValue));
-		    			 procBUBBean.setPeriod(new Long(periodValue));
+		    			 procBUBBean.setPeriod(Long.valueOf(periodValue));
 		    		   }
 		    		 procBUBBean.setStatus(status);
 		    		 }
@@ -364,7 +364,7 @@ import org.jboss.seam.log.Log;
 		      }
 	 	
 	          this.startDate=dfBub.parse(startDateValue);
-	          this.period=new Long(periodValue);
+	          this.period=Long.valueOf(periodValue);
 	     
 	          properties.setProperty("status", "pause");
 	          properties.store(os=new FileOutputStream(fBub), null);
@@ -421,7 +421,7 @@ import org.jboss.seam.log.Log;
 			   }
 		 	 
 		       this.startDate=df.parse(startDateValue);
-		       this.period=new Long(periodValue);
+		       this.period=Long.valueOf(periodValue);
 		       
 		       
 		       properties.setProperty("status", "active");

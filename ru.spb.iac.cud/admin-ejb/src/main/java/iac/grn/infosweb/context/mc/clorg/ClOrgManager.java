@@ -252,7 +252,7 @@ import org.jboss.seam.log.Log;
 		   AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
 		   
 		 
-		  IspBssT aomClOrg = entityManager.find(IspBssT.class, new Long(sessionId));
+		  IspBssT aomClOrg = entityManager.find(IspBssT.class, Long.valueOf(sessionId));
 		  
 		  aomClOrg.setFull(clOrgBean.getFull());
 		
@@ -299,7 +299,7 @@ import org.jboss.seam.log.Log;
 			        .get("sessionId");
 	     log.info("forViewUpdDel:sessionId:"+sessionId);
 	     if(sessionId!=null){
-	    	 IspBssT ao = entityManager.find(IspBssT.class, new Long(sessionId));
+	    	 IspBssT ao = entityManager.find(IspBssT.class, Long.valueOf(sessionId));
 	    	 Contexts.getEventContext().set("clOrgBean", ao);
 	   	 }
 	   }catch(Exception e){

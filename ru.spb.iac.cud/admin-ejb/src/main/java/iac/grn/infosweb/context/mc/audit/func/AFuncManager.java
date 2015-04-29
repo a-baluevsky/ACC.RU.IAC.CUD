@@ -262,7 +262,7 @@ import org.jboss.seam.log.Log;
                  for(Object[] objectArray :lo){
                 	 try{ 
                       ActionsLogKnlT al = new ActionsLogKnlT();                      
-                      al.setIdSrv(new Long(objectArray[0].toString()));
+                      al.setIdSrv(Long.valueOf(objectArray[0].toString()));
                       al.setDateActionValue(objectArray[1].toString());
                       al.setUserName(objectArray[2]!=null?objectArray[2].toString():"");
                       al.setIsName(objectArray[3]!=null?objectArray[3].toString():"");
@@ -325,7 +325,7 @@ import org.jboss.seam.log.Log;
 					 count+=(objectArray[2]!=null?((java.math.BigDecimal)objectArray[2]).intValue():0);
 				 }
 				 
-				 this.auditReportCubeCount = new Long(count);
+				 this.auditReportCubeCount = Long.valueOf(count);
 	             log.info("invokeLocal:listReportCube:02:size:"+auditReportList.size());
 			 }
 		}catch(Exception e){

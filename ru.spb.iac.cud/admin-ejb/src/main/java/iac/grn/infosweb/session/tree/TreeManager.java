@@ -43,7 +43,7 @@ import javax.persistence.EntityManager;
 			
 			AcAppPage nav=(AcAppPage)entityManager 
 					    .createQuery("select aap from AcAppPage aap where aap.idRes =:idRes ")
-					      .setParameter("idRes",new Long(1))
+					      .setParameter("idRes",Long.valueOf(1))
 				 	      .getSingleResult();
 			for(AcAppPage nl: nav.getIdResCollection()){
 				childrenMap.put(nl.getIdRes(), nl);

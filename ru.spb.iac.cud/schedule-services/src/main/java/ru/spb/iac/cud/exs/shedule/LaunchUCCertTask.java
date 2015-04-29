@@ -73,7 +73,7 @@ import org.slf4j.LoggerFactory;
 					LOGGER.debug("initTask:run:07+");
 
 					bpi.put("startSpan", startSpan);
-					bpi.put("period", new Long(period));
+					bpi.put("period", Long.valueOf(period));
 
 					Context ctx = new InitialContext();
 					LOGGER.debug("initTask:run:02");

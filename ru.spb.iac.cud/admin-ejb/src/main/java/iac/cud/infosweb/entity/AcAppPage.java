@@ -199,7 +199,7 @@ import org.jboss.seam.annotations.Role;
 	}
 	public Boolean getVisibleBoolean() {
 		if(this.visibleBoolean==null){
-			if(this.visible!=null&&this.visible.equals(new Long(1))){
+			if(this.visible!=null&&this.visible.equals(Long.valueOf(1))){
 				this.visibleBoolean=true;
 			}else{
 				this.visibleBoolean=false;

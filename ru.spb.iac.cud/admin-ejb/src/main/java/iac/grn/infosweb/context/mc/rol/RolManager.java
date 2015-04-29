@@ -355,9 +355,9 @@ import iac.grn.serviceitems.BaseTableItem;
 	    		  log.info("RolManager:addRol:Res:"+res.getPageName());
 	    		  for(Object l:res.getPermList()){
 	    			  log.info("RolManager:addRol:perm:"+l.toString());
-	    			  AcLinkRoleAppPagePrmssn ap = new AcLinkRoleAppPagePrmssn(res.getIdRes(), new Long(l.toString()), rolBeanCrt.getIdRol());
+	    			  AcLinkRoleAppPagePrmssn ap = new AcLinkRoleAppPagePrmssn(res.getIdRes(), Long.valueOf(l.toString()), rolBeanCrt.getIdRol());
 	    			  ap.setCreated(new Date());
-	    			  ap.setCreator(new Long(1));
+	    			  ap.setCreator(Long.valueOf(1));
 	    			  arList.add(ap);
 	    			
 	    		  }
@@ -401,12 +401,12 @@ import iac.grn.serviceitems.BaseTableItem;
 	
 	   try {
 		 
-		 if(!roleCodeExistUpd(rolBean.getAcApplication(), rolBean.getSign().trim(), new Long(sessionId))){
+		 if(!roleCodeExistUpd(rolBean.getAcApplication(), rolBean.getSign().trim(), Long.valueOf(sessionId))){
 		   
 		  AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
 		   
 		 
-		  AcRole arm = entityManager.find(AcRole.class, new Long(sessionId));
+		  AcRole arm = entityManager.find(AcRole.class, Long.valueOf(sessionId));
 		  
 		  arm.setRoleTitle(rolBean.getRoleTitle().trim());
 		  arm.setSign(rolBean.getSign().trim());
@@ -434,9 +434,9 @@ import iac.grn.serviceitems.BaseTableItem;
     		  log.info("RolManager:editRol:Res:"+res.getPageName());
     		  for(Object l:res.getPermList()){
     			  log.info("RolManager:editRol:perm:"+l.toString());
-    			  AcLinkRoleAppPagePrmssn ap = new AcLinkRoleAppPagePrmssn(res.getIdRes(), new Long(l.toString()), new Long(sessionId));
+    			  AcLinkRoleAppPagePrmssn ap = new AcLinkRoleAppPagePrmssn(res.getIdRes(), Long.valueOf(l.toString()), Long.valueOf(sessionId));
     			  ap.setCreated(new Date());
-    			  ap.setCreator(new Long(1));
+    			  ap.setCreator(Long.valueOf(1));
     			 
     			  arList.add(ap);
     		  }
@@ -483,7 +483,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	   try {
 		   AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
 		   
-		   AcRole aum = entityManager.find(AcRole.class, new Long(sessionId));
+		   AcRole aum = entityManager.find(AcRole.class, Long.valueOf(sessionId));
 		   
 		   List<AcLinkUserToRoleToRaion> oldLinkList = aum.getAcLinkUserToRoleToRaions();
 		   
@@ -499,7 +499,7 @@ import iac.grn.serviceitems.BaseTableItem;
  				 log.info("rolManager:updUgroupUserAlf:02:"+((AcUser)user).getLogin());
  				 
  				 
- 				 lguu=new AcLinkUserToRoleToRaion(new Long(sessionId), user.getBaseId());
+ 				 lguu=new AcLinkUserToRoleToRaion(Long.valueOf(sessionId), user.getBaseId());
  				 if(oldLinkList.contains(lguu)){  
  				 
  					log.info("rolManager:updUgroupUserAlf:03");
@@ -517,7 +517,7 @@ import iac.grn.serviceitems.BaseTableItem;
  				  
  			  }else{//не отмечен
  				  
- 				 lguu=new AcLinkUserToRoleToRaion(new Long(sessionId), user.getBaseId());
+ 				 lguu=new AcLinkUserToRoleToRaion(Long.valueOf(sessionId), user.getBaseId());
  				 if(oldLinkList.contains(lguu)){
  					 
  					log.info("rolManager:updUgroupUserAlf:05");
@@ -526,7 +526,7 @@ import iac.grn.serviceitems.BaseTableItem;
  					entityManager.createQuery("DELETE FROM AcLinkUserToRoleToRaion gu " +
  							                  "WHERE gu.pk.acRole=:acRole " +
  							                  "and gu.pk.acUser=:acUser ")
- 					    .setParameter("acRole", new Long(sessionId))
+ 					    .setParameter("acRole", Long.valueOf(sessionId))
  					    .setParameter("acUser", user.getBaseId())
  					    .executeUpdate();
 				  }else{//в базе и так нет
@@ -585,7 +585,7 @@ import iac.grn.serviceitems.BaseTableItem;
 			        .get("sessionId");
 	     log.info("forViewUpdDel:sessionId:"+sessionId);
 	     if(sessionId!=null){
-	    	 AcRole ar = entityManager.find(AcRole.class, new Long(sessionId));
+	    	 AcRole ar = entityManager.find(AcRole.class, Long.valueOf(sessionId));
 	    	 Contexts.getEventContext().set("rolBean", ar);
 	    	 
 	    	//устанавливаем на 1 страницу пагинатор в модальном окне
@@ -614,8 +614,8 @@ import iac.grn.serviceitems.BaseTableItem;
                       "(select count(*) cnt "+
                       "from LINK_GROUP_USERS_ROLES_KNL_T gusl "+
                       "where GUSL.UP_ROLES=? ) t2 ")
-	  				.setParameter(1, new Long(sessionId))
-	  				.setParameter(2, new Long(sessionId))
+	  				.setParameter(1, Long.valueOf(sessionId))
+	  				.setParameter(2, Long.valueOf(sessionId))
 	  				.getResultList();
 			  
 			  if(!lo.isEmpty()){
@@ -630,7 +630,7 @@ import iac.grn.serviceitems.BaseTableItem;
 					  }
 				  }
 			  }
-			 AcRole ar = entityManager.find(AcRole.class, new Long(sessionId));	 
+			 AcRole ar = entityManager.find(AcRole.class, Long.valueOf(sessionId));	 
 			 Contexts.getEventContext().set("rolBean", ar);
 		 }	
   }
@@ -688,13 +688,13 @@ import iac.grn.serviceitems.BaseTableItem;
 	    				"o.visible=1 and "+
 	    		    	"o.acApplication = :idArm and " +
 	    				"o.idParent2 !=1 and o.pageCode is not null ")
-	    				.setParameter("idArm", (pidArm!=null ? new Long(pidArm) : rolBeanCrt.getAcApplication()))
+	    				.setParameter("idArm", (pidArm!=null ? Long.valueOf(pidArm) : rolBeanCrt.getAcApplication()))
 	    				.getResultList());
 	   		   for(AcAppPage aap:listRolRes){
 	   			  log.info("RolManager:getListRolRes:Cicle:1");
 	   			  String st=aap.getPageName();
 	   			  AcAppPage aapin=aap.getIdParent();
-	   			   while(!aapin.getIdParent2().equals(new Long(1))){
+	   			   while(!aapin.getIdParent2().equals(Long.valueOf(1))){
 	   				log.info("RolManager:getListRolRes:Cicle:2");
 	   				   st=aapin.getPageName()+"/"+st;
 	   				   aapin=aapin.getIdParent();
@@ -760,7 +760,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	    				"o.visible=1 and "+
 	    				"o.acApplication = :idArm and " +
 	    				"o.idParent2 !=1 and o.pageCode is not null ")
-	    				.setParameter("idArm",(pidArm!=null ? new Long(pidArm) : rolBean.getAcApplication()))
+	    				.setParameter("idArm",(pidArm!=null ? Long.valueOf(pidArm) : rolBean.getAcApplication()))
 	    				.getResultList()
 	    				);
 	    		saveEditFlag= FacesContext.getCurrentInstance().getExternalContext()
@@ -784,7 +784,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	        	   
 	        		  String st=aca.getPageName();
 		   			  AcAppPage aapin=aca.getIdParent();
-		   			   while(!aapin.getIdParent2().equals(new Long(1))){
+		   			   while(!aapin.getIdParent2().equals(Long.valueOf(1))){
 		   				   st=aapin.getPageName()+"/"+st;
 		   				   aapin=aapin.getIdParent();
 		   			   }
@@ -801,7 +801,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	            AcLinkRoleAppPagePrmssn me = (AcLinkRoleAppPagePrmssn) it.next();
 	            log.info("RolManager:getListRolResEdit:06");
 		            if((me.getAcAppPage().getIdRes().equals(aca.getIdRes())) && 
-		               (me.getAcRole().getIdRol().equals(new Long((idRol!=null?idRol:idForAjax)))) ){
+		               (me.getAcRole().getIdRol().equals(Long.valueOf((idRol!=null?idRol:idForAjax)))) ){
 		        	   log.info("RolManager:getListRolResEdit:IdPerm:"+me.getAcPermissionsList().getIdPerm());
 		        	 ls.add(me.getAcPermissionsList().getIdPerm());
 		         }
@@ -847,9 +847,9 @@ import iac.grn.serviceitems.BaseTableItem;
 	    log.info("getCheckboxPerm_01");
 	    if (checkboxPerm==null){
 	    	checkboxPerm = new ArrayList();
-	    	checkboxPerm.add(new Long(1));
-	    	checkboxPerm.add(new Long(3));
-	    	checkboxPerm.add(new Long(5));
+	    	checkboxPerm.add(Long.valueOf(1));
+	    	checkboxPerm.add(Long.valueOf(3));
+	    	checkboxPerm.add(Long.valueOf(5));
 	       }
 	    return checkboxPerm;
   }
@@ -901,7 +901,7 @@ import iac.grn.serviceitems.BaseTableItem;
 					 "and AU_FULL.STATUS !=3 "+
                      "order by t1_fio "+ 
                      ") t1 ")
-		      		.setParameter(1, new Long(sessionId))
+		      		.setParameter(1, Long.valueOf(sessionId))
 				 .getResultList();
  	    	    
  	       this.usrSelectListForView=new ArrayList<AcUser>();
@@ -1111,7 +1111,7 @@ import iac.grn.serviceitems.BaseTableItem;
   	    	 
   	    	 this.usrAlfList.add(au);
   	    	 
-  	    	 au.setIdUser(new Long(objectArray[0].toString()));
+  	    	 au.setIdUser(Long.valueOf(objectArray[0].toString()));
   	    	 au.setFio(objectArray[2]!=null?objectArray[2].toString():"");
   	    	 au.setLogin(objectArray[1]!=null?objectArray[1].toString():"");
   	       }
@@ -1124,7 +1124,7 @@ import iac.grn.serviceitems.BaseTableItem;
   	 		    		 "select o.idUser from AcUser o,  AcLinkUserToRoleToRaion o1 " +
   	 		    		 "where o1.pk.acUser = o.idUser " +
   	 		    		 "and o1.pk.acRole = :acRole ")
-  	 					 .setParameter("acRole", new Long(sessionId))
+  	 					 .setParameter("acRole", Long.valueOf(sessionId))
   	 		      		 .getResultList();
   	 		 
   	    	     log.info("RolManager:getUsrAlfList:size2:"+listUsr.size());

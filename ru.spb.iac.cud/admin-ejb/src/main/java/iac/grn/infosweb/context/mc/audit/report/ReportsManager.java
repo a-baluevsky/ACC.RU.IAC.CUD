@@ -129,7 +129,7 @@ import org.jboss.seam.log.Log;
       try{
          String reportId = getTargetReportId();   
          if(reportId!=null){
-            ReportsBssT rep = entityManager.find(ReportsBssT.class, new Long(reportId));
+            ReportsBssT rep = entityManager.find(ReportsBssT.class, Long.valueOf(reportId));
             String reportCode=rep.getReportCode(), orgCode = getOrgCode();
             SerializableMap<String, String> reportParameters = new HashMap<String, String>(5);
             reportParameters.put("reportId",    reportId);

@@ -193,7 +193,7 @@ import iac.grn.serviceitems.HeaderTableItem;
             		   
 
                 	     ui= new AppUserModifyItem(
-            	    		objectArray[0]!=null?new Long(objectArray[0].toString()):null,
+            	    		objectArray[0]!=null?Long.valueOf(objectArray[0].toString()):null,
             				objectArray[1]!=null?df.format((Date)objectArray[1]) :"",
             				objectArray[2]!=null?Integer.parseInt(objectArray[2].toString()):0,	
             				objectArray[3]!=null?objectArray[3].toString():"",
@@ -212,7 +212,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	            			objectArray[15]!=null?objectArray[15].toString():"",
 	            			 
 	            			objectArray[16]!=null?objectArray[16].toString():"",
-	            			objectArray[17]!=null?new Long(objectArray[17].toString()):null,
+	            			objectArray[17]!=null?Long.valueOf(objectArray[17].toString()):null,
 	            			objectArray[18]!=null?objectArray[18].toString():"",
 	            			objectArray[19]!=null?objectArray[19].toString():"",
 	            			objectArray[20]!=null?objectArray[20].toString():"",

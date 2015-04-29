@@ -204,7 +204,7 @@ import org.jboss.seam.annotations.Role;
 	
 	public String getIsExternalValue() {
 		if(this.isExternalValue==null&&this.isExternal!=null){
-			if(this.isExternal.equals(new Long(0))){
+			if(this.isExternal.equals(Long.valueOf(0))){
 			  isExternalValue="ќператор";
 			}else {
 			  isExternalValue="¬нешн€€";	

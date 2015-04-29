@@ -188,7 +188,7 @@ import iac.grn.serviceitems.HeaderTableItem;
             		   
 
                 	     uiUserCert= new AppUserCertModifyItem(
-            	    		objectArray[0]!=null?new Long(objectArray[0].toString()):null,
+            	    		objectArray[0]!=null?Long.valueOf(objectArray[0].toString()):null,
             				objectArray[1]!=null?df.format((Date)objectArray[1]) :"",
             				objectArray[2]!=null?Integer.parseInt(objectArray[2].toString()):0,	
             				objectArray[3]!=null?objectArray[3].toString():"",
@@ -203,7 +203,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	            			 "",
 	            			 
 	            			objectArray[7]!=null?objectArray[7].toString():"",
-	            			objectArray[8]!=null?new Long(objectArray[8].toString()):null,
+	            			objectArray[8]!=null?Long.valueOf(objectArray[8].toString()):null,
 	            			objectArray[9]!=null?objectArray[9].toString():"",
 	            			objectArray[10]!=null?objectArray[10].toString():"",
 	            			objectArray[11]!=null?objectArray[11].toString():"",
@@ -468,7 +468,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	        		   }
 	        		   
 	        		   ui= new AppUserCertModifyItem(
-	            	    		objectArray[0]!=null?new Long(objectArray[0].toString()):null,
+	            	    		objectArray[0]!=null?Long.valueOf(objectArray[0].toString()):null,
 	            				objectArray[1]!=null?df.format((Date)objectArray[1]) :"",
 	            				objectArray[2]!=null?Integer.parseInt(objectArray[2].toString()):0,	
 	            				objectArray[3]!=null?objectArray[3].toString():"",
@@ -483,7 +483,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 		            			 userFio!=null?userFio:"",
 		            			 
 		            			objectArray[8]!=null?objectArray[8].toString():"",
-		            			objectArray[9]!=null?new Long(objectArray[9].toString()):null,
+		            			objectArray[9]!=null?Long.valueOf(objectArray[9].toString()):null,
 		            			objectArray[10]!=null?objectArray[10].toString():"",
 		            			objectArray[11]!=null?objectArray[11].toString():"",
 		            			objectArray[12]!=null?objectArray[12].toString():"",
@@ -525,7 +525,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	       
 		   try{
 			  
-			   idApp =  new Long(sessionIdAppUserCertModify); 
+			   idApp =  Long.valueOf(sessionIdAppUserCertModify); 
 			   
 			   Object[] app=(Object[]) entityManager.createNativeQuery(
 			    			  "select JAS.UP_USER_APP, " +
@@ -535,7 +535,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 			    			.setParameter(1, idApp)
 			    			.getSingleResult();  
 				 
-			   idUser=new Long(app[0].toString());
+			   idUser=Long.valueOf(app[0].toString());
 			 
 			   modeExec = Integer.parseInt(app[2].toString());
 			   
@@ -639,12 +639,12 @@ import iac.grn.serviceitems.HeaderTableItem;
     	 	     		   "set t1.STATUS=1, t1.UP_USER_EXEC=? " +
     	 	     		   "where t1.ID_SRV=? ")
     	 	     		 .setParameter(1, getCurrentUser().getBaseId())
-    	 	     		 .setParameter(2, new Long(sessionIdAppUserCertModify))
+    	 	     		 .setParameter(2, Long.valueOf(sessionIdAppUserCertModify))
     	         	 	 .executeUpdate();
                    
     		   }
 			  
-		     AppUserCertModifyItem ui = getUserItem(new Long(sessionIdAppUserCertModify));
+		     AppUserCertModifyItem ui = getUserItem(Long.valueOf(sessionIdAppUserCertModify));
 		     
 		     Contexts.getEventContext().set("contextBeanView", ui);
 		     
@@ -703,10 +703,10 @@ import iac.grn.serviceitems.HeaderTableItem;
 	 	     		   "where t1.ID_SRV=? ")
 	 	     		 .setParameter(1, this.rejectReason)
 	 	     		 .setParameter(2, getCurrentUser().getBaseId())
-	 	     		 .setParameter(3, new Long(sessionId))
+	 	     		 .setParameter(3, Long.valueOf(sessionId))
 	 	     	 	 .executeUpdate();
 		     
-             AppUserCertModifyItem ui = getUserItem(new Long(sessionId)); 
+             AppUserCertModifyItem ui = getUserItem(Long.valueOf(sessionId)); 
 		     
 		     Contexts.getEventContext().set("contextBeanView", ui);
 		     
@@ -732,10 +732,10 @@ import iac.grn.serviceitems.HeaderTableItem;
 	 	     		   "set t1.COMMENT_=? " +
 	 	     		   "where t1.ID_SRV=? ")
 	 	     		 .setParameter(1, this.commentText)
-	 	     		 .setParameter(2, new Long(sessionId))
+	 	     		 .setParameter(2, Long.valueOf(sessionId))
 	 	     	 	 .executeUpdate();
 		     
-           AppUserCertModifyItem ui = getUserItem(new Long(sessionId)); 
+           AppUserCertModifyItem ui = getUserItem(Long.valueOf(sessionId)); 
 		     
 		   Contexts.getEventContext().set("contextBeanView", ui);
 		     
@@ -757,7 +757,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 		  log.info("AppUserCertModifyManager:forView:sessionId:"+sessionId);
 		   if(sessionId!=null ){
 			   
-			  AppUserCertModifyItem au = getUserItem(new Long(sessionId)); 
+			  AppUserCertModifyItem au = getUserItem(Long.valueOf(sessionId)); 
 			   
 			 /* 
 			  //как вариант
@@ -779,7 +779,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 				        .get("sessionId");
 		     log.info("AppUserCertModifyManager:forViewCrt:01:"+sessionId);
 		     
-		     AppUserCertModifyItem ui = getUserItem(new Long(sessionId));
+		     AppUserCertModifyItem ui = getUserItem(Long.valueOf(sessionId));
 	    		
 	    	 Contexts.getEventContext().set("contextBeanView", ui);
 		     
@@ -804,7 +804,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 		     if(sessionId!=null){
 		    	
 		     	 
-		    	 AppUserCertModifyItem ui = getUserItem(new Long(sessionId));
+		    	 AppUserCertModifyItem ui = getUserItem(Long.valueOf(sessionId));
 		        	 
 		   	 Contexts.getEventContext().set("appUserCertModifyBean", ui);
 		     }
@@ -830,7 +830,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 			     if(sessionId!=null){
 			    	
 			     	 
-			    	 AppUserCertModifyItem ui = getUserItem(new Long(sessionId));
+			    	 AppUserCertModifyItem ui = getUserItem(Long.valueOf(sessionId));
 			    	 
 			    	 this.commentText=ui.getComment();
 

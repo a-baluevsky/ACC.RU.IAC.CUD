@@ -227,7 +227,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 			
 			LOGGER.debug("UserManagerBean:getListRolesFromArm:01:"+pidArm);
 			
-			listRolesFromArm = new ArrayList<AcRolesBssT>(userManagerEJB.getListRolesFromArm(new Long(pidArm)));
+			listRolesFromArm = new ArrayList<AcRolesBssT>(userManagerEJB.getListRolesFromArm(Long.valueOf(pidArm)));
 			
 			if(userSessionBean.getSumRoles()!=null&&this.listRolesFromArm!=null){
 				
@@ -258,7 +258,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 			
 			LOGGER.debug("UserManagerBean:getListGroupsFromArm:01:"+pidArm);
 			
-			listGroupsFromArm = new ArrayList<GroupUsersKnlT>(userManagerEJB.getListGroupsFromArm(new Long(pidArm)));
+			listGroupsFromArm = new ArrayList<GroupUsersKnlT>(userManagerEJB.getListGroupsFromArm(Long.valueOf(pidArm)));
 			
 			if(userSessionBean.getSumGroups()!=null&&this.listGroupsFromArm!=null){
 				
@@ -295,10 +295,10 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 				userSessionBean.setSumRoles(sumRoles);
 			 }
 			 
-			 if(userSessionBean.getSumRoles().containsKey(new Long(idRole))){
-				 userSessionBean.getSumRoles().remove(new Long(idRole));
+			 if(userSessionBean.getSumRoles().containsKey(Long.valueOf(idRole))){
+				 userSessionBean.getSumRoles().remove(Long.valueOf(idRole));
 			 }else{
-			     userSessionBean.getSumRoles().put(new Long(idRole), nameRole);
+			     userSessionBean.getSumRoles().put(Long.valueOf(idRole), nameRole);
 			 }
 			 
 		}catch(Exception e){
@@ -321,10 +321,10 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 				userSessionBean.setSumGroups(sumGroups);
 			 }
 			 
-			 if(userSessionBean.getSumGroups().containsKey(new Long(idGroup))){
-				 userSessionBean.getSumGroups().remove(new Long(idGroup));
+			 if(userSessionBean.getSumGroups().containsKey(Long.valueOf(idGroup))){
+				 userSessionBean.getSumGroups().remove(Long.valueOf(idGroup));
 			 }else{
-			     userSessionBean.getSumGroups().put(new Long(idGroup), nameGroup);
+			     userSessionBean.getSumGroups().put(Long.valueOf(idGroup), nameGroup);
 			 }
 			 
 		}catch(Exception e){

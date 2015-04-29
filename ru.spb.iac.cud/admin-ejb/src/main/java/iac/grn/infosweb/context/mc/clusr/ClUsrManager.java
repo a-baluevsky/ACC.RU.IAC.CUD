@@ -291,7 +291,7 @@ import javaw.util.SerializableSet;
 	
 	       bpi.put("gactiontype", ServiceReestrAction.TASK_RUN.name());
 	       
-	       bpi.put("seancact", new Long(seancact));
+	       bpi.put("seancact", Long.valueOf(seancact));
 	       
 	       if(clVersion!=null&&!clVersion.isEmpty()){
 	         bpi.put("clVersion", new Integer(clVersion));
@@ -383,7 +383,7 @@ import javaw.util.SerializableSet;
 	
 	   try {
 		  
-		  IspTempBssT aom = entityManager.find(IspTempBssT.class, new Long(sessionId));
+		  IspTempBssT aom = entityManager.find(IspTempBssT.class, Long.valueOf(sessionId));
 		  
 		  aom.setFull(clUsrBean.getFull());
 		

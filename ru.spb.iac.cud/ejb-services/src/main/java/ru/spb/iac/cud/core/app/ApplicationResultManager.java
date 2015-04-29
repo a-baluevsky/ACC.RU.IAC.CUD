@@ -149,7 +149,7 @@ import org.slf4j.LoggerFactory;
 									+ "AC_IS_BSS_T arm "
 									+ "where ARM.ID_SRV(+) =JAS.UP_IS "
 									+ "and JAS.ID_SRV=? ")
-					.setParameter(1, new Long(number)).getResultList();
+					.setParameter(1, Long.valueOf(number)).getResultList();
 
 			int status = Integer.parseInt(results.get(0)[0].toString());
 
@@ -202,7 +202,7 @@ import org.slf4j.LoggerFactory;
 									+ "AC_USERS_KNL_T usr "
 									+ "where usr.ID_SRV(+) =JAS.UP_USER_APP "
 									+ "and JAS.ID_SRV=? ")
-					.setParameter(1, new Long(number)).getResultList();
+					.setParameter(1, Long.valueOf(number)).getResultList();
 
 			int status = Integer.parseInt(results.get(0)[0].toString());
 
@@ -267,7 +267,7 @@ import org.slf4j.LoggerFactory;
 							"select JAS.STATUS, JAS.REJECT_REASON "
 									+ "from JOURN_APP_ACCESS_BSS_T jas "
 									+ "where JAS.ID_SRV=? ")
-					.setParameter(1, new Long(number)).getResultList();
+					.setParameter(1, Long.valueOf(number)).getResultList();
 
 			int status = Integer.parseInt(results.get(0)[0].toString());
 
@@ -311,7 +311,7 @@ import org.slf4j.LoggerFactory;
 							"select JAS.STATUS, JAS.REJECT_REASON "
 									+ "from JOURN_APP_ACCESS_GROUPS_BSS_T jas "
 									+ "where JAS.ID_SRV=? ")
-					.setParameter(1, new Long(number)).getResultList();
+					.setParameter(1, Long.valueOf(number)).getResultList();
 
 			int status = Integer.parseInt(results.get(0)[0].toString());
 
@@ -355,7 +355,7 @@ import org.slf4j.LoggerFactory;
 							"select JAS.STATUS, JAS.REJECT_REASON "
 									+ "from JOURN_APP_BLOCK_BSS_T jas "
 									+ "where JAS.ID_SRV=? ")
-					.setParameter(1, new Long(number)).getResultList();
+					.setParameter(1, Long.valueOf(number)).getResultList();
 
 			int status = Integer.parseInt(results.get(0)[0].toString());
 
@@ -399,7 +399,7 @@ import org.slf4j.LoggerFactory;
 							"select JAS.STATUS, JAS.REJECT_REASON "
 									+ "from JOURN_APP_SYSTEM_MODIFY_BSS_T jas "
 									+ "where JAS.ID_SRV=? ")
-					.setParameter(1, new Long(number)).getResultList();
+					.setParameter(1, Long.valueOf(number)).getResultList();
 
 			int status = Integer.parseInt(results.get(0)[0].toString());
 
@@ -443,7 +443,7 @@ import org.slf4j.LoggerFactory;
 							"select JAS.STATUS, JAS.REJECT_REASON "
 									+ "from JOURN_APP_USER_MODIFY_BSS_T jas "
 									+ "where JAS.ID_SRV=? ")
-					.setParameter(1, new Long(number)).getResultList();
+					.setParameter(1, Long.valueOf(number)).getResultList();
 
 			int status = Integer.parseInt(results.get(0)[0].toString());
 
@@ -488,7 +488,7 @@ import org.slf4j.LoggerFactory;
 							"select JAS.STATUS, JAS.REJECT_REASON "
 									+ "from JOURN_APP_USER_ACCMODIFY_BSS_T jas "
 									+ "where JAS.ID_SRV=? ")
-					.setParameter(1, new Long(number)).getResultList();
+					.setParameter(1, Long.valueOf(number)).getResultList();
 
 			int status = Integer.parseInt(results.get(0)[0].toString());
 
@@ -530,7 +530,7 @@ import org.slf4j.LoggerFactory;
 							"select JAS.STATUS, JAS.REJECT_REASON "
 									+ "from JOURN_APP_USER_CERTADD_BSS_T jas "
 									+ "where JAS.ID_SRV=? ")
-					.setParameter(1, new Long(number)).getResultList();
+					.setParameter(1, Long.valueOf(number)).getResultList();
 
 			int status = Integer.parseInt(results.get(0)[0].toString());
 
@@ -567,7 +567,7 @@ import org.slf4j.LoggerFactory;
 		try {
 
 			try {
-				numberLong = new Long(number);
+				numberLong = Long.valueOf(number);
 			} catch (Exception e) {
 				throw new GeneralFailure("Не верный номер заявки [" + number
 						+ "]! ");

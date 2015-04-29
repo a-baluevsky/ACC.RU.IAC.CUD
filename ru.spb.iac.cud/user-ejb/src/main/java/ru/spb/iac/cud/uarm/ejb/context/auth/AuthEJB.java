@@ -1041,12 +1041,12 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
 		  currentUser.setEmail(email);
 		  currentUser.setLogin(login);
 		  
-		  currentUser.setIdUser(new Long(uid));
+		  currentUser.setIdUser(Long.valueOf(uid));
 		  
 		  HttpSession session = (HttpSession)  FacesContext.getCurrentInstance().getExternalContext().getSession(false);
 		  session.setAttribute(CUDUserConsoleConstants.authUserItem, currentUser); 
 		  
-		  session.setAttribute(CUDUserConsoleConstants.authUserID, new Long(uid));
+		  session.setAttribute(CUDUserConsoleConstants.authUserID, Long.valueOf(uid));
      
           if(CUDUserConsoleConstants.auth_type_password.equals(authType)){
         	  session.setAttribute(CUDUserConsoleConstants.authType, CUDUserConsoleConstants.authTypeLogin);

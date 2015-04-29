@@ -317,7 +317,7 @@ import javax.persistence.NoResultException;
                for(Object[] objectArray :lo){
             	   try{
             	     ui= new UserBindingItem(
-            			   objectArray[0]!=null?new Long(objectArray[0].toString()):null,
+            			   objectArray[0]!=null?Long.valueOf(objectArray[0].toString()):null,
             			   objectArray[1]!=null?objectArray[1].toString():"",
             			   objectArray[2]!=null?objectArray[2].toString():"",
             			   objectArray[3]!=null?objectArray[3].toString():"",
@@ -332,7 +332,7 @@ import javax.persistence.NoResultException;
             			   objectArray[12]!=null?objectArray[12].toString():"",
             			   objectArray[13]!=null?objectArray[13].toString():"",
             			   objectArray[14]!=null?objectArray[14].toString():"",
-            			   objectArray[15]!=null?new Long(objectArray[15].toString()):null,
+            			   objectArray[15]!=null?Long.valueOf(objectArray[15].toString()):null,
             			   objectArray[16]!=null?df.format((Date)objectArray[16]) :"",
             			   objectArray[17]!=null?objectArray[17].toString():"",
             			   objectArray[18]!=null?objectArray[18].toString():"",
@@ -341,7 +341,7 @@ import javax.persistence.NoResultException;
             			   objectArray[21]!=null?objectArray[21].toString():"",
             			   objectArray[22]!=null?objectArray[22].toString():"",
             			   objectArray[23]!=null?objectArray[23].toString():"",
-            			   objectArray[24]!=null?new Long(objectArray[24].toString()):null,
+            			   objectArray[24]!=null?Long.valueOf(objectArray[24].toString()):null,
             			   Integer.parseInt(objectArray[25].toString())
             			   );
             	     
@@ -423,7 +423,7 @@ import javax.persistence.NoResultException;
             	 try{ 
             		 
             	  ui= new UserItem(
-          			   objectArray[0]!=null?new Long(objectArray[0].toString()):null,
+          			   objectArray[0]!=null?Long.valueOf(objectArray[0].toString()):null,
           			  objectArray[1]!=null?objectArray[1].toString():"",
           			  objectArray[2]!=null?objectArray[2].toString():"",
           			  objectArray[3]!=null?objectArray[3].toString():"",
@@ -438,7 +438,7 @@ import javax.persistence.NoResultException;
           			  objectArray[12]!=null?objectArray[12].toString():"",
           			  objectArray[13]!=null?objectArray[13].toString():"",
           			  objectArray[14]!=null?objectArray[14].toString():"",
-          			  objectArray[15]!=null?new Long(objectArray[15].toString()):null,
+          			  objectArray[15]!=null?Long.valueOf(objectArray[15].toString()):null,
           			  objectArray[16]!=null?df.format((Date)objectArray[16]) :"",
           			  objectArray[17]!=null?objectArray[17].toString():"",
           			  objectArray[18]!=null?objectArray[18].toString():"",
@@ -447,7 +447,7 @@ import javax.persistence.NoResultException;
           			  objectArray[21]!=null?objectArray[21].toString():"",
           			  objectArray[22]!=null?objectArray[22].toString():"",
           			  objectArray[23]!=null?objectArray[23].toString():"",
-          			  objectArray[24]!=null?new Long(objectArray[24].toString()):null
+          			  objectArray[24]!=null?Long.valueOf(objectArray[24].toString()):null
           			   );
             	 
             	 idRec=objectArray[0].toString();
@@ -595,7 +595,7 @@ import javax.persistence.NoResultException;
  
 	     Contexts.getEventContext().set("bindBeanView", au);
 	    
-	     AcUser uzp = entityManager.find(AcUser.class, new Long(sessionId));
+	     AcUser uzp = entityManager.find(AcUser.class, Long.valueOf(sessionId));
 	     Contexts.getEventContext().set("bindBeanViewUzp", uzp);
 	  }
    }
@@ -717,7 +717,7 @@ import javax.persistence.NoResultException;
 		   
 		  AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
 		  
-		  AcUser aum = entityManager.find(AcUser.class, new Long(sessionId));
+		  AcUser aum = entityManager.find(AcUser.class, Long.valueOf(sessionId));
 		  
 		  
 		  if(aum.getUpSignUser()==null){
@@ -806,7 +806,7 @@ import javax.persistence.NoResultException;
 	    			  Contexts.getEventContext().set("bindBeanView", au); 
 	    	 }else{
 	    		 
-	    		 au = getUserItem(new Long(sessionId));
+	    		 au = getUserItem(Long.valueOf(sessionId));
 	    		 if(au!=null){
 	    		   Contexts.getEventContext().set("bindBeanView", au); 
 	    		 }
@@ -857,7 +857,7 @@ import javax.persistence.NoResultException;
 	
 	   try {
 		   
-		  AcUser aum = entityManager.find(AcUser.class, new Long(sessionId));
+		  AcUser aum = entityManager.find(AcUser.class, Long.valueOf(sessionId));
 	
 		  log.info("bindManager:updBindRole:size1:"+aum.getAcLinkUserToRoleToRaions().size());
 		  
@@ -865,7 +865,7 @@ import javax.persistence.NoResultException;
 			  
 			  log.info("bindManager:updBindRole:AcApplication:"+apl.getAcRole().getAcApplication());
 			  
-			  if(apl.getAcRole().getAcApplication().equals(new Long(idArm))){
+			  if(apl.getAcRole().getAcApplication().equals(Long.valueOf(idArm))){
 			       entityManager.remove(apl);
 			       arRemovedList.add(apl);
 			  }
@@ -884,9 +884,9 @@ import javax.persistence.NoResultException;
 	    			  log.info("BindManager:editBind:updBindRole:"+((AcRole)rol).getUsrChecked());
 	    			  
 	    			  if(((AcRole)rol).getUsrChecked().booleanValue()){
-	    			            AcLinkUserToRoleToRaion au = new AcLinkUserToRoleToRaion(((AcRole)rol).getIdRol(), new Long(sessionId));
+	    			            AcLinkUserToRoleToRaion au = new AcLinkUserToRoleToRaion(((AcRole)rol).getIdRol(), Long.valueOf(sessionId));
 	    			            au.setCreated(new Date());
-	    			            au.setCreator(new Long(1));
+	    			            au.setCreator(Long.valueOf(1));
 	    			            arList.add(au);
 	    			  }
 	    		  }
@@ -906,7 +906,7 @@ import javax.persistence.NoResultException;
 	    	if(au!=null){
 	    		Contexts.getEventContext().set("bindBeanView", au); 
 	    	}else{
-	    		 au = getUserItem(new Long(sessionId));
+	    		 au = getUserItem(Long.valueOf(sessionId));
 	    		 if(au!=null){
 	    		   Contexts.getEventContext().set("bindBeanView", au); 
 	    		 }
@@ -949,18 +949,18 @@ import javax.persistence.NoResultException;
 	    	   //пользователь имеет право только создать заявку 
 	    	   //на привязку ИОГВ
 	    	   
-	    	   unBindUsrApp(new Long(sessionIdCrack), cau.getIdUser(), CUDConstants.appAttributeEmptyValue, usrBean);
+	    	   unBindUsrApp(Long.valueOf(sessionIdCrack), cau.getIdUser(), CUDConstants.appAttributeEmptyValue, usrBean);
 	    	   
 	    }else{
 	    	
-				AcUser aum = entityManager.find(AcUser.class, new Long(sessionIdCrack));
+				AcUser aum = entityManager.find(AcUser.class, Long.valueOf(sessionIdCrack));
 				
 			  //!!! обязательно сначала лог, а потом изменение пользователя
 			  //для сохранения aum.getUpSignUser
 				 entityManager.createNativeQuery(
 				          "insert into BINDING_LOG_T(ID_SRV, UP_USERS, UP_ISP_SIGN_USER, UP_BINDING, CREATOR, CREATED) " +
 		      	 		  "values(BINDING_LOG_SEQ.nextval, ?, ?, ?, ?, sysdate) ")
-			              .setParameter(1, new Long(sessionIdCrack))
+			              .setParameter(1, Long.valueOf(sessionIdCrack))
 			              .setParameter(2, aum.getUpSignUser())
 			              .setParameter(3, 0L)
 			              .setParameter(4, cau.getIdUser())
@@ -1041,7 +1041,7 @@ import javax.persistence.NoResultException;
 		    	   //пользователь имеет право только создать заявку 
 		    	   //на привязку ИОГВ
 		    	   
-		    	   bindUsrApp(new Long(sessionIdCrack), cau.getIdUser(), preLastCode);
+		    	   bindUsrApp(Long.valueOf(sessionIdCrack), cau.getIdUser(), preLastCode);
 		    	   
 		       }else{
 			
@@ -1050,7 +1050,7 @@ import javax.persistence.NoResultException;
 				    entityManager.createNativeQuery(
 					          "insert into BINDING_LOG_T(ID_SRV, UP_USERS, UP_ISP_SIGN_USER, UP_BINDING, CREATOR, CREATED) " +
 			       	 		  "values(BINDING_LOG_SEQ.nextval, ?, ?, ?, ?, sysdate) ")
-				              .setParameter(1, new Long(sessionIdCrack))
+				              .setParameter(1, Long.valueOf(sessionIdCrack))
 				             // /.setParam/eter(2, /aum.getUpSignUser())
 				           // /.setParameter(2, cu/rrSignObject)
 				              .setParameter(2, preLastCode)
@@ -1066,7 +1066,7 @@ import javax.persistence.NoResultException;
 					              .setParameter(1, preLastCode)
 					              .setParameter(2, 4L)
 					             // ./setParameter(2, new Lon/g(preLastBindType))
-					              .setParameter(3, new Long(sessionIdCrack))
+					              .setParameter(3, Long.valueOf(sessionIdCrack))
 							      .executeUpdate();
 					
 				     audit(ResourcesMap.BINDING_IOGV, ActionsMap.DELETE); 
@@ -1207,7 +1207,7 @@ import javax.persistence.NoResultException;
 	    	 
 	    	 try{
         	     ui= new UserItem(
-        			  objectArray[0]!=null?new Long(objectArray[0].toString()):null,
+        			  objectArray[0]!=null?Long.valueOf(objectArray[0].toString()):null,
         			  objectArray[1]!=null?objectArray[1].toString():"",
         			  objectArray[2]!=null?objectArray[2].toString():"",
         			  objectArray[3]!=null?objectArray[3].toString():"",
@@ -1222,7 +1222,7 @@ import javax.persistence.NoResultException;
         			  objectArray[12]!=null?objectArray[12].toString():"",
         			  objectArray[13]!=null?objectArray[13].toString():"",
         			  objectArray[14]!=null?objectArray[14].toString():"",
-        			  objectArray[15]!=null?new Long(objectArray[15].toString()):null,
+        			  objectArray[15]!=null?Long.valueOf(objectArray[15].toString()):null,
         			  objectArray[16]!=null?df.format((Date)objectArray[16]) :"",
         			  objectArray[17]!=null?objectArray[17].toString():"",
         			  objectArray[18]!=null?objectArray[18].toString():"",
@@ -1231,7 +1231,7 @@ import javax.persistence.NoResultException;
         			  objectArray[21]!=null?objectArray[21].toString():"",
         			  objectArray[22]!=null?objectArray[22].toString():"",
         			  objectArray[23]!=null?objectArray[23].toString():"",
-        			  objectArray[24]!=null?new Long(objectArray[24].toString()):null
+        			  objectArray[24]!=null?Long.valueOf(objectArray[24].toString()):null
         			   );
         	     applicantList.add(ui);
         	   }catch(Exception e1){
@@ -1275,7 +1275,7 @@ import javax.persistence.NoResultException;
 	    	   //пользователь имеет право только создать заявку 
 	    	   //на привязку ИОГВ
 	    	   
-	    	   bindUsrApp(new Long(sessionIdCrack), cau.getIdUser(), signObject);
+	    	   bindUsrApp(Long.valueOf(sessionIdCrack), cau.getIdUser(), signObject);
 	    	   
 	       }else{
 	       
@@ -1283,7 +1283,7 @@ import javax.persistence.NoResultException;
 			       entityManager.createNativeQuery(
 		  		            "insert into BINDING_LOG_T(ID_SRV, UP_USERS, UP_ISP_SIGN_USER, UP_BINDING, CREATOR, CREATED) " +
 		         	 		"values(BINDING_LOG_SEQ.nextval, ?, ?, ?, ?, sysdate) ")
-			              .setParameter(1, new Long(sessionIdCrack))
+			              .setParameter(1, Long.valueOf(sessionIdCrack))
 			              .setParameter(2, signObject)
 			              .setParameter(3, 2L)
 			              .setParameter(4, cau.getIdUser())
@@ -1295,7 +1295,7 @@ import javax.persistence.NoResultException;
 				                "where au.ID_SRV=? ")
 				              .setParameter(1, signObject)
 				              .setParameter(2, 2L)
-				              .setParameter(3, new Long(sessionIdCrack))
+				              .setParameter(3, Long.valueOf(sessionIdCrack))
 						      .executeUpdate();
 			     
 			    /*   //удаляем предполагаемые привязки полученные на автомате 
@@ -1412,7 +1412,7 @@ import javax.persistence.NoResultException;
 		    	   //пользователь имеет право только создать заявку 
 		    	   //на привязку ИОГВ
 		    	   
-		    	   bindUsrApp(new Long(sessionIdCrack), cau.getIdUser(), signObject);
+		    	   bindUsrApp(Long.valueOf(sessionIdCrack), cau.getIdUser(), signObject);
 		    	   
 		       }else{
 		    	   
@@ -1421,7 +1421,7 @@ import javax.persistence.NoResultException;
 				       entityManager.createNativeQuery(
 			  		            "insert into BINDING_LOG_T(ID_SRV, UP_USERS, UP_ISP_SIGN_USER, UP_BINDING, CREATOR, CREATED) " +
 			         	 		"values(BINDING_LOG_SEQ.nextval, ?, ?, ?, ?, sysdate) ")
-				              .setParameter(1, new Long(sessionIdCrack))
+				              .setParameter(1, Long.valueOf(sessionIdCrack))
 				            //  ./setParameter(2, currSig/nObject)
 				              .setParameter(2,signObject)
 				            //  ./setParameter(3, new Lo/ng(currBindType))
@@ -1435,7 +1435,7 @@ import javax.persistence.NoResultException;
 					                "where au.ID_SRV=? ")
 					              .setParameter(1, signObject)
 					              .setParameter(2, 3L)
-					              .setParameter(3, new Long(sessionIdCrack))
+					              .setParameter(3, Long.valueOf(sessionIdCrack))
 							      .executeUpdate();
 				     
 				       audit(ResourcesMap.BINDING_IOGV, ActionsMap.UPDATE);  
@@ -1470,7 +1470,7 @@ import javax.persistence.NoResultException;
 		    	   //пользователь имеет право только создать заявку 
 		    	   //на привязку ИОГВ
 		    	   
-		    	   bindUsrApp(new Long(sessionIdCrack), cau.getIdUser(), clUsrBean.getSignObject());
+		    	   bindUsrApp(Long.valueOf(sessionIdCrack), cau.getIdUser(), clUsrBean.getSignObject());
 		    	   
 		       }else{
 			   
@@ -1479,14 +1479,14 @@ import javax.persistence.NoResultException;
 					        "set au.UP_SIGN_USER=? "+
 			                "where au.ID_SRV=? ")
 			              .setParameter(1, clUsrBean.getSignObject())
-			              .setParameter(2, new Long(sessionIdCrack))
+			              .setParameter(2, Long.valueOf(sessionIdCrack))
 					      .executeUpdate();
 				   
 				   // !!! ДА - в историю идут сразу новые данные
 			       entityManager.createNativeQuery(
 		  		            "insert into BINDING_LOG_T(ID_SRV, UP_USERS, UP_ISP_SIGN_USER, UP_BINDING, CREATOR, CREATED) " +
 		         	 		"values(BINDING_LOG_SEQ.nextval, ?, ?, ?, ?, sysdate) ")
-			              .setParameter(1, new Long(sessionIdCrack))
+			              .setParameter(1, Long.valueOf(sessionIdCrack))
 			            //  ./setParameter(2, /currSignObject)
 			              .setParameter(2, clUsrBean.getSignObject())
 			            //  ./setParameter/(3, n/ew Long(currBindType))
@@ -1511,11 +1511,11 @@ import javax.persistence.NoResultException;
 			        .get("sessionId");
 	     log.info("forViewUpdDel:sessionId:"+sessionId);
 	     if(sessionId!=null){
-	    	 AcUser ah = entityManager.find(AcUser.class, new Long(sessionId));
+	    	 AcUser ah = entityManager.find(AcUser.class, Long.valueOf(sessionId));
 	     	 
 	    	 if(ah!=null){
 	    		 
-	    		 UserItem ui = getUserItem(new Long(sessionId));
+	    		 UserItem ui = getUserItem(Long.valueOf(sessionId));
 	    		
 	    		 ah.setOrgName(ui.getOrgName());
 	    		 
@@ -1544,7 +1544,7 @@ import javax.persistence.NoResultException;
 			        .get("sessionId");
 	     log.info("forViewCrt:sessionId:"+sessionId);
 	     
-	     UserItem ui = getUserItem(new Long(sessionId));
+	     UserItem ui = getUserItem(Long.valueOf(sessionId));
 	     Contexts.getEventContext().set("contextBeanView", ui);
 	     
 		     
@@ -1562,11 +1562,11 @@ import javax.persistence.NoResultException;
 			  
 		
 			
-		    	 AcUser ah = entityManager.find(AcUser.class, new Long(sessionId));
+		    	 AcUser ah = entityManager.find(AcUser.class, Long.valueOf(sessionId));
 		     	 
 		    	 if(ah!=null){
 		    		 
-		    		 UserItem ui = getUserItem(new Long(sessionId));
+		    		 UserItem ui = getUserItem(Long.valueOf(sessionId));
 		    		
 		    		
 		    		 
@@ -1622,7 +1622,7 @@ import javax.persistence.NoResultException;
 			  UserItem au = (UserItem)searchBean(sessionId);
 		    	 
 		      if(au==null){
-		    	 au = getUserItem(new Long(sessionId));
+		    	 au = getUserItem(Long.valueOf(sessionId));
 		      }
 			
 				  
@@ -1680,7 +1680,7 @@ import javax.persistence.NoResultException;
                         "and substr(BL.UP_ISP_SIGN_USER,1,5)||'000'=CL_dep_CODE(+) "+
                         "and CL_dep_FULL.ID_SRV=CL_dep_ID "+
                         "order by BL.ID_SRV desc ")
-				    	.setParameter(1, new Long(sessionId)) 
+				    	.setParameter(1, Long.valueOf(sessionId)) 
 				    	.getResultList();
 	    		 
 	    		 historyBindingList=new ArrayList<BaseItem>();
@@ -1710,7 +1710,7 @@ import javax.persistence.NoResultException;
 	    	    	
 	    	    	 
 	    	    	 
-	    	    	 bi = new BindingItem(new Long(objectArray[1].toString()), 
+	    	    	 bi = new BindingItem(Long.valueOf(objectArray[1].toString()), 
 	    	    			              ui, 
 	    	    			              df.format((Date)objectArray[7]),
 	    	    			              Integer.parseInt(objectArray[2].toString()));
@@ -1941,7 +1941,7 @@ import javax.persistence.NoResultException;
 		    	if(saveEditFlag==null){	
 		    		
 		    	  List<AcRole> listBindRol=entityManager.createQuery("select o from AcRole o JOIN o.acLinkUserToRoleToRaions o1 where o1.pk.acUser = :acUser")
-						 .setParameter("acUser", new Long(idBind))
+						 .setParameter("acUser", Long.valueOf(idBind))
 			      				.getResultList();
 			     
 		    	
@@ -1994,7 +1994,7 @@ import javax.persistence.NoResultException;
                         "from AC_IS_BSS_T app, AC_ROLES_BSS_T rol, AC_USERS_LINK_KNL_T url "+
                         "where ROL.UP_IS=APP.ID_SRV and URL.UP_ROLES=ROL.ID_SRV and URL.UP_USERS=? "+
                         "order by  APP.FULL_, APP.ID_SRV, ROL.FULL_")
-	    				 .setParameter(1, new Long(sessionId))
+	    				 .setParameter(1, Long.valueOf(sessionId))
 	    				.getResultList();
 
 	    		 listBindArmForView = new ArrayList<AcApplication>();
@@ -2006,7 +2006,7 @@ import javax.persistence.NoResultException;
 	    			   
 	    			   listBindArmForView.add(app);
 	    			   
-	    			   app.setIdArm(new Long(objectArray[0].toString()));
+	    			   app.setIdArm(Long.valueOf(objectArray[0].toString()));
 	    			   app.setName(objectArray[1]!=null?objectArray[1].toString():"");
 	    			   app.setRolList(new ArrayList<AcRole>());
 	    			 }
@@ -2055,7 +2055,7 @@ import javax.persistence.NoResultException;
                         "and LUR.UP_GROUP_USERS=GR.ID_SRV and ROL.ID_SRV=LUR.UP_ROLES "+
                         "and APP.ID_SRV=ROL.UP_IS "+
                         "order by GR.FULL_, GR.ID_SRV, APP.FULL_, APP.ID_SRV, ROL.FULL_ ")
-	    				.setParameter(1, new Long(sessionId))
+	    				.setParameter(1, Long.valueOf(sessionId))
 	    				.getResultList();
 	    		
 	    		listBindGroupForView = new ArrayList<GroupUsersKnlT>();
@@ -2068,7 +2068,7 @@ import javax.persistence.NoResultException;
 		    			   
 	    				listBindGroupForView.add(group);
 		    			   
-	    				group.setIdSrv(new Long(objectArray[0].toString()));
+	    				group.setIdSrv(Long.valueOf(objectArray[0].toString()));
 	    				group.setFull(objectArray[1]!=null?objectArray[1].toString():"");
 	    				group.setArmList(new ArrayList<AcApplication>());
 		    		}
@@ -2079,7 +2079,7 @@ import javax.persistence.NoResultException;
 	    			   
 	    			   group.getArmList().add(app);
 	    			   
-	    			   app.setIdArm(new Long(objectArray[2].toString()));
+	    			   app.setIdArm(Long.valueOf(objectArray[2].toString()));
 	    			   app.setName(objectArray[3]!=null?objectArray[3].toString():"");
 	    			   app.setRolList(new ArrayList<AcRole>());
 	    			 }
@@ -2117,13 +2117,13 @@ import javax.persistence.NoResultException;
 		   }
 		   
 		   this.roleList = new ArrayList<BaseItem>(entityManager.createQuery("select o from AcRole o where o.acApplication= :idArm order by o.roleTitle ")
-				   .setParameter("idArm", new Long(idArm))
+				   .setParameter("idArm", Long.valueOf(idArm))
                    .getResultList());
 		 
 		   if(remoteAudit!=null&&remoteAudit.equals("armSelectFact")){
 		   
 		     List<AcRole> listBindRol=entityManager.createQuery("select o from AcRole o JOIN o.acLinkUserToRoleToRaions o1 where o1.pk.acUser = :acUser ")
-					 .setParameter("acUser", new Long(sessionId))
+					 .setParameter("acUser", Long.valueOf(sessionId))
 		      		 .getResultList();
 		   
 		     for(BaseItem role :this.roleList){
@@ -2269,9 +2269,9 @@ import javax.persistence.NoResultException;
 			  LinksMap linksMap= getLinksMap();
 			  AcUser currentUser = getCurrentUser();
 			  
-			  result=!(currentUser.getIdUser().intValue()!=linksMap.getSuperUserCode().intValue() || new Long(bindBeanIdUser).intValue()!=linksMap.getSuperUserCode().intValue()) 
-                      || !(new Long(idArm).intValue()!=linksMap.getAppCode().intValue() || !"role:urn:sys_admin_cud".equals(roleSign) || currentUser.getIdUser().intValue()==linksMap.getSuperUserCode().intValue())
-                      || (currentUser.getIsSysAdmin().intValue()!=1 && new Long(idArm).intValue()==linksMap.getAppCode().intValue());
+			  result=!(currentUser.getIdUser().intValue()!=linksMap.getSuperUserCode().intValue() || Long.valueOf(bindBeanIdUser).intValue()!=linksMap.getSuperUserCode().intValue()) 
+                      || !(Long.valueOf(idArm).intValue()!=linksMap.getAppCode().intValue() || !"role:urn:sys_admin_cud".equals(roleSign) || currentUser.getIdUser().intValue()==linksMap.getSuperUserCode().intValue())
+                      || (currentUser.getIsSysAdmin().intValue()!=1 && Long.valueOf(idArm).intValue()==linksMap.getAppCode().intValue());
 			  
 			  log.info("BindManager:getDisabled:result:"+result);		     
 		    }catch(Exception e){

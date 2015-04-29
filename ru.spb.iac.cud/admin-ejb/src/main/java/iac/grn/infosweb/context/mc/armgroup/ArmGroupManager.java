@@ -220,10 +220,10 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 		 GroupSystemsKnlT ar = searchBean(armGroupId);
 		 
 		 if(ar==null){
-			 ar = entityManager.find(GroupSystemsKnlT.class, new Long(armGroupId));
+			 ar = entityManager.find(GroupSystemsKnlT.class, Long.valueOf(armGroupId));
 		 }
 		 
-		 if(!isAllowedSys(new Long(armGroupId))){
+		 if(!isAllowedSys(Long.valueOf(armGroupId))){
 			 log.info("armGroupManager:forView:02");
 			 ar.setIsAllowedSys(false);
 		 }		 
@@ -368,11 +368,11 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 	   try {
 		   
 		 if(!armGroupCodeExistUpd(
-				 armGroupBean.getGroupCode().trim(), new Long(sessionId))){  
+				 armGroupBean.getGroupCode().trim(), Long.valueOf(sessionId))){  
 		
 		 AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
 		   
-		 GroupSystemsKnlT aam = entityManager.find(GroupSystemsKnlT.class, new Long(sessionId));
+		 GroupSystemsKnlT aam = entityManager.find(GroupSystemsKnlT.class, Long.valueOf(sessionId));
 		  
 		  aam.setGroupName(armGroupBean.getGroupName().trim());
 		  aam.setGroupCode(armGroupBean.getGroupCode().trim());
@@ -418,7 +418,7 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 	   
 	   try {
 		   
-		   GroupSystemsKnlT aum = entityManager.find(GroupSystemsKnlT.class, new Long(sessionId));
+		   GroupSystemsKnlT aum = entityManager.find(GroupSystemsKnlT.class, Long.valueOf(sessionId));
 	
 		 
 		
@@ -435,7 +435,7 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 	    			  if(((AcApplication)is).getUsrChecked().booleanValue()){
 	    				  // отмечен
 	    				  
-	    				  LinkGroupSysSysKnlT au = new LinkGroupSysSysKnlT( ((AcApplication)is).getIdArm(), new Long(sessionId));
+	    				  LinkGroupSysSysKnlT au = new LinkGroupSysSysKnlT( ((AcApplication)is).getIdArm(), Long.valueOf(sessionId));
 	    			            au.setCreated(new Date());
 	    			            au.setCreator(currentUser.getBaseId());
 	    			            
@@ -449,7 +449,7 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 	    			            log.info("armGroupManager:updIS:03");
 	    			         }
 	    			  }else{ // не отмечен
-	    				  LinkGroupSysSysKnlT au = new LinkGroupSysSysKnlT( ((AcApplication)is).getIdArm(), new Long(sessionId));
+	    				  LinkGroupSysSysKnlT au = new LinkGroupSysSysKnlT( ((AcApplication)is).getIdArm(), Long.valueOf(sessionId));
  		            
  			                if(guuExistList.contains(au)){
  			                	//есть в базе
@@ -461,7 +461,7 @@ import ru.spb.iac.cud.core.util.CUDConstants;
  			                		"where lgu.pk.acIsBssT = :acIsBssT " +
  			                		"and lgu.pk.groupSystemsKnlT = :groupSystemsKnlT ")
  			                	.setParameter("acIsBssT", ((AcApplication)is).getIdArm())
- 			                	.setParameter("groupSystemsKnlT", new Long(sessionId))
+ 			                	.setParameter("groupSystemsKnlT", Long.valueOf(sessionId))
  			                	.executeUpdate();
  			                	
  			                	 log.info("armGroupManager:updIS:04");
@@ -484,7 +484,7 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 	        	 
          GroupSystemsKnlT ar = searchBean(sessionId);
          if(ar==null){
-			 ar = entityManager.find(GroupSystemsKnlT.class, new Long(sessionId));
+			 ar = entityManager.find(GroupSystemsKnlT.class, Long.valueOf(sessionId));
 		 }
          
 		 Contexts.getEventContext().set("armGroupBean", ar);
@@ -579,7 +579,7 @@ import ru.spb.iac.cud.core.util.CUDConstants;
  		   entityManager.createNativeQuery("update GROUP_SYSTEMS_KNL_T t1 " + 
  		   		                           "set T1.CERT_DATA=null " + 
  		   		                           "where t1.ID_SRV=? ")
- 		   .setParameter(1, new Long(sessionId))
+ 		   .setParameter(1, Long.valueOf(sessionId))
  		   .executeUpdate();  
  			 
  		  audit(ResourcesMap.IS_GROUP, ActionsMap.REMOVE_CERT); 
@@ -625,7 +625,7 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 			        .get("sessionId");
 	     log.info("forViewUpdDel:sessionId:"+sessionId);
 	     if(sessionId!=null){
-	    	 GroupSystemsKnlT ao = entityManager.find(GroupSystemsKnlT.class, new Long(sessionId));
+	    	 GroupSystemsKnlT ao = entityManager.find(GroupSystemsKnlT.class, Long.valueOf(sessionId));
 	    	 Contexts.getEventContext().set("armGroupBean", ao);
 	    	 
 	    	//устанавливаем на 1 страницу пагинатор в модальном окне
@@ -647,7 +647,7 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 		  if(sessionId!=null){
 		
 			  
-			  GroupSystemsKnlT aa = entityManager.find(GroupSystemsKnlT.class, new Long(sessionId));
+			  GroupSystemsKnlT aa = entityManager.find(GroupSystemsKnlT.class, Long.valueOf(sessionId));
 			
 			 
 			 
@@ -673,7 +673,7 @@ import ru.spb.iac.cud.core.util.CUDConstants;
  	    			 "select to_char(T1.CERT_DATA) " + 
  	    	 		 "from GROUP_SYSTEMS_KNL_T t1 " + 
  	    	 		 "where T1.ID_SRV=? ")
-                 .setParameter(1, new Long(sessionId))
+                 .setParameter(1, Long.valueOf(sessionId))
                  .getSingleResult();
  	    	
  	    	 log.info("forViewCert:cert_data:"+certDataX); 
@@ -924,7 +924,7 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 		   
 		     List<AcApplication> listIS=entityManager.createQuery(
 		    		 "select o from AcApplication o JOIN o.linkGroupSysSysKnlTs o1 where o1.pk.groupSystemsKnlT = :acGroup ")
-					 .setParameter("acGroup", new Long(sessionId))
+					 .setParameter("acGroup", Long.valueOf(sessionId))
 		      		 .getResultList();
 		   
 		     for(BaseItem group :this.ISList){
@@ -982,7 +982,7 @@ import ru.spb.iac.cud.core.util.CUDConstants;
                     "where ARM.ID_SRV=LGA.UP_SYSTEMS "+
                     "and GARM.ID_SRV=LGA.UP_GROUP_SYSTEMS "+
                     "and GARM.ID_SRV = ? ")
-		      		.setParameter(1, new Long(sessionId))
+		      		.setParameter(1, Long.valueOf(sessionId))
 				 .getResultList();
  	    	 
  	         

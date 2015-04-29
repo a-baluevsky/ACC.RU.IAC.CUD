@@ -181,7 +181,7 @@ import ru.spb.iac.cud.items.Role;
 							.toString().isEmpty()) {
 
 				// это заявитель
-				idUser = new Long((String) request.getSession().getAttribute(
+				idUser = Long.valueOf((String) request.getSession().getAttribute(
 						"user_id_principal"));
 
 				 

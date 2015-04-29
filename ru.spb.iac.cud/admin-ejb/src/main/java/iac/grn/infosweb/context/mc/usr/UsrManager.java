@@ -345,7 +345,7 @@ import org.slf4j.LoggerFactory;
                for(Object[] objectArrayUm :lo){
             	   try{
             	     ui= new UserItem(
-            			  objectArrayUm[0]!=null?new Long(objectArrayUm[0].toString()):null,
+            			  objectArrayUm[0]!=null?Long.valueOf(objectArrayUm[0].toString()):null,
             			  objectArrayUm[1]!=null?objectArrayUm[1].toString():"",
             			  objectArrayUm[2]!=null?objectArrayUm[2].toString():"",
             			  objectArrayUm[3]!=null?objectArrayUm[3].toString():"",
@@ -360,7 +360,7 @@ import org.slf4j.LoggerFactory;
             			  objectArrayUm[12]!=null?objectArrayUm[12].toString():"",
             			  objectArrayUm[13]!=null?objectArrayUm[13].toString():"",
             			  objectArrayUm[14]!=null?objectArrayUm[14].toString():"",
-            			  objectArrayUm[15]!=null?new Long(objectArrayUm[15].toString()):null,
+            			  objectArrayUm[15]!=null?Long.valueOf(objectArrayUm[15].toString()):null,
             			  objectArrayUm[16]!=null?df.format((Date)objectArrayUm[16]) :"",
             			  objectArrayUm[17]!=null?objectArrayUm[17].toString():"",
             			  objectArrayUm[18]!=null?objectArrayUm[18].toString():"",
@@ -369,7 +369,7 @@ import org.slf4j.LoggerFactory;
             			  objectArrayUm[21]!=null?objectArrayUm[21].toString():"",
             			  objectArrayUm[22]!=null?objectArrayUm[22].toString():"",
             			  objectArrayUm[23]!=null?objectArrayUm[23].toString():"",
-            			  objectArrayUm[24]!=null?new Long(objectArrayUm[24].toString()):null
+            			  objectArrayUm[24]!=null?Long.valueOf(objectArrayUm[24].toString()):null
             			   );
             	     auditList.add(ui);
             	   }catch(Exception e1){
@@ -483,7 +483,7 @@ import org.slf4j.LoggerFactory;
 		 // вызываем invokeRemoteAuditBeanContext для сохранения контекста
 		 // созданного пользователя
 		 if(au==null){
-			 au = getUserItem(new Long(usrId));
+			 au = getUserItem(Long.valueOf(usrId));
 		 }
 		 
 		 
@@ -494,7 +494,7 @@ import org.slf4j.LoggerFactory;
 	    			"select ar from AcRole ar, AcLinkUserToRoleToRaion alur " +
 	    	 		"where alur.acRole = ar and alur.pk.acUser = :acUser " +
 	    	 		"and ar.acApplication= :acApplication ")
-	    	 		 .setParameter("acUser", new Long(usrId))
+	    	 		 .setParameter("acUser", Long.valueOf(usrId))
 	    	 		 .setParameter("acApplication", appCode)
 	    	 		 .getResultList();
 	    	
@@ -729,9 +729,9 @@ import org.slf4j.LoggerFactory;
 		   
 		   AcUser  cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
 		  
-		   AcUser aum = entityManager.find(AcUser.class, new Long(sessionId));
+		   AcUser aum = entityManager.find(AcUser.class, Long.valueOf(sessionId));
 		  
-		if((((cau.getAllowedSys()!=null || cau.getIsAccOrgManagerValue()) && !cau.isAllowedReestr("002", "3"))|| !loginExistUpd(usrBean.getLogin().trim(), new Long(sessionId)))&&!certNumExistUpd(usrBean.getCertificate(), new Long(sessionId))){
+		if((((cau.getAllowedSys()!=null || cau.getIsAccOrgManagerValue()) && !cau.isAllowedReestr("002", "3"))|| !loginExistUpd(usrBean.getLogin().trim(), Long.valueOf(sessionId)))&&!certNumExistUpd(usrBean.getCertificate(), Long.valueOf(sessionId))){
 			  
 		 
 			  
@@ -748,7 +748,7 @@ import org.slf4j.LoggerFactory;
     		  log.info("usrManager:updUsr:05_1");
     		  
     		  //для UP_USER_APP - субъекта заявки
-    		  usrBean.setIdUser(new Long(sessionId));
+    		  usrBean.setIdUser(Long.valueOf(sessionId));
     		 //для UP_USER - подавателя заявки (текущий пользователь)
     		  usrBean.setModificator(cau.getIdUser());
     		  //или можно в updUsrApp вместо usrBean передать aum
@@ -874,7 +874,7 @@ import org.slf4j.LoggerFactory;
 	    			  Contexts.getEventContext().set("usrBeanView", au); 
 	    	 }else{
 	    		 
-	    		 au = getUserItem(new Long(sessionId));
+	    		 au = getUserItem(Long.valueOf(sessionId));
 	    		 if(au!=null){
 	    		   Contexts.getEventContext().set("usrBeanView", au); 
 	    		 }
@@ -943,11 +943,11 @@ import org.slf4j.LoggerFactory;
 		   AcUser  cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
 		  
 		  
-		if(!loginExistUpd(usrBean.getLogin().trim(), new Long(sessionId))&&!certNumExistUpd(usrBean.getCertificate(), new Long(sessionId))){
+		if(!loginExistUpd(usrBean.getLogin().trim(), Long.valueOf(sessionId))&&!certNumExistUpd(usrBean.getCertificate(), Long.valueOf(sessionId))){
 			  
 		 
 		 //для UP_USER_APP - субъекта заявки
-  		  usrBean.setIdUser(new Long(sessionId));
+  		  usrBean.setIdUser(Long.valueOf(sessionId));
   		 //для UP_USER - подавателя заявки (текущий пользователь)
   		  usrBean.setModificator(cau.getIdUser());
 		  
@@ -966,7 +966,7 @@ import org.slf4j.LoggerFactory;
   		  Contexts.getEventContext().set("usrBeanView", au); 
   	   }else{
   		 
-  		 au = getUserItem(new Long(sessionId));
+  		 au = getUserItem(Long.valueOf(sessionId));
   		 if(au!=null){
   		   Contexts.getEventContext().set("usrBeanView", au); 
   		 }
@@ -1028,7 +1028,7 @@ import org.slf4j.LoggerFactory;
 		  
 		  
 		 //для UP_USER_APP - субъекта заявки
-		  usrBean.setIdUser(new Long(sessionId));
+		  usrBean.setIdUser(Long.valueOf(sessionId));
 		 //для UP_USER - подавателя заявки (текущий пользователь)
 		  usrBean.setModificator(cau.getIdUser());
 		  
@@ -1157,7 +1157,7 @@ import org.slf4j.LoggerFactory;
         		   log.info("UsrManager:getUserItem:login:"+objectArray[1].toString());
         		   
         	     ui= new UserItem(
-        			  objectArray[0]!=null?new Long(objectArray[0].toString()):null,
+        			  objectArray[0]!=null?Long.valueOf(objectArray[0].toString()):null,
         			  objectArray[1]!=null?objectArray[1].toString():"",
         			  objectArray[2]!=null?objectArray[2].toString():"",
         			  objectArray[3]!=null?objectArray[3].toString():"",
@@ -1172,7 +1172,7 @@ import org.slf4j.LoggerFactory;
         			  objectArray[12]!=null?objectArray[12].toString():"",
         			  objectArray[13]!=null?objectArray[13].toString():"",
         			  objectArray[14]!=null?objectArray[14].toString():"",
-        			  objectArray[15]!=null?new Long(objectArray[15].toString()):null,
+        			  objectArray[15]!=null?Long.valueOf(objectArray[15].toString()):null,
         			  objectArray[16]!=null?df.format((Date)objectArray[16]) :"",
         			  objectArray[17]!=null?objectArray[17].toString():"",
         			  objectArray[18]!=null?objectArray[18].toString():"",
@@ -1181,7 +1181,7 @@ import org.slf4j.LoggerFactory;
         			  objectArray[21]!=null?objectArray[21].toString():"",
         			  objectArray[22]!=null?objectArray[22].toString():"",
         			  objectArray[23]!=null?objectArray[23].toString():"",
-        			  objectArray[24]!=null?new Long(objectArray[24].toString()):null
+        			  objectArray[24]!=null?Long.valueOf(objectArray[24].toString()):null
         			   );
         	     return ui;
         	   }catch(Exception e1){
@@ -1219,7 +1219,7 @@ import org.slf4j.LoggerFactory;
 	
 	   try {
 		   
-		  AcUser aum = entityManager.find(AcUser.class, new Long(sessionId));
+		  AcUser aum = entityManager.find(AcUser.class, Long.valueOf(sessionId));
 	
 		
 		
@@ -1231,9 +1231,9 @@ import org.slf4j.LoggerFactory;
 	    			  
 	    			  if(((AcRole)rol).getUsrChecked().booleanValue()){ 
 	    				  //отмечен
-	    			            AcLinkUserToRoleToRaion au = new AcLinkUserToRoleToRaion(((AcRole)rol).getIdRol(), new Long(sessionId));
+	    			            AcLinkUserToRoleToRaion au = new AcLinkUserToRoleToRaion(((AcRole)rol).getIdRol(), Long.valueOf(sessionId));
 	    			            au.setCreated(new Date());
-	    			            au.setCreator(new Long(1));
+	    			            au.setCreator(Long.valueOf(1));
 	    			            
 	    			            if(guuExistList.contains(au)){
 	    			            	//есть в базе
@@ -1246,7 +1246,7 @@ import org.slf4j.LoggerFactory;
 		    			        }
 	    			  }else{ 
 	    				  //не отмечен
-	    				  AcLinkUserToRoleToRaion au = new AcLinkUserToRoleToRaion(((AcRole)rol).getIdRol(), new Long(sessionId));
+	    				  AcLinkUserToRoleToRaion au = new AcLinkUserToRoleToRaion(((AcRole)rol).getIdRol(), Long.valueOf(sessionId));
   			               
 			                if(guuExistList.contains(au)){
 			                	//есть в базе
@@ -1257,7 +1257,7 @@ import org.slf4j.LoggerFactory;
 			                		"delete from AcLinkUserToRoleToRaion lgu " +
 			                		"where lgu.pk.acUser = :acUser " +
 			                		"and lgu.pk.acRole = :acRole ")
-			                	.setParameter("acUser", new Long(sessionId))
+			                	.setParameter("acUser", Long.valueOf(sessionId))
 			                	.setParameter("acRole", ((AcRole)rol).getIdRol())
 			                	.executeUpdate();
 			                	
@@ -1280,7 +1280,7 @@ import org.slf4j.LoggerFactory;
 	    	if(auUm!=null){
 	    		Contexts.getEventContext().set("usrBeanView", auUm); 
 	    	}else{
-	    		 auUm = getUserItem(new Long(sessionId));
+	    		 auUm = getUserItem(Long.valueOf(sessionId));
 	    		 if(auUm!=null){
 	    		   Contexts.getEventContext().set("usrBeanView", auUm); 
 	    		 }
@@ -1382,7 +1382,7 @@ import org.slf4j.LoggerFactory;
 	
 	   try {
 		   
-		  AcUser aum = entityManager.find(AcUser.class, new Long(sessionId));
+		  AcUser aum = entityManager.find(AcUser.class, Long.valueOf(sessionId));
 	
 		
 		  List<LinkGroupUsersUsersKnlT> guuExistList =  aum.getLinkGroupUsersUsersKnlTs();
@@ -1397,9 +1397,9 @@ import org.slf4j.LoggerFactory;
 	    			  
 	    			  if(((GroupUsersKnlT)group).getUsrChecked().booleanValue()){// отмечен
 	    				  
-	    				   LinkGroupUsersUsersKnlT au = new LinkGroupUsersUsersKnlT(new Long(sessionId), ((GroupUsersKnlT)group).getIdSrv());
+	    				   LinkGroupUsersUsersKnlT au = new LinkGroupUsersUsersKnlT(Long.valueOf(sessionId), ((GroupUsersKnlT)group).getIdSrv());
 	    			            au.setCreated(new Date());
-	    			            au.setCreator(new Long(1));
+	    			            au.setCreator(Long.valueOf(1));
 	    			            
 	    			         if(guuExistList.contains(au)){
 	    			        	 //есть в базе
@@ -1410,7 +1410,7 @@ import org.slf4j.LoggerFactory;
 	    			            log.info("usrManager:updUsrGroup:03");
 	    			         }
 	    			  }else{ // не отмечен
-	    				    LinkGroupUsersUsersKnlT au = new LinkGroupUsersUsersKnlT(new Long(sessionId), ((GroupUsersKnlT)group).getIdSrv());
+	    				    LinkGroupUsersUsersKnlT au = new LinkGroupUsersUsersKnlT(Long.valueOf(sessionId), ((GroupUsersKnlT)group).getIdSrv());
  		            
  			                if(guuExistList.contains(au)){
  			                	//есть в базе
@@ -1421,7 +1421,7 @@ import org.slf4j.LoggerFactory;
  			                		"delete from LinkGroupUsersUsersKnlT lgu " +
  			                		"where lgu.pk.acUser = :acUser " +
  			                		"and lgu.pk.groupUser = :groupUser ")
- 			                	.setParameter("acUser", new Long(sessionId))
+ 			                	.setParameter("acUser", Long.valueOf(sessionId))
  			                	.setParameter("groupUser", ((GroupUsersKnlT)group).getIdSrv())
  			                	.executeUpdate();
  			                	
@@ -1447,7 +1447,7 @@ import org.slf4j.LoggerFactory;
 	    	if(au!=null){
 	    		Contexts.getEventContext().set("usrBeanView", au); 
 	    	}else{
-	    		 au = getUserItem(new Long(sessionId));
+	    		 au = getUserItem(Long.valueOf(sessionId));
 	    		 if(au!=null){
 	    		   Contexts.getEventContext().set("usrBeanView", au); 
 	    		 }
@@ -1482,7 +1482,7 @@ import org.slf4j.LoggerFactory;
 		 
 		  AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
 		   
-		  AcUser aum = entityManager.find(AcUser.class, new Long(sessionId));
+		  AcUser aum = entityManager.find(AcUser.class, Long.valueOf(sessionId));
 		
 		  List<LinkAdminUserSys> guuExistList =  aum.getLinkAdminUserSys();
 		 
@@ -1494,7 +1494,7 @@ import org.slf4j.LoggerFactory;
 	    			  
 	    			  if(((AcApplication)is).getUsrChecked().booleanValue()){// отмечен
 	    				  
-	    				  LinkAdminUserSys au = new LinkAdminUserSys(new Long(sessionId), ((AcApplication)is).getIdArm());
+	    				  LinkAdminUserSys au = new LinkAdminUserSys(Long.valueOf(sessionId), ((AcApplication)is).getIdArm());
 	    			            au.setCreated(new Date());
 	    			            au.setCreator(cau.getBaseId());
 	    			      
@@ -1510,7 +1510,7 @@ import org.slf4j.LoggerFactory;
 	    			         }
 	    			  }else{ 
 	    				  // не отмечен
-	    				  LinkAdminUserSys au = new LinkAdminUserSys(new Long(sessionId), ((AcApplication)is).getIdArm());
+	    				  LinkAdminUserSys au = new LinkAdminUserSys(Long.valueOf(sessionId), ((AcApplication)is).getIdArm());
 		            
 			                if(guuExistList.contains(au)){
 			                	//есть в базе
@@ -1521,7 +1521,7 @@ import org.slf4j.LoggerFactory;
 			                		"delete from LinkAdminUserSys lgu " +
 			                		"where lgu.pk.upUser = :upUser " +
 			                		"and lgu.pk.upSys = :upSys ")
-			                	.setParameter("upUser", new Long(sessionId))
+			                	.setParameter("upUser", Long.valueOf(sessionId))
 			                	.setParameter("upSys", ((AcApplication)is).getIdArm())
 			                	.executeUpdate();
 			                	
@@ -1545,7 +1545,7 @@ import org.slf4j.LoggerFactory;
 	    	if(au!=null){
 	    		Contexts.getEventContext().set("usrBeanView", au); 
 	    	}else{
-	    		 au = getUserItem(new Long(sessionId));
+	    		 au = getUserItem(Long.valueOf(sessionId));
 	    		 if(au!=null){
 	    		   Contexts.getEventContext().set("usrBeanView", au); 
 	    		 }
@@ -1593,7 +1593,7 @@ import org.slf4j.LoggerFactory;
 					  "where DOM.ID_SRV=UDP.UP_DOM  " + 
 					  "and PERM.ID_SRV=UDP.UP_PRM  " + 
 					  "and UDP.UP_USER = :idUser")
-		           .setParameter("idUser", new Long(sessionId))
+		           .setParameter("idUser", Long.valueOf(sessionId))
 		           .getResultList();
 		          
 		  
@@ -1625,7 +1625,7 @@ import org.slf4j.LoggerFactory;
 						     " where lev=2 ), "+
 		                  
 		                     ":idPerm, :creator, sysdate) ")
-			         .setParameter("idUser", new Long(sessionId))
+			         .setParameter("idUser", Long.valueOf(sessionId))
 		             .setParameter("codeDom", me.getKey().split(":")[0])
 		             .setParameter("idArm", linksMap2.getAppCode())
 			         .setParameter("idPerm", me.getKey().split(":")[1])
@@ -1654,7 +1654,7 @@ import org.slf4j.LoggerFactory;
 							     " where lev=2 ) "+
 							 
 			                     "and UP_PRM = :idPerm ")
-				         .setParameter("idUser", new Long(sessionId))
+				         .setParameter("idUser", Long.valueOf(sessionId))
 			             .setParameter("codeDom", me.getKey().split(":")[0])
 			             .setParameter("idArm", linksMap2.getAppCode())
 				         .setParameter("idPerm", me.getKey().split(":")[1])
@@ -1697,7 +1697,7 @@ import org.slf4j.LoggerFactory;
  	     				"update AC_USERS_KNL_T t1 " +
  	     				"set t1.IS_ACC_ORG_MANAGER = 1 " +
  	     				"where t1.ID_SRV = :idUser")
- 	     		 .setParameter("idUser", new Long(sessionId))
+ 	     		 .setParameter("idUser", Long.valueOf(sessionId))
 	             .executeUpdate();
 			   
 			   }else{
@@ -1706,7 +1706,7 @@ import org.slf4j.LoggerFactory;
 	 	     				"update AC_USERS_KNL_T t1 " +
 	 	     				"set t1.IS_ACC_ORG_MANAGER = 0 " +
 	 	     				"where t1.ID_SRV = :idUser")
-	 	     		 .setParameter("idUser", new Long(sessionId))
+	 	     		 .setParameter("idUser", Long.valueOf(sessionId))
 		             .executeUpdate();
 
 			    }
@@ -1720,7 +1720,7 @@ import org.slf4j.LoggerFactory;
  	    	if(au!=null){
  	    		Contexts.getEventContext().set("usrBeanView", au); 
  	    	}else{
- 	    		 au = getUserItem(new Long(sessionId));
+ 	    		 au = getUserItem(Long.valueOf(sessionId));
  	    		 if(au!=null){
  	    		   Contexts.getEventContext().set("usrBeanView", au); 
  	    		 }
@@ -1760,7 +1760,7 @@ import org.slf4j.LoggerFactory;
 					  "where DOM.ID_SRV=UDP.UP_DOM  " + 
 					  "and PERM.ID_SRV=UDP.UP_PRM  " + 
 					  "and UDP.UP_USER = :idUser")
-		           .setParameter("idUser", new Long(sessionId))
+		           .setParameter("idUser", Long.valueOf(sessionId))
 		           .getResultList();
 		   
 		   for(String perm: listExistPerm){
@@ -1819,11 +1819,11 @@ import org.slf4j.LoggerFactory;
 			        .get("sessionId");
 	     log.info("forViewUpdDel:sessionId:"+sessionIdUser);
 	     if(sessionIdUser!=null){
-	    	 AcUser ahUm = entityManager.find(AcUser.class, new Long(sessionIdUser));
+	    	 AcUser ahUm = entityManager.find(AcUser.class, Long.valueOf(sessionIdUser));
 	     	 
 	    	 if(ahUm!=null){
 	    		 
-	    		 UserItem uiUm = getUserItem(new Long(sessionIdUser));
+	    		 UserItem uiUm = getUserItem(Long.valueOf(sessionIdUser));
 	    		
 	    		 ahUm.setOrgName(uiUm.getOrgName());
 	    		 
@@ -1867,7 +1867,7 @@ import org.slf4j.LoggerFactory;
 				.get("sessionId");
 		  log.info("forViewDel:sessionId:"+sessionId);
 		  if(sessionId!=null){
-			 AcUser aa = entityManager.find(AcUser.class, new Long(sessionId));
+			 AcUser aa = entityManager.find(AcUser.class, Long.valueOf(sessionId));
 			 
 			 //с 16.09.2014 перещли на логическое удаление
 			 //проставляется status=3
@@ -1875,7 +1875,7 @@ import org.slf4j.LoggerFactory;
 			 
 			/**/
 	    	
-	    	 UserItem ui = getUserItem(new Long(sessionId));
+	    	 UserItem ui = getUserItem(Long.valueOf(sessionId));
     			 
 	    	 aa.setFio(ui.getFio());
 	    	
@@ -1959,7 +1959,7 @@ import org.slf4j.LoggerFactory;
 		    	if(saveEditFlag==null){	
 		    		
 		    	  List<AcRole> listUsrRol=entityManager.createQuery("select o from AcRole o JOIN o.acLinkUserToRoleToRaions o1 where o1.pk.acUser = :acUser")
-						 .setParameter("acUser", new Long(idUsr))
+						 .setParameter("acUser", Long.valueOf(idUsr))
 			      				.getResultList();
 			     
 		    	
@@ -2012,7 +2012,7 @@ import org.slf4j.LoggerFactory;
                         "from AC_IS_BSS_T app, AC_ROLES_BSS_T rol, AC_USERS_LINK_KNL_T url "+
                         "where ROL.UP_IS=APP.ID_SRV and URL.UP_ROLES=ROL.ID_SRV and URL.UP_USERS=? "+
                         "order by  APP.FULL_, APP.ID_SRV, ROL.FULL_")
-	    				 .setParameter(1, new Long(sessionId))
+	    				 .setParameter(1, Long.valueOf(sessionId))
 	    				.getResultList();
 
 	    		 listUsrArmForView = new ArrayList<AcApplication>();
@@ -2024,7 +2024,7 @@ import org.slf4j.LoggerFactory;
 	    			   
 	    			   listUsrArmForView.add(app);
 	    			   
-	    			   app.setIdArm(new Long(objectArray[0].toString()));
+	    			   app.setIdArm(Long.valueOf(objectArray[0].toString()));
 	    			   app.setName(objectArray[1]!=null?objectArray[1].toString():"");
 	    			   app.setRolList(new ArrayList<AcRole>());
 	    			 }
@@ -2102,7 +2102,7 @@ import org.slf4j.LoggerFactory;
 	    			   
 	    			   listUsrArmForView.add(app);
 	    			   
-	    			   app.setIdArm(new Long(objectArray[0].toString()));
+	    			   app.setIdArm(Long.valueOf(objectArray[0].toString()));
 	    			   app.setName(objectArray[1]!=null?objectArray[1].toString():"");
 	    			   app.setRolList(new ArrayList<AcRole>());
 	    			 }
@@ -2149,7 +2149,7 @@ import org.slf4j.LoggerFactory;
                         "and LUR.UP_GROUP_USERS=GR.ID_SRV and ROL.ID_SRV=LUR.UP_ROLES "+
                         "and APP.ID_SRV=ROL.UP_IS "+
                         "order by GR.FULL_, GR.ID_SRV, APP.FULL_, APP.ID_SRV, ROL.FULL_ ")
-	    				.setParameter(1, new Long(sessionId))
+	    				.setParameter(1, Long.valueOf(sessionId))
 	    				.getResultList();
 	    		
 	    		listUsrGroupForView = new ArrayList<GroupUsersKnlT>();
@@ -2162,7 +2162,7 @@ import org.slf4j.LoggerFactory;
 		    			   
 	    				listUsrGroupForView.add(group);
 		    			   
-	    				group.setIdSrv(new Long(objectArray[0].toString()));
+	    				group.setIdSrv(Long.valueOf(objectArray[0].toString()));
 	    				group.setFull(objectArray[1]!=null?objectArray[1].toString():"");
 	    				group.setArmList(new ArrayList<AcApplication>());
 	    				
@@ -2175,7 +2175,7 @@ import org.slf4j.LoggerFactory;
 	    			   
 	    			   group.getArmList().add(app);
 	    			   
-	    			   app.setIdArm(new Long(objectArray[2].toString()));
+	    			   app.setIdArm(Long.valueOf(objectArray[2].toString()));
 	    			   app.setName(objectArray[3]!=null?objectArray[3].toString():"");
 	    			   app.setRolList(new ArrayList<AcRole>());
 	    			 }
@@ -2243,11 +2243,11 @@ import org.slf4j.LoggerFactory;
 				   "select o from AcRole o where o.acApplication= :idArm " +
 					(stUm!=null ? " and "+stUm :" ")+
 				   "order by o.roleTitle ")
-				   .setParameter("idArm", new Long(idArm))
+				   .setParameter("idArm", Long.valueOf(idArm))
                    .getResultList();
 		   
 		     List<AcRole> listUsrRol=entityManager.createQuery("select o from AcRole o JOIN o.acLinkUserToRoleToRaions o1 where o1.pk.acUser = :acUser ")
-					 .setParameter("acUser", new Long(sessionIdUm))
+					 .setParameter("acUser", Long.valueOf(sessionIdUm))
 		      		 .getResultList();
 		   
 		     for(BaseItem role :this.roleList){
@@ -2291,7 +2291,7 @@ import org.slf4j.LoggerFactory;
 				   "select o from AcRole o where o.acApplication= :idArm " +
 					(stUm!=null ? " and "+stUm :" ")+
 				   "order by o.roleTitle ")
-				   .setParameter("idArm", new Long(idArm))
+				   .setParameter("idArm", Long.valueOf(idArm))
                    .getResultList();
 		   
 		  
@@ -2399,7 +2399,7 @@ import org.slf4j.LoggerFactory;
 				   }
 				   
 				   group_obj = new GroupUsersKnlT();
-				   group_obj.setIdSrv(objArray[0]!=null?new Long((String)objArray[0]):null);
+				   group_obj.setIdSrv(objArray[0]!=null?Long.valueOf((String)objArray[0]):null);
 				   group_obj.setFull((String)objArray[1]);
 				   
 				   this.groupList.add(group_obj);
@@ -2422,7 +2422,7 @@ import org.slf4j.LoggerFactory;
 		  List<GroupUsersKnlT> listUsrGroup=entityManager.createQuery(
 		    		 "select o from GroupUsersKnlT o JOIN o.linkGroupUsersUsersKnlTs o1 " +
 		    		 "where o1.pk.acUser = :acUser ")
-					 .setParameter("acUser", new Long(sessionId))
+					 .setParameter("acUser", Long.valueOf(sessionId))
 		      		 .getResultList();
 		   
    		   for(BaseItem group :this.groupList){
@@ -2498,7 +2498,7 @@ import org.slf4j.LoggerFactory;
 	   		  List<AcApplication> listUserSys=entityManager.createQuery(
 			    		 "select o from AcApplication o JOIN o.linkAdminUserSys o1 " +
 			    		 "where o1.pk.upUser = :upUser ")
-						 .setParameter("upUser", new Long(sessionId))
+						 .setParameter("upUser", Long.valueOf(sessionId))
 			      		 .getResultList();
 	   		  
 	   		 
@@ -2551,14 +2551,14 @@ import org.slf4j.LoggerFactory;
 			   List<AcApplication> listUserSys=entityManager.createQuery(
 			    		 "select o from AcApplication o JOIN o.linkAdminUserSys o1 " +
 			    		 "where o1.pk.upUser = :upUser ")
-						 .setParameter("upUser", new Long(sessionId))
+						 .setParameter("upUser", Long.valueOf(sessionId))
 			      		 .getResultList();
 			   
 			   String isManager = (String) entityManager.createNativeQuery(
 			    		 "select to_char(t1.IS_ACC_ORG_MANAGER) " +
 			    		 "from AC_USERS_KNL_T t1 " +
 			    		 "where t1.ID_SRV = :idUser ")
-						 .setParameter("idUser", new Long(sessionId))
+						 .setParameter("idUser", Long.valueOf(sessionId))
 						 .getSingleResult();
 						 
 			  
@@ -2862,7 +2862,7 @@ import org.slf4j.LoggerFactory;
 	    		 (this.searchOrg!=null&&!"".equals(this.searchOrg.trim()) ? "and lower(UC.ORG_NAME) like  lower('%"+this.searchOrg+"%')" : "")+
                  (this.searchDep!=null&&!"".equals(this.searchDep.trim()) ? "and lower(UC.USER_POSITION) like  lower('%"+this.searchDep+"%')" : "")+
                  "order by UC.USER_FIO ")
-	    		 .setParameter(1, new Long(sessionIdUm))
+	    		 .setParameter(1, Long.valueOf(sessionIdUm))
                  .setMaxResults(100)
 	    		.getResultList();
 	     log.info("UsrManager:search:list:size:"+applicant_list.size());
@@ -2873,7 +2873,7 @@ import org.slf4j.LoggerFactory;
 	    	 
 	    	 try{
         	     ui= new UCCertItem(
-        			  objectArray[0]!=null?new Long(objectArray[0].toString()):null,
+        			  objectArray[0]!=null?Long.valueOf(objectArray[0].toString()):null,
         			  objectArray[1]!=null?objectArray[1].toString():"",
         			  objectArray[2]!=null?objectArray[2].toString():"",
         			  objectArray[3]!=null?objectArray[3].toString():"",
@@ -2923,7 +2923,7 @@ import org.slf4j.LoggerFactory;
 	                "AUC.CERT_NUM, AUC.CERT_DATE " + 
 	                "from AC_USERS_CERT_BSS_T auc " +
 	                "where AUC.UP_USER = ? ")
-	                .setParameter(1, new Long(sessionId))
+	                .setParameter(1, Long.valueOf(sessionId))
 		    		.setMaxResults(100)
 		    		.getResultList();
 		     
@@ -2935,7 +2935,7 @@ import org.slf4j.LoggerFactory;
 		    	 
 		    	 try{
 	        	     ui= new UCCertItem(
-	        			  objectArray[0]!=null?new Long(objectArray[0].toString()):null,
+	        			  objectArray[0]!=null?Long.valueOf(objectArray[0].toString()):null,
 	        			  objectArray[1]!=null?objectArray[1].toString():"",
 	        			  objectArray[2]!=null?objectArray[2].toString():"",
 	        			  objectArray[3]!=null?objectArray[3].toString():"",
@@ -2981,7 +2981,7 @@ import org.slf4j.LoggerFactory;
 		       }
 		       
 		        
-		       reestrCert = entityManager.find(UcCertReestr.class , new Long(idReestr));
+		       reestrCert = entityManager.find(UcCertReestr.class , Long.valueOf(idReestr));
 	    	   
 	    	  
 	    	   AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
@@ -2994,7 +2994,7 @@ import org.slf4j.LoggerFactory;
 		    		  //ADD
 		    		  int modeExec = 1;
 		    		  
-		    		  saveUserCertificateApp(reestrCert.getCertValue(), modeExec, new Long(sessionIdCrack), cau.getIdUser() , commentApp);
+		    		  saveUserCertificateApp(reestrCert.getCertValue(), modeExec, Long.valueOf(sessionIdCrack), cau.getIdUser() , commentApp);
 		    		  
 		    		  audit(ResourcesMap.APP_USER_CERT, ActionsMap.CREATE);
 		    	}else{ 
@@ -3008,7 +3008,7 @@ import org.slf4j.LoggerFactory;
 			    	   userCertUm.setOrgName(reestrCert.getOrgName());
 			    	   userCertUm.setDepName(reestrCert.getUserPosition());
 			    	   
-			    	   userCertUm.setUpUserRaw(new Long(sessionIdCrack));
+			    	   userCertUm.setUpUserRaw(Long.valueOf(sessionIdCrack));
 			    	   
 			    	   userCertUm.setCreator(getCurrentUser().getBaseId());
 			    	   userCertUm.setCreated(new Date());
@@ -3061,7 +3061,7 @@ import org.slf4j.LoggerFactory;
 		       
 		       for(int i=0; i<id_list.length; i++){
 		    	   
-		    	   reestrCert = entityManager.find(UcCertReestr.class , new Long(id_list[i]));
+		    	   reestrCert = entityManager.find(UcCertReestr.class , Long.valueOf(id_list[i]));
 		    	   
 		    	   userCert = new AcUsersCertBssT();
 		    	   
@@ -3072,7 +3072,7 @@ import org.slf4j.LoggerFactory;
 		    	   userCert.setOrgName(reestrCert.getOrgName());
 		    	   userCert.setDepName(reestrCert.getUserPosition());
 		    	   
-		    	   userCert.setUpUserRaw(new Long(sessionIdCrack));
+		    	   userCert.setUpUserRaw(Long.valueOf(sessionIdCrack));
 		    	   
 		    	   userCert.setCreator(getCurrentUser().getBaseId());
 		    	   userCert.setCreated(new Date());
@@ -3123,7 +3123,7 @@ import org.slf4j.LoggerFactory;
 		    		  //REMOVE
 		    		  int modeExec = 0;
 		    		  
-		    		  AcUsersCertBssT acUsersCert = entityManager.find(AcUsersCertBssT.class , new Long(idSrvUserCert));
+		    		  AcUsersCertBssT acUsersCert = entityManager.find(AcUsersCertBssT.class , Long.valueOf(idSrvUserCert));
 		    		  
 		    		  saveUserCertificateApp(acUsersCert.getCertValue(), modeExec, acUsersCert.getUpUserRaw(), cau.getIdUser() , commentApp);
 		    		  
@@ -3134,7 +3134,7 @@ import org.slf4j.LoggerFactory;
 		               entityManager.createNativeQuery(
 							    "delete from AC_USERS_CERT_BSS_T auc " + 
 							    "where AUC.ID_SRV = ? ")
-				                .setParameter(1, new Long(idSrvUserCert))
+				                .setParameter(1, Long.valueOf(idSrvUserCert))
 		                        .executeUpdate();
 				       
 		               audit(ResourcesMap.USER, ActionsMap.REMOVE_CERT) ;
@@ -3266,7 +3266,7 @@ import org.slf4j.LoggerFactory;
 				    
 				}
 	    	   
-	    	   userCert.setUpUserRaw(new Long(id_user));
+	    	   userCert.setUpUserRaw(Long.valueOf(id_user));
 	    	   
 	    	   userCert.setCreator(getCurrentUser().getBaseId());
 	    	   userCert.setCreated(new Date());
@@ -3342,7 +3342,7 @@ import org.slf4j.LoggerFactory;
  	       this.ISSelectListForView=entityManager.createQuery(
 		    		 "select o from AcApplication o JOIN o.linkAdminUserSys o1 " +
 		    		 "where o1.pk.upUser = :upUser ")
-					 .setParameter("upUser", new Long(sessionId))
+					 .setParameter("upUser", Long.valueOf(sessionId))
 		      		 .getResultList();
 
  	         
@@ -3404,9 +3404,9 @@ import org.slf4j.LoggerFactory;
 			  LinksMap linksMap= getLinksMap();
 			  AcUser currentUser = getCurrentUser();
 			  
-			  result=!(currentUser.getIdUser().intValue()!=linksMap.getSuperUserCode().intValue() || new Long(usrBeanIdUser).intValue()!=linksMap.getSuperUserCode().intValue()) 
-                      || !(new Long(idArm).intValue()!=linksMap.getAppCode().intValue() || !"role:urn:sys_admin_cud".equals(roleSign) || currentUser.getIdUser().intValue()==linksMap.getSuperUserCode().intValue())
-                      || (currentUser.getIsSysAdmin().intValue()!=1 && new Long(idArm).intValue()==linksMap.getAppCode().intValue());
+			  result=!(currentUser.getIdUser().intValue()!=linksMap.getSuperUserCode().intValue() || Long.valueOf(usrBeanIdUser).intValue()!=linksMap.getSuperUserCode().intValue()) 
+                      || !(Long.valueOf(idArm).intValue()!=linksMap.getAppCode().intValue() || !"role:urn:sys_admin_cud".equals(roleSign) || currentUser.getIdUser().intValue()==linksMap.getSuperUserCode().intValue())
+                      || (currentUser.getIsSysAdmin().intValue()!=1 && Long.valueOf(idArm).intValue()==linksMap.getAppCode().intValue());
 			  
 			  log.info("UsrManager:getDisabled:result:"+result);		     
 		    }catch(Exception e){
@@ -3610,7 +3610,7 @@ public Boolean getAccOrgManager() {
 			    		 "select to_char(t1.IS_ACC_ORG_MANAGER) " +
 			    		 "from AC_USERS_KNL_T t1 " +
 			    		 "where t1.ID_SRV = :idUser ")
-						 .setParameter("idUser", new Long(sessionId))
+						 .setParameter("idUser", Long.valueOf(sessionId))
 						 .getSingleResult();
 						 
 			   if("1".equals(isManager)){

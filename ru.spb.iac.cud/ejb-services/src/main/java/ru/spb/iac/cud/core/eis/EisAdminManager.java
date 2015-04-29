@@ -85,7 +85,7 @@ import org.slf4j.LoggerFactory;
 				// решили определять пользователей извне ЦУД по их ИД, а не
 				// логинам
 				
-				Long idUser = new Long(uidUser);
+				Long idUser = Long.valueOf(uidUser);
 				Long idArm = get_id_is(codeSystem);
 				int mode = 1;
 
@@ -148,7 +148,7 @@ import org.slf4j.LoggerFactory;
 						em.createNativeQuery(
 								"insert into AC_USERS_LINK_KNL_T (UP_ROLES, UP_USERS, CREATOR, CREATED) "
 										+ "values(?, ?, ?, sysdate) ")
-								.setParameter(1, new Long(role))
+								.setParameter(1, Long.valueOf(role))
 								.setParameter(2, idUser).setParameter(3, 0)
 								.executeUpdate();
 					}
@@ -164,7 +164,7 @@ import org.slf4j.LoggerFactory;
 							em.createNativeQuery(
 									"insert into AC_USERS_LINK_KNL_T (UP_ROLES, UP_USERS, CREATOR, CREATED) "
 											+ "values(?, ?, ?, sysdate) ")
-									.setParameter(1, new Long(role))
+									.setParameter(1, Long.valueOf(role))
 									.setParameter(2, idUser).setParameter(3, 0)
 									.executeUpdate();
 						}
@@ -258,7 +258,7 @@ import org.slf4j.LoggerFactory;
 				// решили определять пользователей извне ЦУД по их ИД, а не
 				// логинам
 				
-				Long idUser = new Long(uidUser);
+				Long idUser = Long.valueOf(uidUser);
 				int mode = 1;
 
 				if ("REPLACE".equals(modeExec)) {
@@ -315,7 +315,7 @@ import org.slf4j.LoggerFactory;
 						em.createNativeQuery(
 								"insert into LINK_GROUP_USERS_USERS_KNL_T (UP_GROUP_USERS, UP_USERS, CREATOR, CREATED) "
 										+ "values(?, ?, ?, sysdate) ")
-								.setParameter(1, new Long(group))
+								.setParameter(1, Long.valueOf(group))
 								.setParameter(2, idUser).setParameter(3, 0)
 								.executeUpdate();
 					}
@@ -333,7 +333,7 @@ import org.slf4j.LoggerFactory;
 							em.createNativeQuery(
 									"insert into LINK_GROUP_USERS_USERS_KNL_T (UP_GROUP_USERS, UP_USERS, CREATOR, CREATED) "
 											+ "values(?, ?, ?, sysdate) ")
-									.setParameter(1, new Long(group))
+									.setParameter(1, Long.valueOf(group))
 									.setParameter(2, idUser).setParameter(3, 0)
 									.executeUpdate();
 						}

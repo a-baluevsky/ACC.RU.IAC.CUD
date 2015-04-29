@@ -136,7 +136,7 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppOrgManagerBssT;
          		 AcUsersKnlT userDataItem = new AcUsersKnlT();
          		 
          	     ui= userDataItem.new UserItem(
-         			  objectArray[0]!=null?new Long(objectArray[0].toString()):null,
+         			  objectArray[0]!=null?Long.valueOf(objectArray[0].toString()):null,
          			  objectArray[1]!=null?objectArray[1].toString():"",
          			  objectArray[2]!=null?objectArray[2].toString():"",
          			  objectArray[3]!=null?objectArray[3].toString():"",
@@ -153,7 +153,7 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppOrgManagerBssT;
          			  objectArray[12]!=null?objectArray[12].toString():"",
          			  objectArray[13]!=null?objectArray[13].toString():"",
          			  objectArray[14]!=null?objectArray[14].toString():"",
-         			  objectArray[15]!=null?new Long(objectArray[15].toString()):null,
+         			  objectArray[15]!=null?Long.valueOf(objectArray[15].toString()):null,
          			  objectArray[16]!=null?df.format((Date)objectArray[16]) :"",
          			  objectArray[17]!=null?objectArray[17].toString():"",
          			  objectArray[18]!=null?objectArray[18].toString():"",
@@ -162,7 +162,7 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppOrgManagerBssT;
          			  objectArray[21]!=null?objectArray[21].toString():"",
          			  objectArray[22]!=null?objectArray[22].toString():"",
          			  objectArray[23]!=null?objectArray[23].toString():"",
-         			  objectArray[24]!=null?new Long(objectArray[24].toString()):null,
+         			  objectArray[24]!=null?Long.valueOf(objectArray[24].toString()):null,
          			   //!!!
          			   //для email вместо "" ставим null [для UserForgotEJB.step1()]
          			  objectArray[25]!=null?objectArray[25].toString():null
@@ -233,7 +233,7 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppOrgManagerBssT;
             for(Object[] objectArray :lo){
             	
             	
-            	idArm = (objectArray[0]!=null?new Long(objectArray[0].toString()):0L);
+            	idArm = (objectArray[0]!=null?Long.valueOf(objectArray[0].toString()):0L);
             			
             	if(armList==null){
             		armList = new ArrayList<AcIsBssT>();
@@ -255,7 +255,7 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppOrgManagerBssT;
                 role = new AcRolesBssT();
                 roleList.add(role);
                 
-                role.setIdSrv (objectArray[2]!=null?new Long(objectArray[2].toString()):null);
+                role.setIdSrv (objectArray[2]!=null?Long.valueOf(objectArray[2].toString()):null);
                 role.setFull (objectArray[3]!=null?objectArray[3].toString():"");
        
             }  
@@ -410,7 +410,7 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppOrgManagerBssT;
              for(Object[] objectArray :lo){
              	
              	
-             	idArm = (objectArray[0]!=null?new Long(objectArray[0].toString()):0L);
+             	idArm = (objectArray[0]!=null?Long.valueOf(objectArray[0].toString()):0L);
              			
              	if(armList==null){
              		armList = new ArrayList<AcIsBssT>();
@@ -432,7 +432,7 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppOrgManagerBssT;
                  role = new AcRolesBssT();
                  roleList.add(role);
                  
-                 role.setIdSrv (objectArray[2]!=null?new Long(objectArray[2].toString()):null);
+                 role.setIdSrv (objectArray[2]!=null?Long.valueOf(objectArray[2].toString()):null);
                  role.setFull (objectArray[3]!=null?objectArray[3].toString():"");
                  role.setSignObject (objectArray[4]!=null?objectArray[4].toString():"");
         
@@ -488,7 +488,7 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppOrgManagerBssT;
              for(Object[] objectArray :lo){
              	
              	
-             	idArm = (objectArray[0]!=null?new Long(objectArray[0].toString()):0L);
+             	idArm = (objectArray[0]!=null?Long.valueOf(objectArray[0].toString()):0L);
              			
              	if(armList==null){
              		armList = new ArrayList<AcIsBssT>();
@@ -510,7 +510,7 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppOrgManagerBssT;
                  group = new GroupUsersKnlT();
                  group_list.add(group);
                  
-                 group.setIdSrv (objectArray[2]!=null?new Long(objectArray[2].toString()):null);
+                 group.setIdSrv (objectArray[2]!=null?Long.valueOf(objectArray[2].toString()):null);
                  group.setFull (objectArray[3]!=null?objectArray[3].toString():"");
                  group.setSignObject (objectArray[4]!=null?objectArray[4].toString():"");
         
@@ -671,7 +671,7 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppOrgManagerBssT;
     			    			   
     		    				listUsrGroupForView.add(group);
     			    			   
-    		    				group.setIdSrv(new Long(objectArray[0].toString()));
+    		    				group.setIdSrv(Long.valueOf(objectArray[0].toString()));
     		    				group.setFull(objectArray[1]!=null?objectArray[1].toString():"");
     		    				group.setArmList(new ArrayList<AcIsBssT>());
     		    				
@@ -684,7 +684,7 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppOrgManagerBssT;
     		    			   
     		    			   group.getArmList().add(app);
     		    			   
-    		    			   app.setIdSrv(new Long(objectArray[2].toString()));
+    		    			   app.setIdSrv(Long.valueOf(objectArray[2].toString()));
     		    			   app.setFull(objectArray[3]!=null?objectArray[3].toString():"");
     		    			   app.setAcRolesBssTs(new ArrayList<AcRolesBssT>());
     		    			 }
@@ -733,7 +733,7 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppOrgManagerBssT;
 			    	 
 			    	 try{
 		        	     ui= new UCCertItem(
-		        			  objectArray[0]!=null?new Long(objectArray[0].toString()):null,
+		        			  objectArray[0]!=null?Long.valueOf(objectArray[0].toString()):null,
 		        			  objectArray[1]!=null?objectArray[1].toString():"",
 		        			  objectArray[2]!=null?objectArray[2].toString():"",
 		        			  objectArray[3]!=null?objectArray[3].toString():"",
@@ -773,7 +773,7 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppOrgManagerBssT;
 	               entityManager.createNativeQuery(
 						    "delete from AC_USERS_CERT_BSS_T auc " + 
 						    "where AUC.ID_SRV = ? ")
-			                .setParameter(1, new Long(idSrvUserCert))
+			                .setParameter(1, Long.valueOf(idSrvUserCert))
 	                        .executeUpdate();
 			      
 	              audit(ResourcesMap.USER, ActionsMap.REMOVE_CERT) ;

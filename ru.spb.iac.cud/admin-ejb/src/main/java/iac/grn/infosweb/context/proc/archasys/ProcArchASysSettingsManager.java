@@ -76,7 +76,7 @@ import org.jboss.seam.log.Log;
 		    		  monthInterval="6";
 		    	  }	    	 
 			     
-		    	  beanSettingsASys.setParamActualData(new Long(monthInterval));
+		    	  beanSettingsASys.setParamActualData(Long.valueOf(monthInterval));
 		    	  
 			      Contexts.getEventContext().set("procArchASysSettingsBean", beanSettingsASys);
 			     

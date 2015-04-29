@@ -168,7 +168,7 @@ import iac.grn.serviceitems.HeaderTableItem;
                for(Object[] objectArrayBlock :loBlock){
             	   try{
             	     uiBlock= new AppBlockItem(
-            	    		objectArrayBlock[0]!=null?new Long(objectArrayBlock[0].toString()):null,
+            	    		objectArrayBlock[0]!=null?Long.valueOf(objectArrayBlock[0].toString()):null,
             				objectArrayBlock[1]!=null?df.format((Date)objectArrayBlock[1]) :"",
             				objectArrayBlock[2]!=null?Integer.parseInt(objectArrayBlock[2].toString()):0,	
             				objectArrayBlock[3]!=null?objectArrayBlock[3].toString():"",
@@ -178,7 +178,7 @@ import iac.grn.serviceitems.HeaderTableItem;
             				 
             				objectArrayBlock[7]!=null?objectArrayBlock[7].toString():"",
 	            			 
-	            			objectArrayBlock[8]!=null?new Long(objectArrayBlock[8].toString()):null,
+	            			objectArrayBlock[8]!=null?Long.valueOf(objectArrayBlock[8].toString()):null,
 	            			 
 	            			objectArrayBlock[9]!=null?objectArrayBlock[9].toString():"",
 	            			objectArrayBlock[10]!=null?objectArrayBlock[10].toString():"",
@@ -372,7 +372,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	        		   log.info("AppBlockManager:getUserItem:login:"+objectArray[1].toString());
 	        		   
 	        		   ui= new AppBlockItem(
-	        				    objectArray[0]!=null?new Long(objectArray[0].toString()):null,
+	        				    objectArray[0]!=null?Long.valueOf(objectArray[0].toString()):null,
 	            				objectArray[1]!=null?df.format((Date)objectArray[1]) :"",
 	            				objectArray[2]!=null?Integer.parseInt(objectArray[2].toString()):0,	
 	            				objectArray[3]!=null?objectArray[3].toString():"",
@@ -382,7 +382,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	            				 
 	            				objectArray[7]!=null?objectArray[7].toString():"",
 		            			 
-		            			objectArray[8]!=null?new Long(objectArray[8].toString()):null,
+		            			objectArray[8]!=null?Long.valueOf(objectArray[8].toString()):null,
 		            			 
 		            			objectArray[9]!=null?objectArray[9].toString():"",
 		            			objectArray[10]!=null?objectArray[10].toString():"",
@@ -426,7 +426,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 				  return;
 			 }
 			   
-			 idApp =  new Long(sessionIdBlock); 
+			 idApp =  Long.valueOf(sessionIdBlock); 
 			   
 			 Object[] app=(Object[]) entityManager.createNativeQuery(
 		    			  "select JAS.UP_USER_APP, JAS.MODE_EXEC "+
@@ -435,7 +435,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 		    			.setParameter(1, idApp)
 		    			.getSingleResult();  
 			 
-			 idUser=new Long(app[0].toString());
+			 idUser=Long.valueOf(app[0].toString());
 			 modeExec=Integer.parseInt(app[1].toString());
 			 
 			 log.info("AppAccessManager:createBlock:idUser:"+idUser);
@@ -472,7 +472,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	 	     		 .setParameter(2, idApp)
 	         	 	 .executeUpdate();
 		    
-		     AppBlockItem ui = getUserItem(new Long(sessionIdBlock));
+		     AppBlockItem ui = getUserItem(Long.valueOf(sessionIdBlock));
 		     
 		     Contexts.getEventContext().set("contextBeanView", ui);
 		     
@@ -499,10 +499,10 @@ import iac.grn.serviceitems.HeaderTableItem;
 	 	     		   "where t1.ID_SRV=? ")
 	 	     		 .setParameter(1, this.rejectReason)
 	 	     		 .setParameter(2, getCurrentUser().getBaseId())
-	 	     		 .setParameter(3, new Long(sessionId))
+	 	     		 .setParameter(3, Long.valueOf(sessionId))
 	 	     	 	 .executeUpdate();
 		     
-             AppBlockItem ui = getUserItem(new Long(sessionId)); 
+             AppBlockItem ui = getUserItem(Long.valueOf(sessionId)); 
 		     
 		     Contexts.getEventContext().set("contextBeanView", ui);
 		     
@@ -528,10 +528,10 @@ import iac.grn.serviceitems.HeaderTableItem;
 	 	     		   "set t1.COMMENT_=? " +
 	 	     		   "where t1.ID_SRV=? ")
 	 	     		 .setParameter(1, this.commentText)
-	 	     		 .setParameter(2, new Long(sessionId))
+	 	     		 .setParameter(2, Long.valueOf(sessionId))
 	 	     	 	 .executeUpdate();
 		     
-           AppBlockItem ui = getUserItem(new Long(sessionId)); 
+           AppBlockItem ui = getUserItem(Long.valueOf(sessionId)); 
 		     
 		   Contexts.getEventContext().set("contextBeanView", ui);
 		     
@@ -549,7 +549,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 				        .get("sessionId");
 		     log.info("AppBlockManager:forViewCrt:sessionId:"+sessionId);
 		     
-		     AppBlockItem ui = getUserItem(new Long(sessionId));
+		     AppBlockItem ui = getUserItem(Long.valueOf(sessionId));
 	    		
 	         Contexts.getEventContext().set("contextBeanView", ui);
 		     
@@ -567,7 +567,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 		     if(sessionId!=null){
 		    	
 		     	 
-		    	 AppBlockItem ui = getUserItem(new Long(sessionId));
+		    	 AppBlockItem ui = getUserItem(Long.valueOf(sessionId));
 		        	 
 		   	 Contexts.getEventContext().set("appBlockBean", ui);
 		     }
@@ -586,7 +586,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 			     if(sessionId!=null){
 			    	
 			     	 
-			    	 AppBlockItem ui = getUserItem(new Long(sessionId));
+			    	 AppBlockItem ui = getUserItem(Long.valueOf(sessionId));
 			    	 
 			    	 this.commentText=ui.getComment();
 

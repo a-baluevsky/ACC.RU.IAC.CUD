@@ -75,7 +75,7 @@ import org.jboss.seam.log.Log;
 		    		  monthInterval="6";
 		    	  }	    	 
 			     
-		    	  beanSettingsArchToken.setParamActualData(new Long(monthInterval));
+		    	  beanSettingsArchToken.setParamActualData(Long.valueOf(monthInterval));
 		    	  
 			      Contexts.getEventContext().set("procArchTokenSettingsBean", beanSettingsArchToken);
 			     

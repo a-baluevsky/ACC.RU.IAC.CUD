@@ -123,13 +123,13 @@ import iac.grn.infosweb.session.audit.export.AuditExportData;
 				    	
 				    	  
 		    	  if(pidRootNode!=null&&pappCode!=null){ 
-		    	   acResBeanCrt.setIdParent2(new Long(pidRootNode));
-		    	   acResBeanCrt.setAcApplication(new Long(pappCode));
+		    	   acResBeanCrt.setIdParent2(Long.valueOf(pidRootNode));
+		    	   acResBeanCrt.setAcApplication(Long.valueOf(pappCode));
 		    	   
 		    	  if(acResBeanCrt.getVisibleBoolean()){
-		    		  acResBeanCrt.setVisible(new Long(1));
+		    		  acResBeanCrt.setVisible(Long.valueOf(1));
 		    	  }else{
-		    		  acResBeanCrt.setVisible(new Long(0));
+		    		  acResBeanCrt.setVisible(Long.valueOf(0));
 		    	  }
 		    	  
 		     //  [вариант -1-]
@@ -196,13 +196,13 @@ import iac.grn.infosweb.session.audit.export.AuditExportData;
 		    	  if(pidRootNode!=null && pappCode!=null && idRes!=null){
 		    	
 		    		  
-		    	  AcAppPage apm = entityManager.find(AcAppPage.class, new Long(idRes)/*acResBean.getIdRes()*/);
+		    	  AcAppPage apm = entityManager.find(AcAppPage.class, Long.valueOf(idRes)/*acResBean.getIdRes()*/);
 		    	  
 		    	  apm.setPageName(acResBean.getPageName());
-		    	  apm.setIdParent2(new Long(pidRootNode));
+		    	  apm.setIdParent2(Long.valueOf(pidRootNode));
 		    	  apm.setPageCode(acResBean.getPageCode());
-		    	  apm.setAcApplication(new Long(pappCode));
-		    	  apm.setVisible((acResBean.getVisibleBoolean()? new Long(1): new Long(0)));
+		    	  apm.setAcApplication(Long.valueOf(pappCode));
+		    	  apm.setVisible((acResBean.getVisibleBoolean()? Long.valueOf(1): Long.valueOf(0)));
 		    	  apm.setOrderNum(acResBean.getOrderNum());
 		    	  
 		   	 //  <a4j:region>
@@ -279,7 +279,7 @@ import iac.grn.infosweb.session.audit.export.AuditExportData;
 			        .get("idRes");
 			log.info("forView_pidRes="+pidRes);
 			if(pidRes!=null){
-				 acResBean = entityManager.find(AcAppPage.class, new Long(pidRes));
+				 acResBean = entityManager.find(AcAppPage.class, Long.valueOf(pidRes));
 			}
 		}
 	   /**
@@ -292,7 +292,7 @@ import iac.grn.infosweb.session.audit.export.AuditExportData;
 					.get("idRes");
 			log.info("forViewDel_pidRes="+pidRes);
 			if(pidRes!=null){
-				 acResBean = entityManager.find(AcAppPage.class, new Long(pidRes));
+				 acResBean = entityManager.find(AcAppPage.class, Long.valueOf(pidRes));
 				 if(acResBean.getIdResCollection()!=null&&!acResBean.getIdResCollection().isEmpty()){
 					 dellMessage="У рубрики есть порождённые записи!\n При удалении они будут удалены!";
 					 log.info("forViewDel:dellMessage="+dellMessage);
