@@ -261,58 +261,40 @@ import org.slf4j.LoggerFactory;
 	}
 
 	public File content() {
-		InputStream is = null;
 		OutputStream output = null;
 		BufferedInputStream in = null;
-
-	
 		File resultFile = null;
-
 		LOGGER.debug("IHUCCert:content:path:" + path);
-
 		try {
-			URL url = new URL(path);
-		
+			URL url = new URL(path);		
 			HttpURLConnection uc = (HttpURLConnection) url.openConnection();
-
 			uc.setRequestProperty("Accept-Charset", "UTF-8");
 			uc.setRequestProperty("Content-Language", "ru-RU");
 			uc.setRequestProperty("Charset", "UTF-8");
-
-			uc.connect();
-
-		
+			uc.connect();		
 			in = new BufferedInputStream(uc.getInputStream());
-
 			byte[] buffer = new byte[4096];
 			int n = -1;
-
 			resultFile = new File(directory + /* "tmp_"+ */file_name);
 			output = new FileOutputStream(resultFile);
-
 			while ((n = in.read(buffer)) != -1) {
 				if (n > 0) {
 					output.write(buffer, 0, n);
 				}
 			}
-			output.close();
-
 		} catch (Exception eUcc) {
 			LOGGER.error("IHUCCert:content:error:", eUcc);
 		} finally {
-			try {
-				if (in != null) {
-					in.close();
+			Closeable[] resToClose = new Closeable[]{output, in};
+			for(Closeable res: resToClose) {
+				try {
+					if (res != null) {
+						res.close();
+					}
+				} catch (Exception eUcc) {
+					LOGGER.error("LaunchCRLTask:content:finally:is:error:", eUcc);
 				}
-				if (is != null) {
-					is.close();
-				}
-				if (output != null) {
-					output.close();
-				}
-			} catch (Exception eUcc) {
-				LOGGER.error("LaunchCRLTask:content:finally:is:error:", eUcc);
-			}
+			}			
 		}
 
 		return resultFile;
