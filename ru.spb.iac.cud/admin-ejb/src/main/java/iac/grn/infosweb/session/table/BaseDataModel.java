@@ -155,7 +155,7 @@ import org.richfaces.model.SortField2;
 		if(this.flagAction==0){
 			if (rowCount==null) {
 				if(auditListCount!=null){
-				   rowCount = new Integer(auditListCount);
+				   rowCount = Integer.valueOf(auditListCount);
 				 }else{
 				   rowCount = 0;
 				 }
@@ -171,7 +171,7 @@ import org.richfaces.model.SortField2;
 					"clRecAllFact".equals(remoteAudit)||
 					"clSelOneFact".equals(remoteAudit)*/)&&
 					auditListCount!=null){
-					rowCount = new Integer(auditListCount);
+					rowCount = Integer.valueOf(auditListCount);
 				}else{
 					rowCount = getNumRecords(modelType);
 				}

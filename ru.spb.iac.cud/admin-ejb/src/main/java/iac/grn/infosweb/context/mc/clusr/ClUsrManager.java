@@ -294,7 +294,7 @@ import javaw.util.SerializableSet;
 	       bpi.put("seancact", Long.valueOf(seancact));
 	       
 	       if(clVersion!=null&&!clVersion.isEmpty()){
-	         bpi.put("clVersion", new Integer(clVersion));
+	         bpi.put("clVersion", Integer.valueOf(clVersion));
 	       }
 	       
 	       IRemoteFrontageLocal obj = (IRemoteFrontageLocal)ctx.lookup(jndiBinding);
