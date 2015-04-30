@@ -83,7 +83,7 @@ import ru.spb.iac.cud.idp.web.util.GOSTSignatureUtil;
 
 			try {
 
-				if (userCode != null && systemCode != null) {
+				if (userCode != null) {
 
 					// роли
 

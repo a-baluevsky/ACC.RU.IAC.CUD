@@ -128,7 +128,7 @@ import iac.grn.serviceitems.BaseTableItem;
 				 if(orderQueryCPar!=null&&orderQueryCPar.contains("o1.full")){
                 	 auditList = entityManager.createQuery(
                 	"select o from SettingsKnlT o LEFT JOIN o.servicesBssT o1 "+		 
-                	 (orderQueryCPar!=null ? orderQueryCPar : ""))
+                	 orderQueryCPar)
                              .setFirstResult(firstRow)
                              .setMaxResults(numberOfRows)
                              .getResultList();

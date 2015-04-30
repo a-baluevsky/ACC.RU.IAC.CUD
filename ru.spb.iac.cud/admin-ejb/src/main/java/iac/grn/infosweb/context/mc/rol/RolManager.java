@@ -49,7 +49,12 @@ import iac.grn.serviceitems.BaseTableItem;
 @Name("rolManager")
  public class RolManager extends QuerySvc {
 	
-	 @Logger private static transient Log log;
+	 /**
+	 * 
+	 */
+	private static final long serialVersionUID = 704073514369787337L;
+
+	@Logger private static transient Log log;
 	
 	 @In 
 	 EntityManager entityManager;
@@ -832,11 +837,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	     				entityManager.createQuery("select o from AcPermissionsList o").getResultList()
 	     		);
 	       	}
-	    	if(listRolPerm!=null){
-	    	  log.info("getListRolPerm:size:"+listRolPerm.size());
-	    	}else{
-	    		 log.info("getListRolPerm:size:_null");
-	    	}
+	    	log.info("getListRolPerm:size:"+listRolPerm.size());
 	     } catch (Exception e) {
 	    	 log.error("getListRolPerm_ERROR="+e);
 	         throw e;

@@ -527,11 +527,8 @@ import ru.spb.iac.cud.sts.util.CUDWSTrustUtil;
 			context.setOnBehalfOfPrincipal(onBehalfOfPrincipal);
 		}
 		try {
-			if (securityToken != null) {
-				String ns = securityToken.getNamespaceURI();
-
-				context.setQName(new QName(ns, securityToken.getLocalName()));
-			}
+			String ns = securityToken.getNamespaceURI();
+			context.setQName(new QName(ns, securityToken.getLocalName()));
 			PicketLinkCoreSTS sts = PicketLinkCoreSTS.instance();
 			sts.initialize(configuration);
 			sts.renewToken(context);
@@ -657,10 +654,8 @@ import ru.spb.iac.cud.sts.util.CUDWSTrustUtil;
 					+ " ::LocalName: "
 					+ securityToken.getLocalName());
 			try {
-				if (securityToken != null) {
-					context.setQName(new QName(securityToken.getNamespaceURI(),
-							securityToken.getLocalName()));
-				}
+				context.setQName(new QName(securityToken.getNamespaceURI(),
+						securityToken.getLocalName()));
 				PicketLinkCoreSTS sts = PicketLinkCoreSTS.instance();
 				sts.initialize(configuration);
 				sts.validateToken(context);
@@ -727,10 +722,8 @@ import ru.spb.iac.cud.sts.util.CUDWSTrustUtil;
 			context.setOnBehalfOfPrincipal(onBehalfOfPrincipal);
 		}
 		try {
-			if (securityToken != null) {
-				context.setQName(new QName(securityToken.getNamespaceURI(),
-						securityToken.getLocalName()));
-			}
+			context.setQName(new QName(securityToken.getNamespaceURI(),
+					securityToken.getLocalName()));
 			PicketLinkCoreSTS sts = PicketLinkCoreSTS.instance();
 			sts.initialize(configuration);
 			sts.cancelToken(context);

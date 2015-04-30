@@ -1852,8 +1852,7 @@ public abstract class CUDAbstractIDPValve extends ValveBase {
 					}
 				} else {
 					// Additionally parse the consolidated config file
-					if (is != null
-							&& configProvider instanceof AbstractSAMLConfigurationProvider) {
+					if (configProvider instanceof AbstractSAMLConfigurationProvider) {
 						((AbstractSAMLConfigurationProvider) configProvider)
 								.setConsolidatedConfigFile(is);
 					}

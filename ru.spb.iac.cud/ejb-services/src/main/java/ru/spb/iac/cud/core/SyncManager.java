@@ -124,7 +124,7 @@ import ru.spb.iac.cud.items.Role;
 				for (Object[] objectArray : lo) {
 					rolescl.put(
 							objectArray[0] != null ? objectArray[0].toString()
-									: "", objectArray[1] != null ? new Long(
+									: "", objectArray[1] != null ? Long.valueOf(
 									objectArray[1].toString()) : -1L);
 				}
 
@@ -331,13 +331,11 @@ import ru.spb.iac.cud.items.Role;
 				  utx.begin();
 				}
 
-			if (idIS == null || "".equals(idIS.trim())) {
-				throw new GeneralFailure("Отсутствует код системы!");
-			}
-
 			if (idIS == null) {
 				LOGGER.debug("sync_functions:return");
 				throw new GeneralFailure("idIS is null!");
+			}  else if ("".equals(idIS.trim())) {
+				throw new GeneralFailure("Отсутствует код системы!");
 			}
 			
 			if (functions == null || functions.isEmpty()) {
@@ -386,7 +384,7 @@ import ru.spb.iac.cud.items.Role;
 				for (Object[] objectArray : lo) {
 					actcl.put(
 							objectArray[0] != null ? objectArray[0].toString()
-									: "", objectArray[1] != null ? new Long(
+									: "", objectArray[1] != null ? Long.valueOf(
 									objectArray[1].toString()) : -1L);
 				}
 
@@ -862,7 +860,7 @@ import ru.spb.iac.cud.items.Role;
 				for (Object[] objectArray : lo) {
 					group_cl.put(
 							objectArray[0] != null ? objectArray[0].toString()
-									: "", objectArray[1] != null ? new Long(
+									: "", objectArray[1] != null ? Long.valueOf(
 									objectArray[1].toString()) : -1L);
 				}
 

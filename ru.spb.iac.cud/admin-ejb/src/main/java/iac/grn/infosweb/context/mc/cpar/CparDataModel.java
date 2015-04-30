@@ -90,16 +90,14 @@ import org.jboss.seam.log.Log;
 					log.info("getRowCount:03_+");
 					return 0;
 				}
-				if(remoteAuditCpar!=null &&
-					("rowSelectFact".equals(remoteAuditCpar)/*||
+				else if(("rowSelectFact".equals(remoteAuditCpar)/*||
 				    "selRecAllFact".equals(remoteAudit)||
 					"clRecAllFact".equals(remoteAudit)||
 					"clSelOneFact".equals(remoteAudit)*/)&&
 					auditListCount!=null){
 					rowCount = Integer.valueOf(auditListCount);
 				}else{
-					rowCount = new Integer(
-							getDataProvider().getRowCount());
+					rowCount = Integer.valueOf(getDataProvider().getRowCount());
 				}
 				log.info("getRowCount:03:rowCount:"+rowCount);
 			}

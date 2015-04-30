@@ -100,20 +100,14 @@ import org.jboss.seam.log.Log;
 				// При selRecAllFact, clRecAllFact, clSelOneFact запросах
 				// dataScroller не рендерится, а в параметрах
 				// rowCount и так определяется через param['auditListCount']
-				if(remoteAuditASys==null){
-					log.info("getRowCount:03_+");
-					return 0;
-				}
-				if(remoteAuditASys!=null &&
-					("rowSelectFact".equals(remoteAuditASys)/*||
+				if(("rowSelectFact".equals(remoteAuditASys)/*||
 				    "selRecAllFact".equals(remoteAudit)||
 					"clRecAllFact".equals(remoteAudit)||
 					"clSelOneFact".equals(remoteAudit)*/)&&
 					auditListCount!=null){
 					rowCount = Integer.valueOf(auditListCount);
 				}else{
-					rowCount = new Integer(
-							getDataProvider().getRowCount());
+					rowCount = Integer.valueOf(getDataProvider().getRowCount());
 				}
 				log.info("getRowCount:03:rowCount:"+rowCount);
 			}

@@ -397,7 +397,7 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppOrgManagerBssT;
           		   "AC_ROLES_BSS_T rol "+
           		   "where  "+
           		   "ROL.UP_IS= SYS.ID_SRV "+
-          		   (pidArm!=null?"and SYS.ID_SRV="+pidArm+" ":"")+
+          		   "and SYS.ID_SRV="+pidArm+" "+
                    " group by SYS.ID_SRV,  ROL.ID_SRV "+
           		   "),  "+
           		   "AC_IS_BSS_T sys_full,  AC_ROLES_BSS_T rol_full "+
@@ -475,7 +475,7 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppOrgManagerBssT;
 					 "AC_ROLES_BSS_T rl "+
 					 "where  LGUR.UP_GROUP_USERS=GR.ID_SRV "+
 					 "and   LGUR.UP_ROLES = RL.ID_SRV "+
-					 (pidArm!=null?"and RL.UP_IS="+pidArm+" ":"")+
+					 "and RL.UP_IS="+pidArm+" "+
 					 "group by RL.UP_IS, GR.ID_SRV "+
 					 "), "+
 					 "AC_IS_BSS_T sys_full, "+

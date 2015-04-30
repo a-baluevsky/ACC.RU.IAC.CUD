@@ -43,11 +43,6 @@ import iac.cud.infosweb.ws.classif.common.Response4;
 							CUDWSSMEVConstants.getPasswordMD5(),
 							CUDWSSMEVConstants.getClassifRegNum());
 
-			if (re53.getItem() == null) {
-				LOGGER.debug("Server said: return");
-				return null;
-			}
-
 			LOGGER.debug("Server said: " + re53.getItem().size());
 
 			for (Response4 r1 : re53.getItem()) {
@@ -64,9 +59,7 @@ import iac.cud.infosweb.ws.classif.common.Response4;
 			LOGGER.error("error", e);
 		} finally {
 			try {
-				if (fos != null) {
-					fos.close();
-				}
+				fos.close();				
 			} catch (IOException e) {
 				LOGGER.error("error", e);
 			}
@@ -103,11 +96,6 @@ import iac.cud.infosweb.ws.classif.common.Response4;
 								CUDWSSMEVConstants.getPasswordMD5(),
 								CUDWSSMEVConstants.getClassifRegNum());
 
-				if (re53.getItem() == null) {
-					LOGGER.debug("Server said: return");
-					return;
-				}
-
 				LOGGER.debug("Server said: " + re53.getItem().size());
 
 				for (Response4 r1 : re53.getItem()) {
@@ -123,11 +111,6 @@ import iac.cud.infosweb.ws.classif.common.Response4;
 					CUDWSSMEVConstants.getLogin(),
 					CUDWSSMEVConstants.getPasswordMD5(),
 					CUDWSSMEVConstants.getClassifRegNum(), actualDoc);
-
-			if (re51.getItem() == null) {
-				LOGGER.debug("Server said: return");
-				return;
-			}
 
 			LOGGER.debug("Server said: " + re51.getItem().size());
 

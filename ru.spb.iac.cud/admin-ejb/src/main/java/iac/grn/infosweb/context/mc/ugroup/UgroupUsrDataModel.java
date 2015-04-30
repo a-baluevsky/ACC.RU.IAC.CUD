@@ -94,17 +94,14 @@ import org.jboss.seam.log.Log;
 				if(remoteAuditUgroupUsr==null){
 					log.info("usrDataModel:getRowCount:03_+");
 					return 0;
-				}
-				if(remoteAuditUgroupUsr!=null &&
-					("rowSelectFact".equals(remoteAuditUgroupUsr)/*||
+				} else if(("rowSelectFact".equals(remoteAuditUgroupUsr)/*||
 				    "selRecAllFact".equals(remoteAudit)||
 					"clRecAllFact".equals(remoteAudit)||
 					"clSelOneFact".equals(remoteAudit)*/)&&
 					auditListCount!=null){
 					rowCount = Integer.valueOf(auditListCount);
 				}else{
-					rowCount = new Integer(
-							getDataProvider().getRowCount());
+					rowCount = Integer.valueOf(getDataProvider().getRowCount());
 				}
 				log.info("usrDataModel:getRowCount:03:rowCount:"+rowCount);
 			}
