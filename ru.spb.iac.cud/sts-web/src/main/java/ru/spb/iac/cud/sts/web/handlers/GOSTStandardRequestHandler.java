@@ -619,8 +619,7 @@ import ru.spb.iac.cud.sts.util.CUDWSTrustUtil;
 					}
 				}
 				Document tokenDocument = DocumentUtil.createDocument();
-				Node importedNode = tokenDocument.importNode(securityToken,
-						true);
+				Node importedNode = tokenDocument.importNode(securityToken, true);
 				tokenDocument.appendChild(importedNode);
 				// XMLSignatureUtil.propagateIDAttributeSetup(securityToken,
 				// tokenDocument.getDocumentElement());

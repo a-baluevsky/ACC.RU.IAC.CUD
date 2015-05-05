@@ -125,7 +125,7 @@ import iac.grn.serviceitems.BaseTableItem;
       		     }
                  log.info("invokeLocal:list:orderQueryCPar:"+orderQueryCPar);
                  
-				 if(orderQueryCPar!=null&&orderQueryCPar.contains("o1.full")){
+				 if(orderQueryCPar.contains("o1.full")){
                 	 auditList = entityManager.createQuery(
                 	"select o from SettingsKnlT o LEFT JOIN o.servicesBssT o1 "+		 
                 	 orderQueryCPar)

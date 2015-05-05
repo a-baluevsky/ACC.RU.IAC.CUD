@@ -435,9 +435,6 @@ import ru.spb.iac.crypto.export.Crypto15Init;
 				wrappingElementQName.getNamespaceURI(), wrappingElementName);
 
 		
-		if (wrappingElementPrefix.equals("")){
-			wrappingElementName = wrappingElementQName.getLocalPart();
-		}
 		wrappingElement.setAttributeNS(XMLNS, "xmlns:" + wrappingElementPrefix,
 				wrappingElementQName.getNamespaceURI());
 
