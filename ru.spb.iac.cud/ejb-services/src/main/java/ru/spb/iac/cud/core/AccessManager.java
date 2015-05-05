@@ -426,7 +426,7 @@ import org.slf4j.LoggerFactory;
 			for (Object[] objectArray : lo) {
 				actcl.put(
 						objectArray[0] != null ? objectArray[0].toString() : "",
-						objectArray[1] != null ? Long.valueOf(objectArray[1].toString()) : -1L);
+						objectArray[1] != null ? Long.parseLong(objectArray[1].toString()) : -1L);
 			}
 
 			

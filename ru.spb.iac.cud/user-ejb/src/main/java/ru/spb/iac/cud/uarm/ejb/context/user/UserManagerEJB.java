@@ -233,7 +233,7 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppOrgManagerBssT;
             for(Object[] objectArray :lo){
             	
             	
-            	idArm = (objectArray[0]!=null?Long.valueOf(objectArray[0].toString()):0L);
+            	idArm = (objectArray[0]!=null?Long.parseLong(objectArray[0].toString()):0L);
             			
             	if(armList==null){
             		armList = new ArrayList<AcIsBssT>();
@@ -410,7 +410,7 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppOrgManagerBssT;
              for(Object[] objectArray :lo){
              	
              	
-             	idArm = (objectArray[0]!=null?Long.valueOf(objectArray[0].toString()):0L);
+             	idArm = (objectArray[0]!=null?Long.parseLong(objectArray[0].toString()):0L);
              			
              	if(armList==null){
              		armList = new ArrayList<AcIsBssT>();
@@ -488,7 +488,7 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppOrgManagerBssT;
              for(Object[] objectArray :lo){
              	
              	
-             	idArm = (objectArray[0]!=null?Long.valueOf(objectArray[0].toString()):0L);
+             	idArm = (objectArray[0]!=null?Long.parseLong(objectArray[0].toString()):0L);
              			
              	if(armList==null){
              		armList = new ArrayList<AcIsBssT>();

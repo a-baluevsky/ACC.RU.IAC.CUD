@@ -197,7 +197,7 @@ import ru.spb.iac.cud.idp.web.util.GOSTSignatureUtil;
 			}
 			
 			LOGGERSLF4J.debug("tokenIDCreate:01+:"
-					+ new Date(Long.valueOf(lifetime)));
+					+ new Date(Long.parseLong(lifetime)));
 
 			StringBuilder sb = new StringBuilder();
 

@@ -163,7 +163,7 @@ import ru.spb.iac.cud.idp.web.util.GOSTXMLEncryptionUtil;
 			keySize = String.valueOf(128);
 		}
 
-		return Integer.valueOf(keySize);
+		return Integer.parseInt(keySize);
 	}
 
 	

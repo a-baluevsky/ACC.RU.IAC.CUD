@@ -277,7 +277,7 @@ import javaw.util.SerializableSet;
 		   
 		   String idSess =(String) this. entityManager.createNativeQuery("select to_char(JOURN_ISP_LOAD_SEQ.nextval) sgnc from dual").getSingleResult();
 	        
-	       int seancact = Integer.valueOf(idSess);
+	       int seancact = Integer.parseInt(idSess);
 		   
 		   entityManager.createNativeQuery(
 				   "INSERT INTO JOURN_ISP_LOAD (ID_SRV, LOAD_START, CREATED, CREATOR) "+
