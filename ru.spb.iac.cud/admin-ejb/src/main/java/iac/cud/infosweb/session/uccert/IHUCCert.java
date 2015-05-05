@@ -286,19 +286,25 @@ import org.slf4j.LoggerFactory;
 		} catch (Exception eUcc) {
 			LOGGER.error("IHUCCert:content:error:", eUcc);
 		} finally {
-			Closeable[] resToClose = new Closeable[]{output, in};
-			for(Closeable res: resToClose) {
-				try {
-					if (res != null) {
-						res.close();
-					}
-				} catch (Exception eUcc) {
-					LOGGER.error("LaunchCRLTask:content:finally:is:error:", eUcc);
-				}
-			}			
+			close("LaunchCRLTask:content:finally:is:error:", in, output);
 		}
 
 		return resultFile;
+	}
+
+	private void close(String msgCloseFailure, Closeable res1, Closeable res2) {
+		close(msgCloseFailure, res1);
+		close(msgCloseFailure, res2);
+	}
+	
+	private void close(String msgCloseFailure, Closeable res) {
+		try {
+			if (res != null) {
+				res.close();
+			}
+		} catch (Exception eUcc) {
+			LOGGER.error(msgCloseFailure, eUcc);
+		}
 	}
 
 	public void file_interaction(File file) throws Exception {
