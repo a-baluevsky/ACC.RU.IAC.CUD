@@ -354,14 +354,14 @@ import org.jboss.seam.log.Log;
 		  Properties properties = new Properties();
 		  String path = proc_atoken_exec_file;
 		  OutputStream os = null;
-			   
+		  FileInputStream fi = null;
 		  try {
 		    
              File fTkn=new File(path); 
             
 		     if(fTkn.exists()) {
-		    	 
-		       properties.load(new FileInputStream(fTkn));
+		       fi = new FileInputStream(fTkn); 
+		       properties.load(fi);
 		       
 		          
 		       properties.setProperty("status", "active");
@@ -387,6 +387,9 @@ import org.jboss.seam.log.Log;
 				if(os!=null){
 					 os.close();
 				}
+				if(fi!=null) { 
+					fi.close();
+				}				
 			 } catch (Exception eTkn) {
 				log.error("confLogContrManager:procRun:os:error:"+eTkn);
 			 }

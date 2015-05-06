@@ -46,6 +46,7 @@ import org.slf4j.LoggerFactory;
 				String  status = null;
 				Properties properties = new Properties();
 				String path = proc_atoken_exec_file;
+				FileInputStream fi = null;  
 			
 
 				try {
@@ -58,8 +59,9 @@ import org.slf4j.LoggerFactory;
 					if (f.exists()) {
 
 						LOGGER.debug("initTask:run:02");
+						fi = new FileInputStream(f);
 
-						properties.load(new FileInputStream(f));
+						properties.load(fi);
 
 						status = properties.getProperty("status");
 
@@ -85,6 +87,9 @@ import org.slf4j.LoggerFactory;
 					LOGGER.error("initTask:run:error:", e);
 				} finally {
 					try {
+						if(fi!=null) { 
+							fi.close();
+						}							
 						scheduler.shutdown();
 					} catch (Exception e) {
 						LOGGER.error("initTask:run:finally:is:error:", e);

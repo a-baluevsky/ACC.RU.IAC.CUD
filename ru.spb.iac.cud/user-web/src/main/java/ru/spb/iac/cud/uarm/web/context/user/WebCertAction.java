@@ -323,12 +323,15 @@ public static boolean chain_check(Certificate pcert) {
 	// TODO Auto-generated method stub
 	boolean result = false;
 	
+	FileInputStream fi = null;
+	
 	try{
 		
 		if(keyStore==null) {
 		keyStore = KeyStore.getInstance("CertStore", "JCP");
+		fi = new FileInputStream(cert_store_url);
 		
-		keyStore.load(new FileInputStream(cert_store_url), "Access_Control".toCharArray());
+		keyStore.load(fi, "Access_Control".toCharArray());
 		
 		}
 		
@@ -402,6 +405,10 @@ public static boolean chain_check(Certificate pcert) {
 	  
 	}catch(Exception e){
 		LOGGER.error("error:"+e);
+	} finally{
+		if(fi!=null) { 
+			fi.close();
+		}				
 	}
 	
 	return result;
@@ -424,35 +431,24 @@ private static String dec_to_hex(BigInteger bi) {
 }
 
 public String root_sn() {
-	// TODO Auto-generated method stub
-	
-	if(root_sn==null){
-	
-		 
-		  
-	try{
-		
+	if(root_sn==null) {
+	  try {
+		FileInputStream fi = null;
 		if(keyStore==null) {
 		  keyStore = KeyStore.getInstance("CertStore", "JCP");
-		
-		keyStore.load(new FileInputStream(cert_store_url), "Access_Control".toCharArray());
+		  fi = new FileInputStream(cert_store_url);
+		  keyStore.load(fi, "Access_Control".toCharArray());
 		}
-		
-	
-	
-	  
-	  
-	  X509Certificate tr = (X509Certificate)keyStore.getCertificate(alias_root);
-
-	  root_sn = dec_to_hex(tr.getSerialNumber());
-	  
-	
-	  
-	  }catch(Exception e){
+		X509Certificate tr = (X509Certificate)keyStore.getCertificate(alias_root);
+		root_sn = dec_to_hex(tr.getSerialNumber());  
+	  } catch(Exception e){
 		  LOGGER.error("WebCertAction:root_sn:error:"+e);
-		  }
+	  }	finally {
+		if(fi!=null) { 
+			fi.close();
+		}				
+	  }
 	}
-	
 	return root_sn;
 }
 

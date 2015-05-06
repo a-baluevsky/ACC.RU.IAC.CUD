@@ -299,22 +299,16 @@ private static String alias_root = "σφροαγσο«ροαθΰφ».crt";
 		boolean result = false;
 
 		try {
-
+			FileInputStream fi = null;
+			
 			if(keyStore==null) {
-			keyStore = KeyStore.getInstance("CertStore", "JCP");
-
-			keyStore.load(new FileInputStream(cert_store_url),
-					"Access_Control".toCharArray());
+				keyStore = KeyStore.getInstance("CertStore", "JCP");
+	
+				fi = new FileInputStream(cert_store_url);
+				keyStore.load(fi, "Access_Control".toCharArray());
 			}
-			
-			
-
 			Certificate tr = keyStore.getCertificate(alias_root);
 			Certificate crt = pcert;
-			
-
-			 
-
 			final Certificate[] certs = new Certificate[2];
 			certs[0] = crt;
 			certs[1] = tr; // root
@@ -366,10 +360,12 @@ private static String alias_root = "σφροαγσο«ροαθΰφ».crt";
 
 			result = true;
 
-		
-
 		} catch (Exception e) {
 			LOGGER.error("error:", e);
+		} finally{
+			if(fi!=null) { 
+				fi.close();
+			}				
 		}
 
 		return result;
@@ -392,15 +388,15 @@ private static String alias_root = "σφροαγσο«ροαθΰφ».crt";
 
 		if (root_sn == null) {
 
-			 
+			FileInputStream fi = null; 
 
 			try {
 
-			if(keyStore==null) {
-				keyStore = KeyStore.getInstance("CertStore", "JCP");
-
-				keyStore.load(new FileInputStream(cert_store_url),
-						"Access_Control".toCharArray());
+				if(keyStore==null) {
+					keyStore = KeyStore.getInstance("CertStore", "JCP");
+	
+					fi = new FileInputStream(cert_store_url);
+					keyStore.load(fi, "Access_Control".toCharArray());
 				}
 				
 				X509Certificate tr = (X509Certificate) keyStore
@@ -410,6 +406,10 @@ private static String alias_root = "σφροαγσο«ροαθΰφ».crt";
 
 			} catch (Exception e) {
 				LOGGER.error("root_sn:error:", e);
+			} finally{
+				if(fi!=null) { 
+					fi.close();
+				}				
 			}
 		}
 

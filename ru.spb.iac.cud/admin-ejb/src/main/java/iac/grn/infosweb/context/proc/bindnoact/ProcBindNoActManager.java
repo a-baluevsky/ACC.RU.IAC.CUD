@@ -402,14 +402,13 @@ import org.jboss.seam.log.Log;
 			   
 		  try {
 			 DateFormat df = new SimpleDateFormat ("dd.MM.yy HH:mm");
-		    
-		    
+			 FileInputStream fi = null;  		    
 		     
 		     File fBna=new File(pathBna); 
 		     
 		     if(fBna.exists()) {
-		    	 
-		       properties.load(new FileInputStream(fBna));
+		    	 fi = new FileInputStream(fBna); 	 
+		       properties.load(fi);
 		       
 		       periodValue=properties.getProperty("period");
 		       startDateValue=properties.getProperty("start_date");
@@ -449,6 +448,9 @@ import org.jboss.seam.log.Log;
 			 try {
 				if(os!=null){
 					 os.close();
+				}
+				if(fi!=null) { 
+					fi.close();
 				}
 			 } catch (Exception eBna) {
 				log.error("procBindNoActManager:procRun:os:error:"+eBna);

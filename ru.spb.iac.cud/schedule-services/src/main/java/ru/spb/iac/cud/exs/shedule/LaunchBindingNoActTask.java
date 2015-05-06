@@ -56,12 +56,14 @@ import org.slf4j.LoggerFactory;
 					DateFormat df = new SimpleDateFormat("dd.MM.yy HH:mm");
 
 					File f = new File(path);
+					FileInputStream fi = null;   
 
 					if (f.exists()) {
 
 						LOGGER.debug("initTask:run:02");
+						fi = new FileInputStream(f);
 
-						properties.load(new FileInputStream(f));
+						properties.load(fi);
 
 						startDate = properties.getProperty("start_date");
 						period = properties.getProperty("period");
@@ -94,6 +96,9 @@ import org.slf4j.LoggerFactory;
 					LOGGER.error("initTask:run:error:", e);
 				} finally {
 					try {
+						if(fi!=null) { 
+							fi.close();
+						}						
 						scheduler.shutdown();
 					} catch (Exception e) {
 						LOGGER.error("initTask:run:finally:is:error:", e);

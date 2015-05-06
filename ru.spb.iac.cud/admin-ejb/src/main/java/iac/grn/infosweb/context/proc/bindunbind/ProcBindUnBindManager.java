@@ -400,7 +400,7 @@ import org.jboss.seam.log.Log;
 		  String path = proc_binding_unbind_exec_file;
 		  OutputStream os = null;
 		  String startDateValue=null, periodValue=null;
-			   
+		  FileInputStream fi = null;   
 		  try {
 			 DateFormat df = new SimpleDateFormat ("dd.MM.yy HH:mm");
 		    
@@ -409,8 +409,8 @@ import org.jboss.seam.log.Log;
 		     File fBubRun=new File(path); 
 		     
 		     if(fBubRun.exists()) {
-		    	 
-		       properties.load(new FileInputStream(fBubRun));
+		    	 fi = new FileInputStream(fBubRun);
+		       properties.load(fi);
 		       
 		       periodValue=properties.getProperty("period");
 		       startDateValue=properties.getProperty("start_date");
@@ -451,6 +451,9 @@ import org.jboss.seam.log.Log;
 				if(os!=null){
 					 os.close();
 				}
+				if(fi!=null) { 
+					fi.close();
+				}				
 			 } catch (Exception eBubRun) {
 				log.error("procBindUnBindManager:procRun:os:error:"+eBubRun);
 			 }

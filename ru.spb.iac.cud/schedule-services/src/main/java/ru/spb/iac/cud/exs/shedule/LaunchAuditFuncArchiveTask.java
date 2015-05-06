@@ -52,12 +52,12 @@ import org.slf4j.LoggerFactory;
 					LOGGER.debug("initTask:run:01");
 
 					File f = new File(path);
-
+					FileInputStream fi = null;   
 					if (f.exists()) {
 
 						LOGGER.debug("initTask:run:02");
-
-						properties.load(new FileInputStream(f));
+						fi = new FileInputStream(f);
+						properties.load(fi);
 
 						status = properties.getProperty("status");
 
@@ -83,6 +83,9 @@ import org.slf4j.LoggerFactory;
 					LOGGER.error("initTask:run:error:", e);
 				} finally {
 					try {
+						if(fi!=null) { 
+							fi.close();
+						}						
 						scheduler.shutdown();
 					} catch (Exception e) {
 						LOGGER.error("initTask:run:finally:is:error:", e);

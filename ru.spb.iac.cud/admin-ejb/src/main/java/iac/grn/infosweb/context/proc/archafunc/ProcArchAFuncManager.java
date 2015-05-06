@@ -363,14 +363,15 @@ import org.jboss.seam.log.Log;
 		  Properties properties = new Properties();
 		  String path = proc_aafunc_exec_file;
 		  OutputStream os = null;
+		  FileInputStream fi = null;
 		  try {
 		    
 		     
 		     File f=new File(path); 
 		     
 		     if(f.exists()) {
-		    	 
-		       properties.load(new FileInputStream(f));
+		       fi = new FileInputStream(f);
+		       properties.load(fi);
 		     
 		       
 		       properties.setProperty("status", "active");
@@ -395,6 +396,9 @@ import org.jboss.seam.log.Log;
 			 try {
 				if(os!=null){
 					 os.close();
+				}
+				if(fi!=null) { 
+					fi.close();
 				}
 			 } catch (Exception e) {
 				log.error("confLogContrManager:procRun:os:error:"+e);

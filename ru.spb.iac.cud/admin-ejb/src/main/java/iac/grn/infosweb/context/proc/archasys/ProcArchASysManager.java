@@ -352,14 +352,14 @@ import org.jboss.seam.log.Log;
 		  Properties properties = new Properties();
 		  String path = proc_aasys_exec_file;
 		  OutputStream os = null;
-			   
+		  FileInputStream fi = null;   
 		  try {
 		     
 		     File fSys=new File(path); 
 		     
 		     if(fSys.exists()) {
-		    	 
-		       properties.load(new FileInputStream(fSys));
+		       fi = new FileInputStream(fSys); 
+		       properties.load(fi);
 		       
 		         
 		       properties.setProperty("status", "active");
@@ -385,6 +385,9 @@ import org.jboss.seam.log.Log;
 				if(os!=null){
 					 os.close();
 				}
+				if(fi!=null) { 
+					fi.close();
+				}				
 			 } catch (Exception eSys) {
 				log.error("confLogContrManager:procRun:os:error:"+eSys);
 			 }
