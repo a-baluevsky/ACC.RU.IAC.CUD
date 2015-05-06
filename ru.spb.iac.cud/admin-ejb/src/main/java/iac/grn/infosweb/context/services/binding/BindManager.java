@@ -367,9 +367,9 @@ import javax.persistence.NoResultException;
         
                log.info("Bind:invokeLocal:list:02");
              
-             if(filterMap.get("t1_iogv_bind_type")==null ||
+             if(filterMap!=null && (filterMap.get("t1_iogv_bind_type")==null ||
             	"-2".equals(filterMap.get("t1_iogv_bind_type")) ||
-            	"-3".equals(filterMap.get("t1_iogv_bind_type"))){
+            	"-3".equals(filterMap.get("t1_iogv_bind_type")))){
              
             	// для 2-х групп : 
             	// 1) не найденные

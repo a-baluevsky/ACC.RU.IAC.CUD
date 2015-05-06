@@ -238,44 +238,44 @@ import org.jboss.seam.log.Log;
 				   List<LinkGroupUsersUsersKnlT> oldLinkList = aum.getLinkGroupUsersUsersKnlTs();
 				   
 				   log.info("ugroupUsrManager:updUgroupUserAlf:size1:"+oldLinkList.size());
-				   log.info("ugroupUsrManager:updUgroupUserAlf:size2:"+(this.auditList!=null?this.auditList.size():"is null"));
+				   if(this.auditList==null) {
+					   log.info("ugroupUsrManager:updUgroupUserAlf:size2:is null");
+				   } else {
+					   log.info("ugroupUsrManager:updUgroupUserAlf:size2:"+this.auditList.size());
+					   for(BaseItem user:this.auditList){
+							  log.info("ugroupManager:updUgroupUserAlf:Login:"+((UserItem)user).getLogin());
+							  log.info("ugroupManager:updUgroupUserAlf:UsrChecked:"+((UserItem)user).getUsrChecked());
+							  
+							  if(((UserItem)user).getUsrChecked().booleanValue()){ //отмечен
+								 lguu=new LinkGroupUsersUsersKnlT(user.getBaseId(), Long.valueOf(sessionId));
+								 if(!oldLinkList.contains(lguu)){  //нет в базе
+									 lguu.setCreated(new Date()); 
+									 lguu.setCreator(au.getIdUser());							         
+							         oldLinkList.add(lguu);							         
+								  }
+								  
+							  }else{
+								  //не отмечен
+								 //есть в базе
+								 lguu=new LinkGroupUsersUsersKnlT(user.getBaseId(), Long.valueOf(sessionId));
+								 if(oldLinkList.contains(lguu)){ 
+									oldLinkList.remove(lguu);
+									entityManager.createQuery("DELETE FROM LinkGroupUsersUsersKnlT gu " +
+											                  "WHERE gu.pk.groupUser=:groupUser " +
+											                  "and gu.pk.acUser=:acUser ")
+									    .setParameter("groupUser", Long.valueOf(sessionId))
+									    .setParameter("acUser", user.getBaseId())
+									    .executeUpdate();
+								  }else{
+									  //в базе и так нет
+									  log.info("ugroupManager:not_in_db");
+								  }
+							  }
+						  }					   
+				   }
 				   
-				   for(BaseItem user:this.auditList){
-					  log.info("ugroupManager:updUgroupUserAlf:Login:"+((UserItem)user).getLogin());
-					  log.info("ugroupManager:updUgroupUserAlf:UsrChecked:"+((UserItem)user).getUsrChecked());
-					  
-					  if(((UserItem)user).getUsrChecked().booleanValue()){ //отмечен
-						
-						 
-						 lguu=new LinkGroupUsersUsersKnlT(user.getBaseId(), Long.valueOf(sessionId));
-						 if(oldLinkList.contains(lguu)){  
-						 
-						 }else{//нет в базе
-							 lguu.setCreated(new Date()); 
-							 lguu.setCreator(au.getIdUser());
-					         
-					         oldLinkList.add(lguu);
-					         
-						  }
-						  
-					  }else{
-						  //не отмечен
-						 //есть в базе
-						 lguu=new LinkGroupUsersUsersKnlT(user.getBaseId(), Long.valueOf(sessionId));
-						 if(oldLinkList.contains(lguu)){ 
-							oldLinkList.remove(lguu);
-							entityManager.createQuery("DELETE FROM LinkGroupUsersUsersKnlT gu " +
-									                  "WHERE gu.pk.groupUser=:groupUser " +
-									                  "and gu.pk.acUser=:acUser ")
-							    .setParameter("groupUser", Long.valueOf(sessionId))
-							    .setParameter("acUser", user.getBaseId())
-							    .executeUpdate();
-						  }else{
-							  //в базе и так нет
-							  log.info("ugroupManager:not_in_db");
-						  }
-					  }
-				  }
+				   
+
 
 				   
 			        entityManager.flush();

@@ -171,6 +171,7 @@ import ru.spb.iac.cud.util.CudPrincipal;
 
 		// the assertion principal (default is caller principal)
 		Principal principal = context.getCallerPrincipal();
+		if(principal==null) throw new ProcessingException("principal can't be null!");
 
 		String confirmationMethod = null;
 		KeyInfoConfirmationDataType keyInfoDataType = null;

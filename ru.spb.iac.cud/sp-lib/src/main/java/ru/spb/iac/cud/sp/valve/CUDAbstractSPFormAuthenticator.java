@@ -198,7 +198,7 @@ public abstract class CUDAbstractSPFormAuthenticator extends
 
 		KeyProviderType keyProvider = this.spConfiguration.getKeyProvider();
 
-		if (keyProvider == null && doSupportSignature()) {
+		if (keyProvider == null || doSupportSignature()) {
 			throw new LifecycleException(ErrorCodes.NULL_VALUE
 					+ "KeyProvider is null for context=" + context.getName());
 		}

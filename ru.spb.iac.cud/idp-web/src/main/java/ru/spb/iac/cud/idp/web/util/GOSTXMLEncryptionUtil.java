@@ -487,7 +487,7 @@ import ru.spb.iac.crypto.export.Crypto15Init;
 	 */
 	public static Element decryptElementInDocument(
 			Document documentWithEncryptedElement, PrivateKey privateKey)
-			throws ProcessingException {
+			throws IllegalArgumentException, ProcessingException {
 		if (documentWithEncryptedElement == null) {
 			throw LOGGER.nullArgumentError("Input document is null");
 		}
@@ -532,37 +532,35 @@ import ru.spb.iac.crypto.export.Crypto15Init;
 			throw LOGGER.processingError(e1);
 		}
 
-		Document decryptedDoc = null;
-
 		if (encryptedData != null && encryptedKey != null) {
 			try {
 				String encAlgoURL = encryptedData.getEncryptionMethod()
 						.getAlgorithm();
 				XMLCipher keyCipher = XMLCipher.getInstance();
 				keyCipher.init(XMLCipher.UNWRAP_MODE, privateKey);
-				Key encryptionKey = keyCipher.decryptKey(encryptedKey,
-						encAlgoURL);
+				Key encryptionKey = keyCipher.decryptKey(encryptedKey, encAlgoURL);
 				cipher = XMLCipher.getInstance();
 				cipher.init(XMLCipher.DECRYPT_MODE, encryptionKey);
 
-				decryptedDoc = cipher.doFinal(documentWithEncryptedElement,
+				Document decryptedDoc = cipher.doFinal(documentWithEncryptedElement,
 						encDataElement);
+				Element decryptedRoot = decryptedDoc.getDocumentElement();
+				Element dataElement = getNextElementNode(decryptedRoot.getFirstChild());
+				if (dataElement == null) {
+					throw LOGGER
+							.nullValueError("Data Element after encryption is null");
+				}
+
+				decryptedRoot.removeChild(dataElement);
+				decryptedDoc.replaceChild(dataElement, decryptedRoot);
+
+				return decryptedDoc.getDocumentElement();				
 			} catch (Exception e) {
 				throw LOGGER.processingError(e);
 			}
-		}
+			
+		} else throw new IllegalArgumentException("EncryptedData and encryptedKey can't be null");
 
-		Element decryptedRoot = decryptedDoc.getDocumentElement();
-		Element dataElement = getNextElementNode(decryptedRoot.getFirstChild());
-		if (dataElement == null) {
-			throw LOGGER
-					.nullValueError("Data Element after encryption is null");
-		}
-
-		decryptedRoot.removeChild(dataElement);
-		decryptedDoc.replaceChild(dataElement, decryptedRoot);
-
-		return decryptedDoc.getDocumentElement();
 	}
 
 	

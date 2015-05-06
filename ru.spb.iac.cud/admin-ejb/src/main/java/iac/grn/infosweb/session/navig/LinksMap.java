@@ -178,38 +178,34 @@ import javax.faces.context.FacesContext;
 	  * @param pCode код ресурса
 	  * @return адрес размещения ресурса
 	  */
-	 public String getLink(String pCode){
-		 
-		 
-		 
-		 String link=null;
+	 public String getLink(String pCode){	
 		 if(pCode!=null){
-			if(pCode.startsWith("Repos")){
+			String link=(String)lm.get(pCode);
+			if(link==null)
+				return (String)lm.get(notFound);
+			if(pCode.equals("_errorPerm_")){
+				 String actSect = FacesContext.getCurrentInstance().getExternalContext()
+				        .getRequestParameterMap()
+				        .get("actSect");
+				 String actSectItem = FacesContext.getCurrentInstance().getExternalContext()
+				        .getRequestParameterMap()
+				        .get("actSectItem");
+				 String idRai = FacesContext.getCurrentInstance().getExternalContext()
+				        .getRequestParameterMap()
+				        .get("idRai");			 
+				 log.info("LinksMap:getLink:actSect:"+actSect);
+				 log.info("LinksMap:getLink:actSectItem:"+actSectItem);
+				 log.info("LinksMap:getLink:idRai:"+idRai);
+				 link += "?actSect="+actSect+"&actSectItem="+actSectItem+(idRai!=null ? "&idRai="+idRai : "");
+			} else if(pCode.startsWith("Repos")){
 			  String[] sa = pCode.split("-");
-			  if(sa.length==2){
-				 link=(String)lm.get("Repos")+"?reposType="+sa[1]; 
+			  if(sa.length==2) {
+				 link=(String)lm.get("Repos")+"?reposType="+sa[1];
 			  }
-			}else{
-		      link=(String)lm.get(pCode);
-		    }
+			}
+			return link;
 		 }
-		 if(pCode.equals("_errorPerm_")){
-		  String actSect = FacesContext.getCurrentInstance().getExternalContext()
-		         .getRequestParameterMap()
-		         .get("actSect");
-		  String actSectItem = FacesContext.getCurrentInstance().getExternalContext()
-		         .getRequestParameterMap()
-		         .get("actSectItem");
-		  String idRai = FacesContext.getCurrentInstance().getExternalContext()
-		         .getRequestParameterMap()
-		         .get("idRai");
-		 
-		  log.info("LinksMap:getLink:actSect:"+actSect);
-		  log.info("LinksMap:getLink:actSectItem:"+actSectItem);
-		  log.info("LinksMap:getLink:idRai:"+idRai);
-		  link=link+"?actSect="+actSect+"&actSectItem="+actSectItem+(idRai!=null ? "&idRai="+idRai : "");
-		 }
-		 return (link!=null?link:(String)lm.get(notFound));
+		 return (String)lm.get(notFound);
 	 }
 	 /**
 	  * Идентификационный код приложения

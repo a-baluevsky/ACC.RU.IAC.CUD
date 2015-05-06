@@ -46,7 +46,7 @@ import ru.spb.iac.cud.items.AuthMode;
 			String codeSys) throws GeneralFailure, InvalidCredentials,
 			RevokedCertificate {
 		LOGGER.debug("authenticate_cert_sn");
-		return aml.authenticate_cert_sn(sn, AuthMode.HTTP_REDIRECT, IPAddress,
+		return aml.authenticate_cert_sn(sn, AuthMode.HTTP_REDIRECT_CERT, IPAddress,
 				codeSys);
 	}
 

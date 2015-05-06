@@ -238,44 +238,40 @@ import org.jboss.seam.log.Log;
 				   List<AcLinkUserToRoleToRaion> oldLinkList = aum.getAcLinkUserToRoleToRaions();
 				   
 				   log.info("rolUsrManager:updRolUserAlf:size1:"+oldLinkList.size());
-				   log.info("rolUsrManager:updRolUserAlf:size2:"+(this.auditList!=null?this.auditList.size():"is null"));
-				   
-				   for(BaseItem user:this.auditList){
-					  log.info("ugroupManager:updRolUserAlf:Login:"+((UserItem)user).getLogin());
-					  log.info("ugroupManager:updRolUserAlf:UsrChecked:"+((UserItem)user).getUsrChecked());
-					  
-					  if(((UserItem)user).getUsrChecked().booleanValue()){ //отмечен
-						
-						 
-						 lguu=new AcLinkUserToRoleToRaion(Long.valueOf(sessionId), user.getBaseId());
-						 if(oldLinkList.contains(lguu)){  
-						 
-						 }else{//нет в базе
-							 lguu.setCreated(new Date()); 
-							 lguu.setCreator(au.getIdUser());
-					         
-					         oldLinkList.add(lguu);
-					   	  }
-						  
-					  }else{//не отмечен
-						 lguu=new AcLinkUserToRoleToRaion(Long.valueOf(sessionId), user.getBaseId());
-						 if(oldLinkList.contains(lguu)){ 
-							oldLinkList.remove(lguu);
-							entityManager.createQuery("DELETE FROM AcLinkUserToRoleToRaion gu " +
-					                  "WHERE gu.pk.acRole=:acRole " +
-					                  "and gu.pk.acUser=:acUser ")
-			                         .setParameter("acRole", Long.valueOf(sessionId))
-			                         .setParameter("acUser", user.getBaseId())
-							    .executeUpdate();
-						  }else{//в базе и так нет
-						 
-						  }
-					  }
-				  }
-
-				   
+				   if(this.auditList==null) {
+					   log.info("rolUsrManager:updRolUserAlf:auditList is null");
+				   } else {
+					   log.info("rolUsrManager:updRolUserAlf:size2:"+this.auditList.size());
+					   for(BaseItem user:this.auditList){
+							  log.info("ugroupManager:updRolUserAlf:Login:"+((UserItem)user).getLogin());
+							  log.info("ugroupManager:updRolUserAlf:UsrChecked:"+((UserItem)user).getUsrChecked());
+							  
+							  if(((UserItem)user).getUsrChecked().booleanValue()){ //отмечен
+								 lguu=new AcLinkUserToRoleToRaion(Long.valueOf(sessionId), user.getBaseId());
+								 if(!oldLinkList.contains(lguu)){  //нет в базе
+									 lguu.setCreated(new Date()); 
+									 lguu.setCreator(au.getIdUser());							         
+							         oldLinkList.add(lguu);
+							   	  }
+								  
+							  }else{//не отмечен
+								 lguu=new AcLinkUserToRoleToRaion(Long.valueOf(sessionId), user.getBaseId());
+								 if(oldLinkList.contains(lguu)){ 
+									oldLinkList.remove(lguu);
+									entityManager.createQuery("DELETE FROM AcLinkUserToRoleToRaion gu " +
+							                  "WHERE gu.pk.acRole=:acRole " +
+							                  "and gu.pk.acUser=:acUser ")
+					                         .setParameter("acRole", Long.valueOf(sessionId))
+					                         .setParameter("acUser", user.getBaseId())
+									    .executeUpdate();
+								  }else{//в базе и так нет
+								 
+								  }
+							  }
+						  }					   
+				   }
 			        entityManager.flush();
-			    	
+		    	
 				    entityManager.refresh(aum);
 			    	  
 				    Contexts.getEventContext().set("rolBean", aum);

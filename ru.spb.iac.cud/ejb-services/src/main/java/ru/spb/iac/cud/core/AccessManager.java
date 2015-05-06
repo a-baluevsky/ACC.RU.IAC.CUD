@@ -18,6 +18,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TemporalType;
 
+import ru.CryptoPro.Install.InvalidArgumentException;
 import ru.spb.iac.cud.core.util.CUDConstants;
 import ru.spb.iac.cud.core.util.HashPassword;
 import ru.spb.iac.cud.exceptions.GeneralFailure;
@@ -29,6 +30,7 @@ import ru.spb.iac.cud.items.AuthMode;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import org.apache.openejb.util.Debug;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,65 +59,26 @@ import org.slf4j.LoggerFactory;
 	public AccessManager() {
 	}
 
-	/**
-	 * аутентификаци€ пользовател€ по логин/паролю
-	 */
-	public String authenticate_login(String login, String password,
-			AuthMode authMode, String IPAddress, String codeSys)
-			throws GeneralFailure, InvalidCredentials {
-
-		LOGGER.debug("authenticate_login:login:" + login);
-
-		 
+/**
+ * аутентификаци€ пользовател€ по логин/паролю
+ */
+public String authenticate_login(String login, String password,
+	AuthMode authMode, String IPAddress, String codeSys)
+	throws GeneralFailure, InvalidCredentials {
 		
-		Object[] dataUser = null;
+	Long authModeValue = authMode.toAuditSvcValue();
+	LOGGER.debug("authenticate_login:login:" + login +", authModeValue: "+authModeValue);
 
-		Long idUser = null;
-		String loginUser = null;
-
-		Long authModeValue = null;
-
-		if (authMode.equals(AuthMode.WEB_SERVICES)) {
-			authModeValue = 2L;
-		} else if (authMode.equals(AuthMode.HTTP_REDIRECT)) {
-			authModeValue = 97L;
-		} else if (authMode.equals(AuthMode.HTTP_REDIRECT_EXT_AUTH_OPEN)) {
-			authModeValue = 99L;
-		} else if (authMode.equals(AuthMode.HTTP_REDIRECT_EXT_AUTH_ENCRYPT)) {
-			authModeValue = 79L;
-		}
-
-		try {
-
-			if (authModeValue.equals(78L)) {
-				LOGGER.debug("authenticate:01");
-
-				dataUser = (Object[]) em
-						.createNativeQuery(
-								"select AU.ID_SRV, AU.login, AU.PASSWORD_ "
-										+ "from "
-										+ "AC_USERS_KNL_T au "
-										+ "where AU.LOGIN=? "
-										+ "and (AU.START_ACCOUNT is null or au.START_ACCOUNT <= sysdate) "
-										+ "and (AU.START_ACCOUNT is null or au.START_ACCOUNT > sysdate) "
-										+ "and AU.STATUS = 1 ")
-						.setParameter(1, login).getSingleResult();
-
-				boolean matched = HashPassword.validatePassword(
-						(dataUser[2] != null ? dataUser[2].toString() : ""),
-						password);
-
-				if (!matched) {
-					throw new NoResultException();
-				}
-				idUser = ((java.math.BigDecimal) dataUser[0]).longValue();
-				loginUser = dataUser[1].toString();
-				LOGGER.debug("authenticate:02");
-
-			} else {
-
-				LOGGER.debug("authenticate:03");
-
+	Object[] dataUser = null;
+	Long idUser = null;
+	String loginUser = null;
+	try {			
+		switch(authMode) {
+		case WEB_SERVICES:
+		case HTTP_REDIRECT:	
+		case HTTP_REDIRECT_EXT_AUTH_OPEN:	
+		case HTTP_REDIRECT_EXT_AUTH_ENCRYPT:			
+				LOGGER.debug("authenticate:03");	
 				dataUser = (Object[]) em
 						.createNativeQuery(
 								"select AU.ID_SRV, AU.login "
@@ -127,36 +90,57 @@ import org.slf4j.LoggerFactory;
 										+ "and (AU.START_ACCOUNT is null or au.START_ACCOUNT > sysdate) "
 										+ "and AU.STATUS = 1 ")
 						.setParameter(1, login).setParameter(2, password)
-						.getSingleResult();
-
+						.getSingleResult();	
+				idUser = ((java.math.BigDecimal) dataUser[0]).longValue();
+				loginUser = dataUser[1].toString();	
+				LOGGER.debug("authenticate:04");					
+			break;
+		case HTTP_USE_HASHED_PASSWORD:
+				LOGGER.debug("authenticate:01");
+	
+				dataUser = (Object[]) em
+						.createNativeQuery(
+								"select AU.ID_SRV, AU.login, AU.PASSWORD_ "
+										+ "from "
+										+ "AC_USERS_KNL_T au "
+										+ "where AU.LOGIN=? "
+										+ "and (AU.START_ACCOUNT is null or au.START_ACCOUNT <= sysdate) "
+										+ "and (AU.START_ACCOUNT is null or au.START_ACCOUNT > sysdate) "
+										+ "and AU.STATUS = 1 ")
+						.setParameter(1, login).getSingleResult();
+	
+				boolean matched = HashPassword.validatePassword(
+						(dataUser[2] != null ? dataUser[2].toString() : ""),
+						password);
+	
+				if (!matched) {
+					throw new NoResultException();
+				}
 				idUser = ((java.math.BigDecimal) dataUser[0]).longValue();
 				loginUser = dataUser[1].toString();
+				LOGGER.debug("authenticate:02");				
+			break;			
+		default:
+			throw new IllegalArgumentException("Invalid AuthMode: "+authMode);
+		};
+		sys_audit(authModeValue, "login:" + login + "; passw:***", "true",
+				IPAddress, idUser, codeSys);	
+		return loginUser;
+	} catch (NoResultException ex) {
+		sys_audit(authModeValue, "login:" + login + "; passw:" + password,
+				"false", IPAddress, null, codeSys);
 
-				LOGGER.debug("authenticate:04");
-			}
+		LOGGER.debug("authenticate:NoResultException");
+		throw new InvalidCredentials("”четной записи нет в системе!");
+	} catch (Exception e) {
+		sys_audit(authModeValue, "login:" + login + "; passw:***", "error",
+				IPAddress, idUser, codeSys);
 
-			sys_audit(authModeValue, "login:" + login + "; passw:***", "true",
-					IPAddress, idUser, codeSys);
-
-			return loginUser;
-
-		} catch (NoResultException ex) {
-
-			sys_audit(authModeValue, "login:" + login + "; passw:" + password,
-					"false", IPAddress, null, codeSys);
-
-			LOGGER.debug("authenticate:NoResultException");
-			throw new InvalidCredentials("”четной записи нет в системе!");
-		} catch (Exception e) {
-
-			sys_audit(authModeValue, "login:" + login + "; passw:***", "error",
-					IPAddress, idUser, codeSys);
-
-			LOGGER.error("authenticate:Error:", e);
-			throw new GeneralFailure(e.getMessage());
-		}
+		LOGGER.error("authenticate:Error:", e);
+		throw new GeneralFailure(e.getMessage());
 	}
-
+}
+	
 	/**
 	 * аутентификаци€ пользовател€ по токену от другой системы
 	 * @param login логин пользовател€
@@ -286,18 +270,17 @@ import org.slf4j.LoggerFactory;
 			InvalidCredentials, RevokedCertificate {
 
 		LOGGER.debug("authenticate_cert_sn:01");
+		if( authMode!=AuthMode.HTTP_REDIRECT_CERT &&
+			authMode!=AuthMode.WEB_SERVICES_CERT) {
+			throw new IllegalArgumentException("AuthMode can be HTTP_REDIRECT_CERT or WEB_SERVICES_CERT, not "+authMode);
+		}
 
 		Object[] dataUser = null;
 
 		Long idUser = null;
 		String loginUser = null;
-		Long authModeValue = null;
-
-		if (authMode.equals(AuthMode.WEB_SERVICES)) {
-			authModeValue = 62L;
-		} else if (authMode.equals(AuthMode.HTTP_REDIRECT)) {
-			authModeValue = 98L;
-		}
+		Long authModeValue = authMode.toAuditSvcValue();
+		
 
 		if (sn == null) {
 			sys_audit(2L, "sn:" + sn, "error:Serial Number is Empty!",

@@ -1219,11 +1219,7 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
        	throw new Exception(e1);
        }
 
-       Document decryptedDoc = null;
-
        if (encryptedData != null && encryptedKey != null) {
-       	
-       	
            try {
                String encAlgoURL = encryptedData.getEncryptionMethod().getAlgorithm();
                XMLCipher keyCipher = XMLCipher.getInstance();
@@ -1232,32 +1228,23 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
                cipher = XMLCipher.getInstance();
                cipher.init(XMLCipher.DECRYPT_MODE, encryptionKey);
 
-               decryptedDoc = cipher.doFinal(documentWithEncryptedElement, encDataElement);
+               Document decryptedDoc = cipher.doFinal(documentWithEncryptedElement, encDataElement);
+               Element decryptedRoot = decryptedDoc.getDocumentElement();
+               //<saml:EncryptedAssertion xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"><saml:Assertion... 
+                Element dataElement = (Element)decryptedRoot.getFirstChild();
+               //<saml:Assertion...
+               if (dataElement == null) {
+        		throw new Exception("Data Element after encryption is null");
+        	}
+               decryptedRoot.removeChild(dataElement);
+               decryptedDoc.replaceChild(dataElement, decryptedRoot);
+            // заменяем <saml:EncryptedAssertion (decryptedRoot) на <saml:Assertion (dataElement)
+           	        
+               return decryptedDoc.getDocumentElement();               
            } catch (Exception e) {
            	throw new Exception(e);
            }
-       }
-      
-       
-       Element decryptedRoot = decryptedDoc.getDocumentElement();
-       //<saml:EncryptedAssertion xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"><saml:Assertion... 
-       
-       
-       
-        Element dataElement = (Element)decryptedRoot.getFirstChild();
-       //<saml:Assertion...
-       
-      
-       
-       if (dataElement == null) {
-		throw new Exception("Data Element after encryption is null");
-	}
-
-       decryptedRoot.removeChild(dataElement);
-       decryptedDoc.replaceChild(dataElement, decryptedRoot);
-    // заменяем <saml:EncryptedAssertion (decryptedRoot) на <saml:Assertion (dataElement)
-   	        
-       return decryptedDoc.getDocumentElement();
+       }  else throw new IllegalArgumentException("EncryptedData and encryptedKey can't be null");
    }
    
    private static Element getNextElementNode(Node node) {

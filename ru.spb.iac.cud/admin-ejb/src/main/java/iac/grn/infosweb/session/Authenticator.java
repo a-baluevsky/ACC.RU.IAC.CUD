@@ -1460,51 +1460,33 @@ import ru.spb.iac.crypto.export.Crypto15Init;
 	            cipher.init(XMLCipher.DECRYPT_MODE, null);
 	            encryptedData = cipher.loadEncryptedData(documentWithEncryptedElement, encDataElement);
 	            encryptedKey = cipher.loadEncryptedKey(documentWithEncryptedElement, encKeyElement);
-	      
-	            
 	            
 	        } catch (XMLEncryptionException e1) {
 	        	throw new Exception(e1);
 	        }
 
-	        Document decryptedDoc = null;
-
 	        if (encryptedData != null && encryptedKey != null) {
-	        	
-	            try {
-	                String encAlgoURL = encryptedData.getEncryptionMethod().getAlgorithm();
-	                XMLCipher keyCipher = XMLCipher.getInstance();
-	                keyCipher.init(XMLCipher.UNWRAP_MODE, privateKey);
-	                Key encryptionKey = keyCipher.decryptKey(encryptedKey, encAlgoURL);
-	                cipher = XMLCipher.getInstance();
-	                cipher.init(XMLCipher.DECRYPT_MODE, encryptionKey);
+                String encAlgoURL = encryptedData.getEncryptionMethod().getAlgorithm();
+                XMLCipher keyCipher = XMLCipher.getInstance();
+                keyCipher.init(XMLCipher.UNWRAP_MODE, privateKey);
+                Key encryptionKey = keyCipher.decryptKey(encryptedKey, encAlgoURL);
+                cipher = XMLCipher.getInstance();
+                cipher.init(XMLCipher.DECRYPT_MODE, encryptionKey);
 
-	                decryptedDoc = cipher.doFinal(documentWithEncryptedElement, encDataElement);
-	            } catch (Exception e) {
-	            	throw new Exception(e);
-	            }
-	        }
-	       
-	        
-	        Element decryptedRoot = decryptedDoc.getDocumentElement();
-	        //<saml:EncryptedAssertion xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"><saml:Assertion... 
-	        
-	        
-	        
-	        Element dataElement = (Element)decryptedRoot.getFirstChild();
-	        //<saml:Assertion...
-	        
-	       
-	        
-	        if (dataElement == null) {
-				throw new Exception("Data Element after encryption is null");
-			}
-
-	        decryptedRoot.removeChild(dataElement);
-	        decryptedDoc.replaceChild(dataElement, decryptedRoot);
-         // заменяем <saml:EncryptedAssertion (decryptedRoot) на <saml:Assertion (dataElement)
-	    	        
-	        return decryptedDoc.getDocumentElement();
+                Document decryptedDoc = cipher.doFinal(documentWithEncryptedElement, encDataElement);
+		        Element decryptedRoot = decryptedDoc.getDocumentElement();
+		        //<saml:EncryptedAssertion xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"><saml:Assertion...
+		        Element dataElement = (Element)decryptedRoot.getFirstChild();
+		        //<saml:Assertion...
+		        if (dataElement == null) {
+					throw new Exception("Data Element after encryption is null");
+				}
+		        decryptedRoot.removeChild(dataElement);
+		        decryptedDoc.replaceChild(dataElement, decryptedRoot);
+	         // заменяем <saml:EncryptedAssertion (decryptedRoot) на <saml:Assertion (dataElement)		    	        
+		        return decryptedDoc.getDocumentElement();
+	        } else	       
+	        	throw new Exception("Encrypted Data and Encrypted Key must be present");
 	    }
 	 
 	 private static Element getNextElementNode(Node node) {

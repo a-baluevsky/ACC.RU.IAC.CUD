@@ -110,17 +110,14 @@ import ru.spb.iac.cud.idp.web.util.GOSTSignatureUtil;
 							(new ContextIDPAccessManager()) 
 							.attributes(userCode);
 
-					if (userAttributes != null && !userAttributes.isEmpty()
-							&& attributeStatement == null) {
+					if (userAttributes != null) {
+						if ( !userAttributes.isEmpty()
+							 && attributeStatement == null) {	
+							attributeStatement = new AttributeStatementType();	
+						}						
 
-						attributeStatement = new AttributeStatementType();
-
-					}
-
-					if (userAttributes != null
-							&& userAttributes.get("USER_UID") != null) {
-
-						userAttributes.put(
+						if(userAttributes.get("USER_UID") != null)
+							userAttributes.put(
 								"TOKEN_ID",
 								tokenIDCreate(userAttributes.get("USER_UID"),
 									authType, lifetimeMs));
@@ -138,22 +135,21 @@ import ru.spb.iac.cud.idp.web.util.GOSTSignatureUtil;
 						 * signingAlias будут пустыми!!!
 						
 						 */
+						
+						Iterator<Entry<String, String>> it = userAttributes
+								.entrySet().iterator();
+						while (it.hasNext()) {
+							Map.Entry<String, String> pairs = (Map.Entry<String, String>) it
+									.next();
+						
+							AttributeType fioAttribute = new AttributeType(
+									pairs.getKey());
+							attributeStatement.addAttribute(new ASTChoiceType(
+									fioAttribute));
+							fioAttribute.addAttributeValue(pairs.getValue());
+						}						
 
 					}
-
-					Iterator<Entry<String, String>> it = userAttributes
-							.entrySet().iterator();
-					while (it.hasNext()) {
-						Map.Entry<String, String> pairs = (Map.Entry<String, String>) it
-								.next();
-					
-						AttributeType fioAttribute = new AttributeType(
-								pairs.getKey());
-						attributeStatement.addAttribute(new ASTChoiceType(
-								fioAttribute));
-						fioAttribute.addAttributeValue(pairs.getValue());
-					}
-
 				}
 
 			} catch (Exception e) {
