@@ -164,10 +164,10 @@ import static org.picketlink.common.util.StringUtil.*;
             response.setDestination(destination);
 
             HttpSession session = BaseSAML2Handler.getHttpSession(request);
-            Principal userPrincipal = (Principal) session.getAttribute(GeneralConstants.PRINCIPAL_ID);
-            if (userPrincipal == null){
-                userPrincipal = httpContext.getRequest().getUserPrincipal();
-                }
+            //Principal userPrincipal = (Principal) session.getAttribute(GeneralConstants.PRINCIPAL_ID);
+            //if (userPrincipal == null){
+            //    userPrincipal = httpContext.getRequest().getUserPrincipal();
+            //}
             /*
              * List/<String> r/oles = (List<String>)/ session/.getAttribute(GeneralConstants.ROLES_ID);
              */

@@ -803,7 +803,7 @@ import ru.spb.iac.cud.items.Role;
 
 		Map<String, Long> group_cl = new HashMap<String, Long>();
 
-		List<String> role_cl = new ArrayList<String>();
+		List<String> role_cl = null;
 
 		try {
 
@@ -1109,7 +1109,7 @@ import ru.spb.iac.cud.items.Role;
 
 		LOGGER.debug("sync_groups_roles:01");
 
-		List<String> role_cl = new ArrayList<String>();
+		List<String> role_cl = null;
 
 		try {
 
@@ -1574,7 +1574,7 @@ import ru.spb.iac.cud.items.Role;
 
 		LOGGER.debug("sync_groups_roles:01");
 
-		List<String> role_cl = new ArrayList<String>();
+		List<String> role_cl = null;
 
 		try {
 

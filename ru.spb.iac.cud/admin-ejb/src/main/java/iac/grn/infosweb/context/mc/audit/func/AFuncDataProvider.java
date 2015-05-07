@@ -27,9 +27,8 @@ import org.jboss.seam.log.Log;
 	
 	public SerializableList<BaseItem> getItemsByrange(int firstRow, int numberOfRows, String sortField, 
 			                                   boolean ascending) {
-		SerializableList<BaseItem> ret = new ArrayList<BaseItem>();
 		log.info("AuditDataProvider:getItemsByrange");
-		ret=aFuncManager.getAuditList(firstRow, numberOfRows);
+		SerializableList<BaseItem> ret=aFuncManager.getAuditList(firstRow, numberOfRows);
 		return ret;
 	}
 	

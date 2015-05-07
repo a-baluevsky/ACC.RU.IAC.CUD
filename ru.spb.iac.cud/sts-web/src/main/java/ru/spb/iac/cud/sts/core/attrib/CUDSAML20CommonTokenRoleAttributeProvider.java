@@ -72,7 +72,7 @@ import ru.spb.iac.cud.idp.web.util.GOSTSignatureUtil;
 		LOGGERSLF4J.debug("getAttributeStatement:01:" + systemCode);
 		LOGGERSLF4J.debug("getAttributeStatement:02:" + userCode);
 
-		List<String> roles = new ArrayList<String>();
+		List<String> roles = null;
 
 		if (systemCode == null) {
 			LOGGER.trace("No authentication Subject found, cannot provide any user roles!");

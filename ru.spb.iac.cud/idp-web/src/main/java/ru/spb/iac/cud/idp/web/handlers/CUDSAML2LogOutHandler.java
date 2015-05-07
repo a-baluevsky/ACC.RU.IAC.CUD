@@ -229,7 +229,7 @@ import ru.spb.iac.cud.core.util.WebUtil;
             LogoutRequestType logOutRequest = (LogoutRequestType) request.getSAML2Object();
             String issuer = logOutRequest.getIssuer().getValue();
             try {
-                SAML2Request saml2Request = new SAML2Request();
+                SAML2Request saml2Request = null;
 
                 ServletContext servletCtx = httpContext.getServletContext();
                 IdentityServer server = (IdentityServer) servletCtx.getAttribute(GeneralConstants.IDENTITY_SERVER);

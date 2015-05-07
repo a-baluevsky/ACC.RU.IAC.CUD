@@ -24,22 +24,15 @@ import org.jboss.seam.annotations.In;
 
 	public Map<String, List<String>[]> authComplete(Long appCode,
 			String login, String password) throws Exception {
-
-		Map<String, List<String>[]> result = new HashMap<String, List<String>[]>();
-
 		try {
-
 			Long idUser = createAuth(login, password);
-
 			if (idUser == null) {
 				return null;
 			}
-		
-			result = createResourceTree(appCode, null, idUser);
+			return createResourceTree(appCode, null, idUser);
 		} catch (Exception e) {
 			throw e;
 		}
-		return result;
 	}
 
 	public Long authenticate(String login, String password) throws Exception {
