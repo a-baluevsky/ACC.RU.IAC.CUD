@@ -53,9 +53,6 @@ import org.jboss.seam.log.Log;
 		     ProcArchAFuncSettingsBean beanSettings = new ProcArchAFuncSettingsBean();
 		    	
 			 log.info("ConfLoadDataSettingsManager:getCLDSBeanView:01");
-			 
-			 InputStream is = null;
-			 
 			 try {
 				 
 				
@@ -77,22 +74,9 @@ import org.jboss.seam.log.Log;
 		    	  beanSettings.setParamActualData(Long.valueOf(monthInterval));
 		    	  
 			      Contexts.getEventContext().set("procArchAFuncSettingsBean", beanSettings);
-			     
-			      
-			      
 			  }catch (Exception eAFunc) {
 					log.error("confLoadDataManager:initConfLDInfoBean:error:"+eAFunc);
-			 }finally{
-				try {
-				  if(is!=null){
-				    is.close();
-				   }
-				} catch (Exception eAFunc) {
-					log.error("confLoadDataManager:initConfLDInfoBean:finally:is:error:"+eAFunc);
-				}
-		   }    
-		  
-		   
+			 } 
 		}catch(Exception eAFunc){
 		   log.error("confLoadDataSettingsManager:init:ERROR:"+eAFunc);
 		} 
@@ -102,12 +86,8 @@ import org.jboss.seam.log.Log;
 		try{
 		   log.info("AFuncSettingsManager:save:01");
 		  
-		   OutputStream os = null;
-			 
 		   ProcArchAFuncSettingsBean beanSettingsAFunc = (ProcArchAFuncSettingsBean) 
 				   Contexts.getEventContext().get("procArchAFuncSettingsBean");
-		   
-		   
 		   
 			  if(beanSettingsAFunc.getParamActualData()==null){
 				  log.info("confLoadDataSettingsManager:save:02");
@@ -134,16 +114,7 @@ import org.jboss.seam.log.Log;
 			     
 		  	  }catch (Exception eAFunc) {
 					log.error("confLoadDataSettingsManager:save:"+eAFunc);
-			  }finally{
-				 try {
-					if(os!=null){
-						 os.close();
-					}
-				 } catch (Exception eAFunc) {
-					log.error("confLoadDataSettingsManager:save:os:error:"+eAFunc);
-				 }
-			 }
-			   
+			  }			   
 		}catch(Exception eAFunc){
 		   log.error("ConfLoadDataSettingsManager:save:ERROR:"+eAFunc);
 		} 

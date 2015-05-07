@@ -90,53 +90,28 @@ import org.slf4j.LoggerFactory;
 
 	private synchronized void process_start_content(Long seancact,
 			Integer clVersion) throws Exception {
-
 		boolean hit = true;
-		OutputStream os = null;
-
 		LOGGER.debug("IHClassifLoad:process_start_content:01");
-
 		try {
 			if (ClassifLoadProcessor.getControls().containsKey("classif_load")) {
 				LOGGER.debug("IHClassifLoad:process_start_content:return");
 				return;
 			}
-
 			ClassifLoadProcessor.getControls().put("classif_load", "");
-
 			utx.begin();
-
-		
 			ClientSample.run2(em, utx, seancact, clVersion);
-
-		
 			utx.commit();
 		} catch (Exception e) {
 			LOGGER.error("IHClassifLoad:process_start_content:error", e);
-
 			utx.rollback();
-
 			hit = false;
 			throw e;
-
 		} finally {
-
 			try {
-
 				ClassifLoadProcessor.getControls().remove("classif_load");
-
-				LOGGER.debug("IHClassifLoad:process_start_content:finally:hit:"
-						+ hit);
-
+				LOGGER.debug("IHClassifLoad:process_start_content:finally:hit:"+hit);
 			} catch (Exception e) {
 				LOGGER.error("IHClassifLoad:process_start_content:error:2:", e);
-			} finally {
-				try {
-					if (os != null) {
-						os.close();
-					}
-				} catch (Exception e) {
-				}
 			}
 		}
 	}

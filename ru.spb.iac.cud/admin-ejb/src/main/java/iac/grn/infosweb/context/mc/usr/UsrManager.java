@@ -2280,20 +2280,11 @@ import org.slf4j.LoggerFactory;
 		
 		   log.info("UsrManager:getRoleList:idArm:"+idArm);
 		   log.info("UsrManager:getRoleList:remoteAudit:"+remoteAudit);
-		   
 		   if(idArm==null){
 			   return this.roleList;
 		   }
-		   
-		   String stUm=null;
-			 
-		  
-		   log.info("UsrManager:getGroupList:st:"+stUm);
-		   
-		   
 		   this.roleList = entityManager.createQuery(
-				   "select o from AcRole o where o.acApplication= :idArm " +
-					(stUm!=null ? " and "+stUm :" ")+
+				   "select o from AcRole o where o.acApplication= :idArm " +					
 				   "order by o.roleTitle ")
 				   .setParameter("idArm", Long.valueOf(idArm))
                    .getResultList();

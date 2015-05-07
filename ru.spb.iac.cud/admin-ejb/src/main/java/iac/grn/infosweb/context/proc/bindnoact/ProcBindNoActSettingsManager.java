@@ -56,7 +56,7 @@ import org.jboss.seam.log.Log;
 				 
 			 log.info("procBindNoActSettingsManager:getCLDSBeanView:01");
 			 
-			 InputStream is = null;
+			 
 			 
 			 try {
 				 
@@ -83,15 +83,7 @@ import org.jboss.seam.log.Log;
 			      
 			  }catch (Exception eBindNoAct) {
 					log.error("confLoadDataManager:initConfLDInfoBean:error:"+eBindNoAct);
-			 }finally{
-				try {
-				  if(is!=null){
-				    is.close();
-				   }
-				} catch (Exception eBindNoAct) {
-					log.error("confLoadDataManager:initConfLDInfoBean:finally:is:error:"+eBindNoAct);
-				}
-		   }    
+			 }    
 		  
 		   
 		}catch(Exception eBindNoAct){
@@ -103,8 +95,6 @@ import org.jboss.seam.log.Log;
 		try{
 		   log.info("procBindNoActSettingsManager:save:01");
 		    
-		   OutputStream os = null;
-			 
 		   ProcBindNoActSettingsBean beanSettingsBindNoAct = (ProcBindNoActSettingsBean) 
 				   Contexts.getEventContext().get("procBindNoActSettingsBean");
 		   
@@ -134,15 +124,7 @@ import org.jboss.seam.log.Log;
 			     
 		  	  }catch (Exception eBindNoAct) {
 					log.error("procBindNoActSettingsManager:save:"+eBindNoAct);
-			  }finally{
-				 try {
-					if(os!=null){
-						 os.close();
-					}
-				 } catch (Exception eBindNoAct) {
-					log.error("procBindNoActSettingsManager:save:os:error:"+eBindNoAct);
-				 }
-			 }
+			  }
 			   
 		}catch(Exception eBindNoAct){
 		   log.error("procBindNoActSettingsManager:save:ERROR:"+eBindNoAct);

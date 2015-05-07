@@ -33,7 +33,6 @@ import iac.cud.infosweb.ws.classif.common.Response4;
 		LOGGER.debug("Call Web Service Operation...");
 	
 		int actualDoc = 0;
-		FileOutputStream fos = null;
 		String result = null;
 		try {
 
@@ -57,14 +56,7 @@ import iac.cud.infosweb.ws.classif.common.Response4;
 
 		} catch (Exception e) {
 			LOGGER.error("error", e);
-		} finally {
-			try {
-				fos.close();				
-			} catch (IOException e) {
-				LOGGER.error("error", e);
-			}
 		}
-
 		return result;
 	}
 

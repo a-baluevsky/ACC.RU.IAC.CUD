@@ -489,37 +489,17 @@ import org.jboss.seam.log.Log;
 	}
    
 public void clearDate(){
-	   
 	   log.info("aFuncManager:clearDate:archiveParamValue:"+this.archiveParamValue);
-	   
-	  BufferedWriter bw=null;
-	  
 	   try{
-
-		   Context ctx = new InitialContext(); 
-	    	 
-	       BaseParamItem bpiAFunc = new BaseParamItem(ServiceReestrPro.ArchiveAuditFunc.name());
-	      
-	       bpiAFunc.put("gactiontype", ServiceReestrAction.TASK_RUN.name());
-	       
-	       bpiAFunc.put("archiveParamValue", this.archiveParamValue);
-	       
+		   Context ctx = new InitialContext(); 	    	 
+	       BaseParamItem bpiAFunc = new BaseParamItem(ServiceReestrPro.ArchiveAuditFunc.name());	      
+	       bpiAFunc.put("gactiontype", ServiceReestrAction.TASK_RUN.name());	       
+	       bpiAFunc.put("archiveParamValue", this.archiveParamValue);	       
 	       IRemoteFrontageLocal obj = (IRemoteFrontageLocal)ctx.lookup(jndiBinding);
-           obj.run(bpiAFunc);
-	       
+           obj.run(bpiAFunc);	       
            audit(ResourcesMap.AUDIT_USER, ActionsMap.START);
-           
-		
-
-		   
 	   }catch (Exception e) {
 	   	 log.error("aFuncManager:clearDate:ERROR:"+e);
-	   }finally{
-		   try{
-		    if(bw!=null){
-			    bw.close  ();
-			}
-		   }catch (Exception e) {}
 	   }
    }
    

@@ -108,7 +108,7 @@ import ru.spb.iac.cud.sts.util.CUDWSTrustUtil;
 		// first try to obtain the security token provider using the applies-to
 		// contents.
 		AppliesTo appliesTo = request.getAppliesTo();
-		X509Certificate providerCertificate = null;
+		//X509Certificate providerCertificate = null;
 		PublicKey providerPublicKey = null;
 		if (appliesTo != null) {
 			String serviceName = WSTrustUtil.parseAppliesTo(appliesTo);
@@ -147,9 +147,9 @@ import ru.spb.iac.cud.sts.util.CUDWSTrustUtil;
 
 				 
 
-				if (providerCertificate != null) {
-					providerPublicKey = providerCertificate.getPublicKey();
-				}
+				//if (providerCertificate != null) {
+				//	providerPublicKey = providerCertificate.getPublicKey();
+				//}
 
 				// provider =
 				// this.configuration.getProviderForService(serviceName);
@@ -283,14 +283,17 @@ import ru.spb.iac.cud.sts.util.CUDWSTrustUtil;
 				}
 				requestContext.setProofTokenInfo(WSTrustUtil.createKeyInfo(
 						combinedSecret, providerPublicKey, keyWrapAlgo,
-						providerCertificate));
+						null //providerCertificate
+						));
 			} else {
 				// client secret has not been specified - use the sts secret
 				// only.
 				requestedProofToken.add(serverBinarySecret);
 				requestContext.setProofTokenInfo(WSTrustUtil.createKeyInfo(
 						serverBinarySecret.getValue(), providerPublicKey,
-						keyWrapAlgo, providerCertificate));
+						keyWrapAlgo, 
+						null //providerCertificate
+						));
 			}
 		} else if (WSTrustConstants.KEY_TYPE_PUBLIC.equalsIgnoreCase(keyType
 				.toString())) {

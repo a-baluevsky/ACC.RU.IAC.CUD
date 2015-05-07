@@ -48,19 +48,9 @@ import org.jboss.seam.log.Log;
 			     //от оправки формы до её отображения
 			   return;
 			 }
-		   
-		    
 		     ProcArchASysSettingsBean beanSettingsASys = new ProcArchASysSettingsBean();
-		    	
-		     
-				 
-			 
 			 log.info("ConfLoadDataSettingsManager:getCLDSBeanView:01");
-			 
-			 InputStream is = null;
-			 
 			 try {
-				 
 						 List<String> los = entityManager.createNativeQuery(
 			              "select ST.VALUE_PARAM "+
 	                      "from SETTINGS_KNL_T st "+
@@ -84,16 +74,7 @@ import org.jboss.seam.log.Log;
 			      
 			  }catch (Exception eASys) {
 					log.error("confLoadDataManager:initConfLDInfoBean:error:"+eASys);
-			 }finally{
-				try {
-				  if(is!=null){
-				    is.close();
-				   }
-				} catch (Exception eASys) {
-					log.error("confLoadDataManager:initConfLDInfoBean:finally:is:error:"+eASys);
-				}
-		   }    
-		  
+			 }
 		   
 		}catch(Exception eASys){
 		   log.error("confLoadDataSettingsManager:init:ERROR:"+eASys);
@@ -104,9 +85,6 @@ import org.jboss.seam.log.Log;
 		try{
 			
 		   log.info("confLoadDataSettingsManager:save:01");
-		  
-		   OutputStream os = null;
-			 
 		   ProcArchASysSettingsBean beanSettingsASys = (ProcArchASysSettingsBean) 
 				   Contexts.getEventContext().get("procArchASysSettingsBean");
 		   
@@ -136,15 +114,7 @@ import org.jboss.seam.log.Log;
 			     
 		  	  }catch (Exception eASys) {
 					log.error("confLoadDataSettingsManager:save:"+eASys);
-			  }finally{
-				 try {
-					if(os!=null){
-						 os.close();
-					}
-				 } catch (Exception eASys) {
-					log.error("confLoadDataSettingsManager:save:os:error:"+eASys);
-				 }
-			 }
+			  }
 			   
 		}catch(Exception eASys){
 		   log.error("ConfLoadDataSettingsManager:save:ERROR:"+eASys);

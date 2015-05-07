@@ -473,44 +473,17 @@ import javax.servlet.http.HttpServletResponse;
 	}
    
    public void clearDate(){
-	   
 	   log.info("aSysManager:clearDate:archiveParamValue:"+this.archiveParamValue);
-	   
-	   BufferedWriter bw=null;
-	 
 	   try{
-
 		   Context ctx = new InitialContext(); 
-	    	 
 	       BaseParamItem bpi = new BaseParamItem(ServiceReestrPro.ArchiveAuditSys.name());
-	      
 	       bpi.put("gactiontype", ServiceReestrAction.TASK_RUN.name());
-	       
 	       bpi.put("archiveParamValue", this.archiveParamValue);
-	       
 	       IRemoteFrontageLocal obj = (IRemoteFrontageLocal)ctx.lookup(jndiBinding);
-        		   
-          
-
-          
-           
 	       obj.run(bpi);
-	       
            audit(ResourcesMap.AUDIT_SYS, ActionsMap.START);
-           
-		
-
-		   
 	   }catch (Exception eSys) {
 	   	 log.error("aSysManager:clearDate:ERROR:"+eSys);
-	   }finally{
-		   try{
-		    if(bw!=null){
-			    bw.close  ();
-			}
-		   }catch (Exception erSys) {
-				 log.error("aSysManager:clearDate:ERROR:"+erSys);
-		   }
 	   }
    }
    

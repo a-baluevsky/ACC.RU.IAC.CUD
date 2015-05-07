@@ -454,8 +454,6 @@ public String root_sn() throws IOException {
 
  public int addUserCert(X509Certificate userCertX, HttpServletRequest request) throws Exception { 
 	
-	InputStream inputStream = null;
-	
 	DateFormat df = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 	 
 	int result = 0;
@@ -517,18 +515,10 @@ public String root_sn() throws IOException {
    
        
 	} catch(Exception e){
-		 LOGGER.error("WebCertAction:addUserCert:error:"+e);
-		 
+		 LOGGER.error("WebCertAction:addUserCert:error:"+e);		 
 		 result=-1;
-	}finally{
-	   try{
-		   if(inputStream!=null){
-			   inputStream.close();
-		   }
-	   }catch(Exception e){
-		   
-	   }
-   }
+	}
+	
 	 return result;
 }  
 

@@ -55,7 +55,7 @@ import org.jboss.seam.log.Log;
 		   	 
 			 log.info("procBindUnBindSettingsManager:getCLDSBeanView:01");
 			 
-			 InputStream is = null;
+			 
 			 
 			 try {
 				 
@@ -82,15 +82,7 @@ import org.jboss.seam.log.Log;
 			      
 			  }catch (Exception eBindUnBind) {
 					log.error("confLoadDataManager:initConfLDInfoBean:error:"+eBindUnBind);
-			 }finally{
-				try {
-				  if(is!=null){
-				    is.close();
-				   }
-				} catch (Exception eBindUnBind) {
-					log.error("confLoadDataManager:initConfLDInfoBean:finally:is:error:"+eBindUnBind);
-				}
-		   }    
+			 }   
 		  
 		   
 		}catch(Exception eBindUnBind){
@@ -102,7 +94,7 @@ import org.jboss.seam.log.Log;
 		try{
 		   log.info("procBindUnBindSettingsManager:save:01");
 		  
-		   OutputStream os = null;
+		   
 			 
 		   ProcBindUnBindSettingsBean beanSettingsBindUnBind = (ProcBindUnBindSettingsBean) 
 				   Contexts.getEventContext().get("procBindUnBindSettingsBean");
@@ -133,15 +125,7 @@ import org.jboss.seam.log.Log;
 			     
 		  	  }catch (Exception eBindUnBind) {
 					log.error("procBindUnBindSettingsManager:save:"+eBindUnBind);
-			  }finally{
-				 try {
-					if(os!=null){
-						 os.close();
-					}
-				 } catch (Exception eBindUnBind) {
-					log.error("procBindUnBindSettingsManager:save:os:error:"+eBindUnBind);
-				 }
-			 }
+			  }
 			   
 		}catch(Exception eBindUnBind){
 		   log.error("procBindUnBindSettingsManager:save:ERROR:"+eBindUnBind);

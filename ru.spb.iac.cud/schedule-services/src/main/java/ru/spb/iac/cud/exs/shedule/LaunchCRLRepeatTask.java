@@ -97,7 +97,6 @@ import ru.spb.iac.cud.exs.config.Configuration;
 	}
 
 	public String content() {
-		InputStream is = null;
 		OutputStream output = null;
 		BufferedInputStream in = null;
 
@@ -143,9 +142,6 @@ import ru.spb.iac.cud.exs.config.Configuration;
 			try {
 				if (in != null) {
 					in.close();
-				}
-				if (is != null) {
-					is.close();
 				}
 				if (output != null) {
 					output.close();

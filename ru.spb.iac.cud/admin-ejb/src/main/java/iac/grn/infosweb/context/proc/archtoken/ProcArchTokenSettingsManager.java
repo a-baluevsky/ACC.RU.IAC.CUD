@@ -56,8 +56,6 @@ import org.jboss.seam.log.Log;
 				 
 			 log.info("ConfLoadDataSettingsManager:getCLDSBeanView:01");
 			 
-			 InputStream is = null;
-			 
 			 try {
 				 
 					 List<String> los = entityManager.createNativeQuery(
@@ -83,15 +81,7 @@ import org.jboss.seam.log.Log;
 			      
 			  }catch (Exception eArchToken) {
 					log.error("confLoadDataManager:initConfLDInfoBean:error:"+eArchToken);
-			 }finally{
-				try {
-				  if(is!=null){
-				    is.close();
-				   }
-				} catch (Exception eArchToken) {
-					log.error("confLoadDataManager:initConfLDInfoBean:finally:is:error:"+eArchToken);
-				}
-		   }    
+			 }   
 		  
 		   
 		}catch(Exception e){
@@ -102,8 +92,6 @@ import org.jboss.seam.log.Log;
 	public void save(){
 		try{
 		   log.info("confLoadDataSettingsManager:save:01");
-		   
-		   OutputStream os = null;
 			 
 		   ProcArchTokenSettingsBean beanSettingsArchToken = (ProcArchTokenSettingsBean) 
 				   Contexts.getEventContext().get("procArchTokenSettingsBean");
@@ -134,15 +122,7 @@ import org.jboss.seam.log.Log;
 			     
 		  	  }catch (Exception eArchToken) {
 					log.error("confLoadDataSettingsManager:save:"+eArchToken);
-			  }finally{
-				 try {
-					if(os!=null){
-						 os.close();
-					}
-				 } catch (Exception eArchToken) {
-					log.error("confLoadDataSettingsManager:save:os:error:"+eArchToken);
-				 }
-			 }
+			  }
 			   
 		}catch(Exception eArchToken){
 		   log.error("ConfLoadDataSettingsManager:save:ERROR:"+eArchToken);
