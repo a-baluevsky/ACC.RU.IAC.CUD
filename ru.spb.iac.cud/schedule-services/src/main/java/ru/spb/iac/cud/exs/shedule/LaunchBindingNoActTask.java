@@ -48,23 +48,15 @@ import org.slf4j.LoggerFactory;
 				String startDate = null, period = null, status = null;
 				Properties properties = new Properties();
 				String path = proc_binding_noact_exec_file;
-			
+				FileInputStream fi = null; 
 				try {
-
 					LOGGER.debug("initTask:run:01");
-
 					DateFormat df = new SimpleDateFormat("dd.MM.yy HH:mm");
-
 					File f = new File(path);
-					FileInputStream fi = null;   
-
 					if (f.exists()) {
-
 						LOGGER.debug("initTask:run:02");
 						fi = new FileInputStream(f);
-
 						properties.load(fi);
-
 						startDate = properties.getProperty("start_date");
 						period = properties.getProperty("period");
 

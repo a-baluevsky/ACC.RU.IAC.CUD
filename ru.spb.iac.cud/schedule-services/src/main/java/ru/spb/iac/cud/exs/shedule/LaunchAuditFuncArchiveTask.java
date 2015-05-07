@@ -46,15 +46,11 @@ import org.slf4j.LoggerFactory;
 				String status = null;
 				Properties properties = new Properties();
 				String path = proc_aafunc_exec_file;
-				
+				FileInputStream fi = null;   
 				try {
-
 					LOGGER.debug("initTask:run:01");
-
 					File f = new File(path);
-					FileInputStream fi = null;   
 					if (f.exists()) {
-
 						LOGGER.debug("initTask:run:02");
 						fi = new FileInputStream(f);
 						properties.load(fi);

@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 				String startDate = null, period = null, status = null;
 				Properties properties = new Properties();
 				String path = proc_binding_unbind_exec_file;
-				
+				FileInputStream fi = null;
 
 				try {
 
@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
 					DateFormat df = new SimpleDateFormat("dd.MM.yy HH:mm");
 
 					File f = new File(path);
-					FileInputStream fi = null;
+					
 					if (f.exists()) {
 
 						LOGGER.debug("initTask:run:02");

@@ -294,13 +294,11 @@ private static String alias_root = "σφροαγσο«ροαθΰφ».crt";
 		return null;
 	}
 
-	public static boolean chain_check(Certificate pcert) {
+	public static boolean chain_check(Certificate pcert) throws IOException {
 		// TODO Auto-generated method stub
 		boolean result = false;
-
+		FileInputStream fi = null;
 		try {
-			FileInputStream fi = null;
-			
 			if(keyStore==null) {
 				keyStore = KeyStore.getInstance("CertStore", "JCP");
 	
@@ -383,7 +381,7 @@ private static String alias_root = "σφροαγσο«ροαθΰφ».crt";
 		return result;
 	}
 
-	public String root_sn() {
+	public String root_sn() throws IOException {
 		// TODO Auto-generated method stub
 
 		if (root_sn == null) {

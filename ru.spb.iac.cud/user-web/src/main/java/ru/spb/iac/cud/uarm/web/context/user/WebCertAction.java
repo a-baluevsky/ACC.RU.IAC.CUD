@@ -319,7 +319,7 @@ public X509Certificate CMSVerify(byte[] buffer, Certificate[] certs, byte[] data
     return null;
 }
 
-public static boolean chain_check(Certificate pcert) {
+public static boolean chain_check(Certificate pcert) throws IOException {
 	// TODO Auto-generated method stub
 	boolean result = false;
 	
@@ -430,10 +430,10 @@ private static String dec_to_hex(BigInteger bi) {
 	 return result;
 }
 
-public String root_sn() {
+public String root_sn() throws IOException {
 	if(root_sn==null) {
+	  FileInputStream fi = null;	
 	  try {
-		FileInputStream fi = null;
 		if(keyStore==null) {
 		  keyStore = KeyStore.getInstance("CertStore", "JCP");
 		  fi = new FileInputStream(cert_store_url);

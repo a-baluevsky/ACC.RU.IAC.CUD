@@ -399,10 +399,11 @@ import org.jboss.seam.log.Log;
 		  String pathBna = proc_binding_noact_exec_file;
 		  OutputStream os = null;
 		  String startDateValue=null, periodValue=null;
-			   
+		
+		  FileInputStream fi = null;   
 		  try {
 			 DateFormat df = new SimpleDateFormat ("dd.MM.yy HH:mm");
-			 FileInputStream fi = null;  		    
+			   		    
 		     
 		     File fBna=new File(pathBna); 
 		     

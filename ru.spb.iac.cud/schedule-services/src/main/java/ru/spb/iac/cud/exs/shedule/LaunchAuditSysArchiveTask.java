@@ -42,22 +42,14 @@ import org.slf4j.LoggerFactory;
 		scheduler.schedule(new Runnable() {
 
 			public void run() {
-
 				String  status = null;
 				Properties properties = new Properties();
 				String path = proc_aasys_exec_file;
-			
-
+				FileInputStream fi = null;
 				try {
-
 					LOGGER.debug("initTask:run:01");
-
-					FileInputStream fi = null;   
-
 					File f = new File(path);
-
 					if (f.exists()) {
-
 						LOGGER.debug("initTask:run:02");
 						fi = new FileInputStream(f);
 
