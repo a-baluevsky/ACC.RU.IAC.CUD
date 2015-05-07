@@ -14,6 +14,11 @@ import org.jboss.seam.log.Log;
 @Name("aFuncDataProvider")
  public class AFuncDataProvider implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5797847804560674152L;
+
 	@Logger private transient Log log;
 	
 	@In(create=true)

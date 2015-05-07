@@ -14,6 +14,11 @@ import org.jboss.seam.log.Log;
 @Name("bindDataProvider")
  public class BindDataProvider implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8626399216351442699L;
+
 	@Logger private transient Log log;
 	
 	@In(create=true)

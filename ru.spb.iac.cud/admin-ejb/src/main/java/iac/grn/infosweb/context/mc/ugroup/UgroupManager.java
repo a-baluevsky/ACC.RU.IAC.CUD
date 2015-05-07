@@ -39,7 +39,12 @@ import org.jboss.seam.log.Log;
 @Name("ugroupManager")
  public class UgroupManager implements java.io.Serializable {
 	
-	 @Logger private static transient Log log;
+	 /**
+	 * 
+	 */
+	private static final long serialVersionUID = -1752028778606808162L;
+
+	@Logger private static transient Log log;
 	
 	 @In 
 	 EntityManager entityManager;

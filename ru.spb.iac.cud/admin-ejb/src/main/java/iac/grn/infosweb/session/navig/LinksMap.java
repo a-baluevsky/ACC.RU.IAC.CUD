@@ -24,7 +24,12 @@ import javax.faces.context.FacesContext;
 @Startup
  public class LinksMap implements java.io.Serializable {
 
-	 @Logger private transient Log log;
+	 /**
+	 * 
+	 */
+	private static final long serialVersionUID = -1936781866666796L;
+
+	@Logger private transient Log log;
 	 
 	/**
 	 * —писок предоставл€емых приложением ресурсов

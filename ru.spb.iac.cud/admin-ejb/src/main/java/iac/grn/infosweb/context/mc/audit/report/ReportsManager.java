@@ -7,7 +7,6 @@ import iac.cud.infosweb.entity.ReportsBssT;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -34,7 +33,12 @@ import org.jboss.seam.log.Log;
 @Name("reportsManager")
  public class ReportsManager implements java.io.Serializable {
    
-   @Logger private static transient Log LOG;
+   /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1412945973091895731L;
+
+@Logger private static transient Log LOG;
    
    @In EntityManager entityManager;
    

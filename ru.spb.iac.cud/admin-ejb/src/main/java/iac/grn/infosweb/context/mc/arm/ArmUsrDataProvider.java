@@ -4,10 +4,6 @@ import iac.cud.infosweb.dataitems.BaseItem;
 
 import java.io.Serializable;
 import java.util.List;
-
-import javaw.util.ArrayList;
-import javaw.util.SerializableList;
-
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -17,6 +13,11 @@ import org.jboss.seam.log.Log;
 @Name("armUsrDataProvider")
  public class ArmUsrDataProvider implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7497911988881359441L;
+
 	@Logger private transient Log log;
 	
 	@In(create=true)

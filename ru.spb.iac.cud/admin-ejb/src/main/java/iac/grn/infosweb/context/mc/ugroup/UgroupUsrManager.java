@@ -35,6 +35,11 @@ import org.jboss.seam.log.Log;
 @Name("ugroupUsrManager")
  public class UgroupUsrManager implements java.io.Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1370302825253829300L;
+
 	@Logger private static transient Log log;
 	
 	@In 

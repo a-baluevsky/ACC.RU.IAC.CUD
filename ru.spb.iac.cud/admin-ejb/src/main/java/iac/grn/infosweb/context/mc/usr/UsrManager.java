@@ -49,7 +49,6 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Out;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
@@ -64,7 +63,12 @@ import org.slf4j.LoggerFactory;
 @Name("usrManager")
  public class UsrManager extends QuerySvc {
 	
-	 @Logger private static transient Log log;
+	 /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1635414533360111699L;
+
+	@Logger private static transient Log log;
 	
 	 final static  org.slf4j.Logger logger = LoggerFactory.getLogger(UsrManager.class);
 	 
