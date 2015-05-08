@@ -282,16 +282,18 @@ import ru.spb.iac.cud.items.Role;
 
 		} catch (Exception eSr) {
 			try {
-
-				utx.rollback();
-
-				utx.begin();
-				sys_audit(12L, "idIS:" + idIS, "error", IPAddress, null);
-				utx.commit();
+				if(utx!=null) {
+					utx.rollback();
+					utx.begin();
+					sys_audit(12L, "idIS:" + idIS, "error", IPAddress, null);
+					utx.commit();
+				}
 
 			} catch (Exception erSr) {
 				try {
-					utx.rollback();
+					if(utx!=null) {
+						utx.rollback();
+					}					
 				} catch (Exception errSr) {
 					LOGGER.error("rollback:Error1:", errSr);
 				}
@@ -538,21 +540,26 @@ import ru.spb.iac.cud.items.Role;
 
 			sys_audit(13L, "idIS:" + idIS, "true", IPAddress, null);
 
-			utx.commit();
+			if(utx!=null){
+				utx.commit();
+			}
 
 		} catch (Exception eSf) {
 
 			try {
-
-				utx.rollback();
-
-				utx.begin();
-				sys_audit(13L, "idIS:" + idIS, "error", IPAddress, null);
-				utx.commit();
+				if(utx!=null){
+					utx.rollback();
+	
+					utx.begin();
+					sys_audit(13L, "idIS:" + idIS, "error", IPAddress, null);
+					utx.commit();
+				}
 
 			} catch (Exception erSf) {
-				try {
-					utx.rollback();
+				try {					
+					if(utx!=null){
+						utx.rollback();
+					}
 				} catch (Exception errSf) {
 					LOGGER.error("rollback:Error1:", errSf);
 				}
@@ -1061,20 +1068,25 @@ import ru.spb.iac.cud.items.Role;
 
 			sys_audit(12L, "idIS:" + idIS, "true", IPAddress, null);
 
-			utx.commit();
+			if(utx!=null){
+				utx.commit();
+			}
 
 		} catch (Exception eSg) {
 			try {
-
-				utx.rollback();
-
-				utx.begin();
-				sys_audit(12L, "idIS:" + idIS, "error", IPAddress, null);
-				utx.commit();
+				if(utx!=null){
+					utx.rollback();
+	
+					utx.begin();
+					sys_audit(12L, "idIS:" + idIS, "error", IPAddress, null);
+					utx.commit();
+				}
 
 			} catch (Exception erSg) {
 				try {
-					utx.rollback();
+					if(utx!=null) {
+						utx.rollback(); 
+					}
 				} catch (Exception errSg) {
 					LOGGER.error("rollback:Error1:", errSg);
 				}
@@ -1309,21 +1321,25 @@ import ru.spb.iac.cud.items.Role;
 			}
 
 			sys_audit(12L, "idIS:" + idIS, "true", IPAddress, null);
-
-			utx.commit();
+			if(utx!=null){
+				utx.commit();
+			}
 
 		} catch (Exception eSgr) {
 			try {
-
-				utx.rollback();
-
-				utx.begin();
-				sys_audit(12L, "idIS:" + idIS, "error", IPAddress, null);
-				utx.commit();
+				if(utx!=null){
+					utx.rollback();
+	
+					utx.begin();
+					sys_audit(12L, "idIS:" + idIS, "error", IPAddress, null);
+					utx.commit();
+				}
 
 			} catch (Exception erSgr) {
 				try {
-					utx.rollback();
+					if(utx!=null){
+						utx.rollback();
+					}
 				} catch (Exception errSgr) {
 					LOGGER.error("rollback:Error1:", errSgr);
 				}
@@ -1522,25 +1538,29 @@ import ru.spb.iac.cud.items.Role;
 		 		}
 		 
 		  sys_audit(101L, "idIS:"+idIS, "true", IPAddress, null ); 
-		 
-		  utx.commit();
+		  if(utx!=null){
+			  utx.commit();
+		  }
 		  
 		 }catch(Exception eSres){
 			 
 		  try{ 
-			 utx.rollback();
-				
-			 utx.begin();
-			 sys_audit(101L, "idIS:"+idIS, "error", IPAddress, null );
-			 utx.commit();
+			  if(utx!=null){
+				 utx.rollback();					
+				 utx.begin();
+				 sys_audit(101L, "idIS:"+idIS, "error", IPAddress, null );
+				 utx.commit();
+			  }
 			 
 		    }catch (Exception erSres) {
 				try{
-					utx.rollback();
+					if(utx!=null){
+						utx.rollback();
+					}
 				}catch (Exception errSres) 
 				{
 					LOGGER.error("rollback:Error1:"+errSres);
-					} 
+				} 
 				LOGGER.error("rollback:Error:"+erSres);
 			} 
 		 
@@ -1790,21 +1810,24 @@ import ru.spb.iac.cud.items.Role;
 
 			sys_audit(12L, "idIS:" + idIS, "true", IPAddress, null);
 
-			utx.commit();
+			if(utx!=null){
+				utx.commit();
+			}
 
 		} catch (Exception eSresr) {
 			
 			try {
-
-				utx.rollback();
-
-				utx.begin();
-				sys_audit(12L, "idIS:" + idIS, "error", IPAddress, null);
-				utx.commit();
-
+				if(utx!=null){
+					utx.rollback();
+					utx.begin();
+					sys_audit(12L, "idIS:" + idIS, "error", IPAddress, null);
+					utx.commit();
+				}
 			} catch (Exception erSresr) {
 				try {
-					utx.rollback();
+					if(utx!=null){
+						utx.rollback();
+					}
 				} catch (Exception errSresr) {
 					LOGGER.error("rollback:Error1:", errSresr);
 				}
