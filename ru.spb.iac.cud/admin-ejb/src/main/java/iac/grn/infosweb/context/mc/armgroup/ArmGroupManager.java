@@ -47,11 +47,16 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 @Name("armGroupManager")
  public class ArmGroupManager implements java.io.Serializable {
 	
-	 @Logger private Log log;
+	 /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4535510192340821847L;
+
+	@Logger private static transient Log log;
 	
 	 @In 
-	 EntityManager entityManager;
-	 
+	 transient EntityManager entityManager;
+
 	/**
      * Ёкспортируема€ сущности 
      * дл€ отображени€

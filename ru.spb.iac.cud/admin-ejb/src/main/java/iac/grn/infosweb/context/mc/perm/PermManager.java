@@ -38,10 +38,10 @@ import java.util.Set;
 	 */
 	private static final long serialVersionUID = 446402688513644327L;
 
-	@Logger private static Log log;
+	@Logger private static transient Log log;
 	
 	 @In 
-	 EntityManager entityManager;
+	 transient EntityManager entityManager;
 	 
 	
 	private String dellMessage;

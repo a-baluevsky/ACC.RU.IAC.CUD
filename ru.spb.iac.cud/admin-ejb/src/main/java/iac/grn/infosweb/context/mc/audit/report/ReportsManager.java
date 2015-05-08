@@ -40,7 +40,7 @@ import org.jboss.seam.log.Log;
 
 @Logger private static transient Log LOG;
    
-   @In EntityManager entityManager;
+   @In transient EntityManager entityManager;
    
    private SerializableList<ReportsBssT> reportsList;   
    private Date reportDate1, reportDate2;

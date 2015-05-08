@@ -18,7 +18,7 @@ import org.jboss.seam.log.Log;
 	 */
 	private static final long serialVersionUID = 3281554290520957642L;
 
-	@Logger private transient Log log;
+	@Logger private static transient Log log;
 	
 	@In(create=true)
 	private CparManager cparManager;

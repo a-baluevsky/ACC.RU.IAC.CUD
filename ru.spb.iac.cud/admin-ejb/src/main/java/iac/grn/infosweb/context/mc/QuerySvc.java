@@ -12,16 +12,13 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import iac.grn.infosweb.context.mc.usr.UsrStateHolder;
-
-import org.apache.xerces.impl.xpath.regex.Match;
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
-
-import com.sun.xml.bind.v2.runtime.reflect.ListIterator;
 
 
 public class QuerySvc implements java.io.Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -516328967470140924L;
 	//17.02.15: AB: MANTIS-4954
 	protected long[] m_QueryStats;	
 	public String getQueryStatText() {

@@ -13,7 +13,6 @@ import java.util.Set;
 
 import javaw.util.SerializableMap;
 import javaw.util.SerializableList;
-import javaw.util.SerializableSet;
 
 import javax.faces.context.FacesContext;
 import javax.persistence.NoResultException;
@@ -34,9 +33,13 @@ import iac.grn.serviceitems.BaseTableItem;
 import iac.grn.serviceitems.HeaderTableItem;
 
 @Name("appUserAccModifyManager")
- public class AppUserAccModifyManager extends BaseManager implements java.io.Serializable {
+ public class AppUserAccModifyManager extends BaseManager {
 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1542663643589360531L;
 	private String rejectReason;
 	private String commentText;
 	

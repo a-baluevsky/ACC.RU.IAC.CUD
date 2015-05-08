@@ -7,8 +7,6 @@ import iac.cud.infosweb.entity.IspBssT;
 import iac.grn.serviceitems.BaseTableItem;
 
 import javaw.util.SerializableList;
-import javaw.util.SerializableMap;
-import javaw.util.SerializableSet;
 
 import javaw.util.ArrayList;
 import java.util.Date;
@@ -36,10 +34,15 @@ import org.jboss.seam.log.Log;
 @Name("clOrgManager")
  public class ClOrgManager implements java.io.Serializable {
 	
-	 @Logger private Log log;
+	 /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1769618209023635923L;
+
+	@Logger private static transient Log log;
 	
 	 @In 
-	 EntityManager entityManager;
+	 transient EntityManager entityManager;
 	 
 	/**
      * Ёкспортируема€ сущности 

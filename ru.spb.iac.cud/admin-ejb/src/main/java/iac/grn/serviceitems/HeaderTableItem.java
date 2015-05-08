@@ -1,15 +1,19 @@
 package iac.grn.serviceitems;
 
-import java.util.ArrayList;
+import javaw.util.ArrayList;
+import javaw.util.SerializableList;
 import java.util.List;
 
- 
 
- public class HeaderTableItem {
+ public class HeaderTableItem implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3030342166451950655L;
 	private String itemLabel;
 	private String itemField;
-	private List<BaseTableItem> items=new ArrayList<BaseTableItem>();
+	private SerializableList<BaseTableItem> items=new ArrayList<BaseTableItem>();
 		
 	public HeaderTableItem(String itemLabel, String itemField){
 		this.itemLabel=itemLabel;
@@ -27,7 +31,7 @@ import java.util.List;
 		return this.items;
 	}
 	public void setItems(List<BaseTableItem> items){
-		this.items=items;
+		this.items=new ArrayList<BaseTableItem>(items);
 	}
 	
 	public String getItemField(){

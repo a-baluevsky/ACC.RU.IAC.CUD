@@ -13,7 +13,6 @@ import java.util.Set;
 
 import javaw.util.SerializableMap;
 import javaw.util.SerializableList;
-import javaw.util.SerializableSet;
 
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
@@ -30,6 +29,10 @@ import iac.grn.serviceitems.HeaderTableItem;
  public class AppMyUserAccModifyManager extends BaseManager{
 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3123173322403832294L;
 	private String rejectReason;
 	private String commentText;
 	

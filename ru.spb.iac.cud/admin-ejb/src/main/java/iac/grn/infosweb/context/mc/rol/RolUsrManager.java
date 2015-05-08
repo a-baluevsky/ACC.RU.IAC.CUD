@@ -35,10 +35,15 @@ import org.jboss.seam.log.Log;
 @Name("rolUsrManager")
  public class RolUsrManager implements java.io.Serializable {
 	
-	@Logger private Log log;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6209463851565499767L;
+
+	@Logger private static transient Log log;
 	
 	@In 
-	EntityManager entityManager;
+	transient EntityManager entityManager;
 	
 	private Boolean evaluteForList;
 	private Boolean evaluteForListFooter;  

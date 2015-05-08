@@ -46,10 +46,15 @@ import org.jboss.seam.transaction.Transaction;
 @Name("armManager")
  public class ArmManager implements java.io.Serializable {
 	
-	 @Logger private Log log;
+	 /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7187310380497183589L;
+
+	@Logger private static transient Log log;
 	
 	 @In 
-	 EntityManager entityManager;
+	 transient EntityManager entityManager;
 	 
 	/**
      * Ёкспортируема€ сущности 

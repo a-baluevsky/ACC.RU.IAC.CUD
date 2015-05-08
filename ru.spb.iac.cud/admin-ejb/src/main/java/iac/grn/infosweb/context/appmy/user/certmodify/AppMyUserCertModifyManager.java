@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 import javaw.util.SerializableList;
 import javaw.util.SerializableMap;
-import javaw.util.SerializableSet;
 
 import javax.faces.context.FacesContext;
 
@@ -31,6 +30,10 @@ import org.jboss.seam.faces.FacesMessages;
  public class AppMyUserCertModifyManager extends BaseManager{
 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4413906699590496104L;
 	private String rejectReason;
 	private String commentText;
 	

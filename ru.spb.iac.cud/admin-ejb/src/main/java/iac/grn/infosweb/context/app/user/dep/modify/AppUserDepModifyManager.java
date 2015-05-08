@@ -13,7 +13,6 @@ import java.util.Set;
 
 import javaw.util.SerializableMap;
 import javaw.util.SerializableList;
-import javaw.util.SerializableSet;
 
 import javax.faces.context.FacesContext;
 
@@ -36,6 +35,10 @@ import iac.grn.serviceitems.HeaderTableItem;
  public class AppUserDepModifyManager extends BaseManager implements java.io.Serializable {
 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6933240124589419437L;
 	private String rejectReason;
 	private String commentText;
 	

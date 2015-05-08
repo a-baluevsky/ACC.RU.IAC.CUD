@@ -42,10 +42,15 @@ import iac.grn.serviceitems.BaseTableItem;
 @Name("armSubManager")
  public class ArmSubManager implements java.io.Serializable {
 	
-	 @Logger private Log log;
+	 /**
+	 * 
+	 */
+	private static final long serialVersionUID = -3741019993650056016L;
+
+	@Logger private static  Log log;
 	
 	 @In 
-	 EntityManager entityManager;
+	 transient EntityManager entityManager;
 	 
 	private Boolean evaluteForList;
 	private Boolean evaluteForListFooter;  

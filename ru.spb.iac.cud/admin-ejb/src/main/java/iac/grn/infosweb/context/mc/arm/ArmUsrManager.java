@@ -34,10 +34,15 @@ import org.jboss.seam.log.Log;
 @Name("armUsrManager")
  public class ArmUsrManager implements java.io.Serializable {
 	
-	@Logger private Log log;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8993168074368944444L;
+
+	@Logger private static transient Log log;
 	
 	@In 
-	EntityManager entityManager;
+	transient EntityManager entityManager;
 	
 	private List <BaseTableItem> auditItemsListSelect;
 	

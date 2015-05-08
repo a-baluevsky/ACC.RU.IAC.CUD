@@ -18,7 +18,6 @@ import iac.cud.infosweb.remote.frontage.IRemoteFrontageLocal;
 import iac.grn.infosweb.session.audit.actions.ActionsMap;
 import iac.grn.infosweb.session.audit.actions.ResourcesMap;
 import iac.grn.infosweb.session.audit.export.AuditExportData;
-import java.io.BufferedWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -41,10 +40,15 @@ import javax.servlet.http.HttpServletResponse;
 @Name("aSysManager")
  public class ASysManager implements java.io.Serializable {
 	
-	 @Logger private Log log;
+	 /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4356029250268615925L;
+
+	@Logger private static transient Log log;
 	
 	 @In 
-	 EntityManager entityManager;
+	 transient EntityManager entityManager;
 	 
 	/**
      * Ёкспортируема€ сущности 

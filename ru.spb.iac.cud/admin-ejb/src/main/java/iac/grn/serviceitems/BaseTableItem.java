@@ -2,8 +2,12 @@ package iac.grn.serviceitems;
 
  
 
- public class BaseTableItem {
+ public class BaseTableItem implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6971798902981602662L;
 	private String itemLabel;
 	private String itemColumn;
 	private String itemField;

@@ -38,8 +38,6 @@ import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 import javaw.util.SerializableList;
-import javaw.util.SerializableMap;
-import javaw.util.SerializableSet;
 
 /**
  * ”правл€ющий Ѕин
@@ -49,10 +47,15 @@ import javaw.util.SerializableSet;
 @Name("clUsrManager")
  public class ClUsrManager implements java.io.Serializable {
 	
-	 @Logger private Log log;
+	 /**
+	 * 
+	 */
+	private static final long serialVersionUID = 780259489139114505L;
+
+	@Logger private static transient Log log;
 	
 	 @In 
-	 EntityManager entityManager;
+	 transient EntityManager entityManager;
 	 
 	/**
      * Ёкспортируема€ сущности 

@@ -2,30 +2,19 @@ package iac.grn.infosweb.context.app.system.modify;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-
 import javaw.util.ArrayList;
-
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
-
-import javaw.util.HashSet;
 import javaw.util.SerializableMap;
 import javaw.util.SerializableList;
-import javaw.util.SerializableSet;
-
 import javax.faces.context.FacesContext;
-
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.faces.FacesMessages;
-
-
-
-
 import iac.cud.infosweb.dataitems.AppSystemModifyItem;
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.entity.AcApplication;
@@ -37,6 +26,10 @@ import iac.grn.serviceitems.HeaderTableItem;
  public class AppSystemModifyManager extends BaseManager{
 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1217469019724453355L;
 	private String rejectReason;
 	private String commentText;
 	

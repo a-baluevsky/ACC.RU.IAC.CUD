@@ -22,10 +22,7 @@ import iac.grn.infosweb.session.audit.actions.ResourcesMap;
 import iac.grn.infosweb.session.audit.export.AuditExportData;
 import iac.grn.infosweb.session.navig.LinksMap;
 import javaw.util.SerializableList;
-import javaw.util.SerializableMap;
-import javaw.util.SerializableSet;
 import javaw.util.ArrayList;
-import javaw.util.HashMap;
 import javaw.util.HashSet;
 
 import java.util.Date;
@@ -57,7 +54,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	@Logger private static transient Log log;
 	
 	 @In 
-	 EntityManager entityManager;
+	 transient EntityManager entityManager;
 	 
 	
 	 private SerializableList <BaseTableItem> auditItemsListSelect;

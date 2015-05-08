@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.Date;
 import javaw.util.SerializableMap;
 import javaw.util.SerializableList;
-import javaw.util.SerializableSet;
 
 import javax.faces.context.FacesContext;
 import javax.naming.ldap.LdapName;
@@ -39,6 +38,10 @@ import iac.grn.serviceitems.HeaderTableItem;
 @Name("appUserCertModifyManager")
  public class AppUserCertModifyManager extends BaseManager implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 9117167023157608815L;
 	private String rejectReason;
 	private String commentText;
 	

@@ -13,8 +13,11 @@ import iac.cud.infosweb.entity.SettingsKnlT;
 import iac.grn.infosweb.session.audit.actions.ActionsMap;
 import iac.grn.infosweb.session.audit.actions.ResourcesMap;
 import iac.grn.infosweb.session.audit.export.AuditExportData;
-import java.util.*;
-
+import javaw.util.SerializableList;
+import javaw.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.Map;
 import org.jboss.seam.Component;
 
 import javax.faces.context.FacesContext;
@@ -27,17 +30,19 @@ import iac.grn.serviceitems.BaseTableItem;
  *
  */
 @Name("cparManager")
- public class CparManager {
-	
-	 @Logger private Log log;
+ public class CparManager implements java.io.Serializable {
+
+	private static final long serialVersionUID = 2292559516684864031L;
+
+	@Logger private static transient Log log;
 	
 	 @In 
-	 EntityManager entityManager;
+	 transient EntityManager entityManager;
 	 
 			
 	private String dellMessage;
 	 
-	private List<BaseItem> auditList; 
+	private SerializableList<BaseItem> auditList; 
 	
 	private Long auditCount;
 	
@@ -50,9 +55,9 @@ import iac.grn.serviceitems.BaseTableItem;
 	private Boolean evaluteForListFooter;  
 	private Boolean evaluteForBean;
 
-   private List <BaseTableItem> auditItemsListSelect;
+   private SerializableList <BaseTableItem> auditItemsListSelect;
 	
-	private List <BaseTableItem> auditItemsListContext;
+	private SerializableList <BaseTableItem> auditItemsListContext;
 
 	
 	
@@ -77,7 +82,7 @@ import iac.grn.serviceitems.BaseTableItem;
 			    "clSelOneFact".equals(remoteAudit)||
 			    "onSelColSaveFact".equals(remoteAudit))&&
 			    cparListCached!=null){
-		 		    	this.auditList=cparListCached;
+		 		    	this.auditList=new ArrayList<BaseItem>(cparListCached);
 			}else{
 				log.info("getAuditList:03");
 		    	invokeLocal("list", firstRow, numberOfRows, null);
@@ -101,7 +106,7 @@ import iac.grn.serviceitems.BaseTableItem;
 		return this.auditList;
 	}
 	public void setAuditList(List<BaseItem> auditList){
-		this.auditList=auditList;
+		this.auditList=new ArrayList<BaseItem>(auditList);
 	}
 	public void invokeLocal(String type, int firstRow, int numberOfRows,
 	           String sessionId) {
@@ -126,17 +131,17 @@ import iac.grn.serviceitems.BaseTableItem;
                  log.info("invokeLocal:list:orderQueryCPar:"+orderQueryCPar);
                  
 				 if(orderQueryCPar.contains("o1.full")){
-                	 auditList = entityManager.createQuery(
-                	"select o from SettingsKnlT o LEFT JOIN o.servicesBssT o1 "+		 
-                	 orderQueryCPar)
-                             .setFirstResult(firstRow)
-                             .setMaxResults(numberOfRows)
-                             .getResultList();
+                	 auditList = new ArrayList<BaseItem>(entityManager.createQuery(
+                         	"select o from SettingsKnlT o LEFT JOIN o.servicesBssT o1 "+		 
+                               	 orderQueryCPar)
+                                            .setFirstResult(firstRow)
+                                            .setMaxResults(numberOfRows)
+                                            .getResultList());
                  }else{
-				  auditList = entityManager.createQuery("select o from SettingsKnlT o "+(orderQueryCPar!=null ? orderQueryCPar : ""))
-                       .setFirstResult(firstRow)
-                       .setMaxResults(numberOfRows)
-                       .getResultList();
+				  auditList = new ArrayList<BaseItem>(entityManager.createQuery("select o from SettingsKnlT o "+(orderQueryCPar!=null ? orderQueryCPar : ""))
+	                       .setFirstResult(firstRow)
+	                       .setMaxResults(numberOfRows)
+	                       .getResultList());
 				 }
              log.info("invokeLocal:list:02");
   
@@ -301,7 +306,7 @@ import iac.grn.serviceitems.BaseTableItem;
    }
    
    public void setAuditItemsListSelect(List <BaseTableItem> auditItemsListSelect) {
-	    this.auditItemsListSelect=auditItemsListSelect;
+	    this.auditItemsListSelect=new ArrayList<BaseTableItem>(auditItemsListSelect);
 }
    
    public List <BaseTableItem> getAuditItemsListSelect() {
@@ -329,7 +334,7 @@ import iac.grn.serviceitems.BaseTableItem;
 		   auditItemsListContext = new ArrayList<BaseTableItem>();
 		   
 		   
-		   auditItemsListContext=ac.getAuditItemsCollection();
+		   auditItemsListContext=new ArrayList<BaseTableItem>(ac.getAuditItemsCollection());
 	   }
 	   return this.auditItemsListContext;
    }

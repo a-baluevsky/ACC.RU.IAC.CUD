@@ -15,7 +15,6 @@ import iac.grn.infosweb.session.audit.actions.ResourcesMap;
 import iac.grn.infosweb.session.audit.export.AuditExportData;
 import iac.grn.serviceitems.BaseTableItem;
 
-import java.io.BufferedWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import javaw.util.ArrayList;
@@ -25,7 +24,6 @@ import java.util.Map;
 import java.util.Set;
 import javaw.util.SerializableList;
 import javaw.util.SerializableMap;
-import javaw.util.SerializableSet;
 
 import javax.faces.context.FacesContext;
 import javax.naming.Context;
@@ -50,10 +48,15 @@ import org.jboss.seam.log.Log;
 @Name("aFuncManager")
  public class AFuncManager extends QuerySvc {
 	
-	 @Logger private Log log;
+	 /**
+	 * 
+	 */
+	private static final long serialVersionUID = 8518667742336776954L;
+
+	@Logger private static transient Log log;
 	
 	 @In 
-	 EntityManager entityManager;
+	 transient EntityManager entityManager;
 	 
 	 private Long auditReportCubeCount;
 		

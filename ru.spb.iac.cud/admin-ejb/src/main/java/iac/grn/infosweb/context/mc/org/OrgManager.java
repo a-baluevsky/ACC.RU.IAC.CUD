@@ -25,9 +25,6 @@ import javax.persistence.EntityManager;
 
 import iac.grn.serviceitems.BaseTableItem;
 import javaw.util.SerializableList;
-import javaw.util.SerializableMap;
-import javaw.util.SerializableSet;
-import javaw.util.SerializableList;
 import javaw.util.ArrayList;
 
 /**
@@ -38,10 +35,16 @@ import javaw.util.ArrayList;
 @Name("orgManager")
  public class OrgManager implements java.io.Serializable {
 	
-	 @Logger private Log log;
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1993758098716202402L;
+
+	@Logger private static transient Log log;
 	
 	 @In 
-	 EntityManager entityManager;
+	 transient EntityManager entityManager;
 	 
 	
 	 private SerializableList <BaseTableItem> auditItemsListSelect;
