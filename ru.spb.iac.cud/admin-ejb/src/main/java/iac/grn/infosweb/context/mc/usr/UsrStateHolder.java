@@ -23,7 +23,11 @@ import org.jboss.seam.log.Log;
 @AutoCreate
  public class UsrStateHolder extends BaseStateHolder{
 	
-	   @Logger private Log log;
+	   /**
+	 * 
+	 */
+	private static final long serialVersionUID = -5477916252932838L;
+	@Logger private static transient Log log;
 	
         
        @Create
@@ -32,6 +36,15 @@ import org.jboss.seam.log.Log;
     	
          }
        
+       private boolean fmtDate(Object odt, StringBuffer bufDate) {
+    	   if((bufDate!=null) && (odt instanceof Date)) {
+    		   Date dt = (Date)odt;
+    		   SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy");
+    		   bufDate.append(df.format(dt));
+    		   return true;
+    	   }
+    	   return false;
+       }
         public void clearFilters(){
     	   log.info("clearFilters:01");
     	   if(columnFilterValues!=null){
@@ -42,18 +55,19 @@ import org.jboss.seam.log.Log;
     			      Object oCurValue=me.getValue();    			      
     			      if(oCurValue==null) {    			    	  
     			    	  it.remove();
-    			      } else {
-	    			      String sCurTxt=null;
-	    			      Class curValClass = oCurValue.getClass();
-	    			      if(curValClass.equals(String.class)) {
+    			      } else {    			    	  
+	    			      String sCurTxt=null;	    			      
+	    			      if(oCurValue instanceof String) { // trivial case
 	    			    	  sCurTxt = (String)oCurValue;
-	    			      } else if(curValClass.equals(Date.class)) {
-	    			    	  SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy");
-	    			    	  sCurTxt = df.format((Date)oCurValue);
-	    			    	  me.setValue(sCurTxt);
-	    			      } else {
-	    			    	  sCurTxt = oCurValue.toString();
+	    			      } else { // try to format known types
+	    			    	  StringBuffer sbCurTxt=new StringBuffer();
+	    			    	  if(fmtDate(oCurValue, sbCurTxt)) {
+	    			    		  me.setValue(sbCurTxt.toString());
+		    			      } else { // last resort: just toString!
+		    			    	  sCurTxt = oCurValue.toString();
+		    			      }
 	    			      }
+	    			      
 	    				  if(sCurTxt.isEmpty()||"#-1#".equals(sCurTxt)){
 	    	     			  log.info("Ahtung!!!");
 	    	     			  it.remove();
