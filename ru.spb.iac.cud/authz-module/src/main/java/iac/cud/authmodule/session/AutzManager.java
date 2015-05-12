@@ -72,17 +72,12 @@ import org.slf4j.LoggerFactory;
 		ArrayList<String> permList = new ArrayList<String>();
 		String pageCode_prev = "", pageCode_curr = "";
 
-		try {
-
-			String roleLine = null;
-
+		try {			
+			StringBuffer sbfRoleLine = new StringBuffer();
 			for (String role : roles) {
-				if (roleLine == null) {
-					roleLine = "'" + role + "'";
-				} else {
-					roleLine = roleLine + ", '" + role + "'";
-				}
+				sbfRoleLine.append(", '").append(role).append("'");
 			}
+			String roleLine = sbfRoleLine.substring(2);
 			LOGGER.debug("createResourceTreeItem:roleLine:" + roleLine);
 
 			List<Object[]> lo = em

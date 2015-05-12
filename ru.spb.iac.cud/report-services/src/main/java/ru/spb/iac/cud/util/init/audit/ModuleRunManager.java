@@ -17,13 +17,15 @@ import ru.spb.iac.cud.items.User;
 		
 		if (uids0audit != null && !uids0audit.isEmpty()) {
 
-			for (String uidValue : uids0audit) {
-				if (result0audit == null) {
-					result0audit = "'" + uidValue + "'";
-				} else {
-					result0audit = result0audit + ", '" + uidValue + "'";
-				}
-			}
+			StringBuilder bld0audit = new StringBuilder();
+ for (String uidValue : uids0audit) {
+ if (bld0audit.length()==0) {
+ bld0audit.append("'" + uidValue + "'");
+ }else{
+ bld0audit.append(",'" + uidValue + "'");
+ }
+}
+ result0audit=bld0audit.toString();
 		}
 		
 		return result0audit;

@@ -292,6 +292,15 @@ import ru.spb.iac.cud.exs.config.Configuration;
 		return result;
 	}
 
+	private String calcMD5Checksum(byte[] digest) {
+		StringBuffer sbfResult = new StringBuffer();
+		for (int i = 0; i < digest.length; i++) {
+			sbfResult.append(
+					Integer.toString((digest[i] & 0xff) + 0x100, 16).substring(1)
+			);
+		}		
+		return sbfResult.toString();		
+	}
 	
 	public void getMD5Checksum(File file) {
 		try {
@@ -304,24 +313,13 @@ import ru.spb.iac.cud.exs.config.Configuration;
 			}
 			byte[] digest = md.digest();
 
-			String result = "";
-			for (int i = 0; i < digest.length; i++) {
-				result += Integer.toString((digest[i] & 0xff) + 0x100, 16)
-						.substring(1);
-			}
-
+			String result = calcMD5Checksum(digest);
 			LOGGER.debug("getMD5Checksum:1:" + result);
-
-			result = "";
 
 			md.update(file.getName().getBytes(), 0, file.getName().length());
 
 			digest = md.digest();
-
-			for (int i = 0; i < digest.length; i++) {
-				result += Integer.toString((digest[i] & 0xff) + 0x100, 16)
-						.substring(1);
-			}
+			result = calcMD5Checksum(digest);
 			LOGGER.debug("getMD5Checksum:2:" + result);
 
 			LOGGER.debug("getMD5Checksum:3:"

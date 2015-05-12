@@ -12,21 +12,14 @@ import ru.spb.iac.cud.items.User;
 	 CommonUtil(){
 		 
 	 }
-	public static String createLine (List<String> uids){
-		String result = null;
-		
+	public static String createLine (List<String> uids){		
+		StringBuffer sbfResult = new StringBuffer();		
 		if (uids != null && !uids.isEmpty()) {
-
 			for (String uidValue : uids) {
-				if (result == null) {
-					result = "'" + uidValue + "'";
-				} else {
-					result = result + ", '" + uidValue + "'";
-				}
+				sbfResult.append(", '").append(uidValue).append("'");
 			}
-		}
-		
-		return result;
+		}		
+		return sbfResult.substring(2);
 	}
 
 	public static String createAttributes (List<Object[]> lo, List<User> result, Map<String, User> resultIds){

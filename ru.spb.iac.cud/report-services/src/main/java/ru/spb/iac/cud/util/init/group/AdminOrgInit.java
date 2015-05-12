@@ -18,13 +18,15 @@ import ru.spb.iac.cud.items.User;
 		
 		if (uids9group != null && !uids9group.isEmpty()) {
 
-			for (String uidValue : uids9group) {
-				if (result9group == null) {
-					result9group = "'" + uidValue + "'";
-				} else {
-					result9group = result9group + ", '" + uidValue + "'";
-				}
-			}
+			StringBuilder bld9group = new StringBuilder();
+ for (String uidValue : uids9group) {
+ if (bld9group.length()==0) {
+ bld9group.append("'" + uidValue + "'");
+ }else{
+ bld9group.append(",'" + uidValue + "'");
+ }
+}
+ result9group=bld9group.toString();
 		}
 		
 		return result9group;

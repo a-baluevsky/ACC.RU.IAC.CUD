@@ -17,13 +17,15 @@ import ru.spb.iac.cud.items.User;
 		
 		if (uids2classif != null && !uids2classif.isEmpty()) {
 
-			for (String uidValue : uids2classif) {
-				if (result2classif == null) {
-					result2classif = "'" + uidValue + "'";
-				} else {
-					result2classif = result2classif + ", '" + uidValue + "'";
-				}
-			}
+			StringBuilder bld2classif = new StringBuilder();
+ for (String uidValue : uids2classif) {
+ if (bld2classif.length()==0) {
+ bld2classif.append("'" + uidValue + "'");
+ }else{
+ bld2classif.append(",'" + uidValue + "'");
+ }
+}
+ result2classif=bld2classif.toString();
 		}
 		
 		return result2classif;

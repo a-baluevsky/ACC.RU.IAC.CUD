@@ -1144,34 +1144,26 @@ import iac.grn.serviceitems.BaseTableItem;
    
    
    public String getStListRolesCodesArm(Long idArm){
-	   
 	   String result="";
-	   
 	   log.info("rolManager:getStListRolesCodesArm:idArm:"+idArm);
 	   
 	   if(idArm==null){
 	    	return result;
 	   }
 	    
-	    List<Object> lo=null;
-	    
-		try{
-			
-	 	lo=entityManager.createNativeQuery(
-	  			"select rl.sign_object "+
-                "from AC_ROLES_BSS_T rl "+
-                "where rl.up_IS=? ")
-			.setParameter(1, idArm)
-			.getResultList();
-	  	
+	    List<Object> lo=null;	    
+		try{			
+			lo=entityManager.createNativeQuery(
+		  			"select rl.sign_object "+
+	                "from AC_ROLES_BSS_T rl "+
+	                "where rl.up_IS=? ")
+				.setParameter(1, idArm)
+				.getResultList();	  	
+	 	   StringBuffer sbfResult=new StringBuffer();
 	       for(Object objectArray :lo){
-         	   if(result.equals("")){
-        	      result+=objectArray.toString();
-        	   }else{
-        		  result+="`~"+objectArray.toString();
-        	   }
+	    	   sbfResult.append("`~").append(objectArray.toString());
            }
-       
+	       result = sbfResult.substring(2);       
 		}catch(Exception e){
 			 log.error("rolManager:getStListRolesCodesArm:error:"+e);
 		} 

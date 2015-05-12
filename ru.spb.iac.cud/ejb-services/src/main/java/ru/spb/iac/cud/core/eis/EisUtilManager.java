@@ -1123,7 +1123,7 @@ import ru.spb.iac.cud.util.CommonUtil;
 							.getResultList();
 
 				}
-
+				
 				
 				for (Object[] objectArray : loGr) {
 
@@ -1569,7 +1569,7 @@ import ru.spb.iac.cud.util.CommonUtil;
 		ResourcesData isu = new ResourcesData();
 
 		String rolesLine = null;
-		String usersIdsLine = null;
+		
 	
 		try {
 
@@ -1656,6 +1656,7 @@ import ru.spb.iac.cud.util.CommonUtil;
 								count != null ? count.intValue() : 1000000)
 						.getResultList();
 
+				StringBuffer sbfUsersIdsLine = new StringBuffer();
 				for (Object[] objectArray : lo) {
 
 					idRec = objectArray[0].toString();
@@ -1667,17 +1668,12 @@ import ru.spb.iac.cud.util.CommonUtil;
 					uat.setCode (objectArray[1] != null ? objectArray[1]
 							.toString() : "");
 					uat.setName (objectArray[2] != null ? objectArray[2]
-							.toString() : "");
-					
+							.toString() : "");					
 					result.add(uat); // для сохранения сортировки из запроса
 					resultIds.put(idRec, uat);
-
-					if (usersIdsLine == null) {
-						usersIdsLine = "'" + idRec + "'";
-					} else {
-						usersIdsLine = usersIdsLine + ", '" + idRec + "'";
-					}
-				}
+					sbfUsersIdsLine.append(", '").append(idRec).append("'");
+				}				
+				String usersIdsLine = sbfUsersIdsLine.substring(2);
 
 				LOGGER.debug("resources_data:02");
 
@@ -1805,32 +1801,24 @@ import ru.spb.iac.cud.util.CommonUtil;
 						.setMaxResults(
 								count != null ? count.intValue() : 1000000)
 						.getResultList();
-
+				
+				StringBuffer sbfUsersIdsLine = new StringBuffer();
+				
 				for (Object[] objectArray : lo) {
-
 					idRec = objectArray[0].toString();
-
 					uat = new ResourceNU();
-
 					uat.setDescription (objectArray[3] != null ? objectArray[3]
-							.toString() : "");
-					
+							.toString() : "");					
 					uat.setCode (objectArray[1] != null ? objectArray[1]
-							.toString() : "");
-					
+							.toString() : "");					
 					uat.setName (objectArray[2] != null ? objectArray[2]
 							.toString() : "");
-
 					result.add(uat); // для сохранения сортировки из запроса
 					resultIds.put(idRec, uat);
-
-					if (usersIdsLine == null) {
-						usersIdsLine = "'" + idRec + "'";
-					} else {
-						usersIdsLine = usersIdsLine + ", '" + idRec + "'";
-					}
+					sbfUsersIdsLine.append(", '").append(idRec).append("'");
 				}
-
+				
+				String	usersIdsLine = sbfUsersIdsLine.substring(2);
 				LOGGER.debug("resources_data:04");
 
 				// 2. роли
