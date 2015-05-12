@@ -18,14 +18,14 @@ import ru.spb.iac.cud.items.User;
 		if (uids0report != null && !uids0report.isEmpty()) {
 
 			StringBuilder bld0report = new StringBuilder();
- for (String uidValue : uids0report) {
- if (bld0report.length()==0) {
- bld0report.append("'" + uidValue + "'");
- }else{
- bld0report.append(",'" + uidValue + "'");
- }
-}
- result0report=bld0report.toString();
+
+			for (String uidValue : uids0report) {
+
+			  bld0report.append(",'").append(uidValue).append("'");
+
+			}
+
+			result0report=bld0report.substring(1);
 		}
 		
 		return result0report;

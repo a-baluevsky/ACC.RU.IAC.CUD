@@ -18,7 +18,7 @@ import ru.spb.iac.cud.items.User;
 			for (String uidValue : uids) {
 				sbfResult.append(", '").append(uidValue).append("'");
 			}
-		}		
+		}
 		return sbfResult.substring(2);
 	}
 

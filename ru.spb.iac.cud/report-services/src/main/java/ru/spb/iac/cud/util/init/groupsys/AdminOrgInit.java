@@ -19,14 +19,14 @@ import ru.spb.iac.cud.items.User;
 		if (uids9groupsys != null && !uids9groupsys.isEmpty()) {
 
 			StringBuilder bld9groupsys = new StringBuilder();
- for (String uidValue : uids9groupsys) {
- if (bld9groupsys.length()==0) {
- bld9groupsys.append("'" + uidValue + "'");
- }else{
- bld9groupsys.append(",'" + uidValue + "'");
- }
-}
- result9groupsys=bld9groupsys.toString();
+
+			for (String uidValue : uids9groupsys) {
+
+			  bld9groupsys.append(",'").append(uidValue).append("'");
+
+			}
+
+			result9groupsys=bld9groupsys.substring(1);
 		}
 		
 		return result9groupsys;
