@@ -8,6 +8,7 @@ import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.EnumMap;
+import java.util.Map.Entry;
 
 import javaw.util.SerializableEnumMap;
 import javaw.util.SerializableMap;
@@ -255,15 +256,15 @@ public class JasperReportService implements Serializable {
 //        <parameters>
         Element parameters = doc.createElement("parameters");
         rootElement.appendChild(parameters);
-        for(String sParmName: reportParameters.keySet()) {
+        for(Entry<String, String> entry: reportParameters.entrySet()) {
 	        Element reportParameter = doc.createElement("reportParameter");
 	        Attr attr = doc.createAttribute("name");
-	        attr.setValue(sParmName);
+	        attr.setValue(entry.getKey());
 	        reportParameter.setAttributeNode(attr);
 	        parameters.appendChild(reportParameter);	
 	        Element value = doc.createElement("value");
-	        value.setTextContent(reportParameters.get(sParmName));
-	        reportParameter.appendChild(value);        	
+	        value.setTextContent(entry.getValue());
+	        reportParameter.appendChild(value);      	
         }
 
         // write the content into xml log

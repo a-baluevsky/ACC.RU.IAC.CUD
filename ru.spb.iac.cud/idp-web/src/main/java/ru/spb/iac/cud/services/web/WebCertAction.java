@@ -2,16 +2,21 @@ package ru.spb.iac.cud.services.web;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.Signature;
 import java.security.cert.CertPath;
 import java.security.cert.CertPathBuilder;
 import java.security.cert.CertPathValidator;
 import java.security.cert.CertStore;
 import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.CollectionCertStoreParameters;
 import java.security.cert.PKIXBuilderParameters;
@@ -381,27 +386,25 @@ private static String alias_root = "σφροαγσο«ροαθΰφ».crt";
 		return result;
 	}
 
-	public String root_sn() throws IOException {
-		// TODO Auto-generated method stub
-
-		if (root_sn == null) {
-
-			FileInputStream fi = null; 
-
-			try {
-
+	private static void initKeyStore(FileInputStream fi) 
+			throws KeyStoreException, NoSuchProviderException, NoSuchAlgorithmException, 
+			CertificateException, IOException {
 				if(keyStore==null) {
 					keyStore = KeyStore.getInstance("CertStore", "JCP");
 	
 					fi = new FileInputStream(cert_store_url);
 					keyStore.load(fi, "Access_Control".toCharArray());
-				}
-				
+				}		
+	}
+	
+	public String root_sn() throws IOException {
+		if (root_sn == null) {
+			FileInputStream fi = null; 
+			try {
+				initKeyStore(fi);				
 				X509Certificate tr = (X509Certificate) keyStore
 						.getCertificate(alias_root);
-
 				root_sn = dec_to_hex(tr.getSerialNumber());
-
 			} catch (Exception e) {
 				LOGGER.error("root_sn:error:", e);
 			} finally{

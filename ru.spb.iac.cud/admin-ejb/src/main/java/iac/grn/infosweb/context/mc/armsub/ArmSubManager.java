@@ -588,11 +588,11 @@ import iac.grn.serviceitems.BaseTableItem;
    public List <BaseTableItem> getAuditItemsListContext() {
 	   log.info("orgManager:getAuditItemsListContext");
 	   if(auditItemsListContext==null){
-		   ArmSubContext ac= new ArmSubContext();
-		   auditItemsListContext = new ArrayList<BaseTableItem>();
-			   auditItemsListContext=ac.getAuditItemsCollection();
+		   ArmSubContext ac = new ArmSubContext();
+		   auditItemsListContext = 
+			   ac.getAuditItemsCollection();
 	   }
-	   return this.auditItemsListContext;
+	   return auditItemsListContext;
    }
       
     

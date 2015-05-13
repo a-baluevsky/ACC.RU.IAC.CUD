@@ -2616,10 +2616,10 @@ import org.slf4j.LoggerFactory;
 	   log.info("usrManager:getAuditItemsListContext");
 	   if(auditItemsListContext==null){
 		   UsrContext acUm= new UsrContext();
-		   auditItemsListContext = new ArrayList<BaseTableItem>();
-		   auditItemsListContext=acUm.getAuditItemsCollection();
+		   auditItemsListContext = 
+				 acUm.getAuditItemsCollection();
 	   }
-	   return this.auditItemsListContext;
+	   return auditItemsListContext;
    }
   
    public void setAuditItemsListSelect(List <BaseTableItem> auditItemsListSelect) {

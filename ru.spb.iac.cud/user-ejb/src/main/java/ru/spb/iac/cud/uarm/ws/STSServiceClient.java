@@ -92,7 +92,7 @@ import org.w3c.dom.NodeList;
 			return DocumentUtil.asString(sign_verify_soap_transform_2sign(null));
 		}
 		
-		public Document sign_verify_soap_transform_2sign(String onBehalfOfToken) throws Exception  {
+		public static Document sign_verify_soap_transform_2sign(String onBehalfOfToken) throws Exception  {
 
 			
 		

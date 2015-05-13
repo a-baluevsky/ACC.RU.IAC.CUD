@@ -63,8 +63,11 @@ import org.w3c.dom.NodeList;
     return true;
  }
 
-
  public boolean handleMessage(SOAPMessageContext mc) {
+	return HandleMessage(mc);
+ }
+ 
+ public boolean HandleMessage(SOAPMessageContext mc) {
 	 
 	 LOGGER.debug("TestClientCryptoSOAPHandler:handleMessage:01:"+mc.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY));
 	

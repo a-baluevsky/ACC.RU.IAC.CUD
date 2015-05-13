@@ -9,7 +9,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javaw.util.ArrayList;
 import javaw.util.HashMap;
@@ -20,6 +22,7 @@ import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.iterators.EntrySetMapIterator;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -256,8 +259,8 @@ import org.jboss.seam.log.Log;
          if(bUpdateReportStatus) {
             boolean r=false;
             SerializableMap<String, JasperReportService> reporters = getReporters();
-            for(String k: reporters.keySet()) {
-               JasperReportService reporter = reporters.get(k);
+            for(Entry<String, JasperReportService> e: reporters.entrySet()) {            	
+               JasperReportService reporter = reporters.get(e.getKey());
                if(reporter.isRunning()) 
                   r=true;   break;
             }

@@ -89,11 +89,10 @@ import org.w3c.dom.NodeList;
 	private static Certificate cert = null;
 
 	public String sign_verify_soap_transform_2sign() throws Exception {
-		
 		return DocumentUtil.asString(sign_verify_soap_transform_2sign(null));
 	}
 	
-	public Document sign_verify_soap_transform_2sign(String onBehalfOfToken) throws Exception  {
+	public static Document sign_verify_soap_transform_2sign(String onBehalfOfToken) throws Exception  {
 
 		
 
@@ -106,7 +105,7 @@ import org.w3c.dom.NodeList;
 
 		LOGGER.debug("STSServiceClient:sign_verify_soap_transform_2sign:01+");
 
-		final ThreadLocal<Dispatch<SOAPMessage>> dispatchLocal = new InheritableThreadLocal();
+		final ThreadLocal<Dispatch<SOAPMessage>> dispatchLocal = new InheritableThreadLocal<Dispatch<SOAPMessage>>();
 		try {
 
 			System.setProperty("javax.net.ssl.trustStore",

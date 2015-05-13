@@ -48,8 +48,8 @@ import javax.persistence.*;
 		}
 		LinkAdminUserSysPK castOther = (LinkAdminUserSysPK)other;
 		return 
-			(this.upUser == castOther.upUser)
-			&& (this.upSys == castOther.upSys);
+			this.upUser.equals(castOther.upUser)
+			&& this.upSys.equals(castOther.upSys);
 	}
 
 	@Override

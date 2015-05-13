@@ -131,7 +131,7 @@ import ru.spb.iac.cud.util.CommonUtil;
 
 			if (MAX_CONT_USERS < count&&!"TRUE".equals(settingsMap.get("ACCOUNTS_ONLY"))) {
 				LOGGER.debug("users_data:return:2");
-				throw new GeneralFailure("'count' should be less than "
+				throw new GeneralFailure(csCountUBoundMsg
 						+ MAX_CONT_USERS);
 			}
 
@@ -1000,7 +1000,7 @@ import ru.spb.iac.cud.util.CommonUtil;
 
 			if (MAX_CONT_GROUPS < count) {
 				LOGGER.debug("groups_data:return:2");
-				throw new GeneralFailure("'count' should be less than "
+				throw new GeneralFailure(csCountUBoundMsg
 						+ MAX_CONT_GROUPS);
 			}
 
@@ -1368,10 +1368,8 @@ import ru.spb.iac.cud.util.CommonUtil;
 							.setParameter("idIS", idIS)
 							.setParameter("onlyISUsers", -1)
 							.setParameter("idUser", idUserAuth)
-							.setFirstResult(
-									start != null ? start.intValue() : 0)
-							.setMaxResults(
-									count != null ? count.intValue() : 1000000)
+							.setFirstResult(start.intValue())
+							.setMaxResults(count.intValue())
 							.getResultList();
 
 				}
@@ -1538,18 +1536,27 @@ import ru.spb.iac.cud.util.CommonUtil;
 		}
 		return isu;
 	}
+	
+	private final String csCountUBoundMsg = "'count' should be not less than 0 and less than ";
 
 	/**
 	 * данные по ресурсам
 	 */
 	public ResourcesData resources_data(String idIS,
 			List<String> resourcesCodes, String category,
-			List<String> rolesCodes, Integer start, Integer count,
+			List<String> rolesCodes, Integer Start, Integer Count,
 			Map<String, String> settings, Long idUserAuth, String IPAddress)
 			throws GeneralFailure {
-
-		LOGGER.debug("resources_data:01");
-
+		
+		Integer count = (Count==null)?MAX_CONT_RES:Count;
+		Integer start = (Start==null)?0:Start;
+		
+		LOGGER.debug("resources_data:01 start ="+start+", count ="+count);
+		if (MAX_CONT_RES < count || count < 0) {
+			LOGGER.debug("resources_data:return:2");
+			throw new GeneralFailure(csCountUBoundMsg + MAX_CONT_RES);
+		}		
+		
 		// onlyISUsers[category:SYS] условие сильнее, чем rolesCodes
 		// то есть, если стоит onlyISUsers = false [все пользователи],
 		// то rolesCodes уже не учитывается
@@ -1576,19 +1583,6 @@ import ru.spb.iac.cud.util.CommonUtil;
 			if (idIS == null) {
 				LOGGER.debug("resources_data:return:1");
 				throw new GeneralFailure("idIS is null!");
-			}
-
-			if (count == null) {
-				count = MAX_CONT_RES;
-			}
-			if (start == null) {
-				start = 0;
-			}
-
-			if (MAX_CONT_RES < count) {
-				LOGGER.debug("resources_data:return:2");
-				throw new GeneralFailure("'count' should be less than "
-						+ MAX_CONT_RES);
 			}
 
 			LOGGER.debug("resources_data:idIS1:" + idIS);
@@ -1651,9 +1645,8 @@ import ru.spb.iac.cud.util.CommonUtil;
 								"onlyISUsers",
 								CUDConstants.categorySYS.equals(category) ? 1
 										: -1)
-						.setFirstResult(start != null ? start.intValue() : 0)
-						.setMaxResults(
-								count != null ? count.intValue() : 1000000)
+						.setFirstResult(start.intValue())
+						.setMaxResults(count.intValue())
 						.getResultList();
 
 				StringBuffer sbfUsersIdsLine = new StringBuffer();
@@ -1802,7 +1795,7 @@ import ru.spb.iac.cud.util.CommonUtil;
 								count != null ? count.intValue() : 1000000)
 						.getResultList();
 				
-				StringBuffer sbfUsersIdsLine = new StringBuffer();
+				StringBuilder sbfUsersIdsLine = new StringBuilder();
 				
 				for (Object[] objectArray : lo) {
 					idRec = objectArray[0].toString();

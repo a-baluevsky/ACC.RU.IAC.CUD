@@ -122,10 +122,6 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 		this.user = user;
 	}
 	
-	public void loadUser() {
-		this.user = user;
-	}
-
 	public SerializableList<AcIsBssT> getListArm() {
 		
 		HttpSession hs = (HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false); 
@@ -513,8 +509,8 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 		}
 
 		public void setListAppOrgMan(
-				SerializableList<JournAppOrgManagerBssT> listAppAOrgMan) {
-			this.listAppOrgMan = listAppOrgMan;
+				SerializableList<JournAppOrgManagerBssT> newListAppAOrgMan) {
+			this.listAppOrgMan = newListAppAOrgMan;
 		}
 	/**
      * для заявки на администрирование ИС

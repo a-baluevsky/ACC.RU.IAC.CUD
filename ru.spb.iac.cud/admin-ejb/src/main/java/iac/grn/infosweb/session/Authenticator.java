@@ -14,15 +14,21 @@ import iac.grn.infosweb.session.audit.export.AuditExportData;
 import iac.grn.infosweb.session.navig.LinksMap;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.security.Key;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.Provider;
 import java.security.PublicKey;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -272,6 +278,19 @@ import ru.spb.iac.crypto.export.Crypto15Init;
     	}
     	return true;
     }
+   
+   private static void updateCertKeys(String signingAlias, char[] signingKeyPass) 
+		   throws KeyStoreException, NoSuchProviderException, NoSuchAlgorithmException, 
+		   			CertificateException, IOException, UnrecoverableKeyException 
+   {
+	  if(publicKey==null) {
+		    KeyStore ks  = KeyStore.getInstance("HDImageStore", "JCP");
+			ks.load(null, null);			
+			 privateKey = (PrivateKey)ks.getKey(signingAlias, signingKeyPass);		
+			 publicKey = ks.getCertificate("cudvm_export").getPublicKey();		  
+	  }	   
+   }
+   
    public boolean authenticate()
    {
 	   
@@ -297,17 +316,7 @@ import ru.spb.iac.crypto.export.Crypto15Init;
            .getRequestParameterMap()
            .get("SAMLResponse"); 
 		  
-		  
-		  
-		  if(publicKey==null) {
-		    KeyStore ks  = KeyStore.getInstance("HDImageStore", "JCP");
-			ks.load(null, null);
-			
-			 privateKey = (PrivateKey)ks.getKey(signingAlias, signingKeyPass);
-		
-			 publicKey = ks.getCertificate("cudvm_export").getPublicKey();
-		  
-		  }
+		  	updateCertKeys(signingAlias, signingKeyPass);;
 			Document  samlDocument;
 			AssertionType ass;
 			
@@ -630,19 +639,9 @@ import ru.spb.iac.crypto.export.Crypto15Init;
    	 String assertionConsumerServiceURL = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/infoscud/public.seam";
    	 
    	 LOGGER.debug("authenticator:cudAuth:01+:"+request.getContextPath());
-   	 
    	
-   
-   	 if(publicKey==null) {	
-   	KeyStore ks  = KeyStore.getInstance("HDImageStore", "JCP");
-	ks.load(null, null);
-	
-	 privateKey = (PrivateKey)ks.getKey(signingAlias, signingKeyPass);
+   	 updateCertKeys(signingAlias, signingKeyPass);
 
-	 publicKey = ks.getCertificate("cudvm_export").getPublicKey();
-   	 }
-	 
-	  
    	Document samlDocument = get_saml_assertion_from_xml(assertionConsumerServiceURL, privateKey, publicKey);
    	 
     Node nextSibling = getNextSiblingOfIssuer(samlDocument);
@@ -750,18 +749,7 @@ import ru.spb.iac.crypto.export.Crypto15Init;
 	   	 LOGGER.debug("authenticator:cudLogout:03:"+logoutBackUrl);
 	   	
 	 
-	   
-	   	 if(publicKey==null) { 	
-	   	KeyStore ks  = KeyStore.getInstance("HDImageStore", "JCP");
-		ks.load(null, null);
-		
-		privateKey = (PrivateKey)ks.getKey(signingAlias, signingKeyPass);
-
-		 publicKey = ks.getCertificate("cudvm_export").getPublicKey();
-		
-	   	 }
-		 
-		  
+	   	updateCertKeys(signingAlias, signingKeyPass);
 	   	Document samlDocument = get_saml_logout_from_xml(logoutBackUrl, login);
 	   	
 	   	LOGGER.debug("authenticator:cudLogout:04:"+DocumentUtil.asString(samlDocument));
@@ -1354,6 +1342,13 @@ import ru.spb.iac.crypto.export.Crypto15Init;
 	            ivBase64 = encrypt_data[3];
 	        }
 	       
+	       if(	passwordEncryptBase64==null || 
+	    		secretKeyBase64==null || 
+	    		ivBase64==null ) {
+	    	   throw new IllegalArgumentException("passwordEncryptBase64, secretKeyBase64, ivBase64 can't be null!");
+	       }
+	    	   
+	        
 	       result="?"+login_key+"="+URLEncoder.encode(login, "UTF-8")+
 	        	   "&"+password_encrypt_key+"="+URLEncoder.encode(passwordEncryptBase64, "UTF-8")+
 	        	   "&"+secret_key_key+"="+URLEncoder.encode(secretKeyBase64, "UTF-8")+

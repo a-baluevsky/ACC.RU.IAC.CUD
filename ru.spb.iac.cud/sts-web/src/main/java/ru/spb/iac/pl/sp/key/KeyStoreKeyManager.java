@@ -57,22 +57,28 @@ import ru.spb.iac.cud.context.ContextIDPUtilManager;
 	public static final String SIGNING_KEY_ALIAS = "SigningKeyAlias";
 
 	private static PrivateKey privateKey = null;
+	private static void initPrivateKey() 
+			throws UnrecoverableKeyException, KeyStoreException, NoSuchAlgorithmException {
+		if(privateKey==null){
+			privateKey=(PrivateKey) ks.getKey(signingAlias,
+					signingKeyPass);
+		}		
+	}
+	public PrivateKey getSigningKey() 
+			throws TrustKeyConfigurationException, TrustKeyProcessingException {
+		 return GetSigningKey(this.keyStoreURL, this.keyStorePass);
+	}
 	
-	public PrivateKey getSigningKey() throws TrustKeyConfigurationException,
+	public static PrivateKey GetSigningKey(String KeyStoreURL, String KeyStorePass) throws TrustKeyConfigurationException,
 			TrustKeyProcessingException {
 		try {
 			LOGGERSLF4J.debug("getSigningKey:01");
 
-			initKeyStore();
-
-			 
-
-			if(this.privateKey==null){
-				this.privateKey=(PrivateKey) this.ks.getKey(this.signingAlias,
-						this.signingKeyPass);
-			}
-			return this.privateKey/*(PrivateKey) this.ks.getKey(this.signingAlias,
-					this.signingKeyPass)*/;
+			initKeyStore(KeyStoreURL, KeyStorePass);
+			initPrivateKey();
+			
+			return privateKey/*(PrivateKey) ks.getKey(signingAlias,
+					signingKeyPass)*/;
 
 		} catch (KeyStoreException e) {
 			throw LOGGER.keyStoreConfigurationError(e);
@@ -90,30 +96,24 @@ import ru.spb.iac.cud.context.ContextIDPUtilManager;
 
 	// формирование подписи ЦУД
 	public KeyPair getSigningKeyPair() throws TrustKeyConfigurationException,
+			TrustKeyProcessingException {	
+		return GetSigningKeyPair(this.keyStoreURL, this.keyStorePass);
+	}
+	
+	public static KeyPair GetSigningKeyPair(String KeyStoreURL, String KeyStorePass) throws TrustKeyConfigurationException,
 			TrustKeyProcessingException {
 		try {
 			
 			LOGGERSLF4J.debug("getSigningKeyPair:01");
-
-			initKeyStore();
-
-			 
-
-			if(this.privateKey==null) {
-				this.privateKey = getSigningKey();
+			initKeyStore(KeyStoreURL, KeyStorePass);
+			if(privateKey==null) {
+				privateKey = GetSigningKey(KeyStoreURL, KeyStorePass);
 			}
-
-			if (this.publicKey == null) {
-				 
-				Certificate cert = this.ks.getCertificate(this.signingAlias);
-
-				this.publicKey = cert.getPublicKey();
-
+			if (publicKey == null) {				 
+				Certificate cert = ks.getCertificate(signingAlias);
+				publicKey = cert.getPublicKey();
 			}
-
-			 
-
-			return new KeyPair(publicKey, this.privateKey);
+			return new KeyPair(publicKey, privateKey);
 		} catch (KeyStoreException e) {
 			throw LOGGER.keyStoreConfigurationError(e);
 		} catch (GeneralSecurityException e) {
@@ -175,38 +175,47 @@ import ru.spb.iac.cud.context.ContextIDPUtilManager;
 		return publicKeySys;
 	}
 
-	private void initKeyStore() throws GeneralSecurityException, IOException {
+	private static void initKeyStore(String KeyStoreURL, String KeyStorePass) 
+			throws GeneralSecurityException, IOException {
 
 		LOGGERSLF4J.debug("initKeyStore:01");
 
-		if (this.ks == null) {
+		if (ks == null) {
 			 
 			LOGGER.keyStoreSetup();
-			setUpKeyStore();
+			ks = LoadKeyStore(KeyStoreURL, KeyStorePass);
 		}
 		 
 
-		if (this.ks == null) {
+		if (ks == null) {
 			throw LOGGER.keyStoreNullStore();
 		}
 	}
 
+	private static void setSigningAlias(String newValue) {
+		signingAlias = newValue;
+	}
+	private static void setSigningKeyPass(char[] newValue) {
+		signingKeyPass = newValue;
+	}	
+	
 	public void setAuthProperties(List<AuthPropertyType> authList)
-			throws TrustKeyConfigurationException, TrustKeyProcessingException {
+			throws TrustKeyConfigurationException, TrustKeyProcessingException, IllegalArgumentException {
+		if(authList==null) throw new IllegalArgumentException("authList can't be null!");
+		
 		for (AuthPropertyType auth : authList) {
 			this.authPropsMap.put(auth.getKey(), auth.getValue());
 		}
 
 		this.keyStoreURL = ((String) this.authPropsMap.get("KeyStoreURL"));
 		this.keyStorePass = ((String) this.authPropsMap.get("KeyStorePass"));
-
-		this.signingAlias = ((String) this.authPropsMap.get("SigningKeyAlias"));
+		setSigningAlias((String) this.authPropsMap.get("SigningKeyAlias"));
 
 		String keypass = (String) this.authPropsMap.get("SigningKeyPass");
 		if ((keypass == null) || (keypass.length() == 0)) {
 			throw LOGGER.keyStoreNullSigningKeyPass();
 		}
-		this.signingKeyPass = keypass.toCharArray();
+		setSigningKeyPass(keypass.toCharArray());
 	}
 
 	public void setValidatingAlias(List<KeyValueType> aliases)
@@ -233,15 +242,17 @@ import ru.spb.iac.cud.context.ContextIDPUtilManager;
 		return this.options.get(key);
 	}
 
+	/*
 	private void setUpKeyStore() throws GeneralSecurityException, IOException {
 		LOGGERSLF4J.debug("setUpKeyStore:01");
 
-		this.ks = loadKeyStore();
+		ks = LoadKeyStore(this.keyStoreURL, this.keyStorePass);		
+		
 	}
-
+	*/
 	
 
-	public KeyStore loadKeyStore() throws IOException {
+	public static KeyStore LoadKeyStore(String KeyStoreURL, String KeyStorePass) throws IOException {
 
 		String keystoreType = "HDImageStore";
 		String keystoreProvider = "JCP";
@@ -252,9 +263,9 @@ import ru.spb.iac.cud.context.ContextIDPUtilManager;
 			KeyStore keyStore = KeyStore.getInstance(keystoreType,
 					keystoreProvider);
 
-			inputStream = new FileInputStream(new File(this.keyStoreURL));
+			inputStream = new FileInputStream(new File(KeyStoreURL));
 
-			keyStore.load(inputStream, this.keyStorePass.toCharArray());
+			keyStore.load(inputStream, KeyStorePass.toCharArray());
 
 			return keyStore;
 

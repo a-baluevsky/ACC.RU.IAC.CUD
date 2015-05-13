@@ -55,7 +55,7 @@ import ru.spb.iac.cud.items.Token;
 	protected void service(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
-		Token token = null;
+		// <A.B.> непонятно: Token token = null;
 		String success = "false";
 		String loginUser = null;
 
@@ -75,7 +75,7 @@ import ru.spb.iac.cud.items.Token;
 
 				success = "true";
 
-				hs.setAttribute("tokenID", token.getId());
+				// <A.B.> непонятно: hs.setAttribute("tokenID", token.getId());
 
 				hs.setAttribute("login_user", loginUser);
 			}

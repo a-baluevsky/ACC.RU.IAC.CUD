@@ -1248,8 +1248,9 @@ public abstract class CUDAbstractIDPValve extends ValveBase {
 			LOGGER.trace("Handlers are=" + handlers);
 
 			if (handlers != null) {
+				Handlers cfgHandlers = getConfiguration().getHandlers();
 				try {
-					if (getConfiguration().getHandlers().isLocking()) {
+					if (cfgHandlers.isLocking()) {
 						chainLock.lock();
 					}
 					for (SAML2Handler handler : handlers) {
@@ -1258,7 +1259,7 @@ public abstract class CUDAbstractIDPValve extends ValveBase {
 						willSendRequest = saml2HandlerResponse.getSendRequest();
 					}
 				} finally {
-					if (getConfiguration().getHandlers().isLocking()) {
+					if (cfgHandlers!=null && cfgHandlers.isLocking()) {
 						chainLock.unlock();
 					}
 				}

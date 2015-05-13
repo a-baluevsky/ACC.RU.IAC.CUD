@@ -207,8 +207,7 @@ import ru.spb.iac.cud.util.CudPrincipal;
 
 		// create a subject using the caller principal or on-behalf-of
 		// principal.
-		String subjectName = principal == null ? "ANONYMOUS" : principal
-				.getName();
+		String subjectName = principal.getName();
 		NameIDType nameID = SAMLAssertionFactory.createNameID(null,
 				"urn:picketlink:identity-federation", subjectName);
 		SubjectType subject = SAMLAssertionFactory.createSubject(nameID,

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.jboss.as.web.security.SecurityContextAssociationValve;
 import org.picketlink.common.constants.GeneralConstants;
 import org.slf4j.Logger;
@@ -35,6 +36,10 @@ import org.slf4j.LoggerFactory;
 		super();
 	}
 
+	private String parseUrl(String strURL) {
+		return strURL; // TODO,SECURITY: check string & filter out URL (safe for dumping to a web page)		
+	}
+	
 	/**
 	 * @see HttpServlet#service(HttpServletRequest request, HttpServletResponse
 	 *      response)
@@ -116,7 +121,7 @@ import org.slf4j.LoggerFactory;
 
 				if (backUrl != null) {
 					pw.print("<INPUT TYPE=\"HIDDEN\" NAME=\"backUrl\" VALUE=\""
-							+ backUrl + "\"/>");
+							+ parseUrl(backUrl) + "\"/>");
 				}
 
 				if (samlRequestMessage != null && !samlRequestMessage.isEmpty()) {

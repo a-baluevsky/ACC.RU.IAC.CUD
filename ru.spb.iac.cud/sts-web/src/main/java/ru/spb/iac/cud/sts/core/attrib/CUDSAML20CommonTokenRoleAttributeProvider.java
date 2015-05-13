@@ -164,7 +164,7 @@ import ru.spb.iac.cud.idp.web.util.GOSTSignatureUtil;
 		}
 	}
 
-	public String tokenIDCreate(String userUID, String authType, String lifetime) {
+	public static String tokenIDCreate(String userUID, String authType, String lifetime) {
 
 		String base64tokenID = null;
 
@@ -179,7 +179,7 @@ import ru.spb.iac.cud.idp.web.util.GOSTSignatureUtil;
 
 			// надо переделать!!!
 
-			if(this.privateKey == null) {
+			if(privateKey == null) {
 				
 			
 			char[] signingKeyPass = "Access_Control".toCharArray();
@@ -188,7 +188,7 @@ import ru.spb.iac.cud.idp.web.util.GOSTSignatureUtil;
 			KeyStore ks = KeyStore.getInstance("HDImageStore", "JCP");
 			ks.load(null, null);
 
-			this.privateKey = (PrivateKey) ks.getKey(signingAlias,
+			privateKey = (PrivateKey) ks.getKey(signingAlias,
 					signingKeyPass);
 			}
 			
@@ -199,7 +199,7 @@ import ru.spb.iac.cud.idp.web.util.GOSTSignatureUtil;
 
 			sb.append(userUID).append("_").append(lifetime).append("_").append(authType!=null?authType:auth_type_password);
 
-			byte[] sigValue = GOSTSignatureUtil.sign(sb.toString(), this.privateKey);
+			byte[] sigValue = GOSTSignatureUtil.sign(sb.toString(), privateKey);
 
 			String base64SigValue = Base64.encodeBytes(sigValue,
 					Base64.DONT_BREAK_LINES);

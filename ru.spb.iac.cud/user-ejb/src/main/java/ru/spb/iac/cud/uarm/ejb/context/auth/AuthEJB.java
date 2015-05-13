@@ -2,15 +2,21 @@ package ru.spb.iac.cud.uarm.ejb.context.auth;
 
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.security.Key;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.Provider;
 import java.security.PublicKey;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -195,18 +201,7 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
      	 
      	LOGGER.debug("authenticator:cudAuth:01_:"+request.getContextPath());
      	 
-     
-     
-     if(publicKey==null) {	
-     	KeyStore ks  = KeyStore.getInstance("HDImageStore", "JCP");
-  	ks.load(null, null);
-  	
-  	privateKey = (PrivateKey)ks.getKey(signingAlias, signingKeyPass);
-
-  	publicKey = ks.getCertificate("cudvm_export").getPublicKey();
-  	
-     }
-  	 
+     	updateCertKeys(signingAlias, signingKeyPass);
   	  
      	Document samlDocument = get_saml_assertion_from_xml(assertionConsumerServiceURL,typeAuth, privateKey, publicKey);
      	 
@@ -382,17 +377,7 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
 	   	LOGGER.debug("authenticator:cudLogout:02:"+destination);
 	   	LOGGER.debug("authenticator:cudLogout:03:"+logoutBackUrl);
 	   	
-	    
-	    if(publicKey==null) {		
-	   	KeyStore ks  = KeyStore.getInstance("HDImageStore", "JCP");
-		ks.load(null, null);
-		
-		 privateKey = (PrivateKey)ks.getKey(signingAlias, signingKeyPass);
-
-		 publicKey = ks.getCertificate("cudvm_export").getPublicKey();
-	    }
-	    
-		 
+	    updateCertKeys(signingAlias, signingKeyPass);
 		  
 	   	Document samlDocument = get_saml_logout_from_xml(logoutBackUrl, login);
 	   	
@@ -400,10 +385,7 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
 	   	
 	    Node nextSibling = getNextSiblingOfIssuer(samlDocument);
 		 
-	 
-		 
-		 
-		  Provider xmlDSigProvider = new ru.CryptoPro.JCPxml.dsig.internal.dom.XMLDSigRI();
+ 	    Provider xmlDSigProvider = new ru.CryptoPro.JCPxml.dsig.internal.dom.XMLDSigRI();
 		  
 		 
 		  
@@ -650,6 +632,12 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
 	            ivBase64 = encrypt_data[3];
 	        }
 	        
+	       if(	passwordEncryptBase64==null || 
+		    	secretKeyBase64==null || 
+		    	ivBase64==null ) {
+		    	   throw new IllegalArgumentException("passwordEncryptBase64, secretKeyBase64, ivBase64 can't be null!");
+		   }
+		       
 	      	result="?"+login_key+"="+URLEncoder.encode(login, "UTF-8")+
 	        	   "&"+password_encrypt_key+"="+URLEncoder.encode(passwordEncryptBase64, "UTF-8")+
 	        	   "&"+secret_key_key+"="+URLEncoder.encode(secretKeyBase64, "UTF-8")+
@@ -820,34 +808,31 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
    //---------------Обработка ответа-------------------------
    //--------------------------------------------------------
    
-   public boolean authenticate()
+   private static void updateCertKeys(String signingAlias, char[] signingKeyPass) 
+		   throws KeyStoreException, NoSuchProviderException, NoSuchAlgorithmException, 
+		   			CertificateException, IOException, UnrecoverableKeyException 
    {
-	   
-	   LOGGER.debug("authenticator:authenticate:01");
-	   
-	   String authType=null;
-	   
+	  if(publicKey==null) {
+		    KeyStore ks  = KeyStore.getInstance("HDImageStore", "JCP");
+			ks.load(null, null);			
+			 privateKey = (PrivateKey)ks.getKey(signingAlias, signingKeyPass);		
+			 publicKey = ks.getCertificate("cudvm_export").getPublicKey();		  
+	  }	   
+   }
+   
+   public boolean authenticate()
+   {	   
+	   LOGGER.debug("authenticator:authenticate:01");	   
+	   String authType=null;	   
 	   char[] signingKeyPass="Access_Control".toCharArray();
-		 String signingAlias="cudvm_export";
-		 
+		 String signingAlias="cudvm_export";		 
 	   try{
-			   
-		   
 		  String pSAMLResponse = FacesContext.getCurrentInstance().getExternalContext()
            .getRequestParameterMap()
            .get("SAMLResponse"); 
 		  
-		  
-		 
-		  if(publicKey==null) {	
-		    KeyStore ks  = KeyStore.getInstance("HDImageStore", "JCP");
-			ks.load(null, null);
-			
-			 privateKey = (PrivateKey)ks.getKey(signingAlias, signingKeyPass);
-		
-			 publicKey = ks.getCertificate("cudvm_export").getPublicKey();
-		  }
-		  
+		    updateCertKeys(signingAlias, signingKeyPass);
+		    
 			Document  samlDocument;
 			AssertionType ass;
 			

@@ -1,6 +1,7 @@
 package ru.spb.iac.cud.exs.shedule;
 
 import java.io.BufferedInputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -11,6 +12,7 @@ import java.io.OutputStream;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.FileSystemNotFoundException;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.util.Properties;
@@ -19,6 +21,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
+import java.util.zip.Checksum;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,6 +99,19 @@ import ru.spb.iac.cud.exs.config.Configuration;
 		}, start, 24 * 60 * 60 * 1000, TimeUnit.MILLISECONDS);
 	}
 
+	private void closeSafe(String contextMsg, Closeable f) {
+		if(f!=null)
+			try {
+				f.close();
+			} catch (IOException e) {
+				LOGGER.error(contextMsg, e);
+			}
+	}
+	private void closeSafe(String contextMsg, Closeable f1, Closeable f2) {
+		closeSafe(contextMsg, f1);
+		closeSafe(contextMsg, f2);
+	}
+	
 	public String content() {
 		OutputStream output = null;
 		BufferedInputStream in = null;
@@ -107,11 +123,8 @@ import ru.spb.iac.cud.exs.config.Configuration;
 
 		LOGGER.debug("content:file_name:" + file_name);
 
-		try {
-		
+		try {		
 			URL url = new URL(path);
-		
-
 			HttpURLConnection uc = (HttpURLConnection) url.openConnection();
 
 			uc.setRequestProperty("Accept-Charset", "UTF-8");
@@ -134,21 +147,10 @@ import ru.spb.iac.cud.exs.config.Configuration;
 					output.write(buffer, 0, n);
 				}
 			}
-			output.close();
-
 		} catch (Exception e) {
 			LOGGER.error("content:error:", e);
 		} finally {
-			try {
-				if (in != null) {
-					in.close();
-				}
-				if (output != null) {
-					output.close();
-				}
-			} catch (Exception e) {
-				LOGGER.error("content:finally:is:error:", e);
-			}
+			closeSafe("content:finally:is:error:", in, output);
 		}
 
 		return file_name;
@@ -215,29 +217,20 @@ import ru.spb.iac.cud.exs.config.Configuration;
 
 		LOGGER.debug("get_reestr");
 
-		try {
-			
+		try {			
 			File f = new File(reestr_path);
-
 			if (f.exists()) {
-
-				properties.load(is = new FileInputStream(f));
+				is = new FileInputStream(f);
+				properties.load(is);
 
 				result = properties.getProperty(prop_name);
 
 				LOGGER.debug("get_reestr:result:" + result);
 			}
-
 		} catch (Exception e) {
 			LOGGER.error("initTask:error:", e);
 		} finally {
-			try {
-				if (is != null) {
-					is.close();
-				}
-			} catch (Exception e) {
-				LOGGER.error("initTask:finally:is:error:", e);
-			}
+			closeSafe("initTask:finally:is:error:", is);
 		}
 		return result;
 	}
@@ -251,29 +244,35 @@ import ru.spb.iac.cud.exs.config.Configuration;
 		String result = null;
 
 		try {
+			// Computer CRC32 checksum
+			cis = new CheckedInputStream(new FileInputStream(fileName),
+					new CRC32());
 
-			try {
-				// Computer CRC32 checksum
-				cis = new CheckedInputStream(new FileInputStream(fileName),
-						new CRC32());
-
-				in = new BufferedInputStream(cis);
-
-			} catch (FileNotFoundException e) {
-				LOGGER.error("doChecksumContent:error:", e);
+			in = new BufferedInputStream(cis);
+			
+			if(cis==null || in==null) {
+				throw new IOException("cis and in can't be null");
 			}
 
 			byte[] buf = new byte[5000];
 			while (in.read(buf, 0, 5000) >= 0) {
 			}
-
-			long checksum_content = cis.getChecksum().getValue();
-
-			result = Long.toString(checksum_content);
-
-			LOGGER.debug("result: " + checksum_content + " " + fileName);
-
-		} catch (IOException e) {
+			
+			Checksum chkSum = cis.getChecksum();
+			long checksum_content = 0;
+			
+			if( chkSum!=null ) {
+				checksum_content = chkSum.getValue();
+				result = Long.toString(checksum_content);	
+				LOGGER.debug("result: " + checksum_content + " " + fileName);				
+			} else {
+				LOGGER.debug("failed getting checksum_content for " + fileName);
+			}			
+		} 
+		catch (FileNotFoundException e) {
+			LOGGER.error("doChecksumContent:error:", e);
+		}		
+		catch (IOException e) {
 			LOGGER.error("doChecksumContent:error_2:", e);
 		} finally {
 			try {

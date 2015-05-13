@@ -94,11 +94,11 @@ import org.slf4j.LoggerFactory;
 		LOGGER.debug("main:01");
 
 		try {
-			String st = URLEncoder.encode(null,"utf-8");
-			List<String> available_ports = new ArrayList<String>(
+			String st = URLEncoder.encode("","utf-8");
+			List<String> availablePorts = new ArrayList<String>(
 					Arrays.asList("".split(",")));
 
-			LOGGER.debug("main:02:" + available_ports.size());
+			LOGGER.debug("main:02:" + availablePorts.size());
 			LOGGER.debug("main:03:" + st);
 		} catch (Exception e) {
 		

@@ -600,19 +600,19 @@ import org.slf4j.LoggerFactory;
 				if (parent_dir != null && parent_dir.isDirectory()) {
 
 					LOGGER.debug("delClassifFiles:03");
-
-					for (File file_in_dir : parent_dir.listFiles()) {
-
-						LOGGER.debug("delClassifFiles:04:"
-								+ file_in_dir.getName());
-
-						try {
-							file_in_dir.delete();
-						} catch (Exception e) {
-							LOGGER.error("delClassifFiles:error:01:"
-									+ file_in_dir.getName());
-							LOGGER.error("delClassifFiles:error:02:", e);
-						}
+					File[] files = parent_dir.listFiles();
+					if(files != null) {
+						for (File file_in_dir : files) {
+							LOGGER.debug("delClassifFiles:04:"
+									+ file_in_dir.getName());	
+							try {
+								file_in_dir.delete();
+							} catch (Exception e) {
+								LOGGER.error("delClassifFiles:error:01:"
+										+ file_in_dir.getName());
+								LOGGER.error("delClassifFiles:error:02:", e);
+							}
+						}						
 					}
 				}
 			}

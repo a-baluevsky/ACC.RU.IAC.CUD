@@ -69,6 +69,10 @@ import ru.spb.iac.cud.services.web.init.Configuration;
 	}
 
 	public boolean handleMessage(SOAPMessageContext mc) {
+		return HandleMessage(mc);
+	}
+	
+	public static boolean HandleMessage(SOAPMessageContext mc) {
 
 		LOGGER.debug("handleMessage:01+:"
 				+ mc.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY));

@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Arrays;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -48,7 +49,7 @@ import javax.crypto.spec.PBEKeySpec;
 		SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
 		byte[] salt = new byte[16];
 		sr.nextBytes(salt);
-		return salt.toString();
+		return Arrays.toString(salt); // salt.toString();
 	}
 
 	private static String toHex(byte[] array) throws NoSuchAlgorithmException {

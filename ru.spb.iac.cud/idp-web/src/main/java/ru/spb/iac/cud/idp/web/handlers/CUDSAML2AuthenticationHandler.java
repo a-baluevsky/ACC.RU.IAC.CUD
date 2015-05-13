@@ -510,12 +510,11 @@ import static org.picketlink.common.util.StringUtil.*;
             PrivateKey privateKey = (PrivateKey) request.getOptions().get(GeneralConstants.DECRYPTING_KEY);
 
             Object assertion = assertions.get(0).getEncryptedAssertion();
-            if (assertion instanceof EncryptedAssertionType) {
-                responseType = this.decryptAssertion(responseType, privateKey);
-                assertion = responseType.getAssertions().get(0).getAssertion();
-            }
             if (assertion == null) {
                 assertion = assertions.get(0).getAssertion();
+            } else {
+                responseType = this.decryptAssertion(responseType, privateKey);
+                assertion = responseType.getAssertions().get(0).getAssertion();            	
             }
 
             request.addOption(GeneralConstants.ASSERTION, assertion);

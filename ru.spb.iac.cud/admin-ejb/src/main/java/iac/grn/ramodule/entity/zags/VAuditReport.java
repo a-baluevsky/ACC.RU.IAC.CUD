@@ -1,7 +1,7 @@
 package iac.grn.ramodule.entity.zags;
 
 import java.io.Serializable;
-
+import java.util.Arrays;
 import java.util.Date;
 
 
@@ -393,9 +393,14 @@ import java.util.Date;
 	public void setTransactionid(byte[] transactionid) {
 		this.transactionid = transactionid;
 	}
+	/*
+	private String getRawObjId(Object o) {
+		return o.toString();
+	}
+	*/	
 	public String getTransactionidValue() {
 		if(this.transactionid!=null){
-			this.transactionidValue=this.transactionid.toString();
+			this.transactionidValue=Arrays.toString(this.transactionid); //getRawObjId(this.transactionid);
 		}
 		return this.transactionidValue;
 	}

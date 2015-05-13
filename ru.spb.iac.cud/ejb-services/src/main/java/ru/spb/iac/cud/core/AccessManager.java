@@ -281,9 +281,8 @@ public String authenticate_login(String login, String password,
 		String loginUser = null;
 		Long authModeValue = authMode.toAuditSvcValue();
 		
-
 		if (sn == null) {
-			sys_audit(2L, "sn:" + sn, "error:Serial Number is Empty!",
+			sys_audit(2L, "sn:null", "error:Serial Number is Empty!",
 					IPAddress, null, codeSys);
 			throw new GeneralFailure("Serial Number is Empty!");
 		}
@@ -761,7 +760,7 @@ public String authenticate_login(String login, String password,
 				if (xce != null) {
 					return true;
 				}
-				LOGGER.debug("isRevoked:revoked:" + (xce == null));
+				LOGGER.debug("isRevoked:revoked:true");
 			
 			}
 
