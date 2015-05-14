@@ -171,9 +171,10 @@ import org.apache.log4j.Logger;
 
 				List<String> losSys = em
 						.createNativeQuery(
-								"select ST.VALUE_PARAM "
-										+ "from SETTINGS_KNL_T st "
-										+ "where ST.SIGN_OBJECT=? ")
+								(new StringBuilder("select ST.VALUE_PARAM "))
+								  .append("from SETTINGS_KNL_T st ")
+								  .append("where ST.SIGN_OBJECT=? ")
+								  .toString())
 						.setParameter(1, param_code).getResultList();
 
 				if (losSys != null && !losSys.isEmpty()) {
@@ -193,13 +194,14 @@ import org.apache.log4j.Logger;
 
 			List<Object[]> loSys = em
 					.createNativeQuery(
-							"select to_char(SL.CREATED , 'YYYY_MM') vdate, SL.ID_SRV, SL.UP_SERVICES, SL.UP_USERS, "
-									+ "to_char(SL.CREATED,'DD.MM.YYYY HH24:MI:SS') CREATED, SL.INPUT_PARAM, SL.RESULT_VALUE, SL.IP_ADDRESS "
-									+ "from SERVICES_LOG_KNL_T SL "
-									+ "where SL.CREATED < to_date('01.'||to_char(SYSDATE - INTERVAL '"
-									+ monthInterval
-									+ "' month, 'MM.YYYY'),'DD.MM.YYYY') "
-									+ "order by SL.CREATED ")
+							(new StringBuilder("select to_char(SL.CREATED , 'YYYY_MM') vdate, SL.ID_SRV, SL.UP_SERVICES, SL.UP_USERS, "))
+							  .append("to_char(SL.CREATED,'DD.MM.YYYY HH24:MI:SS') CREATED, SL.INPUT_PARAM, SL.RESULT_VALUE, SL.IP_ADDRESS ")
+							  .append("from SERVICES_LOG_KNL_T SL ")
+							  .append("where SL.CREATED < to_date('01.'||to_char(SYSDATE - INTERVAL '")
+							  	.append(monthInterval) 
+								.append("' month, 'MM.YYYY'),'DD.MM.YYYY') ")
+								.append("order by SL.CREATED ")
+							.toString())
 					.getResultList();
 			log.info("IHArchiveAuditSys:process_start_content:02");
 
@@ -259,10 +261,11 @@ import org.apache.log4j.Logger;
 			}
 
 			em.createNativeQuery(
-					"delete from SERVICES_LOG_KNL_T SL "
-							+ "where SL.CREATED < to_date('01.'||to_char(SYSDATE - INTERVAL '"
-							+ monthInterval
-							+ "' month, 'MM.YYYY'),'DD.MM.YYYY') ")
+					(new StringBuilder("delete from SERVICES_LOG_KNL_T SL "))
+					  .append("where SL.CREATED < to_date('01.'||to_char(SYSDATE - INTERVAL '")
+							.append(monthInterval)
+							  .append("' month, 'MM.YYYY'),'DD.MM.YYYY') ")
+							.toString())
 					.executeUpdate();
 
 			utx.commit();

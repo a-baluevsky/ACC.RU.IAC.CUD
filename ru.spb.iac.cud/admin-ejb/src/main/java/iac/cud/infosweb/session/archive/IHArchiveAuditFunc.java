@@ -169,9 +169,10 @@ import org.apache.log4j.Logger;
 
 			List<String> losFunc = em
 					.createNativeQuery(
-							"select ST.VALUE_PARAM "
-									+ "from SETTINGS_KNL_T st "
-									+ "where ST.SIGN_OBJECT=? ")
+							(new StringBuilder("select ST.VALUE_PARAM "))
+							  .append("from SETTINGS_KNL_T st ")
+							  .append("where ST.SIGN_OBJECT=? ")
+							  .toString())
 					.setParameter(1, param_code).getResultList();
 
 			if (losFunc != null && !losFunc.isEmpty()) {
@@ -187,13 +188,14 @@ import org.apache.log4j.Logger;
 
 			List<Object[]> loFunc = em
 					.createNativeQuery(
-							"select to_char(AL.CREATED , 'YYYY_MM') vdate, AL.ID_SRV, AL.UP_ACTIONS, AL.UP_USERS, "
-									+ "to_char(AL.DATE_ACTION ,'DD.MM.YYYY HH24:MI:SS') DATE_ACTION, to_char(AL.CREATED,'DD.MM.YYYY HH24:MI:SS') CREATED "
-									+ "from ACTIONS_LOG_KNL_T AL "
-									+ "where AL.CREATED < to_date('01.'||to_char(SYSDATE - INTERVAL '"
-									+ monthInterval
-									+ "' month, 'MM.YYYY'),'DD.MM.YYYY') "
-									+ "order by AL.CREATED ")
+							(new StringBuilder("select to_char(AL.CREATED , 'YYYY_MM') vdate, AL.ID_SRV, AL.UP_ACTIONS, AL.UP_USERS, "))
+							  .append("to_char(AL.DATE_ACTION ,'DD.MM.YYYY HH24:MI:SS') DATE_ACTION, to_char(AL.CREATED,'DD.MM.YYYY HH24:MI:SS') CREATED ")
+							  .append("from ACTIONS_LOG_KNL_T AL ")
+							  .append("where AL.CREATED < to_date('01.'||to_char(SYSDATE - INTERVAL '")
+									.append( monthInterval)
+									  .append("' month, 'MM.YYYY'),'DD.MM.YYYY') ")
+									  .append("order by AL.CREATED ")									
+									.toString())
 					.getResultList();
 			log.info("IHArchiveAuditFunc:process_start_content:02");
 
@@ -246,10 +248,11 @@ import org.apache.log4j.Logger;
 			}
 
 			em.createNativeQuery(
-					"delete from ACTIONS_LOG_KNL_T AL "
-							+ "where AL.CREATED < to_date('01.'||to_char(SYSDATE - INTERVAL '"
-							+ monthInterval
-							+ "' month, 'MM.YYYY'),'DD.MM.YYYY') ")
+					(new StringBuilder("delete from ACTIONS_LOG_KNL_T AL "))
+					  .append("where AL.CREATED < to_date('01.'||to_char(SYSDATE - INTERVAL '")
+							.append( monthInterval)
+							.append("' month, 'MM.YYYY'),'DD.MM.YYYY') ")
+					.toString())
 					.executeUpdate();
 
 			utx.commit();

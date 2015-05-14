@@ -49,13 +49,14 @@ import org.jboss.seam.annotations.In;
 		try {
 			idUser = ((java.math.BigDecimal) entityManager
 					.createNativeQuery(
-							"select AU.ID_USER "
-									+ "from "
-									+ "AC_USERS au "
-									+ "where AU.LOGIN=? "
-									+ "and AU.PASSWORD=? "
-									+ "and (AU.START_ is null or au.START_ <= sysdate) "
-									+ "and (AU.FINISH_ is null or au.FINISH_ > sysdate) ")
+							(new StringBuilder("select AU.ID_USER "))
+							  .append("from ")
+							  .append("AC_USERS au ")
+							  .append("where AU.LOGIN=? ")
+							  .append("and AU.PASSWORD=? ")
+							  .append("and (AU.START_ is null or au.START_ <= sysdate) ")
+							  .append("and (AU.FINISH_ is null or au.FINISH_ > sysdate) ")
+					.toString())
 					.setParameter(1, login).setParameter(2, password)
 					.getSingleResult()).longValue();
 
@@ -82,18 +83,20 @@ import org.jboss.seam.annotations.In;
 		try {
 			List<Object[]> lo = entityManager
 					.createNativeQuery(
-							"select AAD.PAGE_CODE, ARR.ID_RAION, ADP.ID_PERM "
-									+ "from AC_APP_DOMAINS aad, "
-									+ "AC_LINK_ROLE_APP_DOMEN_PRMSSNS adp, "
-									+ "AC_LINK_USER_TO_ROLE_TO_RAIONS arr "
-									+ "where AAD.APP_CODE=? and "
-									+ "adp.ID_DOMEN=AAD.ID_DOMEN "
-									+ "and adp.ID_ROLE=arr.ID_ROLE "
-									+ "and arr.ID_USER=? "
-									+ (pageCode != null ? "and AAD.PAGE_CODE=? "
-											: "and 1=? ")
-									+ "group by AAD.PAGE_CODE, ARR.ID_RAION, ADP.ID_PERM "
-									+ "order by  AAD.PAGE_CODE, ARR.ID_RAION, ADP.ID_PERM ")
+							(new StringBuilder("select AAD.PAGE_CODE, ARR.ID_RAION, ADP.ID_PERM "))
+							  .append("from AC_APP_DOMAINS aad, ")
+							  .append("AC_LINK_ROLE_APP_DOMEN_PRMSSNS adp, ")
+							  .append("AC_LINK_USER_TO_ROLE_TO_RAIONS arr ")
+							  .append("where AAD.APP_CODE=? and ")
+							  .append("adp.ID_DOMEN=AAD.ID_DOMEN ")
+							  .append("and adp.ID_ROLE=arr.ID_ROLE ")
+							  .append("and arr.ID_USER=? ")
+					
+								.append(pageCode != null ? "and AAD.PAGE_CODE=? ": "and 1=? ")
+								.append("group by AAD.PAGE_CODE, ARR.ID_RAION, ADP.ID_PERM ")
+								.append("order by  AAD.PAGE_CODE, ARR.ID_RAION, ADP.ID_PERM ")
+									
+									.toString())
 					.setParameter(1, appCode).setParameter(2, idUser)
 					.setParameter(3, (pageCode != null ? pageCode : 1))
 					.getResultList();

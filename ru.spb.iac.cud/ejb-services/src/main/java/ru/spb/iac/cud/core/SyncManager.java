@@ -113,11 +113,12 @@ import ru.spb.iac.cud.items.Role;
 				// имеющиеся роли
 				List<Object[]> lo = em
 						.createNativeQuery(
-								"select rls.SIGN_OBJECT, rls.ID_SRV "
-										+ "from AC_ROLES_BSS_T rls, "
-										+ "AC_IS_BSS_T app "
-										+ "where APP.ID_SRV = rls.UP_IS "
-										+ "and APP.SIGN_OBJECT=?")
+								(new StringBuilder("select rls.SIGN_OBJECT, rls.ID_SRV "))
+								  .append("from AC_ROLES_BSS_T rls, ")
+								  .append("AC_IS_BSS_T app ")
+								  .append("where APP.ID_SRV = rls.UP_IS ")
+								  .append("and APP.SIGN_OBJECT=?")
+						.toString())
 						.setParameter(1, idIS).getResultList();
 				LOGGER.debug("sync_roles:02");
 
@@ -141,13 +142,14 @@ import ru.spb.iac.cud.items.Role;
 					if (rolescl.containsKey(role.getCode())) {
 
 						em.createNativeQuery(
-								"UPDATE AC_ROLES_BSS_T rls "
-										+ "set rls.FULL_=?, rls.DESCRIPTION=? "
-										+ "where rls.SIGN_OBJECT = ? "
-										+ "and rls.UP_IS=( "
-										+ "SELECT APP.ID_SRV "
-										+ "FROM AC_IS_BSS_T app "
-										+ "WHERE APP.SIGN_OBJECT=? ) ")
+								(new StringBuilder("UPDATE AC_ROLES_BSS_T rls "))
+								  .append("set rls.FULL_=?, rls.DESCRIPTION=? ")
+								  .append("where rls.SIGN_OBJECT = ? ")
+								  .append("and rls.UP_IS=( ")
+								  .append("SELECT APP.ID_SRV ")
+								  .append("FROM AC_IS_BSS_T app ")
+								  .append("WHERE APP.SIGN_OBJECT=? ) ")
+						.toString())
 								.setParameter(1, role.getName())
 								.setParameter(2, role.getDescription())
 								.setParameter(3, role.getCode())
@@ -157,9 +159,10 @@ import ru.spb.iac.cud.items.Role;
 
 					} else {
 						em.createNativeQuery(
-								"insert into AC_ROLES_BSS_T(ID_SRV, UP_IS, SIGN_OBJECT, FULL_ , DESCRIPTION, CREATOR,  created) "
-										+ "values(AC_ROLES_BSS_SEQ.nextval, (select APP.ID_SRV FROM AC_IS_BSS_T app WHERE APP.SIGN_OBJECT=?), "
-										+ "?, ?, ?, 1, sysdate) ")
+								(new StringBuilder("insert into AC_ROLES_BSS_T(ID_SRV, UP_IS, SIGN_OBJECT, FULL_ , DESCRIPTION, CREATOR,  created) "))
+								  .append("values(AC_ROLES_BSS_SEQ.nextval, (select APP.ID_SRV FROM AC_IS_BSS_T app WHERE APP.SIGN_OBJECT=?), ")
+								  .append("?, ?, ?, 1, sysdate) ")
+						.toString())
 								.setParameter(1, idIS)
 								.setParameter(2, role.getCode())
 								.setParameter(3, role.getName())
@@ -193,12 +196,13 @@ import ru.spb.iac.cud.items.Role;
 						LOGGER.debug("sync_roles:05");
 
 						em.createNativeQuery(
-								"DELETE FROM AC_ROLES_BSS_T rls "
-										+ "where rls.SIGN_OBJECT = ? "
-										+ "and rls.UP_IS=( "
-										+ "SELECT APP.ID_SRV "
-										+ "FROM AC_IS_BSS_T app "
-										+ "WHERE APP.SIGN_OBJECT=? ) ")
+								(new StringBuilder("DELETE FROM AC_ROLES_BSS_T rls "))
+								  .append("where rls.SIGN_OBJECT = ? ")
+								  .append("and rls.UP_IS=( ")
+								  .append("SELECT APP.ID_SRV ")
+								  .append("FROM AC_IS_BSS_T app ")
+								  .append("WHERE APP.SIGN_OBJECT=? ) ")
+						.toString())
 								.setParameter(1, role.getCode())
 								.setParameter(2, idIS).executeUpdate();
 
@@ -230,11 +234,12 @@ import ru.spb.iac.cud.items.Role;
 					LOGGER.debug("sync_roles:09");
 
 					em.createNativeQuery(
-							"DELETE FROM AC_ROLES_BSS_T rls "
-									+ "where rls.UP_IS=( "
-									+ "SELECT APP.ID_SRV "
-									+ "FROM AC_IS_BSS_T app "
-									+ "WHERE APP.SIGN_OBJECT=? ) ")
+							(new StringBuilder("DELETE FROM AC_ROLES_BSS_T rls "))
+							  .append("where rls.UP_IS=( ")
+							  .append("SELECT APP.ID_SRV ")
+							  .append("FROM AC_IS_BSS_T app ")
+							  .append("WHERE APP.SIGN_OBJECT=? ) ")
+							  .toString())
 							.setParameter(1, idIS).executeUpdate();
 
 				} catch (Exception e) {
@@ -264,9 +269,10 @@ import ru.spb.iac.cud.items.Role;
 					}
 
 					em.createNativeQuery(
-							"insert into AC_ROLES_BSS_T(ID_SRV, UP_IS, SIGN_OBJECT, FULL_ , DESCRIPTION, CREATOR,  created) "
-									+ "values(AC_ROLES_BSS_SEQ.nextval, (select APP.ID_SRV FROM AC_IS_BSS_T app WHERE APP.SIGN_OBJECT=?), "
-									+ "?, ?, ?, 1, sysdate) ")
+							(new StringBuilder("insert into AC_ROLES_BSS_T(ID_SRV, UP_IS, SIGN_OBJECT, FULL_ , DESCRIPTION, CREATOR,  created) "))
+							  .append("values(AC_ROLES_BSS_SEQ.nextval, (select APP.ID_SRV FROM AC_IS_BSS_T app WHERE APP.SIGN_OBJECT=?), ")
+							  .append("?, ?, ?, 1, sysdate) ")
+					.toString())
 							.setParameter(1, idIS)
 							.setParameter(2, role.getCode())
 							.setParameter(3, role.getName())
@@ -291,9 +297,7 @@ import ru.spb.iac.cud.items.Role;
 
 			} catch (Exception erSr) {
 				try {
-					if(utx!=null) {
-						utx.rollback();
-					}					
+					utx.rollback();
 				} catch (Exception errSr) {
 					LOGGER.error("rollback:Error1:", errSr);
 				}
@@ -375,11 +379,12 @@ import ru.spb.iac.cud.items.Role;
 				// имеющиеся роли
 				List<Object[]> lo = em
 						.createNativeQuery(
-								"select ACT.SIGN_OBJECT, ACT.ID_SRV "
-										+ "from ACTIONS_BSS_T act, "
-										+ "AC_IS_BSS_T app "
-										+ "where APP.ID_SRV = ACT.UP_IS "
-										+ "and APP.SIGN_OBJECT=?")
+								(new StringBuilder("select ACT.SIGN_OBJECT, ACT.ID_SRV "))
+								  .append("from ACTIONS_BSS_T act, ")
+								  .append("AC_IS_BSS_T app ")
+								  .append("where APP.ID_SRV = ACT.UP_IS ")
+								  .append("and APP.SIGN_OBJECT=?")
+						.toString())
 						.setParameter(1, idIS).getResultList();
 				LOGGER.debug("sync_functions:03");
 
@@ -404,13 +409,14 @@ import ru.spb.iac.cud.items.Role;
 					if (actcl.containsKey(func.getCode())) {
 
 						em.createNativeQuery(
-								"UPDATE ACTIONS_BSS_T act "
-										+ "set act.FULL_=?, act.DESCRIPTIONS=? "
-										+ "where act.SIGN_OBJECT = ? "
-										+ "and act.UP_IS=( "
-										+ "SELECT APP.ID_SRV "
-										+ "FROM AC_IS_BSS_T app "
-										+ "WHERE APP.SIGN_OBJECT=? ) ")
+								(new StringBuilder("UPDATE ACTIONS_BSS_T act "))
+								  .append("set act.FULL_=?, act.DESCRIPTIONS=? ")
+								  .append("where act.SIGN_OBJECT = ? ")
+								  .append("and act.UP_IS=( ")
+								  .append("SELECT APP.ID_SRV ")
+								  .append("FROM AC_IS_BSS_T app ")
+								  .append("WHERE APP.SIGN_OBJECT=? ) ")
+						.toString())
 								.setParameter(1, func.getName())
 								.setParameter(2, func.getDescription())
 								.setParameter(3, func.getCode())
@@ -420,9 +426,10 @@ import ru.spb.iac.cud.items.Role;
 
 					} else {
 						em.createNativeQuery(
-								"insert into ACTIONS_BSS_T(ID_SRV, UP_IS, SIGN_OBJECT, FULL_ , DESCRIPTIONS, CREATOR,  created) "
-										+ "values(ACTIONS_BSS_SEQ.nextval, (select APP.ID_SRV FROM AC_IS_BSS_T app WHERE APP.SIGN_OBJECT=?), "
-										+ "?, ?, ?, 1, sysdate) ")
+								(new StringBuilder("insert into ACTIONS_BSS_T(ID_SRV, UP_IS, SIGN_OBJECT, FULL_ , DESCRIPTIONS, CREATOR,  created) "))
+								  .append("values(ACTIONS_BSS_SEQ.nextval, (select APP.ID_SRV FROM AC_IS_BSS_T app WHERE APP.SIGN_OBJECT=?), ")
+								  .append("?, ?, ?, 1, sysdate) ")
+						.toString())
 								.setParameter(1, idIS)
 								.setParameter(2, func.getCode())
 								.setParameter(3, func.getName())
@@ -454,12 +461,13 @@ import ru.spb.iac.cud.items.Role;
 						LOGGER.debug("sync_functions:05");
 
 						em.createNativeQuery(
-								"DELETE FROM ACTIONS_BSS_T act "
-										+ "where act.SIGN_OBJECT = ? "
-										+ "and act.UP_IS=( "
-										+ "SELECT APP.ID_SRV "
-										+ "FROM AC_IS_BSS_T app "
-										+ "WHERE APP.SIGN_OBJECT=? ) ")
+								(new StringBuilder("DELETE FROM ACTIONS_BSS_T act "))
+								  .append("where act.SIGN_OBJECT = ? ")
+								  .append("and act.UP_IS=( ")
+								  .append("SELECT APP.ID_SRV ")
+								  .append("FROM AC_IS_BSS_T app ")
+								  .append("WHERE APP.SIGN_OBJECT=? ) ")
+						.toString())
 								.setParameter(1, func.getCode())
 								.setParameter(2, idIS).executeUpdate();
 
@@ -493,11 +501,12 @@ import ru.spb.iac.cud.items.Role;
 					LOGGER.debug("sync_functions:09");
 
 					em.createNativeQuery(
-							"DELETE FROM ACTIONS_BSS_T act "
-									+ "where act.UP_IS=( "
-									+ "SELECT APP.ID_SRV "
-									+ "FROM AC_IS_BSS_T app "
-									+ "WHERE APP.SIGN_OBJECT=? ) ")
+							(new StringBuilder("DELETE FROM ACTIONS_BSS_T act "))
+							  .append("where act.UP_IS=( ")
+							  .append("SELECT APP.ID_SRV ")
+							  .append("FROM AC_IS_BSS_T app ")
+							  .append("WHERE APP.SIGN_OBJECT=? ) ")
+					.toString())
 							.setParameter(1, idIS).executeUpdate();
 
 				} catch (Exception e) {
@@ -526,9 +535,10 @@ import ru.spb.iac.cud.items.Role;
 					}
 
 					em.createNativeQuery(
-							"insert into ACTIONS_BSS_T(ID_SRV, UP_IS, SIGN_OBJECT, FULL_ , DESCRIPTIONS, CREATOR,  created) "
-									+ "values(ACTIONS_BSS_SEQ.nextval, (select APP.ID_SRV FROM AC_IS_BSS_T app WHERE APP.SIGN_OBJECT=?), "
-									+ "?, ?, ?, 1, sysdate) ")
+							(new StringBuilder("insert into ACTIONS_BSS_T(ID_SRV, UP_IS, SIGN_OBJECT, FULL_ , DESCRIPTIONS, CREATOR,  created) "))
+							  .append("values(ACTIONS_BSS_SEQ.nextval, (select APP.ID_SRV FROM AC_IS_BSS_T app WHERE APP.SIGN_OBJECT=?), ")
+							  .append("?, ?, ?, 1, sysdate) ")
+					.toString())
 							.setParameter(1, idIS)
 							.setParameter(2, func.getCode())
 							.setParameter(3, func.getName())
@@ -557,9 +567,7 @@ import ru.spb.iac.cud.items.Role;
 
 			} catch (Exception erSf) {
 				try {					
-					if(utx!=null){
-						utx.rollback();
-					}
+					utx.rollback();					
 				} catch (Exception errSf) {
 					LOGGER.error("rollback:Error1:", errSf);
 				}
@@ -597,22 +605,23 @@ import ru.spb.iac.cud.items.Role;
 
 				List<Object[]> loIr = em
 						.createNativeQuery(
-								"  SELECT '[' || sys_code || ']' || role_full.SIGN_OBJECT role_is_code, "
-										+ "         role_full.FULL_, "
-										+ "         role_full.DESCRIPTION "
-										+ "    FROM (  SELECT SYS.SIGN_OBJECT sys_code, ROL.ID_SRV role_id "
-										+ "              FROM GROUP_SYSTEMS_KNL_T gsys, "
-										+ "                   AC_IS_BSS_T sys, "
-										+ "                   AC_ROLES_BSS_T rol, "
-										+ "                   LINK_GROUP_SYS_SYS_KNL_T lgr "
-										+ "             WHERE     GSYS.GROUP_CODE = ? "
-										+ "                   AND GSYS.ID_SRV = LGR.UP_GROUP_SYSTEMS "
-										+ "                   AND LGR.UP_SYSTEMS = SYS.ID_SRV "
-										+ "                   AND ROL.UP_IS = SYS.ID_SRV "
-										+ "          GROUP BY SYS.SIGN_OBJECT, ROL.ID_SRV), "
-										+ "         AC_ROLES_BSS_T role_full "
-										+ "   WHERE role_full.ID_SRV = role_id "
-										+ "ORDER BY sys_code ")
+								(new StringBuilder("  SELECT '[' || sys_code || ']' || role_full.SIGN_OBJECT role_is_code, "))
+								  .append("         role_full.FULL_, ")
+								  .append("         role_full.DESCRIPTION ")
+								  .append("    FROM (  SELECT SYS.SIGN_OBJECT sys_code, ROL.ID_SRV role_id ")
+								  .append("              FROM GROUP_SYSTEMS_KNL_T gsys, ")
+								  .append("                   AC_IS_BSS_T sys, ")
+								  .append("                   AC_ROLES_BSS_T rol, ")
+								  .append("                   LINK_GROUP_SYS_SYS_KNL_T lgr ")
+								  .append("             WHERE     GSYS.GROUP_CODE = ? ")
+								  .append("                   AND GSYS.ID_SRV = LGR.UP_GROUP_SYSTEMS ")
+								  .append("                   AND LGR.UP_SYSTEMS = SYS.ID_SRV ")
+								  .append("                   AND ROL.UP_IS = SYS.ID_SRV ")
+								  .append("          GROUP BY SYS.SIGN_OBJECT, ROL.ID_SRV), ")
+								  .append("         AC_ROLES_BSS_T role_full ")
+								  .append("   WHERE role_full.ID_SRV = role_id ")
+								  .append("ORDER BY sys_code ")
+						.toString())
 						.setParameter(1, idIS).getResultList();
 
 				for (Object[] objectArray : loIr) {
@@ -642,9 +651,10 @@ import ru.spb.iac.cud.items.Role;
 
 				List<Object[]> loIr = em
 						.createNativeQuery(
-								"SELECT ROL.SIGN_OBJECT, ROL.FULL_, ROL.DESCRIPTION "
-										+ "  FROM AC_IS_BSS_T app, AC_ROLES_BSS_T rol "
-										+ " WHERE APP.SIGN_OBJECT = ? AND ROL.UP_IS = APP.ID_SRV ")
+								(new StringBuilder("SELECT ROL.SIGN_OBJECT, ROL.FULL_, ROL.DESCRIPTION "))
+								  .append("  FROM AC_IS_BSS_T app, AC_ROLES_BSS_T rol ")
+								  .append(" WHERE APP.SIGN_OBJECT = ? AND ROL.UP_IS = APP.ID_SRV ")
+						.toString())
 						.setParameter(1, idIS).getResultList();
 
 				for (Object[] objectArray : loIr) {
@@ -703,22 +713,23 @@ import ru.spb.iac.cud.items.Role;
 
 				List<Object[]> lo = em
 						.createNativeQuery(
-								" SELECT '[' || sys_code || ']' || act_full.SIGN_OBJECT act_is_code, "
-										+ "         act_full.FULL_, "
-										+ "         act_full.DESCRIPTIONS "
-										+ "    FROM (  SELECT SYS.SIGN_OBJECT sys_code, act.ID_SRV act_id "
-										+ "              FROM GROUP_SYSTEMS_KNL_T gsys, "
-										+ "                   AC_IS_BSS_T sys, "
-										+ "                   ACTIONS_BSS_T act, "
-										+ "                   LINK_GROUP_SYS_SYS_KNL_T lgr "
-										+ "             WHERE     GSYS.GROUP_CODE = ? "
-										+ "                   AND GSYS.ID_SRV = LGR.UP_GROUP_SYSTEMS "
-										+ "                   AND LGR.UP_SYSTEMS = SYS.ID_SRV "
-										+ "                   AND act.UP_IS = SYS.ID_SRV "
-										+ "          GROUP BY SYS.SIGN_OBJECT, act.ID_SRV), "
-										+ "         ACTIONS_BSS_T act_full "
-										+ "   WHERE act_full.ID_SRV = act_id "
-										+ "ORDER BY sys_code")
+								(new StringBuilder(" SELECT '[' || sys_code || ']' || act_full.SIGN_OBJECT act_is_code, "))
+								  .append("         act_full.FULL_, ")
+								  .append("         act_full.DESCRIPTIONS ")
+								  .append("    FROM (  SELECT SYS.SIGN_OBJECT sys_code, act.ID_SRV act_id ")
+								  .append("              FROM GROUP_SYSTEMS_KNL_T gsys, ")
+								  .append("                   AC_IS_BSS_T sys, ")
+								  .append("                   ACTIONS_BSS_T act, ")
+								  .append("                   LINK_GROUP_SYS_SYS_KNL_T lgr ")
+								  .append("             WHERE     GSYS.GROUP_CODE = ? ")
+								  .append("                   AND GSYS.ID_SRV = LGR.UP_GROUP_SYSTEMS ")
+								  .append("                   AND LGR.UP_SYSTEMS = SYS.ID_SRV ")
+								  .append("                   AND act.UP_IS = SYS.ID_SRV ")
+								  .append("          GROUP BY SYS.SIGN_OBJECT, act.ID_SRV), ")
+								  .append("         ACTIONS_BSS_T act_full ")
+								  .append("   WHERE act_full.ID_SRV = act_id ")
+								  .append("ORDER BY sys_code")
+						.toString())
 						.setParameter(1, idIS).getResultList();
 
 				for (Object[] objectArray : lo) {
@@ -748,9 +759,10 @@ import ru.spb.iac.cud.items.Role;
 
 				List<Object[]> lo = em
 						.createNativeQuery(
-								"SELECT act.SIGN_OBJECT,act.FULL_, ACT.DESCRIPTIONS "
-										+ "FROM AC_IS_BSS_T app, ACTIONS_BSS_T act "
-										+ "WHERE APP.SIGN_OBJECT = ? AND act.UP_IS = APP.ID_SRV ")
+								(new StringBuilder("SELECT act.SIGN_OBJECT,act.FULL_, ACT.DESCRIPTIONS "))
+								  .append("FROM AC_IS_BSS_T app, ACTIONS_BSS_T act ")
+								  .append("WHERE APP.SIGN_OBJECT = ? AND act.UP_IS = APP.ID_SRV ")
+						.toString())
 						.setParameter(1, idIS).getResultList();
 
 				for (Object[] objectArray : lo) {
@@ -886,9 +898,10 @@ import ru.spb.iac.cud.items.Role;
 					if (group_cl.containsKey(group.getCode())) {
 
 						em.createNativeQuery(
-								"UPDATE GROUP_USERS_KNL_T rls "
-										+ "set rls.FULL_=?, rls.DESCRIPTION=? "
-										+ "where rls.SIGN_OBJECT = ? ")
+								(new StringBuilder("UPDATE GROUP_USERS_KNL_T rls "))
+								  .append("set rls.FULL_=?, rls.DESCRIPTION=? ")
+								  .append("where rls.SIGN_OBJECT = ? ")
+						.toString())
 								.setParameter(1, group.getName())
 								.setParameter(2, group.getDescription())
 								.setParameter(3, group.getCode())
@@ -903,17 +916,18 @@ import ru.spb.iac.cud.items.Role;
 
 							List<Object[]> lo_roles = em
 									.createNativeQuery(
-											"select ROL.SIGN_OBJECT, ROL.ID_SRV "
-													+ "from GROUP_USERS_KNL_T gr, "
-													+ "LINK_GROUP_USERS_ROLES_KNL_T lgr, "
-													+ "AC_ROLES_BSS_T rol, "
-													+ "AC_IS_BSS_T sys "
-													+ "where GR.ID_SRV=LGR.UP_GROUP_USERS "
-													+ "and LGR.UP_ROLES=ROL.ID_SRV "
-													+ "and SYS.SIGN_OBJECT = ? "
-													+ "and SYS.ID_SRV= ROL.UP_IS "
-													+ "and GR.SIGN_OBJECT = ? "
-													+ "group by  ROL.SIGN_OBJECT, ROL.ID_SRV ")
+											(new StringBuilder("select ROL.SIGN_OBJECT, ROL.ID_SRV "))
+											  .append("from GROUP_USERS_KNL_T gr, ")
+											  .append("LINK_GROUP_USERS_ROLES_KNL_T lgr, ")
+											  .append("AC_ROLES_BSS_T rol, ")
+											  .append("AC_IS_BSS_T sys ")
+											  .append("where GR.ID_SRV=LGR.UP_GROUP_USERS ")
+											  .append("and LGR.UP_ROLES=ROL.ID_SRV ")
+											  .append("and SYS.SIGN_OBJECT = ? ")
+											  .append("and SYS.ID_SRV= ROL.UP_IS ")
+											  .append("and GR.SIGN_OBJECT = ? ")
+											  .append("group by  ROL.SIGN_OBJECT, ROL.ID_SRV ")
+									.toString())
 									.setParameter(1, idIS)
 									.setParameter(2, group.getCode())
 									.getResultList();
@@ -935,11 +949,12 @@ import ru.spb.iac.cud.items.Role;
 									LOGGER.debug("sync_groups:06");
 
 									em.createNativeQuery(
-											"insert into LINK_GROUP_USERS_ROLES_KNL_T(UP_ROLES, UP_GROUP_USERS, CREATOR,  created) "
-													+ "values ("
-													+ "(select role.ID_SRV from AC_ROLES_BSS_T role, AC_IS_BSS_T sys  "
-													+ "where SYS.ID_SRV= ROLE.UP_IS and  SYS.SIGN_OBJECT = ? "
-													+ "and role.SIGN_OBJECT = ? ), ?, ?, sysdate) ")
+											(new StringBuilder("insert into LINK_GROUP_USERS_ROLES_KNL_T(UP_ROLES, UP_GROUP_USERS, CREATOR,  created) "))
+											  .append("values (")
+											  .append("(select role.ID_SRV from AC_ROLES_BSS_T role, AC_IS_BSS_T sys  ")
+											  .append("where SYS.ID_SRV= ROLE.UP_IS and  SYS.SIGN_OBJECT = ? ")
+											  .append("and role.SIGN_OBJECT = ? ), ?, ?, sysdate) ")
+									.toString())
 											.setParameter(1, idIS)
 											.setParameter(2, role_code)
 											.setParameter(
@@ -963,9 +978,10 @@ import ru.spb.iac.cud.items.Role;
 								.longValue();
 
 						em.createNativeQuery(
-								"insert into GROUP_USERS_KNL_T(ID_SRV, SIGN_OBJECT, FULL_ , DESCRIPTION, CREATOR,  created) "
-										+ "values(?, "
-										+ "?, ?, ?, ?, sysdate) ")
+								(new StringBuilder("insert into GROUP_USERS_KNL_T(ID_SRV, SIGN_OBJECT, FULL_ , DESCRIPTION, CREATOR,  created) "))
+								  .append("values(?, ")
+								  .append("?, ?, ?, ?, sysdate) ")
+						.toString())
 								.setParameter(1, newIdGroup)
 								.setParameter(2, group.getCode())
 								.setParameter(3, group.getName())
@@ -979,17 +995,18 @@ import ru.spb.iac.cud.items.Role;
 
 							List<Object[]> lo_roles = em
 									.createNativeQuery(
-											"select ROL.SIGN_OBJECT, ROL.ID_SRV "
-													+ "from GROUP_USERS_KNL_T gr, "
-													+ "LINK_GROUP_USERS_ROLES_KNL_T lgr, "
-													+ "AC_ROLES_BSS_T rol, "
-													+ "AC_IS_BSS_T sys "
-													+ "where GR.ID_SRV=LGR.UP_GROUP_USERS "
-													+ "and LGR.UP_ROLES=ROL.ID_SRV "
-													+ "and SYS.SIGN_OBJECT = ? "
-													+ "and SYS.ID_SRV= ROL.UP_IS "
-													+ "and GR.SIGN_OBJECT = ? "
-													+ "group by  ROL.SIGN_OBJECT, ROL.ID_SRV ")
+											(new StringBuilder("select ROL.SIGN_OBJECT, ROL.ID_SRV "))
+											  .append("from GROUP_USERS_KNL_T gr, ")
+											  .append("LINK_GROUP_USERS_ROLES_KNL_T lgr, ")
+											  .append("AC_ROLES_BSS_T rol, ")
+											  .append("AC_IS_BSS_T sys ")
+											  .append("where GR.ID_SRV=LGR.UP_GROUP_USERS ")
+											  .append("and LGR.UP_ROLES=ROL.ID_SRV ")
+											  .append("and SYS.SIGN_OBJECT = ? ")
+											  .append("and SYS.ID_SRV= ROL.UP_IS ")
+											  .append("and GR.SIGN_OBJECT = ? ")
+											  .append("group by  ROL.SIGN_OBJECT, ROL.ID_SRV ")
+									.toString())
 									.setParameter(1, idIS)
 									.setParameter(2, group.getCode())
 									.getResultList();
@@ -1004,11 +1021,12 @@ import ru.spb.iac.cud.items.Role;
 								if (!role_cl.contains(role_code)) {
 
 									em.createNativeQuery(
-											"insert into LINK_GROUP_USERS_ROLES_KNL_T(UP_ROLES, UP_GROUP_USERS, CREATOR,  created) "
-													+ "values ("
-													+ "(select role.ID_SRV from AC_ROLES_BSS_T role, AC_IS_BSS_T sys "
-													+ "where SYS.ID_SRV= ROLE.UP_IS and  SYS.SIGN_OBJECT = ? "
-													+ "and role.SIGN_OBJECT = ? ), ?, ?, sysdate) ")
+											(new StringBuilder("insert into LINK_GROUP_USERS_ROLES_KNL_T(UP_ROLES, UP_GROUP_USERS, CREATOR,  created) "))
+											  .append("values (")
+											  .append("(select role.ID_SRV from AC_ROLES_BSS_T role, AC_IS_BSS_T sys ")
+											  .append("where SYS.ID_SRV= ROLE.UP_IS and  SYS.SIGN_OBJECT = ? ")
+											  .append("and role.SIGN_OBJECT = ? ), ?, ?, sysdate) ")
+									.toString())
 											.setParameter(1, idIS)
 											.setParameter(2, role_code)
 											.setParameter(3, newIdGroup)
@@ -1083,10 +1101,8 @@ import ru.spb.iac.cud.items.Role;
 				}
 
 			} catch (Exception erSg) {
-				try {
-					if(utx!=null) {
-						utx.rollback(); 
-					}
+				try {					
+						utx.rollback();					
 				} catch (Exception errSg) {
 					LOGGER.error("rollback:Error1:", errSg);
 				}
@@ -1184,17 +1200,18 @@ import ru.spb.iac.cud.items.Role;
 
 					List<Object[]> lo_roles = em
 							.createNativeQuery(
-									"select ROL.SIGN_OBJECT, ROL.ID_SRV "
-											+ "from GROUP_USERS_KNL_T gr, "
-											+ "LINK_GROUP_USERS_ROLES_KNL_T lgr, "
-											+ "AC_ROLES_BSS_T rol, "
-											+ "AC_IS_BSS_T sys "
-											+ "where GR.ID_SRV=LGR.UP_GROUP_USERS "
-											+ "and LGR.UP_ROLES=ROL.ID_SRV "
-											+ "and SYS.SIGN_OBJECT = ? "
-											+ "and SYS.ID_SRV= ROL.UP_IS "
-											+ "and GR.SIGN_OBJECT = ? "
-											+ "group by  ROL.SIGN_OBJECT, ROL.ID_SRV ")
+									(new StringBuilder("select ROL.SIGN_OBJECT, ROL.ID_SRV "))
+									  .append("from GROUP_USERS_KNL_T gr, ")
+									  .append("LINK_GROUP_USERS_ROLES_KNL_T lgr, ")
+									  .append("AC_ROLES_BSS_T rol, ")
+									  .append("AC_IS_BSS_T sys ")
+									  .append("where GR.ID_SRV=LGR.UP_GROUP_USERS ")
+									  .append("and LGR.UP_ROLES=ROL.ID_SRV ")
+									  .append("and SYS.SIGN_OBJECT = ? ")
+									  .append("and SYS.ID_SRV= ROL.UP_IS ")
+									  .append("and GR.SIGN_OBJECT = ? ")
+									  .append("group by  ROL.SIGN_OBJECT, ROL.ID_SRV ")
+							.toString())
 							.setParameter(1, idIS).setParameter(2, group)
 							.getResultList();
 
@@ -1215,13 +1232,14 @@ import ru.spb.iac.cud.items.Role;
 							LOGGER.debug("sync_groups_roles:06");
 
 							em.createNativeQuery(
-									"insert into LINK_GROUP_USERS_ROLES_KNL_T(UP_ROLES, UP_GROUP_USERS, CREATOR,  created) "
-											+ "values ("
-											+ "(select role.ID_SRV from AC_ROLES_BSS_T role, AC_IS_BSS_T sys  "
-											+ "where SYS.ID_SRV= ROLE.UP_IS and  SYS.SIGN_OBJECT = ? "
-											+ "and role.SIGN_OBJECT = ? ), "
-											+ "(select lgu.ID_SRV from GROUP_USERS_KNL_T lgu "
-											+ "where lgu.SIGN_OBJECT = ? ), ?, sysdate) ")
+									(new StringBuilder("insert into LINK_GROUP_USERS_ROLES_KNL_T(UP_ROLES, UP_GROUP_USERS, CREATOR,  created) "))
+									  .append("values (")
+									  .append("(select role.ID_SRV from AC_ROLES_BSS_T role, AC_IS_BSS_T sys  ")
+									  .append("where SYS.ID_SRV= ROLE.UP_IS and  SYS.SIGN_OBJECT = ? ")
+									  .append("and role.SIGN_OBJECT = ? ), ")
+									  .append("(select lgu.ID_SRV from GROUP_USERS_KNL_T lgu ")
+									  .append("where lgu.SIGN_OBJECT = ? ), ?, sysdate) ")
+									  .toString())
 									.setParameter(1, idIS)
 									.setParameter(2, role_code)
 									.setParameter(3, group).setParameter(4, 1L)
@@ -1248,13 +1266,14 @@ import ru.spb.iac.cud.items.Role;
 						for (String role_code : codesRoles) {
 
 							em.createNativeQuery(
-									"DELETE FROM LINK_GROUP_USERS_ROLES_KNL_T rls "
-											+ "where rls.UP_ROLES = "
-											+ "(select role.ID_SRV from AC_ROLES_BSS_T role, AC_IS_BSS_T sys  "
-											+ "where SYS.ID_SRV= ROLE.UP_IS and  SYS.SIGN_OBJECT = ? "
-											+ "and role.SIGN_OBJECT = ? ) "
-											+ "and rls.UP_GROUP_USERS = (select lgu.ID_SRV from GROUP_USERS_KNL_T lgu "
-											+ "where lgu.SIGN_OBJECT = ? )")
+									(new StringBuilder("DELETE FROM LINK_GROUP_USERS_ROLES_KNL_T rls "))
+									  .append("where rls.UP_ROLES = ")
+									  .append("(select role.ID_SRV from AC_ROLES_BSS_T role, AC_IS_BSS_T sys  ")
+									  .append("where SYS.ID_SRV= ROLE.UP_IS and  SYS.SIGN_OBJECT = ? ")
+									  .append("and role.SIGN_OBJECT = ? ) ")
+									  .append("and rls.UP_GROUP_USERS = (select lgu.ID_SRV from GROUP_USERS_KNL_T lgu ")
+									  .append("where lgu.SIGN_OBJECT = ? )")
+									  .toString())
 									.setParameter(1, idIS)
 									.setParameter(2, role_code)
 									.setParameter(3, group).executeUpdate();
@@ -1283,10 +1302,11 @@ import ru.spb.iac.cud.items.Role;
 						LOGGER.debug("sync_groups_roles:09");
 
 						em.createNativeQuery(
-								"DELETE FROM LINK_GROUP_USERS_ROLES_KNL_T rls "
-										+ "where rls.UP_GROUP_USERS = "
-										+ "(select lgu.ID_SRV from GROUP_USERS_KNL_T lgu "
-										+ "where lgu.SIGN_OBJECT = ? )")
+								(new StringBuilder("DELETE FROM LINK_GROUP_USERS_ROLES_KNL_T rls "))
+								  .append("where rls.UP_GROUP_USERS = ")
+								  .append("(select lgu.ID_SRV from GROUP_USERS_KNL_T lgu ")
+								  .append("where lgu.SIGN_OBJECT = ? )")
+								  .toString())
 								.setParameter(1, group).executeUpdate();
 
 					} catch (Exception e) {
@@ -1304,13 +1324,14 @@ import ru.spb.iac.cud.items.Role;
 						}
 
 						em.createNativeQuery(
-								"insert into LINK_GROUP_USERS_ROLES_KNL_T(UP_ROLES, UP_GROUP_USERS, CREATOR,  created) "
-										+ "values ("
-										+ "(select role.ID_SRV from AC_ROLES_BSS_T role, AC_IS_BSS_T sys  "
-										+ "where SYS.ID_SRV= ROLE.UP_IS and  SYS.SIGN_OBJECT = ? "
-										+ "and role.SIGN_OBJECT = ? ), "
-										+ "(select lgu.ID_SRV from GROUP_USERS_KNL_T lgu "
-										+ "where lgu.SIGN_OBJECT = ? ), ?, sysdate) ")
+								(new StringBuilder("insert into LINK_GROUP_USERS_ROLES_KNL_T(UP_ROLES, UP_GROUP_USERS, CREATOR,  created) "))
+								  .append("values (")
+								  .append("(select role.ID_SRV from AC_ROLES_BSS_T role, AC_IS_BSS_T sys  ")
+								  .append("where SYS.ID_SRV= ROLE.UP_IS and  SYS.SIGN_OBJECT = ? ")
+								  .append("and role.SIGN_OBJECT = ? ), ")
+								  .append("(select lgu.ID_SRV from GROUP_USERS_KNL_T lgu ")
+								  .append("where lgu.SIGN_OBJECT = ? ), ?, sysdate) ")
+						.toString())
 								.setParameter(1, idIS)
 								.setParameter(2, role_code)
 								.setParameter(3, group).setParameter(4, 1L)
@@ -1337,9 +1358,7 @@ import ru.spb.iac.cud.items.Role;
 
 			} catch (Exception erSgr) {
 				try {
-					if(utx!=null){
-						utx.rollback();
-					}
+					utx.rollback();
 				} catch (Exception errSgr) {
 					LOGGER.error("rollback:Error1:", errSgr);
 				}
@@ -1554,9 +1573,7 @@ import ru.spb.iac.cud.items.Role;
 			 
 		    }catch (Exception erSres) {
 				try{
-					if(utx!=null){
-						utx.rollback();
-					}
+					utx.rollback();
 				}catch (Exception errSres) 
 				{
 					LOGGER.error("rollback:Error1:"+errSres);
@@ -1658,17 +1675,18 @@ import ru.spb.iac.cud.items.Role;
 
 					List<Object[]> lo_roles = em
 							.createNativeQuery(
-									"  SELECT ROL.SIGN_OBJECT, ROL.ID_SRV "
-											+ "FROM AC_RESOURCES_BSS_T res, "
-											+ "AC_LINK_ROLE_RESOURCE_KNL_T lgr, "
-											+ "AC_ROLES_BSS_T rol, "
-											+ "AC_IS_BSS_T sys "
-											+ "WHERE  res.ID_SRV = LGR.UP_RESOURCE "
-											+ "AND LGR.UP_ROLE = ROL.ID_SRV "
-											+ "AND SYS.SIGN_OBJECT = ? "
-											+ "AND SYS.ID_SRV = ROL.UP_IS "
-											+ "AND res.SIGN_OBJECT = ? "
-											+ "GROUP BY ROL.SIGN_OBJECT, ROL.ID_SRV")
+									(new StringBuilder("  SELECT ROL.SIGN_OBJECT, ROL.ID_SRV "))
+									  .append("FROM AC_RESOURCES_BSS_T res, ")
+									  .append("AC_LINK_ROLE_RESOURCE_KNL_T lgr, ")
+									  .append("AC_ROLES_BSS_T rol, ")
+									  .append("AC_IS_BSS_T sys ")
+									  .append("WHERE  res.ID_SRV = LGR.UP_RESOURCE ")
+									  .append("AND LGR.UP_ROLE = ROL.ID_SRV ")
+									  .append("AND SYS.SIGN_OBJECT = ? ")
+									  .append("AND SYS.ID_SRV = ROL.UP_IS ")
+									  .append("AND res.SIGN_OBJECT = ? ")
+									  .append("GROUP BY ROL.SIGN_OBJECT, ROL.ID_SRV")
+							.toString())
 							.setParameter(1, idIS).setParameter(2, resource)
 							.getResultList();
 
@@ -1689,13 +1707,14 @@ import ru.spb.iac.cud.items.Role;
 							LOGGER.debug("sync_resources_roles:06");
 
 							em.createNativeQuery(
-									"insert into AC_LINK_ROLE_RESOURCE_KNL_T(UP_ROLE, UP_RESOURCE, CREATOR,  created) "
-											+ "values ("
-											+ "(select role.ID_SRV from AC_ROLES_BSS_T role, AC_IS_BSS_T sys  "
-											+ "where SYS.ID_SRV= ROLE.UP_IS and  SYS.SIGN_OBJECT = ? "
-											+ "and role.SIGN_OBJECT = ? ), "
-											+ "(select ROL.ID_SRV from AC_ROLES_BSS_T rol "
-											+ "where rol.SIGN_OBJECT = ? ), ?, sysdate) ")
+									(new StringBuilder("insert into AC_LINK_ROLE_RESOURCE_KNL_T(UP_ROLE, UP_RESOURCE, CREATOR,  created) "))
+									  .append("values (")
+									  .append("(select role.ID_SRV from AC_ROLES_BSS_T role, AC_IS_BSS_T sys  ")
+									  .append("where SYS.ID_SRV= ROLE.UP_IS and  SYS.SIGN_OBJECT = ? ")
+									  .append("and role.SIGN_OBJECT = ? ), ")
+									  .append("(select ROL.ID_SRV from AC_ROLES_BSS_T rol ")
+									  .append("where rol.SIGN_OBJECT = ? ), ?, sysdate) ")
+							.toString())
 									.setParameter(1, idIS)
 									.setParameter(2, role_code)
 									.setParameter(3, resource)
@@ -1723,18 +1742,21 @@ import ru.spb.iac.cud.items.Role;
 
 							em.createNativeQuery(
 
-									"DELETE FROM AC_LINK_ROLE_RESOURCE_KNL_T lrr "
-											+ "where LRR.UP_RESOURCE = "
-											+ "(select RES.ID_SRV "
-											+ "from AC_RESOURCES_BSS_T res "
-											+ "AC_IS_BSS_T app "
-											+ "where res.UP_IS=APP.ID_SRV "
-											+ "and APP.SIGN_OBJECT = :sysCode "
-											+ "and RES.SIGN_OBJECT = :resCode ) "
-											+ "and lrr.UP_ROLE = "
-											+ "(select role.ID_SRV from AC_ROLES_BSS_T role, AC_IS_BSS_T sys  "
-											+ "where SYS.ID_SRV= ROLE.UP_IS and  SYS.SIGN_OBJECT = :sysCode "
-											+ "and role.SIGN_OBJECT = :roleCode ) ")
+									(new StringBuilder("DELETE FROM AC_LINK_ROLE_RESOURCE_KNL_T lrr "))
+											  .append("where LRR.UP_RESOURCE = ")
+											  .append("(select RES.ID_SRV ")
+											  .append("from AC_RESOURCES_BSS_T res ")
+											  .append("AC_IS_BSS_T app ")
+											  .append("where res.UP_IS=APP.ID_SRV ")
+											  .append("and APP.SIGN_OBJECT = :sysCode ")
+											  .append("and RES.SIGN_OBJECT = :resCode ) ")
+											  .append("and lrr.UP_ROLE = ")
+											  .append("(select role.ID_SRV from AC_ROLES_BSS_T role, AC_IS_BSS_T sys  ")
+											  .append("where SYS.ID_SRV= ROLE.UP_IS and  SYS.SIGN_OBJECT = :sysCode ")
+											  .append("and role.SIGN_OBJECT = :roleCode ) ")
+
+									.toString()
+									)
 									.setParameter("sysCode", idIS)
 									.setParameter("roleCode", role_code)
 									.setParameter("resCode", resource)
@@ -1765,14 +1787,15 @@ import ru.spb.iac.cud.items.Role;
 						LOGGER.debug("sync_resources_roles:09");
 
 						em.createNativeQuery(
-								"DELETE FROM AC_LINK_ROLE_RESOURCE_KNL_T lrr "
-										+ "where LRR.UP_RESOURCE = ( "
-										+ "select RES.ID_SRV "
-										+ "from AC_RESOURCES_BSS_T res, "
-										+ "AC_IS_BSS_T app "
-										+ "where res.UP_IS=APP.ID_SRV "
-										+ "and APP.SIGN_OBJECT = ? "
-										+ "and  RES.SIGN_OBJECT = ? ) ")
+								(new StringBuilder("DELETE FROM AC_LINK_ROLE_RESOURCE_KNL_T lrr "))
+								  .append("where LRR.UP_RESOURCE = ( ")
+								  .append("select RES.ID_SRV ")
+								  .append("from AC_RESOURCES_BSS_T res, ")
+								  .append("AC_IS_BSS_T app ")
+								  .append("where res.UP_IS=APP.ID_SRV ")
+								  .append("and APP.SIGN_OBJECT = ? ")
+								  .append("and  RES.SIGN_OBJECT = ? ) ")
+						.toString())
 								.setParameter(1, resource)
 								.setParameter(2, idIS).executeUpdate();
 
@@ -1791,13 +1814,14 @@ import ru.spb.iac.cud.items.Role;
 						}
 
 						em.createNativeQuery(
-								"insert into AC_LINK_ROLE_RESOURCE_KNL_T(UP_ROLE, UP_RESOURCE, CREATOR,  created) "
-										+ "values ("
-										+ "(select role.ID_SRV from AC_ROLES_BSS_T role, AC_IS_BSS_T sys  "
-										+ "where SYS.ID_SRV= ROLE.UP_IS and  SYS.SIGN_OBJECT = ? "
-										+ "and role.SIGN_OBJECT = ? ), "
-										+ "(select ROL.ID_SRV from AC_ROLES_BSS_T rol "
-										+ "where rol.SIGN_OBJECT = ? ), ?, sysdate) ")
+								(new StringBuilder("insert into AC_LINK_ROLE_RESOURCE_KNL_T(UP_ROLE, UP_RESOURCE, CREATOR,  created) "))
+								  .append("values (")
+								  .append("(select role.ID_SRV from AC_ROLES_BSS_T role, AC_IS_BSS_T sys  ")
+								  .append("where SYS.ID_SRV= ROLE.UP_IS and  SYS.SIGN_OBJECT = ? ")
+								  .append("and role.SIGN_OBJECT = ? ), ")
+								  .append("(select ROL.ID_SRV from AC_ROLES_BSS_T rol ")
+								  .append("where rol.SIGN_OBJECT = ? ), ?, sysdate) ")
+						.toString())
 								.setParameter(1, idIS)
 								.setParameter(2, role_code)
 								.setParameter(3, resource).setParameter(4, 1L)
@@ -1825,9 +1849,7 @@ import ru.spb.iac.cud.items.Role;
 				}
 			} catch (Exception erSresr) {
 				try {
-					if(utx!=null){
-						utx.rollback();
-					}
+					utx.rollback();
 				} catch (Exception errSresr) {
 					LOGGER.error("rollback:Error1:", errSresr);
 				}
@@ -1873,12 +1895,13 @@ import ru.spb.iac.cud.items.Role;
 		try {
 			resultSync = (String) em
 					.createNativeQuery(
-							"select SYS.SIGN_OBJECT "
-									+ "from  AC_IS_BSS_T sys, "
-									+ "AC_SUBSYSTEM_CERT_BSS_T subsys "
-									+ "where (SYS.SIGN_OBJECT= :codeSys or  SUBSYS.SUBSYSTEM_CODE= :codeSys) "
-									+ "and  SUBSYS.UP_IS(+) =SYS.ID_SRV "
-									+ "group by SYS.SIGN_OBJECT ")
+							(new StringBuilder("select SYS.SIGN_OBJECT "))
+							  .append("from  AC_IS_BSS_T sys, ")
+							  .append("AC_SUBSYSTEM_CERT_BSS_T subsys ")
+							  .append("where (SYS.SIGN_OBJECT= :codeSys or  SUBSYS.SUBSYSTEM_CODE= :codeSys) ")
+							  .append("and  SUBSYS.UP_IS(+) =SYS.ID_SRV ")
+							  .append("group by SYS.SIGN_OBJECT ")
+					.toString())
 					.setParameter("codeSys", codeSys).getSingleResult();
 
 		} catch (NoResultException exSync) {
@@ -1901,21 +1924,23 @@ import ru.spb.iac.cud.items.Role;
 
 			if (idUser != null && !idUser.equals(-1L)) {
 				em.createNativeQuery(
-						"insert into SERVICES_LOG_KNL_T( "
-								+ "ID_SRV,  UP_SERVICES, DATE_ACTION, CREATED, "
-								+ "input_param, result_value, ip_address, UP_USERS ) "
-								+ "values(SERVICES_LOG_KNL_SEQ.nextval , ?, sysdate, sysdate, "
-								+ "?, ?, ?, ? ) ").setParameter(1, idServ)
+						(new StringBuilder("insert into SERVICES_LOG_KNL_T( "))
+						  .append("ID_SRV,  UP_SERVICES, DATE_ACTION, CREATED, ")
+						  .append("input_param, result_value, ip_address, UP_USERS ) ")
+						  .append("values(SERVICES_LOG_KNL_SEQ.nextval , ?, sysdate, sysdate, ")
+						  .append("?, ?, ?, ? ) ")
+				.toString()).setParameter(1, idServ)
 						.setParameter(2, inp_param).setParameter(3, result)
 						.setParameter(4, ip_adr).setParameter(5, idUser)
 						.executeUpdate();
 			} else {
 				em.createNativeQuery(
-						"insert into SERVICES_LOG_KNL_T( "
-								+ "ID_SRV,  UP_SERVICES, DATE_ACTION, CREATED, "
-								+ "input_param, result_value, ip_address ) "
-								+ "values(SERVICES_LOG_KNL_SEQ.nextval , ?, sysdate, sysdate, "
-								+ "?, ?, ? ) ").setParameter(1, idServ)
+						(new StringBuilder("insert into SERVICES_LOG_KNL_T( "))
+						  .append("ID_SRV,  UP_SERVICES, DATE_ACTION, CREATED, ")
+						  .append("input_param, result_value, ip_address ) ")
+						  .append("values(SERVICES_LOG_KNL_SEQ.nextval , ?, sysdate, sysdate, ")
+						  .append("?, ?, ? ) ")
+				.toString()).setParameter(1, idServ)
 						.setParameter(2, inp_param).setParameter(3, result)
 						.setParameter(4, ip_adr).executeUpdate();
 			}

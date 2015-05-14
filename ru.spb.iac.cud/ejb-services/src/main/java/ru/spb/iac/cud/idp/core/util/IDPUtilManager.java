@@ -53,18 +53,20 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 
 				certDataX = (String) em
 						.createNativeQuery(
-								"select to_char(T1.CERT_DATE) "
-										+ "from AC_IS_BSS_T t1 "
-										+ "where T1.SIGN_OBJECT=? ")
+								(new StringBuilder("select to_char(T1.CERT_DATE) "))
+								  .append("from AC_IS_BSS_T t1 ")
+								  .append("where T1.SIGN_OBJECT=? ")
+						.toString())
 						.setParameter(1, domain_name).getSingleResult();
 
 			} else if (domain_name.startsWith(CUDConstants.subArmPrefix)) {
 				// подсистемы
 				certDataX = (String) em
 						.createNativeQuery(
-								"select to_char(T1.CERT_DATE) "
-										+ "from AC_SUBSYSTEM_CERT_BSS_T t1 "
-										+ "where T1.SUBSYSTEM_CODE=? ")
+								(new StringBuilder("select to_char(T1.CERT_DATE) "))
+								  .append("from AC_SUBSYSTEM_CERT_BSS_T t1 ")
+								  .append("where T1.SUBSYSTEM_CODE=? ")
+						.toString())
 						.setParameter(1, domain_name).getSingleResult();
 
 			} else if (domain_name.startsWith(CUDConstants.groupArmPrefix)) {
@@ -72,9 +74,11 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 
 				certDataX = (String) em
 						.createNativeQuery(
-								"select to_char(T1.CERT_DATA) "
-										+ "from GROUP_SYSTEMS_KNL_T t1 "
-										+ "where T1.GROUP_CODE=? ")
+								(new StringBuilder("select to_char(T1.CERT_DATA) "))
+								  .append("from GROUP_SYSTEMS_KNL_T t1 ")
+								  .append("where T1.GROUP_CODE=? ")
+								  .toString()
+						)
 						.setParameter(1, domain_name).getSingleResult();
 
 			}

@@ -65,9 +65,11 @@ import org.jboss.seam.log.Log;
 				
 				listMenu = entityManager
 						.createQuery(
-								"select aap from AcAppPage aap "
-										+ "where aap.idParent.idParent2 = 1 and aap.idParent.acApplication = :acApplication "
-										+ "and aap.visible = 1 order by orderNum ")
+								(new StringBuilder("select aap from AcAppPage aap "))
+								  .append("where aap.idParent.idParent2 = 1 and aap.idParent.acApplication = :acApplication ")
+								  .append("and aap.visible = 1 order by orderNum ")
+								  .toString()
+						)
 						.setParameter("acApplication", linksMap.getAppCode())
 						.getResultList();
 			}
@@ -102,13 +104,15 @@ import org.jboss.seam.log.Log;
 							.createNativeQuery(
 							// "SELECT N.ID_SRV, N.UP, N.PAGE_CODE, LPAD(' ',
 							// (LEVEL - 1) * 2) || N.PAGE_NAME PAGE_NAME , LEVEL
-									"SELECT N.ID_SRV, N.UP, N.PAGE_CODE, N.PAGE_NAME, LEVEL "
-											+ "FROM AC_APP_DOMAINS_BSS_T n "
-											+ "WHERE N.IS_VISIBLE=1 "
-											+ "CONNECT BY  PRIOR N.ID_SRV = N.UP "
-											+ "START WITH N.UP= "
-											+ "(SELECT N2.ID_SRV FROM AC_APP_DOMAINS_BSS_T n2 WHERE N2.UP_IS=? and N2.UP=1 )"
-											+ "ORDER SIBLINGS BY  N.ORDER_NUM, N.PAGE_NAME ")
+									(new StringBuilder("SELECT N.ID_SRV, N.UP, N.PAGE_CODE, N.PAGE_NAME, LEVEL "))
+									  .append("FROM AC_APP_DOMAINS_BSS_T n ")
+									  .append("WHERE N.IS_VISIBLE=1 ")
+									  .append("CONNECT BY  PRIOR N.ID_SRV = N.UP ")
+									  .append("START WITH N.UP= ")
+									  .append("(SELECT N2.ID_SRV FROM AC_APP_DOMAINS_BSS_T n2 WHERE N2.UP_IS=? and N2.UP=1 )")
+									  .append("ORDER SIBLINGS BY  N.ORDER_NUM, N.PAGE_NAME ")
+									  .toString()
+							)
 							.setParameter(1, linksMap.getAppCode())
 							.getResultList();
 

@@ -178,27 +178,29 @@ import org.apache.log4j.Logger;
 			utx.begin();
 
 			em.createNativeQuery(
-					"delete from BINDING_AUTO_LINK_BSS_T tt "
-							+ "WHERE TT.TYPE_BINDING = 2 ").executeUpdate();
+					(new StringBuilder("delete from BINDING_AUTO_LINK_BSS_T tt "))
+					  .append("WHERE TT.TYPE_BINDING = 2 ")
+					  .toString()).executeUpdate();
 
 			em.createNativeQuery(
-					"INSERT INTO BINDING_AUTO_LINK_BSS_T (UP_USERS, UP_ISP_SIGN_USER, TYPE_BINDING ) "
-							+ "select   AU.ID_SRV, cl_usr_full.SIGN_OBJECT, 2 "
-							+ "                     from AC_USERS_KNL_T au, "
-							+ "                    (select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "
-							+ "                   from ISP_BSS_T cl_usr "
-							+ "                  group by CL_usr.SIGN_OBJECT "
-							+ "                   ) t1_no_act, "
-							+ "                   ISP_BSS_T cl_usr_full, "
-							+ "                    ISP_BSS_T cl_usr_no_act_full "
-							+ "                   where   AU.UP_SIGN_user is not null "
-							+ "                    and  upper( REGEXP_REPLACE(cl_usr_full.FIO,'( ){2,}', ' ')) like upper( REGEXP_REPLACE(cl_usr_no_act_full.FIO,'( ){2,}', ' ')) "
-							+ "                    and cl_usr_full.STATUS='A' "
-							+ "                    and AU.UP_SIGN= substr(cl_usr_full.SIGN_OBJECT ,1,3)||'00000' "
-							+ "                     and cl_usr_no_act_full.STATUS='H' "
-							+ "                     and cl_usr_no_act_full.ID_SRV=t1_no_act.CL_USR_ID "
-							+ "                     and   t1_no_act.CL_USR_CODE=au.UP_SIGN_user "
-							+ " group by AU.ID_SRV, cl_usr_full.SIGN_OBJECT ")
+					(new StringBuilder("INSERT INTO BINDING_AUTO_LINK_BSS_T (UP_USERS, UP_ISP_SIGN_USER, TYPE_BINDING ) "))
+					  .append("select   AU.ID_SRV, cl_usr_full.SIGN_OBJECT, 2 ")
+					  .append("                     from AC_USERS_KNL_T au, ")
+					  .append("                    (select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
+					  .append("                   from ISP_BSS_T cl_usr ")
+					  .append("                  group by CL_usr.SIGN_OBJECT ")
+					  .append("                   ) t1_no_act, ")
+					  .append("                   ISP_BSS_T cl_usr_full, ")
+					  .append("                    ISP_BSS_T cl_usr_no_act_full ")
+					  .append("                   where   AU.UP_SIGN_user is not null ")
+					  .append("                    and  upper( REGEXP_REPLACE(cl_usr_full.FIO,'( ){2,}', ' ')) like upper( REGEXP_REPLACE(cl_usr_no_act_full.FIO,'( ){2,}', ' ')) ")
+					  .append("                    and cl_usr_full.STATUS='A' ")
+					  .append("                    and AU.UP_SIGN= substr(cl_usr_full.SIGN_OBJECT ,1,3)||'00000' ")
+					  .append("                     and cl_usr_no_act_full.STATUS='H' ")
+					  .append("                     and cl_usr_no_act_full.ID_SRV=t1_no_act.CL_USR_ID ")
+					  .append("                     and   t1_no_act.CL_USR_CODE=au.UP_SIGN_user ")
+					  .append(" group by AU.ID_SRV, cl_usr_full.SIGN_OBJECT ")
+					  .toString())
 					.executeUpdate();
 
 			utx.commit();

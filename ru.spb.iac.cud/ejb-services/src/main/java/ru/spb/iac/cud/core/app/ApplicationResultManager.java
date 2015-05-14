@@ -144,11 +144,12 @@ import org.slf4j.LoggerFactory;
 
 			List<Object[]> results = em
 					.createNativeQuery(
-							"select JAS.STATUS, ARM.SIGN_OBJECT, ARM.FULL_, ARM.DESCRIPTION, JAS.REJECT_REASON "
-									+ "from JOURN_APP_SYSTEM_BSS_T jas, "
-									+ "AC_IS_BSS_T arm "
-									+ "where ARM.ID_SRV(+) =JAS.UP_IS "
-									+ "and JAS.ID_SRV=? ")
+							(new StringBuilder("select JAS.STATUS, ARM.SIGN_OBJECT, ARM.FULL_, ARM.DESCRIPTION, JAS.REJECT_REASON "))
+							  .append("from JOURN_APP_SYSTEM_BSS_T jas, ")
+							  .append("AC_IS_BSS_T arm ")
+							  .append("where ARM.ID_SRV(+) =JAS.UP_IS ")
+							  .append("and JAS.ID_SRV=? ")
+					.toString())
 					.setParameter(1, Long.valueOf(number)).getResultList();
 
 			int status = Integer.parseInt(results.get(0)[0].toString());
@@ -197,11 +198,12 @@ import org.slf4j.LoggerFactory;
 
 			List<Object[]> results = em
 					.createNativeQuery(
-							"select JAS.STATUS, USR.LOGIN, USR.PASSWORD_, JAS.REJECT_REASON, USR.ID_SRV "
-									+ "from JOURN_APP_USER_BSS_T jas, "
-									+ "AC_USERS_KNL_T usr "
-									+ "where usr.ID_SRV(+) =JAS.UP_USER_APP "
-									+ "and JAS.ID_SRV=? ")
+							(new StringBuilder("select JAS.STATUS, USR.LOGIN, USR.PASSWORD_, JAS.REJECT_REASON, USR.ID_SRV "))
+							  .append("from JOURN_APP_USER_BSS_T jas, ")
+							  .append("AC_USERS_KNL_T usr ")
+							  .append("where usr.ID_SRV(+) =JAS.UP_USER_APP ")
+							  .append("and JAS.ID_SRV=? ")
+					.toString())
 					.setParameter(1, Long.valueOf(number)).getResultList();
 
 			int status = Integer.parseInt(results.get(0)[0].toString());
@@ -308,9 +310,10 @@ import org.slf4j.LoggerFactory;
 
 			List<Object[]> results = em
 					.createNativeQuery(
-							"select JAS.STATUS, JAS.REJECT_REASON "
-									+ "from JOURN_APP_ACCESS_GROUPS_BSS_T jas "
-									+ "where JAS.ID_SRV=? ")
+							(new StringBuilder("select JAS.STATUS, JAS.REJECT_REASON "))
+							  .append("from JOURN_APP_ACCESS_GROUPS_BSS_T jas ")
+							  .append("where JAS.ID_SRV=? ")
+					.toString())
 					.setParameter(1, Long.valueOf(number)).getResultList();
 
 			int status = Integer.parseInt(results.get(0)[0].toString());
@@ -352,9 +355,10 @@ import org.slf4j.LoggerFactory;
 
 			List<Object[]> results = em
 					.createNativeQuery(
-							"select JAS.STATUS, JAS.REJECT_REASON "
-									+ "from JOURN_APP_BLOCK_BSS_T jas "
-									+ "where JAS.ID_SRV=? ")
+							(new StringBuilder("select JAS.STATUS, JAS.REJECT_REASON "))
+							  .append("from JOURN_APP_BLOCK_BSS_T jas ")
+							  .append("where JAS.ID_SRV=? ")
+					.toString())
 					.setParameter(1, Long.valueOf(number)).getResultList();
 
 			int status = Integer.parseInt(results.get(0)[0].toString());
@@ -396,9 +400,10 @@ import org.slf4j.LoggerFactory;
 
 			List<Object[]> results = em
 					.createNativeQuery(
-							"select JAS.STATUS, JAS.REJECT_REASON "
-									+ "from JOURN_APP_SYSTEM_MODIFY_BSS_T jas "
-									+ "where JAS.ID_SRV=? ")
+							(new StringBuilder("select JAS.STATUS, JAS.REJECT_REASON "))
+							  .append("from JOURN_APP_SYSTEM_MODIFY_BSS_T jas ")
+							  .append("where JAS.ID_SRV=? ")
+					.toString())
 					.setParameter(1, Long.valueOf(number)).getResultList();
 
 			int status = Integer.parseInt(results.get(0)[0].toString());
@@ -440,9 +445,10 @@ import org.slf4j.LoggerFactory;
 
 			List<Object[]> results = em
 					.createNativeQuery(
-							"select JAS.STATUS, JAS.REJECT_REASON "
-									+ "from JOURN_APP_USER_MODIFY_BSS_T jas "
-									+ "where JAS.ID_SRV=? ")
+							(new StringBuilder("select JAS.STATUS, JAS.REJECT_REASON "))
+							  .append("from JOURN_APP_USER_MODIFY_BSS_T jas ")
+							  .append("where JAS.ID_SRV=? ")
+					.toString())
 					.setParameter(1, Long.valueOf(number)).getResultList();
 
 			int status = Integer.parseInt(results.get(0)[0].toString());
@@ -485,9 +491,10 @@ import org.slf4j.LoggerFactory;
 
 			List<Object[]> results = em
 					.createNativeQuery(
-							"select JAS.STATUS, JAS.REJECT_REASON "
-									+ "from JOURN_APP_USER_ACCMODIFY_BSS_T jas "
-									+ "where JAS.ID_SRV=? ")
+							(new StringBuilder("select JAS.STATUS, JAS.REJECT_REASON "))
+							  .append("from JOURN_APP_USER_ACCMODIFY_BSS_T jas ")
+							  .append("where JAS.ID_SRV=? ")
+					.toString())
 					.setParameter(1, Long.valueOf(number)).getResultList();
 
 			int status = Integer.parseInt(results.get(0)[0].toString());
@@ -527,9 +534,10 @@ import org.slf4j.LoggerFactory;
 
 			List<Object[]> results = em
 					.createNativeQuery(
-							"select JAS.STATUS, JAS.REJECT_REASON "
-									+ "from JOURN_APP_USER_CERTADD_BSS_T jas "
-									+ "where JAS.ID_SRV=? ")
+							(new StringBuilder("select JAS.STATUS, JAS.REJECT_REASON "))
+							  .append("from JOURN_APP_USER_CERTADD_BSS_T jas ")
+							  .append("where JAS.ID_SRV=? ")
+					.toString())
 					.setParameter(1, Long.valueOf(number)).getResultList();
 
 			int status = Integer.parseInt(results.get(0)[0].toString());
@@ -632,15 +640,15 @@ import org.slf4j.LoggerFactory;
 
 			idUser = ((java.math.BigDecimal) em
 					.createNativeQuery(
-							"select AU.ID_SRV "
-									+ "from "
-									+ "AC_USERS_KNL_T au "
-									+ "where AU.CERTIFICATE=? "
-									+ "and (AU.START_ACCOUNT is null or au.START_ACCOUNT <= sysdate) "
-									+ "and (AU.START_ACCOUNT is null or au.START_ACCOUNT > sysdate) "
-									+
+							(new StringBuilder("select AU.ID_SRV "))
+							  .append("from ")
+							  .append("AC_USERS_KNL_T au ")
+							  .append("where AU.CERTIFICATE=? ")
+							  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT <= sysdate) ")
+							  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT > sysdate) ")
 									// "and AU.STATUS != 2 ")
-									"and AU.STATUS = 1 ")
+									  .append("and AU.STATUS = 1 ")
+									.toString())
 					.setParameter(1, principal).getSingleResult()).longValue();
 
 			LOGGER.debug("principal_exist:idUser:" + idUser);

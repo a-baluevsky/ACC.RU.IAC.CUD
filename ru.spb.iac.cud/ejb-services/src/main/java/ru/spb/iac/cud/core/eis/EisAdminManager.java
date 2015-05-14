@@ -110,12 +110,13 @@ import org.slf4j.LoggerFactory;
 				// список ролей, которые уже есть у пользователя в системе
 				List<String> roles_user = (List<String>) em
 						.createNativeQuery(
-								"select to_char(URL.UP_ROLES) "
-										+ "from AC_ROLES_BSS_T rl, "
-										+ "AC_USERS_LINK_KNL_T url "
-										+ "where RL.ID_SRV=URL.UP_ROLES "
-										+ "and RL.UP_IS=? "
-										+ "and URL.UP_USERS=? ")
+								(new StringBuilder("select to_char(URL.UP_ROLES) "))
+								  .append("from AC_ROLES_BSS_T rl, ")
+								  .append("AC_USERS_LINK_KNL_T url ")
+								  .append("where RL.ID_SRV=URL.UP_ROLES ")
+								  .append("and RL.UP_IS=? ")
+								  .append("and URL.UP_USERS=? ")
+						.toString())
 						.setParameter(1, idArm).setParameter(2, idUser)
 						.getResultList();
 
@@ -182,10 +183,14 @@ import org.slf4j.LoggerFactory;
 					}
 
 					em.createNativeQuery(
-							"DELETE FROM AC_USERS_LINK_KNL_T url "
-									+ "WHERE URL.UP_ROLES in (" + rolesLineApp
-									+ ") " + "and URL.UP_USERS= ? ")
-							.setParameter(1, idUser).executeUpdate();
+							(new StringBuilder("DELETE FROM AC_USERS_LINK_KNL_T url "))
+							  .append("WHERE URL.UP_ROLES in (")
+					
+							.append( rolesLineApp)
+							.append(") ") 
+							.append("and URL.UP_USERS= ? ")
+					.toString())
+					.setParameter(1, idUser).executeUpdate();
 				} 
 
 			}
@@ -282,9 +287,10 @@ import org.slf4j.LoggerFactory;
 				// список групп, которые уже есть у пользователя
 				List<String> groups_user = (List<String>) em
 						.createNativeQuery(
-								"select to_char(rl.UP_GROUP_USERS) "
-										+ "from LINK_GROUP_USERS_USERS_KNL_T rl "
-										+ "where UP_USERS=? ")
+								(new StringBuilder("select to_char(rl.UP_GROUP_USERS) "))
+								  .append("from LINK_GROUP_USERS_USERS_KNL_T rl ")
+								  .append("where UP_USERS=? ")
+						.toString())
 						.setParameter(1, idUser).getResultList();
 
 				if (mode == 0) { // REPLACE
@@ -303,18 +309,21 @@ import org.slf4j.LoggerFactory;
 							+ groupsLineExist);
 
 					em.createNativeQuery(
-							"DELETE FROM LINK_GROUP_USERS_USERS_KNL_T url "
-									+ "WHERE URL.UP_GROUP_USERS in ("
-									+ groupsLineExist + ") "
-									+ "and URL.UP_USERS= ? ")
+							(new StringBuilder("DELETE FROM LINK_GROUP_USERS_USERS_KNL_T url "))
+							  .append("WHERE URL.UP_GROUP_USERS in (")					
+									.append( groupsLineExist )
+									  .append(") ")
+									  .append("and URL.UP_USERS= ? ")
+									.toString())
 							.setParameter(1, idUser).executeUpdate();
 
 					// назначаем роли из заявки
 					for (String group : groups_app) {
 
 						em.createNativeQuery(
-								"insert into LINK_GROUP_USERS_USERS_KNL_T (UP_GROUP_USERS, UP_USERS, CREATOR, CREATED) "
-										+ "values(?, ?, ?, sysdate) ")
+								(new StringBuilder("insert into LINK_GROUP_USERS_USERS_KNL_T (UP_GROUP_USERS, UP_USERS, CREATOR, CREATED) "))
+								  .append("values(?, ?, ?, sysdate) ")
+								  .toString())
 								.setParameter(1, Long.valueOf(group))
 								.setParameter(2, idUser).setParameter(3, 0)
 								.executeUpdate();
@@ -331,8 +340,9 @@ import org.slf4j.LoggerFactory;
 							LOGGER.debug("createAccess_groups:role2_2");
 
 							em.createNativeQuery(
-									"insert into LINK_GROUP_USERS_USERS_KNL_T (UP_GROUP_USERS, UP_USERS, CREATOR, CREATED) "
-											+ "values(?, ?, ?, sysdate) ")
+									(new StringBuilder("insert into LINK_GROUP_USERS_USERS_KNL_T (UP_GROUP_USERS, UP_USERS, CREATOR, CREATED) "))
+									  .append("values(?, ?, ?, sysdate) ")
+									  .toString())
 									.setParameter(1, Long.valueOf(group))
 									.setParameter(2, idUser).setParameter(3, 0)
 									.executeUpdate();
@@ -351,10 +361,13 @@ import org.slf4j.LoggerFactory;
 					}
 
 					em.createNativeQuery(
-							"DELETE FROM LINK_GROUP_USERS_USERS_KNL_T url "
-									+ "WHERE URL.UP_GROUP_USERS in ("
-									+ groupsLineApp + ") "
-									+ "and URL.UP_USERS= ? ")
+							(new StringBuilder("DELETE FROM LINK_GROUP_USERS_USERS_KNL_T url "))
+							  .append("WHERE URL.UP_GROUP_USERS in (")
+							  
+									.append(groupsLineApp )
+									  .append(") ")
+									  .append("and URL.UP_USERS= ? ")
+									.toString())
 							.setParameter(1, idUser).executeUpdate();
 				} 
 
@@ -425,9 +438,10 @@ import org.slf4j.LoggerFactory;
 				// код, значит у нас подсистема
 				result_flag = em
 						.createNativeQuery(
-								"update AC_SUBSYSTEM_CERT_BSS_T t1 "
-										+ "set T1.CERT_DATE=? "
-										+ "where t1.SUBSYSTEM_CODE=? ")
+								(new StringBuilder("update AC_SUBSYSTEM_CERT_BSS_T t1 "))
+								  .append("set T1.CERT_DATE=? ")
+								  .append("where t1.SUBSYSTEM_CODE=? ")
+						.toString())
 						.setParameter(1, newCert).setParameter(2, codeSystem)
 						.executeUpdate();
 			}
@@ -437,9 +451,10 @@ import org.slf4j.LoggerFactory;
 				// подсистемах такой код, значит у нас подсистема
 				result_flag = em
 						.createNativeQuery(
-								"update GROUP_SYSTEMS_KNL_T t1 "
-										+ "set T1.CERT_DATA=? "
-										+ "where t1.GROUP_CODE=? ")
+								(new StringBuilder("update GROUP_SYSTEMS_KNL_T t1 "))
+								  .append("set T1.CERT_DATA=? ")
+								  .append("where t1.GROUP_CODE=? ")
+						.toString())
 						.setParameter(1, newCert).setParameter(2, codeSystem)
 						.executeUpdate();
 			}
@@ -470,12 +485,13 @@ import org.slf4j.LoggerFactory;
 		try {
 			result = ((java.math.BigDecimal) em
 					.createNativeQuery(
-							"select SYS.ID_SRV "
-									+ "from  AC_IS_BSS_T sys, "
-									+ "AC_SUBSYSTEM_CERT_BSS_T subsys "
-									+ "where (SYS.SIGN_OBJECT= :codeSys or  SUBSYS.SUBSYSTEM_CODE= :codeSys) "
-									+ "and  SUBSYS.UP_IS(+) =SYS.ID_SRV "
-									+ "group by SYS.ID_SRV ")
+							(new StringBuilder("select SYS.ID_SRV "))
+							  .append("from  AC_IS_BSS_T sys, ")
+							  .append("AC_SUBSYSTEM_CERT_BSS_T subsys ")
+							  .append("where (SYS.SIGN_OBJECT= :codeSys or  SUBSYS.SUBSYSTEM_CODE= :codeSys) ")
+							  .append("and  SUBSYS.UP_IS(+) =SYS.ID_SRV ")
+							  .append("group by SYS.ID_SRV ")
+					.toString())
 					.setParameter("codeSys", codeSys).getSingleResult())
 					.longValue();
 

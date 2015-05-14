@@ -82,23 +82,25 @@ import org.slf4j.LoggerFactory;
 
 			List<Object[]> lo = em
 					.createNativeQuery(
-							"select * from( "
-									+ "select AAD.PAGE_CODE, APL.ID_SRV perm_code  "
-									+ "from AC_APP_DOMAINS_BSS_T aad, "
-									+ "AC_LINK_ROLE_APP_DOM_PRM_KNL_T adp, "
-									+ "AC_ROLES_BSS_T ar, "
-									+ "AC_PERMISSIONS_LIST_BSS_T apl "
-									+ "where AAD.UP_IS= ?1 "
-									+ "and ADP.UP_PERMISS = APL.ID_SRV "
-									+ "and adp.UP_DOM=AAD.ID_SRV "
-									+ "and adp.UP_ROLES=ar.ID_SRV "
-									+ "and AR.SIGN_OBJECT in ("
-									+ roleLine
-									+ ") "
-									+ (pageCode != null ? "and AAD.PAGE_CODE= ?2 ) "
-											: "and 1= ?2 ) ")
-									+ "group by PAGE_CODE, perm_code "
-									+ "order by PAGE_CODE, perm_code ")
+							(new StringBuilder("select * from( "))
+							  .append("select AAD.PAGE_CODE, APL.ID_SRV perm_code  ")
+							  .append("from AC_APP_DOMAINS_BSS_T aad, ")
+							  .append("AC_LINK_ROLE_APP_DOM_PRM_KNL_T adp, ")
+							  .append("AC_ROLES_BSS_T ar, ")
+							  .append("AC_PERMISSIONS_LIST_BSS_T apl ")
+							  .append("where AAD.UP_IS= ?1 ")
+							  .append("and ADP.UP_PERMISS = APL.ID_SRV ")
+							  .append("and adp.UP_DOM=AAD.ID_SRV ")
+							  .append("and adp.UP_ROLES=ar.ID_SRV ")
+							  .append("and AR.SIGN_OBJECT in (")
+					
+							.append( roleLine)
+							.append(") ")
+							.append(pageCode != null ? "and AAD.PAGE_CODE= ?2 ) ": "and 1= ?2 ) ")
+							.append("group by PAGE_CODE, perm_code ")
+							.append("order by PAGE_CODE, perm_code ")
+							
+							.toString())
 					.setParameter(1, appCode)
 					.setParameter(2, (pageCode != null ? pageCode : 1))
 					.getResultList();

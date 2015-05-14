@@ -393,8 +393,9 @@ import org.slf4j.LoggerFactory;
 			// проверяем есть ли уже такой сертификат в реестре
 			List certExist = em
 					.createNativeQuery(
-							"select 1  from UC_CERT_REESTR uc "
-									+ "where UC.CERT_NUM = ? ")
+							(new StringBuilder("select 1  from UC_CERT_REESTR uc "))
+							  .append("where UC.CERT_NUM = ? ")
+					.toString())
 					.setParameter(1, certNum).getResultList();
 
 			// у нас в реестре уже есть этот сертификат

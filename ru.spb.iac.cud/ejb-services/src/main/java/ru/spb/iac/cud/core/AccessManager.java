@@ -81,14 +81,15 @@ public String authenticate_login(String login, String password,
 				LOGGER.debug("authenticate:03");	
 				dataUser = (Object[]) em
 						.createNativeQuery(
-								"select AU.ID_SRV, AU.login "
-										+ "from "
-										+ "AC_USERS_KNL_T au "
-										+ "where AU.LOGIN=? "
-										+ "and AU.PASSWORD_=? "
-										+ "and (AU.START_ACCOUNT is null or au.START_ACCOUNT <= sysdate) "
-										+ "and (AU.START_ACCOUNT is null or au.START_ACCOUNT > sysdate) "
-										+ "and AU.STATUS = 1 ")
+								(new StringBuilder("select AU.ID_SRV, AU.login "))
+								  .append("from ")
+								  .append("AC_USERS_KNL_T au ")
+								  .append("where AU.LOGIN=? ")
+								  .append("and AU.PASSWORD_=? ")
+								  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT <= sysdate) ")
+								  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT > sysdate) ")
+								  .append("and AU.STATUS = 1 ")
+						.toString())
 						.setParameter(1, login).setParameter(2, password)
 						.getSingleResult();	
 				idUser = ((java.math.BigDecimal) dataUser[0]).longValue();
@@ -100,13 +101,14 @@ public String authenticate_login(String login, String password,
 	
 				dataUser = (Object[]) em
 						.createNativeQuery(
-								"select AU.ID_SRV, AU.login, AU.PASSWORD_ "
-										+ "from "
-										+ "AC_USERS_KNL_T au "
-										+ "where AU.LOGIN=? "
-										+ "and (AU.START_ACCOUNT is null or au.START_ACCOUNT <= sysdate) "
-										+ "and (AU.START_ACCOUNT is null or au.START_ACCOUNT > sysdate) "
-										+ "and AU.STATUS = 1 ")
+								(new StringBuilder("select AU.ID_SRV, AU.login, AU.PASSWORD_ "))
+								  .append("from ")
+								  .append("AC_USERS_KNL_T au ")
+								  .append("where AU.LOGIN=? ")
+								  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT <= sysdate) ")
+								  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT > sysdate) ")
+								  .append("and AU.STATUS = 1 ")
+						.toString())
 						.setParameter(1, login).getSingleResult();
 	
 				boolean matched = HashPassword.validatePassword(
@@ -168,13 +170,14 @@ public String authenticate_login(String login, String password,
 			LOGGER.debug("authenticate_login_obo:01");
 			idUser = ((java.math.BigDecimal) em
 					.createNativeQuery(
-							"select AU.ID_SRV "
-									+ "from "
-									+ "AC_USERS_KNL_T au "
-									+ "where AU.LOGIN=? "
-									+ "and (AU.START_ACCOUNT is null or au.START_ACCOUNT <= sysdate) "
-									+ "and (AU.START_ACCOUNT is null or au.START_ACCOUNT > sysdate) "
-									+ "and AU.STATUS = 1 ")
+							(new StringBuilder("select AU.ID_SRV "))
+							  .append("from ")
+							  .append("AC_USERS_KNL_T au ")
+							  .append("where AU.LOGIN=? ")
+							  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT <= sysdate) ")
+							  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT > sysdate) ")
+							  .append("and AU.STATUS = 1 ")
+					.toString())
 					.setParameter(1, login).getSingleResult()).longValue();
 
 			LOGGER.debug("authenticate_login_obo:idUser:"
@@ -227,13 +230,14 @@ public String authenticate_login(String login, String password,
 
 			loginUser = ((String) em
 					.createNativeQuery(
-							"select AU.LOGIN "
-									+ "from "
-									+ "AC_USERS_KNL_T au "
-									+ "where AU.ID_SRV=? "
-									+ "and (AU.START_ACCOUNT is null or au.START_ACCOUNT <= sysdate) "
-									+ "and (AU.START_ACCOUNT is null or au.START_ACCOUNT > sysdate) "
-									+ "and AU.STATUS = 1 ")
+							(new StringBuilder("select AU.LOGIN "))
+							  .append("from ")
+							  .append("AC_USERS_KNL_T au ")
+							  .append("where AU.ID_SRV=? ")
+							  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT <= sysdate) ")
+							  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT > sysdate) ")
+							  .append("and AU.STATUS = 1 ")
+					.toString())
 					.setParameter(1, Long.valueOf(uid)).getSingleResult());
 
 			LOGGER.debug("authenticate_login_obo:loginUser:"
@@ -296,15 +300,16 @@ public String authenticate_login(String login, String password,
 			// с учётом множественности сертификатов
 			dataUser = ((Object[]) em
 					.createNativeQuery(
-							"select AU.ID_SRV, AU.login "
-									+ "from "
-									+ "AC_USERS_KNL_T au, "
-									+ "AC_USERS_CERT_BSS_T auc "
-									+ "where (UPPER(AU.CERTIFICATE)= UPPER(:certNum) or UPPER(AUC.CERT_NUM) = UPPER(:certNum)  ) "
-									+ "and (AU.START_ACCOUNT is null or au.START_ACCOUNT <= sysdate) "
-									+ "and (AU.START_ACCOUNT is null or au.START_ACCOUNT > sysdate) "
-									+ "and AU.STATUS = 1 "
-									+ "and AU.ID_SRV = AUC.UP_USER(+) ")
+							(new StringBuilder("select AU.ID_SRV, AU.login "))
+							  .append("from ")
+							  .append("AC_USERS_KNL_T au, ")
+							  .append("AC_USERS_CERT_BSS_T auc ")
+							  .append("where (UPPER(AU.CERTIFICATE)= UPPER(:certNum) or UPPER(AUC.CERT_NUM) = UPPER(:certNum)  ) ")
+							  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT <= sysdate) ")
+							  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT > sysdate) ")
+							  .append("and AU.STATUS = 1 ")
+							  .append("and AU.ID_SRV = AUC.UP_USER(+) ")
+					.toString())
 					.setParameter("certNum", sn).getSingleResult());
 
 			idUser = ((java.math.BigDecimal) dataUser[0]).longValue();
@@ -397,11 +402,12 @@ public String authenticate_login(String login, String password,
 
 			List<Object[]> lo = em
 					.createNativeQuery(
-							"select ACT.SIGN_OBJECT, ACT.ID_SRV "
-									+ "from ACTIONS_BSS_T act, "
-									+ "AC_IS_BSS_T app "
-									+ "where APP.ID_SRV = ACT.UP_IS "
-									+ "and APP.ID_SRV=?").setParameter(1, idIS)
+							(new StringBuilder("select ACT.SIGN_OBJECT, ACT.ID_SRV "))
+							  .append("from ACTIONS_BSS_T act, ")
+							  .append("AC_IS_BSS_T app ")
+							  .append("where APP.ID_SRV = ACT.UP_IS ")
+							  .append("and APP.ID_SRV=?")
+					.toString()).setParameter(1, idIS)
 					.getResultList();
 			LOGGER.debug("audit:04");
 
@@ -473,8 +479,9 @@ public String authenticate_login(String login, String password,
 					 */
 
 					em.createNativeQuery(
-							"insert into ACTIONS_LOG_KNL_T(ID_SRV,  UP_ACTIONS, UP_USERS, DATE_ACTION, DETAILS_ACTION, created, UP_LOG_ROLES) "
-									+ "values(ACTIONS_LOG_KNL_SEQ.nextval, ?, ?, ?, ?, sysdate, ?) ")
+							(new StringBuilder("insert into ACTIONS_LOG_KNL_T(ID_SRV,  UP_ACTIONS, UP_USERS, DATE_ACTION, DETAILS_ACTION, created, UP_LOG_ROLES) "))
+							  .append("values(ACTIONS_LOG_KNL_SEQ.nextval, ?, ?, ?, ?, sysdate, ?) ")
+							  .toString())
 							.setParameter(1, idFunc)
 							.setParameter(2, idUserSubject)
 							.setParameter(3, func.getDateFunction(),
@@ -516,13 +523,14 @@ public String authenticate_login(String login, String password,
 			LOGGER.debug("change_password:01");
 			idUser = ((java.math.BigDecimal) em
 					.createNativeQuery(
-							"select AU.ID_SRV "
-									+ "from "
-									+ "AC_USERS_KNL_T au "
-									+ "where AU.LOGIN=? "
-									+ "and AU.PASSWORD_=? "
-									+ "and (AU.START_ACCOUNT is null or au.START_ACCOUNT <= sysdate) "
-									+ "and (AU.START_ACCOUNT is null or au.START_ACCOUNT > sysdate) ")
+							(new StringBuilder("select AU.ID_SRV "))
+							  .append("from ")
+							  .append("AC_USERS_KNL_T au ")
+							  .append("where AU.LOGIN=? ")
+							  .append("and AU.PASSWORD_=? ")
+							  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT <= sysdate) ")
+							  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT > sysdate) ")
+					.toString())
 					.setParameter(1, login).setParameter(2, password)
 					.getSingleResult()).longValue();
 
@@ -613,9 +621,10 @@ public String authenticate_login(String login, String password,
 
 					idGrSys = ((java.math.BigDecimal) em
 							.createNativeQuery(
-									"select T1.ID_SRV "
-											+ "from GROUP_SYSTEMS_KNL_T t1 "
-											+ "where T1.GROUP_CODE=? ")
+									(new StringBuilder("select T1.ID_SRV "))
+									  .append("from GROUP_SYSTEMS_KNL_T t1 ")
+									  .append("where T1.GROUP_CODE=? ")
+							.toString())
 							.setParameter(1, codeSys).getSingleResult())
 							.longValue();
 
@@ -624,12 +633,13 @@ public String authenticate_login(String login, String password,
 
 			if (idUser != null && !idUser.equals(-1L)) {
 				em.createNativeQuery(
-						"insert into SERVICES_LOG_KNL_T( "
-								+ "ID_SRV,  UP_SERVICES, DATE_ACTION, CREATED, "
-								+ "input_param, result_value, ip_address, UP_USERS, "
-								+ "UP_SYS, UP_GR_SYS ) "
-								+ "values(SERVICES_LOG_KNL_SEQ.nextval , ?, sysdate, sysdate, "
-								+ "?, ?, ?, ?, ?, ? ) ")
+						(new StringBuilder("insert into SERVICES_LOG_KNL_T( "))
+						  .append("ID_SRV,  UP_SERVICES, DATE_ACTION, CREATED, ")
+						  .append("input_param, result_value, ip_address, UP_USERS, ")
+						  .append("UP_SYS, UP_GR_SYS ) ")
+						  .append("values(SERVICES_LOG_KNL_SEQ.nextval , ?, sysdate, sysdate, ")
+						  .append("?, ?, ?, ?, ?, ? ) ")
+				.toString())
 						.setParameter(1, idServ).setParameter(2, inp_param)
 						.setParameter(3, result).setParameter(4, ip_adr)
 						.setParameter(5, idUser)
@@ -638,12 +648,13 @@ public String authenticate_login(String login, String password,
 						.executeUpdate();
 			} else {
 				em.createNativeQuery(
-						"insert into SERVICES_LOG_KNL_T( "
-								+ "ID_SRV,  UP_SERVICES, DATE_ACTION, CREATED, "
-								+ "input_param, result_value, ip_address, "
-								+ "UP_SYS, UP_GR_SYS ) "
-								+ "values(SERVICES_LOG_KNL_SEQ.nextval , ?, sysdate, sysdate, "
-								+ "?, ?, ?, ?, ? ) ").setParameter(1, idServ)
+						(new StringBuilder("insert into SERVICES_LOG_KNL_T( "))
+						  .append("ID_SRV,  UP_SERVICES, DATE_ACTION, CREATED, ")
+						  .append("input_param, result_value, ip_address, ")
+						  .append("UP_SYS, UP_GR_SYS ) ")
+						  .append("values(SERVICES_LOG_KNL_SEQ.nextval , ?, sysdate, sysdate, ")
+						  .append("?, ?, ?, ?, ? ) ")
+				.toString()).setParameter(1, idServ)
 						.setParameter(2, inp_param).setParameter(3, result)
 						.setParameter(4, ip_adr)
 						.setParameter(5, idSys != null ? idSys : "")
@@ -810,12 +821,13 @@ public String authenticate_login(String login, String password,
 		try {
 			result = ((java.math.BigDecimal) em
 					.createNativeQuery(
-							"select SYS.ID_SRV "
-									+ "from  AC_IS_BSS_T sys, "
-									+ "AC_SUBSYSTEM_CERT_BSS_T subsys "
-									+ "where (SYS.SIGN_OBJECT= :codeSys or  SUBSYS.SUBSYSTEM_CODE= :codeSys) "
-									+ "and  SUBSYS.UP_IS(+) =SYS.ID_SRV "
-									+ "group by SYS.ID_SRV ")
+							(new StringBuilder("select SYS.ID_SRV "))
+							  .append("from  AC_IS_BSS_T sys, ")
+							  .append("AC_SUBSYSTEM_CERT_BSS_T subsys ")
+							  .append("where (SYS.SIGN_OBJECT= :codeSys or  SUBSYS.SUBSYSTEM_CODE= :codeSys) ")
+							  .append("and  SUBSYS.UP_IS(+) =SYS.ID_SRV ")
+							  .append("group by SYS.ID_SRV ")
+					.toString())
 					.setParameter("codeSys", codeSys).getSingleResult())
 					.longValue();
 
@@ -840,12 +852,13 @@ public String authenticate_login(String login, String password,
 		try {
 			result = ((java.math.BigDecimal) em
 					.createNativeQuery(
-							"select AU.ID_SRV "
-									+ "from "
-									+ "AC_USERS_KNL_T au "
-									+ "where AU.LOGIN=? "
-									+ "and (AU.START_ACCOUNT is null or au.START_ACCOUNT <= sysdate) "
-									+ "and (AU.START_ACCOUNT is null or au.START_ACCOUNT > sysdate) ")
+							(new StringBuilder("select AU.ID_SRV "))
+							  .append("from ")
+							  .append("AC_USERS_KNL_T au ")
+							  .append("where AU.LOGIN=? ")
+							  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT <= sysdate) ")
+							  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT > sysdate) ")
+					.toString())
 					.setParameter(1, login).getSingleResult()).longValue();
 
 		} catch (NoResultException ex) {

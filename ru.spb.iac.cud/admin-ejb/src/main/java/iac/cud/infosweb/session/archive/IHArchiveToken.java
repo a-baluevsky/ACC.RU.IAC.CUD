@@ -150,9 +150,10 @@ import org.apache.log4j.Logger;
 
 			List<String> losTkn = em
 					.createNativeQuery(
-							"select ST.VALUE_PARAM "
-									+ "from SETTINGS_KNL_T st "
-									+ "where ST.SIGN_OBJECT=? ")
+							(new StringBuilder("select ST.VALUE_PARAM "))
+							  .append("from SETTINGS_KNL_T st ")
+							  .append("where ST.SIGN_OBJECT=? ")
+							  .toString())
 					.setParameter(1, param_code).getResultList();
 
 			if (losTkn != null && !losTkn.isEmpty()) {
@@ -168,13 +169,15 @@ import org.apache.log4j.Logger;
 
 			List<Object[]> loTkn = em
 					.createNativeQuery(
-							"select to_char(tt.CREATED , 'YYYY_MM') vdate, TT.ID_SRV, TT.UP_USERS, TT.SIGN_OBJECT, "
-									+ "to_char(tt.CREATED,'DD.MM.YYYY HH24:MI:SS') CREATED, UP_SERVICE "
-									+ "from TOKEN_KNL_T tt "
-									+ "where tt.CREATED < to_date('01.'||to_char(SYSDATE - INTERVAL '"
-									+ monthInterval
-									+ "' month, 'MM.YYYY'),'DD.MM.YYYY')  "
-									+ "order by tt.CREATED ")
+							(new StringBuilder("select to_char(tt.CREATED , 'YYYY_MM') vdate, TT.ID_SRV, TT.UP_USERS, TT.SIGN_OBJECT, "))
+							  .append("to_char(tt.CREATED,'DD.MM.YYYY HH24:MI:SS') CREATED, UP_SERVICE ")
+							  .append("from TOKEN_KNL_T tt ")
+							  .append("where tt.CREATED < to_date('01.'||to_char(SYSDATE - INTERVAL '")
+					
+								.append( monthInterval)
+								  .append("' month, 'MM.YYYY'),'DD.MM.YYYY')  ")
+								  .append("order by tt.CREATED ")
+									.toString())
 					.getResultList();
 			log.info("IHArchiveToken:process_start_content:02");
 
@@ -227,10 +230,13 @@ import org.apache.log4j.Logger;
 			}
 
 			em.createNativeQuery(
-					"delete from TOKEN_KNL_T tt "
-							+ "where tt.CREATED < to_date('01.'||to_char(SYSDATE - INTERVAL '"
-							+ monthInterval
-							+ "' month, 'MM.YYYY'),'DD.MM.YYYY') ")
+					(new StringBuilder("delete from TOKEN_KNL_T tt "))
+					  .append("where tt.CREATED < to_date('01.'||to_char(SYSDATE - INTERVAL '")
+			
+							  .append(monthInterval)
+							  .append("' month, 'MM.YYYY'),'DD.MM.YYYY') ")
+							
+							.toString())
 					.executeUpdate();
 
 			utx.commit();

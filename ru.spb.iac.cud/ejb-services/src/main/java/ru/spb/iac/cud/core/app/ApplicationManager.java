@@ -96,9 +96,10 @@ import ru.spb.iac.cud.util.TIDEncode;
 			LOGGER.debug("system_registration:number:" + number);
 
 			em.createNativeQuery(
-					"insert into JOURN_APP_SYSTEM_BSS_T (ID_SRV, FULL_NAME, SHORT_NAME, "
-							+ "DESCRIPTION, UP_USER, SECRET) "
-							+ " values ( ?, ?, ?, ?, ?, ? ) ")
+					(new StringBuilder("insert into JOURN_APP_SYSTEM_BSS_T (ID_SRV, FULL_NAME, SHORT_NAME, "))
+					  .append("DESCRIPTION, UP_USER, SECRET) ")
+					  .append(" values ( ?, ?, ?, ?, ?, ? ) ")
+			.toString())
 					.setParameter(1, number).setParameter(2, fullNameSystem)
 					.setParameter(3, shortNameSystem)
 					.setParameter(4, descriptionSystem).setParameter(5, idUser)
@@ -187,11 +188,12 @@ import ru.spb.iac.cud.util.TIDEncode;
 			LOGGER.debug("user_registration:number:" + number);
 
 			em.createNativeQuery(
-					"insert into JOURN_APP_USER_BSS_T (ID_SRV, SURNAME_USER, NAME_USER, PATRONYMIC_USER, "
-							+ "SIGN_USER, POSITION_USER, EMAIL_USER, PHONE_USER, "
-							+ "CERTIFICATE_USER, NAME_DEPARTAMENT, NAME_ORG, SIGN_ORG, "
-							+ "UP_USER, SECRET ) "
-							+ " values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ")
+					(new StringBuilder("insert into JOURN_APP_USER_BSS_T (ID_SRV, SURNAME_USER, NAME_USER, PATRONYMIC_USER, "))
+					  .append("SIGN_USER, POSITION_USER, EMAIL_USER, PHONE_USER, ")
+					  .append("CERTIFICATE_USER, NAME_DEPARTAMENT, NAME_ORG, SIGN_ORG, ")
+					  .append("UP_USER, SECRET ) ")
+					  .append(" values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ")
+			.toString())
 					.setParameter(1, number).setParameter(2, surnameUser)
 					.setParameter(3, nameUser).setParameter(4, patronymicUser)
 					.setParameter(5, iogvCodeUser)
@@ -382,10 +384,11 @@ import ru.spb.iac.cud.util.TIDEncode;
 			resultAcRs.setSecret(secret);
 
 			em.createNativeQuery(
-					"insert into JOURN_APP_ACCESS_BSS_T (ID_SRV,  LOGIN_USER, CODE_SYSTEM, "
-							+ "UP_USER_APP, UP_IS_APP, "
-							+ "UP_USER, SECRET, MODE_EXEC) "
-							+ " values ( ?, ?, ?, ?, ?, ?, ?, ? ) ")
+					(new StringBuilder("insert into JOURN_APP_ACCESS_BSS_T (ID_SRV,  LOGIN_USER, CODE_SYSTEM, "))
+					  .append("UP_USER_APP, UP_IS_APP, ")
+					  .append("UP_USER, SECRET, MODE_EXEC) ")
+					  .append(" values ( ?, ?, ?, ?, ?, ?, ?, ? ) ")
+			.toString())
 					.setParameter(1, number)
 					.setParameter(2, "-"/* loginUser */)
 					.setParameter(3, codeSystem).setParameter(4, idUserApp)
@@ -491,10 +494,11 @@ import ru.spb.iac.cud.util.TIDEncode;
 			result.setSecret(secret);
 
 			em.createNativeQuery(
-					"insert into JOURN_APP_ACCESS_GROUPS_BSS_T (ID_SRV, "
-							+ "UP_USER_APP, UP_IS_APP, "
-							+ "UP_USER, SECRET, MODE_EXEC) "
-							+ " values ( ?, ?, ?, ?, ?, ? ) ")
+					(new StringBuilder("insert into JOURN_APP_ACCESS_GROUPS_BSS_T (ID_SRV, "))
+					  .append("UP_USER_APP, UP_IS_APP, ")
+					  .append("UP_USER, SECRET, MODE_EXEC) ")
+					  .append(" values ( ?, ?, ?, ?, ?, ? ) ")
+			.toString())
 					.setParameter(1, number).setParameter(2, idUserApp)
 					.setParameter(3, idSystemApp).setParameter(4, idUser)
 					.setParameter(5, secret).setParameter(6, mode)
@@ -505,8 +509,9 @@ import ru.spb.iac.cud.util.TIDEncode;
 				idGroupApp = group_exist(idSystemApp, group);
 
 				em.createNativeQuery(
-						"insert into GROUPS_APP_ACCESS_GR_BSS_T (ID_SRV, UP_APP_ACC_GR, UP_GROUP ) "
-								+ " values (GROUPS_APP_ACCESS_GR_SEQ.nextval, ?, ? ) ")
+						(new StringBuilder("insert into GROUPS_APP_ACCESS_GR_BSS_T (ID_SRV, UP_APP_ACC_GR, UP_GROUP ) "))
+						  .append(" values (GROUPS_APP_ACCESS_GR_SEQ.nextval, ?, ? ) ")
+				.toString())
 						.setParameter(1, number).setParameter(2, idGroupApp)
 						.executeUpdate();
 
@@ -592,9 +597,10 @@ import ru.spb.iac.cud.util.TIDEncode;
 			}
 
 			em.createNativeQuery(
-					"insert into JOURN_APP_BLOCK_BSS_T (ID_SRV, LOGIN_USER, UP_USER_APP, "
-							+ "BLOCK_REASON, MODE_EXEC, UP_USER, SECRET) "
-							+ "values ( ?, ?, ?, ?, ?, ?, ? ) ")
+					(new StringBuilder("insert into JOURN_APP_BLOCK_BSS_T (ID_SRV, LOGIN_USER, UP_USER_APP, "))
+					  .append("BLOCK_REASON, MODE_EXEC, UP_USER, SECRET) ")
+					  .append("values ( ?, ?, ?, ?, ?, ?, ? ) ")
+			.toString())
 					.setParameter(1, number)
 					.setParameter(2, "-"/* loginUser */)
 					.setParameter(3, idUserApp).setParameter(4, blockReason)
@@ -682,10 +688,11 @@ import ru.spb.iac.cud.util.TIDEncode;
 			result.setSecret(secret);
 
 			em.createNativeQuery(
-					"insert into JOURN_APP_SYSTEM_MODIFY_BSS_T (ID_SRV, CODE_SYSTEM, "
-							+ "FULL_NAME, SHORT_NAME, DESCRIPTION, REG_NUMBER, "
-							+ "UP_IS_APP, UP_USER, SECRET ) "
-							+ " values ( ?, ?, ?, ?, ?, ?, ?, ?, ? ) ")
+					(new StringBuilder("insert into JOURN_APP_SYSTEM_MODIFY_BSS_T (ID_SRV, CODE_SYSTEM, "))
+					  .append("FULL_NAME, SHORT_NAME, DESCRIPTION, REG_NUMBER, ")
+					  .append("UP_IS_APP, UP_USER, SECRET ) ")
+					  .append(" values ( ?, ?, ?, ?, ?, ?, ?, ?, ? ) ")
+			.toString())
 					.setParameter(1, number)
 					.setParameter(2, codeSystem)
 					.setParameter(
@@ -894,12 +901,13 @@ import ru.spb.iac.cud.util.TIDEncode;
 				if (rejectReason == null) {
 
 					em.createNativeQuery(
-							"insert into JOURN_APP_USER_MODIFY_BSS_T (ID_SRV, LOGIN_USER, "
-									+ "SURNAME_USER, NAME_USER, PATRONYMIC_USER, "
-									+ "SIGN_USER, POSITION_USER, EMAIL_USER, PHONE_USER, "
-									+ "CERTIFICATE_USER, NAME_DEPARTAMENT, "
-									+ "UP_USER_APP, UP_USER, SECRET ) "
-									+ " values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ")
+							(new StringBuilder("insert into JOURN_APP_USER_MODIFY_BSS_T (ID_SRV, LOGIN_USER, "))
+							  .append("SURNAME_USER, NAME_USER, PATRONYMIC_USER, ")
+							  .append("SIGN_USER, POSITION_USER, EMAIL_USER, PHONE_USER, ")
+							  .append("CERTIFICATE_USER, NAME_DEPARTAMENT, ")
+							  .append("UP_USER_APP, UP_USER, SECRET ) ")
+							  .append(" values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ")
+					.toString())
 							.setParameter(1, number)
 							.setParameter(2, "-"/* loginUser */)
 							.setParameter(
@@ -945,12 +953,13 @@ import ru.spb.iac.cud.util.TIDEncode;
 
 				} else {
 					em.createNativeQuery(
-							"insert into JOURN_APP_USER_MODIFY_BSS_T (ID_SRV, LOGIN_USER, "
-									+ "SURNAME_USER, NAME_USER, PATRONYMIC_USER, "
-									+ "SIGN_USER, POSITION_USER, EMAIL_USER, PHONE_USER, "
-									+ "CERTIFICATE_USER, NAME_DEPARTAMENT, "
-									+ "UP_USER_APP, UP_USER, SECRET, STATUS, REJECT_REASON ) "
-									+ " values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ")
+							(new StringBuilder("insert into JOURN_APP_USER_MODIFY_BSS_T (ID_SRV, LOGIN_USER, "))
+							  .append("SURNAME_USER, NAME_USER, PATRONYMIC_USER, ")
+							  .append("SIGN_USER, POSITION_USER, EMAIL_USER, PHONE_USER, ")
+							  .append("CERTIFICATE_USER, NAME_DEPARTAMENT, ")
+							  .append("UP_USER_APP, UP_USER, SECRET, STATUS, REJECT_REASON ) ")
+							  .append(" values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ")
+					.toString())
 							.setParameter(1, number)
 							.setParameter(2, "-"/* loginUser */)
 							.setParameter(
@@ -1065,9 +1074,10 @@ import ru.spb.iac.cud.util.TIDEncode;
 			result.setSecret(secret);
 
 			em.createNativeQuery(
-					"insert into JOURN_APP_USER_ACCMODIFY_BSS_T (ID_SRV, LOGIN_USER, PASS_USER, "
-							+ "UP_USER_APP, UP_USER, SECRET ) "
-							+ " values ( ?, ?, ?, ?, ?, ? ) ")
+					(new StringBuilder("insert into JOURN_APP_USER_ACCMODIFY_BSS_T (ID_SRV, LOGIN_USER, PASS_USER, "))
+					  .append("UP_USER_APP, UP_USER, SECRET ) ")
+					  .append(" values ( ?, ?, ?, ?, ?, ? ) ")
+			.toString())
 					.setParameter(1, number).setParameter(2, login)
 					.setParameter(3, password).setParameter(4, idUserApp)
 					.setParameter(5, idUser).setParameter(6, secret)
@@ -1308,15 +1318,16 @@ import ru.spb.iac.cud.util.TIDEncode;
 
 			idUserUm = ((java.math.BigDecimal) em
 					.createNativeQuery(
-							"select AU.ID_SRV "
-									+ "from "
-									+ "AC_USERS_KNL_T au "
-									+ "where AU.CERTIFICATE=? "
-									+ "and (AU.START_ACCOUNT is null or au.START_ACCOUNT <= sysdate) "
-									+ "and (AU.START_ACCOUNT is null or au.START_ACCOUNT > sysdate) "
-									+
+							(new StringBuilder("select AU.ID_SRV "))
+							  .append("from ")
+							  .append("AC_USERS_KNL_T au ")
+							  .append("where AU.CERTIFICATE=? ")
+							  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT <= sysdate) ")
+							  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT > sysdate) ")
+
 									// "and AU.STATUS != 2 ")
-									"and AU.STATUS = 1 ")
+									  .append("and AU.STATUS = 1 ")
+									.toString())
 					.setParameter(1, principal).getSingleResult()).longValue();
 
 			LOGGER.debug("principal_exist:idUser:" + idUserUm);

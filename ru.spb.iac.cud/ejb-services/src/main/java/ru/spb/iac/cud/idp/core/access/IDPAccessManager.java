@@ -381,29 +381,30 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 
 				result = (List<String>) em
 						.createNativeQuery(
-								" select '['||sys_full.SIGN_OBJECT||']' || '['||sys_full.FULL_||']' || '['|| sys_full.LINKS ||']' "
-										+ "                         from AC_IS_BSS_T sys_full, (   "
-										+ "                         select SYS.ID_SRV sys_id  "
-										+ "                         from GROUP_SYSTEMS_KNL_T gsys,   "
-										+ "                         AC_IS_BSS_T sys,   "
-										+ "                          AC_ROLES_BSS_T rol,   "
-										+ "                          LINK_GROUP_SYS_SYS_KNL_T lgr,   "
-										+ "                          LINK_GROUP_USERS_ROLES_KNL_T lugr,   "
-										+ "                          LINK_GROUP_USERS_USERS_KNL_T lugu,   "
-										+ "                          AC_USERS_LINK_KNL_T url,   "
-										+ "                          AC_USERS_KNL_T AU    "
-										+ "                         where GSYS.GROUP_CODE=:idIs   "
-										+ "                         and GSYS.ID_SRV=LGR.UP_GROUP_SYSTEMS   "
-										+ "                         and LGR.UP_SYSTEMS=SYS.ID_SRV   "
-										+ "                         and ROL.UP_IS= SYS.ID_SRV   "
-										+ "                         and (ROL.ID_SRV = URL.UP_ROLES or ROL.ID_SRV = LUGR.UP_ROLES )   "
-										+ "                         and LUGU.UP_GROUP_USERS = LUGR.UP_GROUP_USERS(+)   "
-										+ "                         and LUGU.UP_USERS(+)  = AU.ID_SRV   "
-										+ "                         and URL.UP_USERS(+)  = AU.ID_SRV   "
-										+ "                         and AU.LOGIN= :login    "
-										+ "                         group by SYS.ID_SRV )   t1 "
-										+ "                          where t1.sys_id = SYS_FULL.ID_SRV "
-										+ "                         order by sys_full.SIGN_OBJECT")
+								(new StringBuilder(" select '['||sys_full.SIGN_OBJECT||']' || '['||sys_full.FULL_||']' || '['|| sys_full.LINKS ||']' "))
+								  .append("                         from AC_IS_BSS_T sys_full, (   ")
+								  .append("                         select SYS.ID_SRV sys_id  ")
+								  .append("                         from GROUP_SYSTEMS_KNL_T gsys,   ")
+								  .append("                         AC_IS_BSS_T sys,   ")
+								  .append("                          AC_ROLES_BSS_T rol,   ")
+								  .append("                          LINK_GROUP_SYS_SYS_KNL_T lgr,   ")
+								  .append("                          LINK_GROUP_USERS_ROLES_KNL_T lugr,   ")
+								  .append("                          LINK_GROUP_USERS_USERS_KNL_T lugu,   ")
+								  .append("                          AC_USERS_LINK_KNL_T url,   ")
+								  .append("                          AC_USERS_KNL_T AU    ")
+								  .append("                         where GSYS.GROUP_CODE=:idIs   ")
+								  .append("                         and GSYS.ID_SRV=LGR.UP_GROUP_SYSTEMS   ")
+								  .append("                         and LGR.UP_SYSTEMS=SYS.ID_SRV   ")
+								  .append("                         and ROL.UP_IS= SYS.ID_SRV   ")
+								  .append("                         and (ROL.ID_SRV = URL.UP_ROLES or ROL.ID_SRV = LUGR.UP_ROLES )   ")
+								  .append("                         and LUGU.UP_GROUP_USERS = LUGR.UP_GROUP_USERS(+)   ")
+								  .append("                         and LUGU.UP_USERS(+)  = AU.ID_SRV   ")
+								  .append("                         and URL.UP_USERS(+)  = AU.ID_SRV   ")
+								  .append("                         and AU.LOGIN= :login    ")
+								  .append("                         group by SYS.ID_SRV )   t1 ")
+								  .append("                          where t1.sys_id = SYS_FULL.ID_SRV ")
+								  .append("                         order by sys_full.SIGN_OBJECT")
+						.toString())
 						.setParameter("idIs", domain)
 						.setParameter("login", login).getResultList();
 
@@ -425,10 +426,11 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 		LOGGER.debug("saveTokenID:01");
 		
 		em.createNativeQuery(
-				 "insert into TOKEN_KNL_T "
-				 + "(ID_SRV, UP_USERS, SIGN_OBJECT,  CREATED ) "
-				 + "values "
-				 + "(TOKEN_KNL_SEQ.nextval, ?, ?, sysdate) ")
+				 (new StringBuilder("insert into TOKEN_KNL_T "))
+				   .append("(ID_SRV, UP_USERS, SIGN_OBJECT,  CREATED ) ")
+				   .append("values ")
+				   .append("(TOKEN_KNL_SEQ.nextval, ?, ?, sysdate) ")
+				 .toString())
 				 .setParameter(1, userID)
 				 .setParameter(2, tokenID)
 				 .executeUpdate();
