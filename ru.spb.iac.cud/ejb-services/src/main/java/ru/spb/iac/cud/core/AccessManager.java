@@ -424,33 +424,35 @@ public String authenticate_login(String login, String password,
 			String idRec =(String) em.createNativeQuery("select to_char(ACTIONS_LOG_ROLES_KNL_SEQ.nextval) sgnc from dual").getSingleResult();
 		      
 			em.createNativeQuery(
-					"insert into ACTIONS_LOG_ROLES_KNL_T(ID_SRV, ROLES_NAMES, ROLES_CODES, created)  " + 
-					"select  :idRec ,  " + 
-					"t1.names, t1.codes, sysdate " + 
-					"from( " + 
-					"select " + 
-					"     rtrim( xmlserialize(content  extract( xmlagg(xmlelement(\"e\", t1_roles. role_name ||chr(13)) order by role_name)  , '//text()' ) )  , ','  ) names, " + 
-					"        rtrim( xmlserialize(content  extract( xmlagg(xmlelement(\"e\", t1_roles. role_code ||chr(13)) order by  role_name)  , '//text()' ) )  , ','  ) codes, " + 
-					"          sysdate " + 
-					"from( " + 
-					"select  ROL.FULL_ role_name , ROL.SIGN_OBJECT role_code " + 
-					"                                        from  AC_IS_BSS_T sys,  " + 
-					"                                                 AC_ROLES_BSS_T rol,  " + 
-					"                                                 AC_USERS_LINK_KNL_T url,  " + 
-					"                                                 AC_USERS_KNL_T AU,  " + 
-					"                                                 AC_SUBSYSTEM_CERT_BSS_T subsys,  " + 
-					"                                                 LINK_GROUP_USERS_ROLES_KNL_T lugr,  " + 
-					"                                                 LINK_GROUP_USERS_USERS_KNL_T lugu  " + 
-					"                                        where (SYS.SIGN_OBJECT= :codeSys or  SUBSYS.SUBSYSTEM_CODE= :codeSys )  " + 
-					"                                              and (ROL.ID_SRV = URL.UP_ROLES or ROL.ID_SRV = LUGR.UP_ROLES )  " + 
-					"                                              and LUGU.UP_GROUP_USERS= LUGR.UP_GROUP_USERS(+)  " + 
-					"                                              and LUGU.UP_USERS(+)  = AU.ID_SRV  " + 
-					"                                              and URL.UP_USERS(+)  = AU.ID_SRV  " + 
-					"                                              and ROL.UP_IS=sys.ID_SRV  " + 
-					"                                              and AU. ID_SRV = :idUserSubject " + 
-					"                                              and  SUBSYS.UP_IS(+) =SYS.ID_SRV  " + 
-					"                                        group by  ROL.FULL_, ROL.SIGN_OBJECT  " + 
-					"                                        ) t1_roles) t1")
+					(new StringBuilder("insert into ACTIONS_LOG_ROLES_KNL_T(ID_SRV, ROLES_NAMES, ROLES_CODES, created)  "))
+					  .append("select  :idRec ,  ") 
+					  .append("t1.names, t1.codes, sysdate ") 
+					  .append("from( ") 
+					  .append("select ")
+					  .append("     rtrim( xmlserialize(content  extract( xmlagg(xmlelement(\"e\", t1_roles. role_name ||chr(13)) order by role_name)  , '//text()' ) )  , ','  ) names, " )
+					  .append("        rtrim( xmlserialize(content  extract( xmlagg(xmlelement(\"e\", t1_roles. role_code ||chr(13)) order by  role_name)  , '//text()' ) )  , ','  ) codes, ") 
+					  .append("          sysdate ") 
+					  .append("from( ") 
+					  .append("select  ROL.FULL_ role_name , ROL.SIGN_OBJECT role_code ") 
+					  .append("                                        from  AC_IS_BSS_T sys,  ") 
+					  .append("                                                 AC_ROLES_BSS_T rol,  ") 
+					  .append("                                                 AC_USERS_LINK_KNL_T url,  ") 
+					  .append("                                                 AC_USERS_KNL_T AU,  ") 
+					  .append("                                                 AC_SUBSYSTEM_CERT_BSS_T subsys,  ") 
+					  .append("                                                 LINK_GROUP_USERS_ROLES_KNL_T lugr,  ") 
+					  .append("                                                 LINK_GROUP_USERS_USERS_KNL_T lugu  ") 
+					  .append("                                        where (SYS.SIGN_OBJECT= :codeSys or  SUBSYS.SUBSYSTEM_CODE= :codeSys )  ") 
+					  .append("                                              and (ROL.ID_SRV = URL.UP_ROLES or ROL.ID_SRV = LUGR.UP_ROLES )  ") 
+					  .append("                                              and LUGU.UP_GROUP_USERS= LUGR.UP_GROUP_USERS(+)  ") 
+					  .append("                                              and LUGU.UP_USERS(+)  = AU.ID_SRV  ") 
+					  .append("                                              and URL.UP_USERS(+)  = AU.ID_SRV  ") 
+					  .append("                                              and ROL.UP_IS=sys.ID_SRV  ") 
+					  .append("                                              and AU. ID_SRV = :idUserSubject ") 
+					  .append("                                              and  SUBSYS.UP_IS(+) =SYS.ID_SRV  ") 
+					  .append("                                        group by  ROL.FULL_, ROL.SIGN_OBJECT  ") 
+					  .append("                                        ) t1_roles) t1")
+					
+					.toString())
 					.setParameter("idRec", Long.valueOf(idRec))
 					.setParameter("idUserSubject", idUserSubject)
 					.setParameter("codeSys", codeSys)

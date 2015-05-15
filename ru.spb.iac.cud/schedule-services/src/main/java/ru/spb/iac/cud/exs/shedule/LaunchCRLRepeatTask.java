@@ -1,7 +1,9 @@
 package ru.spb.iac.cud.exs.shedule;
 
 import java.io.BufferedInputStream;
-import java.io.Closeable;
+
+import javaw.io.Closeable;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -99,19 +101,6 @@ import ru.spb.iac.cud.exs.config.Configuration;
 		}, start, 24 * 60 * 60 * 1000, TimeUnit.MILLISECONDS);
 	}
 
-	private void closeSafe(String contextMsg, Closeable f) {
-		if(f!=null)
-			try {
-				f.close();
-			} catch (IOException e) {
-				LOGGER.error(contextMsg, e);
-			}
-	}
-	private void closeSafe(String contextMsg, Closeable f1, Closeable f2) {
-		closeSafe(contextMsg, f1);
-		closeSafe(contextMsg, f2);
-	}
-	
 	public String content() {
 		OutputStream output = null;
 		BufferedInputStream in = null;
@@ -150,7 +139,10 @@ import ru.spb.iac.cud.exs.config.Configuration;
 		} catch (Exception e) {
 			LOGGER.error("content:error:", e);
 		} finally {
-			closeSafe("content:finally:is:error:", in, output);
+			String[] errMsg = new String[]{"close failed"};
+			if(!Closeable.Close(errMsg, in, output)) {
+				LOGGER.error("content:finally:is:error:", errMsg);
+			}			
 		}
 
 		return file_name;
@@ -196,16 +188,9 @@ import ru.spb.iac.cud.exs.config.Configuration;
 		} catch (Exception e) {
 			LOGGER.error("set_reestr:error:", e);
 		} finally {
-			try {
-				if (is != null) {
-					is.close();
-				}
-				if (os != null) {
-					os.close();
-				}
-
-			} catch (Exception e) {
-				LOGGER.error("set_reestr:finally:is:error:", e);
+			String[] errMsg = new String[]{"close failed"};
+			if(!Closeable.Close(errMsg, is, os)) {
+				LOGGER.error("set_reestr:finally:finally::error:", errMsg);
 			}
 		}
 	}
@@ -230,7 +215,10 @@ import ru.spb.iac.cud.exs.config.Configuration;
 		} catch (Exception e) {
 			LOGGER.error("initTask:error:", e);
 		} finally {
-			closeSafe("initTask:finally:is:error:", is);
+			String[] errMsg = new String[]{"close failed"};
+			if(!Closeable.Close(errMsg, is)) {
+				LOGGER.error("initTask:finally:is:error:", errMsg);
+			}			
 		}
 		return result;
 	}

@@ -104,61 +104,62 @@ import org.jboss.seam.faces.FacesMessages;
                
 
              lo=new ArrayList<Object[]>(entityManager.createNativeQuery(
-                     "select t1.t1_id, t1.t1_created, t1.t1_status, t1_org_name,  t1_user_fio, t1_reject_reason, t1_comment, "+
-                             "t1_SURNAME_USER, "+
-                             "t1_NAME_USER, "+
-                             "t1_PATRONYMIC_USER, "+
-                             "t1_SIGN_USER, "+ 
-                             "t1_POSITION_USER, "+
-                             "t1_EMAIL_USER, "+ 
-                             "t1_PHONE_USER, "+
-                             "t1_CERTIFICATE_USER, "+ 
-                             "t1_NAME_DEPARTAMENT, "+ 
-                             "t1_NAME_ORG, "+ 
-                             "t1_SIGN_ORG, "+
-                         "t1_user_id, t1_user_login, " +
-                         "t1_comment_app "+
-                         "from( "+ 
-                        "select JAS.ID_SRV t1_id, JAS.CREATED t1_created, "+
-                             "JAS.SURNAME_USER t1_SURNAME_USER, "+
-                             "JAS.NAME_USER t1_NAME_USER, "+
-                             "JAS.PATRONYMIC_USER t1_PATRONYMIC_USER, "+
-                             "JAS.SIGN_USER t1_SIGN_USER, "+
-                             "JAS.POSITION_USER t1_POSITION_USER, "+
-                             "JAS.EMAIL_USER t1_EMAIL_USER, "+ 
-                             "JAS.PHONE_USER t1_PHONE_USER, "+
-                             "JAS.CERTIFICATE_USER t1_CERTIFICATE_USER, "+ 
-                             "JAS.NAME_DEPARTAMENT t1_NAME_DEPARTAMENT, "+ 
-                             "JAS.NAME_ORG t1_NAME_ORG, "+ 
-                             "JAS.SIGN_ORG t1_SIGN_ORG, "+
-                             "JAS.STATUS t1_status,  CL_ORG_FULL.FULL_ t1_org_name, "+
-                         "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_user_fio, "+
-                         "JAS.REJECT_REASON t1_reject_reason, "+ 
-                         "au_APP.ID_SRV t1_user_id, AU_APP.LOGIN t1_user_login, " +
-                         "JAS.COMMENT_ t1_comment, " +
-                         "JAS.COMMENT_APP t1_comment_app "+
-                        "from JOURN_APP_USER_BSS_T jas, "+
-                          "AC_USERS_KNL_T au_FULL, "+  
-                           "ISP_BSS_T cl_org_full, "+
-                            "ISP_BSS_T cl_usr_full, "+
-                             "AC_USERS_KNL_T au_APP, "+
-                         "(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE "+ 
-                           "from ISP_BSS_T cl_org "+
-                           "where  CL_ORG.SIGN_OBJECT LIKE '%00000' "+
-                           "group by CL_ORG.SIGN_OBJECT) t03, "+
-                            "(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "+ 
-                                       "from ISP_BSS_T cl_usr "+
-                                       "where CL_USR.FIO is not null "+
-                                       "group by CL_usr.SIGN_OBJECT) t02 "+  
-                          "where JAS.UP_USER=AU_FULL.ID_SRV(+) "+
-                           "and AU_FULL.UP_SIGN=t03.CL_ORG_CODE(+) "+
-                           "and CL_ORG_FULL.ID_SRV(+)=t03.CL_ORG_ID "+
-                           "and AU_FULL.UP_SIGN_USER=t02.CL_USR_CODE(+) "+
-                           "and CL_USR_FULL.ID_SRV(+)=t02.CL_USR_ID "+
-                          "and au_APP.ID_SRV(+) =JAS.UP_USER_APP "+
-                          ") t1"+
-                         (st!=null ? " where "+st :" ")+
-                         (orderQuery!=null ? orderQuery+", t1_id desc " : " order by t1_id desc "))
+                     (new StringBuilder("select t1.t1_id, t1.t1_created, t1.t1_status, t1_org_name,  t1_user_fio, t1_reject_reason, t1_comment, "))
+                     .append("t1_SURNAME_USER, ")
+                     .append("t1_NAME_USER, ")
+                     .append("t1_PATRONYMIC_USER, ")
+                     .append("t1_SIGN_USER, ")
+                     .append("t1_POSITION_USER, ")
+                     .append("t1_EMAIL_USER, ")
+                     .append("t1_PHONE_USER, ")
+                     .append("t1_CERTIFICATE_USER, ")
+                     .append("t1_NAME_DEPARTAMENT, ")
+                     .append("t1_NAME_ORG, ")
+                     .append("t1_SIGN_ORG, ")
+                 .append("t1_user_id, t1_user_login, ") 
+                 .append("t1_comment_app ")
+                 .append("from( ")
+                .append("select JAS.ID_SRV t1_id, JAS.CREATED t1_created, ")
+                     .append("JAS.SURNAME_USER t1_SURNAME_USER, ")
+                     .append("JAS.NAME_USER t1_NAME_USER, ")
+                     .append("JAS.PATRONYMIC_USER t1_PATRONYMIC_USER, ")
+                     .append("JAS.SIGN_USER t1_SIGN_USER, ")
+                     .append("JAS.POSITION_USER t1_POSITION_USER, ")
+                     .append("JAS.EMAIL_USER t1_EMAIL_USER, ")
+                     .append("JAS.PHONE_USER t1_PHONE_USER, ")
+                     .append("JAS.CERTIFICATE_USER t1_CERTIFICATE_USER, ")
+                     .append("JAS.NAME_DEPARTAMENT t1_NAME_DEPARTAMENT, ")
+                     .append("JAS.NAME_ORG t1_NAME_ORG, ")
+                     .append("JAS.SIGN_ORG t1_SIGN_ORG, ")
+                     .append("JAS.STATUS t1_status,  CL_ORG_FULL.FULL_ t1_org_name, ")
+                 .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_user_fio, ")
+                 .append("JAS.REJECT_REASON t1_reject_reason, ")
+                 .append("au_APP.ID_SRV t1_user_id, AU_APP.LOGIN t1_user_login, ") 
+                 .append("JAS.COMMENT_ t1_comment, ") 
+                 .append("JAS.COMMENT_APP t1_comment_app ")
+                .append("from JOURN_APP_USER_BSS_T jas, ")
+                  .append("AC_USERS_KNL_T au_FULL, ")
+                   .append("ISP_BSS_T cl_org_full, ")
+                    .append("ISP_BSS_T cl_usr_full, ")
+                     .append("AC_USERS_KNL_T au_APP, ")
+                 .append("(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE ")
+                   .append("from ISP_BSS_T cl_org ")
+                   .append("where  CL_ORG.SIGN_OBJECT LIKE '%00000' ")
+                   .append("group by CL_ORG.SIGN_OBJECT) t03, ")
+                    .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
+                               .append("from ISP_BSS_T cl_usr ")
+                               .append("where CL_USR.FIO is not null ")
+                               .append("group by CL_usr.SIGN_OBJECT) t02 ")
+                  .append("where JAS.UP_USER=AU_FULL.ID_SRV(+) ")
+                   .append("and AU_FULL.UP_SIGN=t03.CL_ORG_CODE(+) ")
+                   .append("and CL_ORG_FULL.ID_SRV(+)=t03.CL_ORG_ID ")
+                   .append("and AU_FULL.UP_SIGN_USER=t02.CL_USR_CODE(+) ")
+                   .append("and CL_USR_FULL.ID_SRV(+)=t02.CL_USR_ID ")
+                  .append("and au_APP.ID_SRV(+) =JAS.UP_USER_APP ")
+                  .append(") t1")
+		           .append(st!=null ? " where "+st :" ")
+		           .append(orderQuery!=null ? orderQuery+", t1_id desc " : " order by t1_id desc ")
+                         .toString())
                          .setFirstResult(firstRow)
                          .setMaxResults(numberOfRows)
                          .getResultList());
@@ -220,46 +221,47 @@ import org.jboss.seam.faces.FacesMessages;
 			
 				
 				 auditCount = ((java.math.BigDecimal)entityManager.createNativeQuery(
-						 "select count(*) " +
-							"from( "+ 
-				             "select JAS.ID_SRV t1_id, JAS.CREATED t1_created, "+
-				                  "JAS.SURNAME_USER t1_SURNAME_USER, "+
-				                  "JAS.NAME_USER t1_NAME_USER, "+
-				                  "JAS.PATRONYMIC_USER t1_PATRONYMIC_USER, "+
-				                  "JAS.SIGN_USER t1_SIGN_USER, "+
-				                  "JAS.POSITION_USER t1_POSITION_USER, "+
-				                  "JAS.EMAIL_USER t1_EMAIL_USER, "+ 
-				                  "JAS.PHONE_USER t1_PHONE_USER, "+
-				                  "JAS.CERTIFICATE_USER t1_CERTIFICATE_USER, "+ 
-				                  "JAS.NAME_DEPARTAMENT t1_NAME_DEPARTAMENT, "+ 
-				                  "JAS.NAME_ORG t1_NAME_ORG, "+ 
-				                  "JAS.SIGN_ORG t1_SIGN_ORG, "+
-				                  "JAS.STATUS t1_status,  CL_ORG_FULL.FULL_ t1_org_name, "+
-				              "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_user_fio, "+
-				              "JAS.REJECT_REASON t1_reject_reason, "+ 
-				              "au_APP.ID_SRV t1_user_id, AU_APP.LOGIN t1_user_login, "+
-				              "JAS.COMMENT_ t1_comment "+
-				             "from JOURN_APP_USER_BSS_T jas, "+
-				               "AC_USERS_KNL_T au_FULL, "+  
-				                "ISP_BSS_T cl_org_full, "+
-				                 "ISP_BSS_T cl_usr_full, "+
-				                  "AC_USERS_KNL_T au_APP, "+
-				              "(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE "+ 
-				                "from ISP_BSS_T cl_org "+
-				                "where  CL_ORG.SIGN_OBJECT LIKE '%00000' "+
-				                "group by CL_ORG.SIGN_OBJECT) t03, "+
-				                 "(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "+ 
-				                            "from ISP_BSS_T cl_usr "+
-				                            "where CL_USR.FIO is not null "+
-				                            "group by CL_usr.SIGN_OBJECT) t02 "+  
-				                "where JAS.UP_USER=AU_FULL.ID_SRV "+
-				                "and AU_FULL.UP_SIGN=t03.CL_ORG_CODE "+
-				                "and CL_ORG_FULL.ID_SRV=t03.CL_ORG_ID "+
-				                "and AU_FULL.UP_SIGN_USER=t02.CL_USR_CODE(+) "+
-				                "and CL_USR_FULL.ID_SRV(+)=t02.CL_USR_ID "+
-				               "and au_APP.ID_SRV(+) =JAS.UP_USER_APP "+
-				               ") t1"+
-		         (st!=null ? " where "+st :" "))
+						 (new StringBuilder("select count(*) "))
+						  .append("from( ")
+			               .append("select JAS.ID_SRV t1_id, JAS.CREATED t1_created, ")
+			                    .append("JAS.SURNAME_USER t1_SURNAME_USER, ")
+			                    .append("JAS.NAME_USER t1_NAME_USER, ")
+			                    .append("JAS.PATRONYMIC_USER t1_PATRONYMIC_USER, ")
+			                    .append("JAS.SIGN_USER t1_SIGN_USER, ")
+			                    .append("JAS.POSITION_USER t1_POSITION_USER, ")
+			                    .append("JAS.EMAIL_USER t1_EMAIL_USER, ")
+			                    .append("JAS.PHONE_USER t1_PHONE_USER, ")
+			                    .append("JAS.CERTIFICATE_USER t1_CERTIFICATE_USER, ")
+			                    .append("JAS.NAME_DEPARTAMENT t1_NAME_DEPARTAMENT, ")
+			                    .append("JAS.NAME_ORG t1_NAME_ORG, ")
+			                    .append("JAS.SIGN_ORG t1_SIGN_ORG, ")
+			                    .append("JAS.STATUS t1_status,  CL_ORG_FULL.FULL_ t1_org_name, ")
+			                .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_user_fio, ")
+			                .append("JAS.REJECT_REASON t1_reject_reason, ")
+			                .append("au_APP.ID_SRV t1_user_id, AU_APP.LOGIN t1_user_login, ")
+			                .append("JAS.COMMENT_ t1_comment ")
+			               .append("from JOURN_APP_USER_BSS_T jas, ")
+			                 .append("AC_USERS_KNL_T au_FULL, ")
+			                  .append("ISP_BSS_T cl_org_full, ")
+			                   .append("ISP_BSS_T cl_usr_full, ")
+			                    .append("AC_USERS_KNL_T au_APP, ")
+			                .append("(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE ")
+			                  .append("from ISP_BSS_T cl_org ")
+			                  .append("where  CL_ORG.SIGN_OBJECT LIKE '%00000' ")
+			                  .append("group by CL_ORG.SIGN_OBJECT) t03, ")
+			                   .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
+			                              .append("from ISP_BSS_T cl_usr ")
+			                              .append("where CL_USR.FIO is not null ")
+			                              .append("group by CL_usr.SIGN_OBJECT) t02 ")
+			                  .append("where JAS.UP_USER=AU_FULL.ID_SRV ")
+			                  .append("and AU_FULL.UP_SIGN=t03.CL_ORG_CODE ")
+			                  .append("and CL_ORG_FULL.ID_SRV=t03.CL_ORG_ID ")
+			                  .append("and AU_FULL.UP_SIGN_USER=t02.CL_USR_CODE(+) ")
+			                  .append("and CL_USR_FULL.ID_SRV(+)=t02.CL_USR_ID ")
+			                 .append("and au_APP.ID_SRV(+) =JAS.UP_USER_APP ")
+			                 .append(") t1")
+			                 .append(st!=null ? " where "+st :" ")
+			                 .toString())
                .getSingleResult()).longValue();
                  
                  
@@ -286,63 +288,64 @@ import org.jboss.seam.faces.FacesMessages;
 	           DateFormat df = new SimpleDateFormat ("dd.MM.yy HH:mm:ss");
 	           
 	           lo=new ArrayList<Object[]>(entityManager.createNativeQuery(
-	        		   "select t1.t1_id, t1.t1_created, t1.t1_status, t1_org_name,  t1_user_fio, t1_reject_reason, t1_comment, "+
-	        	                  "t1_SURNAME_USER, "+
-	        	                  "t1_NAME_USER, "+
-	        	                  "t1_PATRONYMIC_USER, "+
-	        	                  "t1_SIGN_USER, "+ 
-	        	                  "t1_POSITION_USER, "+
-	        	                  "t1_EMAIL_USER, "+ 
-	        	                  "t1_PHONE_USER, "+
-	        	                  "t1_CERTIFICATE_USER, "+ 
-	        	                  "t1_NAME_DEPARTAMENT, "+ 
-	        	                  "t1_NAME_ORG, "+ 
-	        	                  "t1_SIGN_ORG, "+
-	        	              "t1_user_id, t1_user_login, "+
-	        	              "t1_comment_app "+
-	        	              "from( "+ 
-	        	             "select JAS.ID_SRV t1_id, JAS.CREATED t1_created, "+
-	        	                  "JAS.SURNAME_USER t1_SURNAME_USER, "+
-	        	                  "JAS.NAME_USER t1_NAME_USER, "+
-	        	                  "JAS.PATRONYMIC_USER t1_PATRONYMIC_USER, "+
-	        	                  "JAS.SIGN_USER t1_SIGN_USER, "+
-	        	                  "JAS.POSITION_USER t1_POSITION_USER, "+
-	        	                  "JAS.EMAIL_USER t1_EMAIL_USER, "+ 
-	        	                  "JAS.PHONE_USER t1_PHONE_USER, "+
-	        	                  "JAS.CERTIFICATE_USER t1_CERTIFICATE_USER, "+ 
-	        	                  "JAS.NAME_DEPARTAMENT t1_NAME_DEPARTAMENT, "+ 
-	        	                  "JAS.NAME_ORG t1_NAME_ORG, "+ 
-	        	                  "JAS.SIGN_ORG t1_SIGN_ORG, "+
-	        	                  "JAS.STATUS t1_status,  CL_ORG_FULL.FULL_ t1_org_name, "+
-	        	              "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_user_fio, "+
-	        	              "JAS.REJECT_REASON t1_reject_reason, "+ 
-	        	              "au_APP.ID_SRV t1_user_id, AU_APP.LOGIN t1_user_login, "+
-	        	              "JAS.COMMENT_ t1_comment, "+
-	        	              "JAS.COMMENT_APP t1_comment_app "+
-	        	             "from JOURN_APP_USER_BSS_T jas, "+
-	        	               "AC_USERS_KNL_T au_FULL, "+  
-	        	                "ISP_BSS_T cl_org_full, "+
-	        	                 "ISP_BSS_T cl_usr_full, "+
-	        	                  "AC_USERS_KNL_T au_APP, "+
-	        	              "(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE "+ 
-	        	                "from ISP_BSS_T cl_org "+
-	        	                "where  CL_ORG.SIGN_OBJECT LIKE '%00000' "+
-	        	                "group by CL_ORG.SIGN_OBJECT) t03, "+
-	        	                 "(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "+ 
-	        	                            "from ISP_BSS_T cl_usr "+
-	        	                            "where CL_USR.FIO is not null "+
-	        	                            "group by CL_usr.SIGN_OBJECT) t02 "+  
-	        	             /*   "where JAS.UP_USER=AU_FULL.ID_SRV "+
-	        	                "and AU_FULL.UP_SIGN=t03.CL_ORG_CODE "+
-	        	                "and CL_ORG_FULL.ID_SRV=t03.CL_ORG_ID "+*/
-	        	                "where JAS.UP_USER=AU_FULL.ID_SRV(+) "+
-	        	                "and AU_FULL.UP_SIGN=t03.CL_ORG_CODE(+) "+
-	        	                "and CL_ORG_FULL.ID_SRV(+)=t03.CL_ORG_ID "+
-	        	                "and AU_FULL.UP_SIGN_USER=t02.CL_USR_CODE(+) "+
-	        	                "and CL_USR_FULL.ID_SRV(+)=t02.CL_USR_ID "+
-	        	               "and au_APP.ID_SRV(+) =JAS.UP_USER_APP " +
-	        	               "and JAS.ID_SRV=? "+
-	        	               ") t1")
+	        		   (new StringBuilder("select t1.t1_id, t1.t1_created, t1.t1_status, t1_org_name,  t1_user_fio, t1_reject_reason, t1_comment, "))
+	                    .append("t1_SURNAME_USER, ")
+	                    .append("t1_NAME_USER, ")
+	                    .append("t1_PATRONYMIC_USER, ")
+	                    .append("t1_SIGN_USER, ")
+	                    .append("t1_POSITION_USER, ")
+	                    .append("t1_EMAIL_USER, ")
+	                    .append("t1_PHONE_USER, ")
+	                    .append("t1_CERTIFICATE_USER, ")
+	                    .append("t1_NAME_DEPARTAMENT, ")
+	                    .append("t1_NAME_ORG, ")
+	                    .append("t1_SIGN_ORG, ")
+	                .append("t1_user_id, t1_user_login, ")
+	                .append("t1_comment_app ")
+	                .append("from( ")
+	               .append("select JAS.ID_SRV t1_id, JAS.CREATED t1_created, ")
+	                    .append("JAS.SURNAME_USER t1_SURNAME_USER, ")
+	                    .append("JAS.NAME_USER t1_NAME_USER, ")
+	                    .append("JAS.PATRONYMIC_USER t1_PATRONYMIC_USER, ")
+	                    .append("JAS.SIGN_USER t1_SIGN_USER, ")
+	                    .append("JAS.POSITION_USER t1_POSITION_USER, ")
+	                    .append("JAS.EMAIL_USER t1_EMAIL_USER, ")
+	                    .append("JAS.PHONE_USER t1_PHONE_USER, ")
+	                    .append("JAS.CERTIFICATE_USER t1_CERTIFICATE_USER, ")
+	                    .append("JAS.NAME_DEPARTAMENT t1_NAME_DEPARTAMENT, ")
+	                    .append("JAS.NAME_ORG t1_NAME_ORG, ")
+	                    .append("JAS.SIGN_ORG t1_SIGN_ORG, ")
+	                    .append("JAS.STATUS t1_status,  CL_ORG_FULL.FULL_ t1_org_name, ")
+	                .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_user_fio, ")
+	                .append("JAS.REJECT_REASON t1_reject_reason, ")
+	                .append("au_APP.ID_SRV t1_user_id, AU_APP.LOGIN t1_user_login, ")
+	                .append("JAS.COMMENT_ t1_comment, ")
+	                .append("JAS.COMMENT_APP t1_comment_app ")
+	               .append("from JOURN_APP_USER_BSS_T jas, ")
+	                 .append("AC_USERS_KNL_T au_FULL, ")
+	                  .append("ISP_BSS_T cl_org_full, ")
+	                   .append("ISP_BSS_T cl_usr_full, ")
+	                    .append("AC_USERS_KNL_T au_APP, ")
+	                .append("(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE ")
+	                  .append("from ISP_BSS_T cl_org ")
+	                  .append("where  CL_ORG.SIGN_OBJECT LIKE '%00000' ")
+	                  .append("group by CL_ORG.SIGN_OBJECT) t03, ")
+	                   .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
+	                              .append("from ISP_BSS_T cl_usr ")
+	                              .append("where CL_USR.FIO is not null ")
+	                              .append("group by CL_usr.SIGN_OBJECT) t02 ")		   
+	        	             /*   "where JAS.UP_USER=AU_FULL.ID_SRV "
+	        	                + "and AU_FULL.UP_SIGN=t03.CL_ORG_CODE "
+	        	                + "and CL_ORG_FULL.ID_SRV=t03.CL_ORG_ID "+*/
+	        	                  .append("where JAS.UP_USER=AU_FULL.ID_SRV(+) ")
+	        	                  .append("and AU_FULL.UP_SIGN=t03.CL_ORG_CODE(+) ")
+	        	                  .append("and CL_ORG_FULL.ID_SRV(+)=t03.CL_ORG_ID ")
+	        	                  .append("and AU_FULL.UP_SIGN_USER=t02.CL_USR_CODE(+) ")
+	        	                  .append("and CL_USR_FULL.ID_SRV(+)=t02.CL_USR_ID ")
+	        	                 .append("and au_APP.ID_SRV(+) =JAS.UP_USER_APP ") 
+	        	                 .append("and JAS.ID_SRV=? ")
+	        	                 .append(") t1")
+	        	               .toString())
 	         .setParameter(1, idUser)
 	         .getResultList());
 	           
@@ -409,11 +412,12 @@ import org.jboss.seam.faces.FacesMessages;
 		     Long idUserCrt = usrManager.getIdUserCrt();
 		     
 		     entityManager.createNativeQuery(
-		    	"insert into AC_USERS_LINK_KNL_T (UP_ROLES, UP_USERS, CREATOR,  CREATED) " + 
-		    	"select app_roles.UP_ROLE, :idUser, :creator, sysdate " + 
-		    	"from ROLES_APP_USER_BSS_T app_roles " + 
-		    	"where  APP_ROLES.UP_APP_USER= :idApp " + 
-		    	"group by app_roles.UP_ROLE")
+				    	(new StringBuilder("insert into AC_USERS_LINK_KNL_T (UP_ROLES, UP_USERS, CREATOR,  CREATED) "))
+				    	  .append("select app_roles.UP_ROLE, :idUser, :creator, sysdate ") 
+				    	  .append("from ROLES_APP_USER_BSS_T app_roles ") 
+				    	  .append("where  APP_ROLES.UP_APP_USER= :idApp ") 
+				    	  .append("group by app_roles.UP_ROLE")
+				    	.toString())
 		    	  .setParameter("idUser", idUserCrt)
 	     		  .setParameter("creator", getCurrentUser().getBaseId())
 	     		  .setParameter("idApp", Long.valueOf(sessionIdAppUser))
@@ -425,9 +429,9 @@ import org.jboss.seam.faces.FacesMessages;
 					  Component.getInstance("usrBeanCrt",ScopeType.CONVERSATION);  
 		     
 		     entityManager.createNativeQuery(
-	 	     		   "update JOURN_APP_USER_BSS_T t1 " +
-	 	     		   "set t1.UP_USER_APP=?, t1.STATUS=1, t1.UP_USER_EXEC=? " +
-	 	     		   "where t1.ID_SRV=? ")
+	 	     		   "update JOURN_APP_USER_BSS_T t1 " 
+	 	     		   + "set t1.UP_USER_APP=?, t1.STATUS=1, t1.UP_USER_EXEC=? " 
+	 	     		   + "where t1.ID_SRV=? ")
 	 	     		 .setParameter(1, usrBeanCrt.getBaseId())
 	 	     		 .setParameter(2, getCurrentUser().getBaseId())
 	 	     		 .setParameter(3, Long.valueOf(sessionIdAppUser))
@@ -455,9 +459,9 @@ import org.jboss.seam.faces.FacesMessages;
 		   try{
 			   
 		     entityManager.createNativeQuery(
-	 	     		   "update JOURN_APP_USER_BSS_T t1 " +
-	 	     		   "set t1.STATUS=2,  t1.REJECT_REASON=?, t1.UP_USER_EXEC=? " +
-	 	     		   "where t1.ID_SRV=? ")
+	 	     		   "update JOURN_APP_USER_BSS_T t1 " 
+	 	     		   + "set t1.STATUS=2,  t1.REJECT_REASON=?, t1.UP_USER_EXEC=? " 
+	 	     		   + "where t1.ID_SRV=? ")
 	 	     		 .setParameter(1, this.rejectReason)
 	 	     		 .setParameter(2, getCurrentUser().getBaseId())
 	 	     		 .setParameter(3, Long.valueOf(sessionId))
@@ -485,9 +489,9 @@ import org.jboss.seam.faces.FacesMessages;
 		   try{
 			   
 		     entityManager.createNativeQuery(
-	 	     		   "update JOURN_APP_USER_BSS_T t1 " +
-	 	     		   "set t1.COMMENT_=? " +
-	 	     		   "where t1.ID_SRV=? ")
+	 	     		   "update JOURN_APP_USER_BSS_T t1 " 
+	 	     		   + "set t1.COMMENT_=? " 
+	 	     		   + "where t1.ID_SRV=? ")
 	 	     		 .setParameter(1, this.commentText)
 	 	     		 .setParameter(2, Long.valueOf(sessionId))
 	 	     	 	 .executeUpdate();
@@ -724,11 +728,12 @@ import org.jboss.seam.faces.FacesMessages;
 	    	if(listUsrArmForView==null && sessionIdApp!=null){
 	      	
 	    		loApp=new ArrayList<Object[]>(entityManager.createNativeQuery(
-		    			"select arm.ID_SRV app_id, arm.FULL_ app_name, ROL.FULL_ role_name " + 
-		    	    			" from AC_IS_BSS_T arm, AC_ROLES_BSS_T rol,  ROLES_APP_USER_BSS_T app_roles " + 
-		    	    			" where ROL.UP_IS=arm.ID_SRV and app_roles.UP_ROLE=ROL.ID_SRV and APP_ROLES.UP_APP_USER= ? " + 
-		    	    			" group by arm.FULL_, arm.ID_SRV, ROL.FULL_ " + 
-		    	    			" order by arm.FULL_, arm.ID_SRV, ROL.FULL_ ")
+		    			(new StringBuilder("select arm.ID_SRV app_id, arm.FULL_ app_name, ROL.FULL_ role_name "))
+  	    			  .append(" from AC_IS_BSS_T arm, AC_ROLES_BSS_T rol,  ROLES_APP_USER_BSS_T app_roles ") 
+  	    			  .append(" where ROL.UP_IS=arm.ID_SRV and app_roles.UP_ROLE=ROL.ID_SRV and APP_ROLES.UP_APP_USER= ? ") 
+  	    			  .append(" group by arm.FULL_, arm.ID_SRV, ROL.FULL_ ") 
+  	    			  .append(" order by arm.FULL_, arm.ID_SRV, ROL.FULL_ ")
+  	    			  .toString())
 		    	    				 .setParameter(1, Long.valueOf(sessionIdApp))
 		    	    				.getResultList());
 

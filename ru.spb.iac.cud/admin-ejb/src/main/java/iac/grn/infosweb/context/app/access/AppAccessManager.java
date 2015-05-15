@@ -92,76 +92,70 @@ import iac.grn.serviceitems.HeaderTableItem;
                
 
              loAppAccess=entityManager.createNativeQuery(
-             "select t1.t1_id, t1.t1_created, "+
-             "t1.t1_status, t1_org_name,  t1_user_fio, t1_reject_reason, t1_comment, "+
-             "t1_arm_id, t1_arm_code, t1_arm_name, t1_arm_description, "+
-             "t1_org_name_app, t1_user_id_app,  t1_user_login_app, t1_user_fio_app, t1_user_pos_app, "+
-             "t1_dep_name_app, " +
-             "t1_MODE_EXEC "+
-             "from( "+ 
-             "select JAS.ID_SRV t1_id, JAS.CREATED t1_created, "+  
-             "JAS.STATUS t1_status,  CL_ORG_FULL.FULL_ t1_org_name, "+
-             "JAS.COMMENT_ t1_comment, "+
-              "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_user_fio, "+
-              "JAS.REJECT_REASON t1_reject_reason, "+ 
-              "ARM.ID_SRV t1_arm_id, ARM.SIGN_OBJECT t1_arm_code, ARM.FULL_ t1_arm_name, ARM.DESCRIPTION  t1_arm_description, "+
-              
-              "AU_APP.ID_SRV  t1_user_id_app, AU_APP.LOGIN  t1_user_login_app, "+
-               "CL_ORG_app.FULL_ t1_org_name_app,  decode(AU_app.UP_SIGN_USER, null, AU_app.SURNAME||' '||AU_app.NAME_ ||' '|| AU_app.PATRONYMIC,  CL_USR_app.FIO ) t1_user_fio_app, "+
-                 "decode(AU_app.UP_SIGN_USER, null, AU_app.POSITION, CL_USR_app.POSITION) t1_user_pos_app, "+
-                 
-                 "decode(AU_app.UP_SIGN_USER, null, AU_app.DEPARTMENT, decode(substr(CL_DEP_app.sign_object,4,2), '00', null, CL_DEP_app.FULL_)) t1_dep_name_app, " +
-                 "JAS.MODE_EXEC t1_MODE_EXEC "+  
-             "from JOURN_APP_ACCESS_BSS_T jas, "+
-               "AC_USERS_KNL_T au_FULL, "+  
-                "ISP_BSS_T cl_org_full, "+
-                 "ISP_BSS_T cl_usr_full, "+
-                 "ISP_BSS_T cl_org_app, "+
-                 "ISP_BSS_T cl_usr_app, "+
-                 "ISP_BSS_T cl_dep_app, "+
-                 "AC_IS_BSS_T arm, "+
-                 "AC_USERS_KNL_T au_APP, "+
-              "(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE "+ 
-                "from ISP_BSS_T cl_org "+
-                "where  CL_ORG.SIGN_OBJECT LIKE '%00000' "+
-                "group by CL_ORG.SIGN_OBJECT) t03, "+
-                 "(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "+
-                            "from ISP_BSS_T cl_usr "+
-                            "where CL_USR.FIO is not null "+
-                            "group by CL_usr.SIGN_OBJECT) t02, "+  
-                
-                 "(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE "+ 
-                "from ISP_BSS_T cl_org "+
-                "where  CL_ORG.SIGN_OBJECT LIKE '%00000' "+
-                "group by CL_ORG.SIGN_OBJECT) t03_app, "+
-                 "(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "+ 
-                            "from ISP_BSS_T cl_usr "+
-                            "where CL_USR.FIO is not null "+
-                            "group by CL_usr.SIGN_OBJECT) t02_app, "+ 
-               "(select max(CL_dep.ID_SRV) CL_DEP_ID,  CL_DEP.SIGN_OBJECT  CL_DEP_CODE "+ 
-                            "from ISP_BSS_T cl_dep "+
-                            "where CL_dep.SIGN_OBJECT LIKE '%000' "+
-                            "group by CL_DEP.SIGN_OBJECT) t04_app "+
-                                      
-                "where JAS.UP_USER=AU_FULL.ID_SRV "+
-                "and AU_FULL.UP_SIGN=t03.CL_ORG_CODE "+
-                "and CL_ORG_FULL.ID_SRV=t03.CL_ORG_ID "+
-                "and AU_FULL.UP_SIGN_USER=t02.CL_USR_CODE(+) "+
-                "and CL_USR_FULL.ID_SRV(+)=t02.CL_USR_ID "+
-                "and ARM.ID_SRV =JAS.UP_IS_APP "+
-                "and au_APP.ID_SRV =JAS.UP_USER_APP "+
-                
-                "and au_APP.UP_SIGN=t03_APP.CL_ORG_CODE "+
-                "and CL_ORG_app.ID_SRV=t03_APP.CL_ORG_ID "+
-                
-                "and AU_APP.UP_SIGN_USER=t02_APP.CL_USR_CODE(+) "+
-                "and CL_USR_APP.ID_SRV(+)=t02_APP.CL_USR_ID "+
-                
-                "and substr(au_APP.UP_SIGN,1,5)||'000'=t04_APP.CL_dep_CODE(+) "+
-                "and CL_dep_app.ID_SRV=t04_APP.CL_dep_ID "+
-             ") t1 "+
-              (stAppAccess!=null ? " where "+stAppAccess :" ")+
-              (orderQueryAppAccess!=null ? orderQueryAppAccess+", t1_id desc " : " order by t1_id desc "))
+                     (new StringBuilder("select t1.t1_id, t1.t1_created, "))
+                     .append("t1.t1_status, t1_org_name,  t1_user_fio, t1_reject_reason, t1_comment, ")
+                     .append("t1_arm_id, t1_arm_code, t1_arm_name, t1_arm_description, ")
+                     .append("t1_org_name_app, t1_user_id_app,  t1_user_login_app, t1_user_fio_app, t1_user_pos_app, ")
+                     .append("t1_dep_name_app, ") 
+                     .append("t1_MODE_EXEC ")
+                     .append("from( ")
+                     .append("select JAS.ID_SRV t1_id, JAS.CREATED t1_created, ")
+                     .append("JAS.STATUS t1_status,  CL_ORG_FULL.FULL_ t1_org_name, ")
+                     .append("JAS.COMMENT_ t1_comment, ")
+                      .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_user_fio, ")
+                      .append("JAS.REJECT_REASON t1_reject_reason, ")
+                      .append("ARM.ID_SRV t1_arm_id, ARM.SIGN_OBJECT t1_arm_code, ARM.FULL_ t1_arm_name, ARM.DESCRIPTION  t1_arm_description, ")
+                      .append("AU_APP.ID_SRV  t1_user_id_app, AU_APP.LOGIN  t1_user_login_app, ")
+                       .append("CL_ORG_app.FULL_ t1_org_name_app,  decode(AU_app.UP_SIGN_USER, null, AU_app.SURNAME||' '||AU_app.NAME_ ||' '|| AU_app.PATRONYMIC,  CL_USR_app.FIO ) t1_user_fio_app, ")
+                         .append("decode(AU_app.UP_SIGN_USER, null, AU_app.POSITION, CL_USR_app.POSITION) t1_user_pos_app, ")
+                         .append("decode(AU_app.UP_SIGN_USER, null, AU_app.DEPARTMENT, decode(substr(CL_DEP_app.sign_object,4,2), '00', null, CL_DEP_app.FULL_)) t1_dep_name_app, ") 
+                         .append("JAS.MODE_EXEC t1_MODE_EXEC ")
+                     .append("from JOURN_APP_ACCESS_BSS_T jas, ")
+                       .append("AC_USERS_KNL_T au_FULL, ")
+                        .append("ISP_BSS_T cl_org_full, ")
+                         .append("ISP_BSS_T cl_usr_full, ")
+                         .append("ISP_BSS_T cl_org_app, ")
+                         .append("ISP_BSS_T cl_usr_app, ")
+                         .append("ISP_BSS_T cl_dep_app, ")
+                         .append("AC_IS_BSS_T arm, ")
+                         .append("AC_USERS_KNL_T au_APP, ")
+                      .append("(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE ")
+                        .append("from ISP_BSS_T cl_org ")
+                        .append("where  CL_ORG.SIGN_OBJECT LIKE '%00000' ")
+                        .append("group by CL_ORG.SIGN_OBJECT) t03, ")
+                         .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
+                                    .append("from ISP_BSS_T cl_usr ")
+                                    .append("where CL_USR.FIO is not null ")
+                                    .append("group by CL_usr.SIGN_OBJECT) t02, ")
+                         .append("(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE ")
+                        .append("from ISP_BSS_T cl_org ")
+                        .append("where  CL_ORG.SIGN_OBJECT LIKE '%00000' ")
+                        .append("group by CL_ORG.SIGN_OBJECT) t03_app, ")
+                         .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
+                                    .append("from ISP_BSS_T cl_usr ")
+                                    .append("where CL_USR.FIO is not null ")
+                                    .append("group by CL_usr.SIGN_OBJECT) t02_app, ")
+                       .append("(select max(CL_dep.ID_SRV) CL_DEP_ID,  CL_DEP.SIGN_OBJECT  CL_DEP_CODE ")
+                                    .append("from ISP_BSS_T cl_dep ")
+                                    .append("where CL_dep.SIGN_OBJECT LIKE '%000' ")
+                                    .append("group by CL_DEP.SIGN_OBJECT) t04_app ")
+                        .append("where JAS.UP_USER=AU_FULL.ID_SRV ")
+                        .append("and AU_FULL.UP_SIGN=t03.CL_ORG_CODE ")
+                        .append("and CL_ORG_FULL.ID_SRV=t03.CL_ORG_ID ")
+                        .append("and AU_FULL.UP_SIGN_USER=t02.CL_USR_CODE(+) ")
+                        .append("and CL_USR_FULL.ID_SRV(+)=t02.CL_USR_ID ")
+                        .append("and ARM.ID_SRV =JAS.UP_IS_APP ")
+                        .append("and au_APP.ID_SRV =JAS.UP_USER_APP ")
+                        .append("and au_APP.UP_SIGN=t03_APP.CL_ORG_CODE ")
+                        .append("and CL_ORG_app.ID_SRV=t03_APP.CL_ORG_ID ")
+                        .append("and AU_APP.UP_SIGN_USER=t02_APP.CL_USR_CODE(+) ")
+                        .append("and CL_USR_APP.ID_SRV(+)=t02_APP.CL_USR_ID ")
+                        .append("and substr(au_APP.UP_SIGN,1,5)||'000'=t04_APP.CL_dep_CODE(+) ")
+                        .append("and CL_dep_app.ID_SRV=t04_APP.CL_dep_ID ")
+                     .append(") t1 ")
+                   .append(stAppAccess!=null ? " where "+stAppAccess :" ")
+                   .append(orderQueryAppAccess!=null ? orderQueryAppAccess+", t1_id desc " : " order by t1_id desc ")
+                   .toString())
               .setFirstResult(firstRow)
               .setMaxResults(numberOfRows)
               .getResultList();
@@ -222,70 +216,64 @@ import iac.grn.serviceitems.HeaderTableItem;
 				 
 				
 				 auditCount = ((java.math.BigDecimal)entityManager.createNativeQuery(
-						               "select count(*) " +
-						    		   "from( "+ 
-						               "select JAS.ID_SRV t1_id, JAS.CREATED t1_created, "+  
-						               "JAS.STATUS t1_status,  CL_ORG_FULL.FULL_ t1_org_name, "+
-						               "JAS.COMMENT_ t1_comment, "+
-						                "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_user_fio, "+
-						                "JAS.REJECT_REASON t1_reject_reason, "+ 
-						                "ARM.ID_SRV t1_arm_id, ARM.SIGN_OBJECT t1_arm_code, ARM.FULL_ t1_arm_name, ARM.DESCRIPTION  t1_arm_description, "+
-						                
-						                "AU_APP.ID_SRV  t1_user_id_app, AU_APP.LOGIN  t1_user_login_app, "+
-						                 "CL_ORG_app.FULL_ t1_org_name_app,  decode(AU_app.UP_SIGN_USER, null, AU_app.SURNAME||' '||AU_app.NAME_ ||' '|| AU_app.PATRONYMIC,  CL_USR_app.FIO ) t1_user_fio_app, "+
-						                   "decode(AU_app.UP_SIGN_USER, null, AU_app.POSITION, CL_USR_app.POSITION) t1_user_pos_app, "+
-						                   
-						                   "decode(AU_app.UP_SIGN_USER, null, AU_app.DEPARTMENT, decode(substr(CL_DEP_app.sign_object,4,2), '00', null, CL_DEP_app.FULL_)) t1_dep_name_app, "+
-						                   "JAS.MODE_EXEC t1_MODE_EXEC "+  
-						               "from JOURN_APP_ACCESS_BSS_T jas, "+
-						                 "AC_USERS_KNL_T au_FULL, "+  
-						                  "ISP_BSS_T cl_org_full, "+
-						                   "ISP_BSS_T cl_usr_full, "+
-						                   "ISP_BSS_T cl_org_app, "+
-						                   "ISP_BSS_T cl_usr_app, "+
-						                   "ISP_BSS_T cl_dep_app, "+
-						                   "AC_IS_BSS_T arm, "+
-						                   "AC_USERS_KNL_T au_APP, "+
-						                "(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE "+ 
-						                  "from ISP_BSS_T cl_org "+
-						                  "where  CL_ORG.SIGN_OBJECT LIKE '%00000' "+
-						                  "group by CL_ORG.SIGN_OBJECT) t03, "+
-						                   "(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "+
-						                              "from ISP_BSS_T cl_usr "+
-						                              "where CL_USR.FIO is not null "+
-						                              "group by CL_usr.SIGN_OBJECT) t02, "+  
-						                  
-						                   "(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE "+ 
-						                  "from ISP_BSS_T cl_org "+
-						                  "where  CL_ORG.SIGN_OBJECT LIKE '%00000' "+
-						                  "group by CL_ORG.SIGN_OBJECT) t03_app, "+
-						                   "(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "+ 
-						                              "from ISP_BSS_T cl_usr "+
-						                              "where CL_USR.FIO is not null "+
-						                              "group by CL_usr.SIGN_OBJECT) t02_app, "+ 
-						                 "(select max(CL_dep.ID_SRV) CL_DEP_ID,  CL_DEP.SIGN_OBJECT  CL_DEP_CODE "+ 
-						                              "from ISP_BSS_T cl_dep "+
-						                              "where CL_dep.SIGN_OBJECT LIKE '%000' "+
-						                              "group by CL_DEP.SIGN_OBJECT) t04_app "+
-						                                        
-						                  "where JAS.UP_USER=AU_FULL.ID_SRV "+
-						                  "and AU_FULL.UP_SIGN=t03.CL_ORG_CODE "+
-						                  "and CL_ORG_FULL.ID_SRV=t03.CL_ORG_ID "+
-						                  "and AU_FULL.UP_SIGN_USER=t02.CL_USR_CODE(+) "+
-						                  "and CL_USR_FULL.ID_SRV(+)=t02.CL_USR_ID "+
-						                  "and ARM.ID_SRV =JAS.UP_IS_APP "+
-						                  "and au_APP.ID_SRV =JAS.UP_USER_APP "+
-						                  
-						                  "and au_APP.UP_SIGN=t03_APP.CL_ORG_CODE "+
-						                  "and CL_ORG_app.ID_SRV=t03_APP.CL_ORG_ID "+
-						                  
-						                  "and AU_APP.UP_SIGN_USER=t02_APP.CL_USR_CODE(+) "+
-						                  "and CL_USR_APP.ID_SRV(+)=t02_APP.CL_USR_ID "+
-						                  
-						                  "and substr(au_APP.UP_SIGN,1,5)||'000'=t04_APP.CL_dep_CODE(+) "+
-						                  "and CL_dep_app.ID_SRV=t04_APP.CL_dep_ID "+
-						               ") t1 "+
-		         (stAppAccess!=null ? " where "+stAppAccess :" "))
+			               (new StringBuilder("select count(*) "))
+			    		     .append("from( ")
+			                 .append("select JAS.ID_SRV t1_id, JAS.CREATED t1_created, ")
+			                 .append("JAS.STATUS t1_status,  CL_ORG_FULL.FULL_ t1_org_name, ")
+			                 .append("JAS.COMMENT_ t1_comment, ")
+			                  .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_user_fio, ")
+			                  .append("JAS.REJECT_REASON t1_reject_reason, ")
+			                  .append("ARM.ID_SRV t1_arm_id, ARM.SIGN_OBJECT t1_arm_code, ARM.FULL_ t1_arm_name, ARM.DESCRIPTION  t1_arm_description, ")
+			                  .append("AU_APP.ID_SRV  t1_user_id_app, AU_APP.LOGIN  t1_user_login_app, ")
+			                   .append("CL_ORG_app.FULL_ t1_org_name_app,  decode(AU_app.UP_SIGN_USER, null, AU_app.SURNAME||' '||AU_app.NAME_ ||' '|| AU_app.PATRONYMIC,  CL_USR_app.FIO ) t1_user_fio_app, ")
+			                     .append("decode(AU_app.UP_SIGN_USER, null, AU_app.POSITION, CL_USR_app.POSITION) t1_user_pos_app, ")
+			                     .append("decode(AU_app.UP_SIGN_USER, null, AU_app.DEPARTMENT, decode(substr(CL_DEP_app.sign_object,4,2), '00', null, CL_DEP_app.FULL_)) t1_dep_name_app, ")
+			                     .append("JAS.MODE_EXEC t1_MODE_EXEC ")
+			                 .append("from JOURN_APP_ACCESS_BSS_T jas, ")
+			                   .append("AC_USERS_KNL_T au_FULL, ")
+			                    .append("ISP_BSS_T cl_org_full, ")
+			                     .append("ISP_BSS_T cl_usr_full, ")
+			                     .append("ISP_BSS_T cl_org_app, ")
+			                     .append("ISP_BSS_T cl_usr_app, ")
+			                     .append("ISP_BSS_T cl_dep_app, ")
+			                     .append("AC_IS_BSS_T arm, ")
+			                     .append("AC_USERS_KNL_T au_APP, ")
+			                  .append("(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE ")
+			                    .append("from ISP_BSS_T cl_org ")
+			                    .append("where  CL_ORG.SIGN_OBJECT LIKE '%00000' ")
+			                    .append("group by CL_ORG.SIGN_OBJECT) t03, ")
+			                     .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
+			                                .append("from ISP_BSS_T cl_usr ")
+			                                .append("where CL_USR.FIO is not null ")
+			                                .append("group by CL_usr.SIGN_OBJECT) t02, ")
+			                     .append("(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE ")
+			                    .append("from ISP_BSS_T cl_org ")
+			                    .append("where  CL_ORG.SIGN_OBJECT LIKE '%00000' ")
+			                    .append("group by CL_ORG.SIGN_OBJECT) t03_app, ")
+			                     .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
+			                                .append("from ISP_BSS_T cl_usr ")
+			                                .append("where CL_USR.FIO is not null ")
+			                                .append("group by CL_usr.SIGN_OBJECT) t02_app, ")
+			                   .append("(select max(CL_dep.ID_SRV) CL_DEP_ID,  CL_DEP.SIGN_OBJECT  CL_DEP_CODE ")
+			                                .append("from ISP_BSS_T cl_dep ")
+			                                .append("where CL_dep.SIGN_OBJECT LIKE '%000' ")
+			                                .append("group by CL_DEP.SIGN_OBJECT) t04_app ")
+			                    .append("where JAS.UP_USER=AU_FULL.ID_SRV ")
+			                    .append("and AU_FULL.UP_SIGN=t03.CL_ORG_CODE ")
+			                    .append("and CL_ORG_FULL.ID_SRV=t03.CL_ORG_ID ")
+			                    .append("and AU_FULL.UP_SIGN_USER=t02.CL_USR_CODE(+) ")
+			                    .append("and CL_USR_FULL.ID_SRV(+)=t02.CL_USR_ID ")
+			                    .append("and ARM.ID_SRV =JAS.UP_IS_APP ")
+			                    .append("and au_APP.ID_SRV =JAS.UP_USER_APP ")
+			                    .append("and au_APP.UP_SIGN=t03_APP.CL_ORG_CODE ")
+			                    .append("and CL_ORG_app.ID_SRV=t03_APP.CL_ORG_ID ")
+			                    .append("and AU_APP.UP_SIGN_USER=t02_APP.CL_USR_CODE(+) ")
+			                    .append("and CL_USR_APP.ID_SRV(+)=t02_APP.CL_USR_ID ")
+			                    .append("and substr(au_APP.UP_SIGN,1,5)||'000'=t04_APP.CL_dep_CODE(+) ")
+			                    .append("and CL_dep_app.ID_SRV=t04_APP.CL_dep_ID ")
+			                 .append(") t1 ")
+			               .append(stAppAccess!=null ? " where "+stAppAccess :" ")
+			               .toString())
                .getSingleResult()).longValue();
                  
                  
@@ -310,75 +298,69 @@ import iac.grn.serviceitems.HeaderTableItem;
 	           DateFormat df = new SimpleDateFormat ("dd.MM.yy HH:mm:ss");
 	           
 	           lo=entityManager.createNativeQuery(
-	        		             "select t1.t1_id, t1.t1_created, "+
-	        		             "t1.t1_status, t1_org_name,  t1_user_fio, t1_reject_reason, t1_comment, "+
-	        		             "t1_arm_id, t1_arm_code, t1_arm_name, t1_arm_description, "+
-	        		             "t1_org_name_app, t1_user_id_app,  t1_user_login_app, t1_user_fio_app, t1_user_pos_app, "+
-	        		             "t1_dep_name_app, " +
-	        		             "t1_MODE_EXEC "+
-	        		             "from( "+ 
-	        		             "select JAS.ID_SRV t1_id, JAS.CREATED t1_created, "+  
-	        		             "JAS.STATUS t1_status,  CL_ORG_FULL.FULL_ t1_org_name, "+
-	        		             "JAS.COMMENT_ t1_comment, "+
-	        		              "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_user_fio, "+
-	        		              "JAS.REJECT_REASON t1_reject_reason, "+ 
-	        		              "ARM.ID_SRV t1_arm_id, ARM.SIGN_OBJECT t1_arm_code, ARM.FULL_ t1_arm_name, ARM.DESCRIPTION  t1_arm_description, "+
-	        		              
-	        		              "AU_APP.ID_SRV  t1_user_id_app, AU_APP.LOGIN  t1_user_login_app, "+
-	        		               "CL_ORG_app.FULL_ t1_org_name_app,  decode(AU_app.UP_SIGN_USER, null, AU_app.SURNAME||' '||AU_app.NAME_ ||' '|| AU_app.PATRONYMIC,  CL_USR_app.FIO ) t1_user_fio_app, "+
-	        		                 "decode(AU_app.UP_SIGN_USER, null, AU_app.POSITION, CL_USR_app.POSITION) t1_user_pos_app, "+
-	        		                 
-	        		                 "decode(AU_app.UP_SIGN_USER, null, AU_app.DEPARTMENT, decode(substr(CL_DEP_app.sign_object,4,2), '00', null, CL_DEP_app.FULL_)) t1_dep_name_app, "+
-	        		                 "JAS.MODE_EXEC t1_MODE_EXEC "+  
-	        		             "from JOURN_APP_ACCESS_BSS_T jas, "+
-	        		               "AC_USERS_KNL_T au_FULL, "+  
-	        		                "ISP_BSS_T cl_org_full, "+
-	        		                 "ISP_BSS_T cl_usr_full, "+
-	        		                 "ISP_BSS_T cl_org_app, "+
-	        		                 "ISP_BSS_T cl_usr_app, "+
-	        		                 "ISP_BSS_T cl_dep_app, "+
-	        		                 "AC_IS_BSS_T arm, "+
-	        		                 "AC_USERS_KNL_T au_APP, "+
-	        		              "(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE "+ 
-	        		                "from ISP_BSS_T cl_org "+
-	        		                "where  CL_ORG.SIGN_OBJECT LIKE '%00000' "+
-	        		                "group by CL_ORG.SIGN_OBJECT) t03, "+
-	        		                 "(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "+
-	        		                            "from ISP_BSS_T cl_usr "+
-	        		                            "where CL_USR.FIO is not null "+
-	        		                            "group by CL_usr.SIGN_OBJECT) t02, "+  
-	        		                
-	        		                 "(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE "+ 
-	        		                "from ISP_BSS_T cl_org "+
-	        		                "where  CL_ORG.SIGN_OBJECT LIKE '%00000' "+
-	        		                "group by CL_ORG.SIGN_OBJECT) t03_app, "+
-	        		                 "(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "+ 
-	        		                            "from ISP_BSS_T cl_usr "+
-	        		                            "where CL_USR.FIO is not null "+
-	        		                            "group by CL_usr.SIGN_OBJECT) t02_app, "+ 
-	        		               "(select max(CL_dep.ID_SRV) CL_DEP_ID,  CL_DEP.SIGN_OBJECT  CL_DEP_CODE "+ 
-	        		                            "from ISP_BSS_T cl_dep "+
-	        		                            "where CL_dep.SIGN_OBJECT LIKE '%000' "+
-	        		                            "group by CL_DEP.SIGN_OBJECT) t04_app "+
-	        		                                      
-	        		                "where JAS.UP_USER=AU_FULL.ID_SRV "+
-	        		                "and AU_FULL.UP_SIGN=t03.CL_ORG_CODE "+
-	        		                "and CL_ORG_FULL.ID_SRV=t03.CL_ORG_ID "+
-	        		                "and AU_FULL.UP_SIGN_USER=t02.CL_USR_CODE(+) "+
-	        		                "and CL_USR_FULL.ID_SRV(+)=t02.CL_USR_ID "+
-	        		                "and ARM.ID_SRV =JAS.UP_IS_APP "+
-	        		                "and au_APP.ID_SRV =JAS.UP_USER_APP "+
-	        		                
-	        		                "and au_APP.UP_SIGN=t03_APP.CL_ORG_CODE "+
-	        		                "and CL_ORG_app.ID_SRV=t03_APP.CL_ORG_ID "+
-	        		                
-	        		                "and AU_APP.UP_SIGN_USER=t02_APP.CL_USR_CODE(+) "+
-	        		                "and CL_USR_APP.ID_SRV(+)=t02_APP.CL_USR_ID "+
-	        		                
-	        		                "and substr(au_APP.UP_SIGN,1,5)||'000'=t04_APP.CL_dep_CODE(+) "+
-	        		                "and CL_dep_app.ID_SRV=t04_APP.CL_dep_ID "+
-	        		                "and JAS.ID_SRV=? "+
-	        		             ") t1 ")
+  		             (new StringBuilder("select t1.t1_id, t1.t1_created, "))
+		               .append("t1.t1_status, t1_org_name,  t1_user_fio, t1_reject_reason, t1_comment, ")
+		               .append("t1_arm_id, t1_arm_code, t1_arm_name, t1_arm_description, ")
+		               .append("t1_org_name_app, t1_user_id_app,  t1_user_login_app, t1_user_fio_app, t1_user_pos_app, ")
+		               .append("t1_dep_name_app, ") 
+		               .append("t1_MODE_EXEC ")
+		               .append("from( ")
+		               .append("select JAS.ID_SRV t1_id, JAS.CREATED t1_created, ")
+		               .append("JAS.STATUS t1_status,  CL_ORG_FULL.FULL_ t1_org_name, ")
+		               .append("JAS.COMMENT_ t1_comment, ")
+		                .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_user_fio, ")
+		                .append("JAS.REJECT_REASON t1_reject_reason, ")
+		                .append("ARM.ID_SRV t1_arm_id, ARM.SIGN_OBJECT t1_arm_code, ARM.FULL_ t1_arm_name, ARM.DESCRIPTION  t1_arm_description, ")
+		                .append("AU_APP.ID_SRV  t1_user_id_app, AU_APP.LOGIN  t1_user_login_app, ")
+		                 .append("CL_ORG_app.FULL_ t1_org_name_app,  decode(AU_app.UP_SIGN_USER, null, AU_app.SURNAME||' '||AU_app.NAME_ ||' '|| AU_app.PATRONYMIC,  CL_USR_app.FIO ) t1_user_fio_app, ")
+		                   .append("decode(AU_app.UP_SIGN_USER, null, AU_app.POSITION, CL_USR_app.POSITION) t1_user_pos_app, ")
+		                   .append("decode(AU_app.UP_SIGN_USER, null, AU_app.DEPARTMENT, decode(substr(CL_DEP_app.sign_object,4,2), '00', null, CL_DEP_app.FULL_)) t1_dep_name_app, ")
+		                   .append("JAS.MODE_EXEC t1_MODE_EXEC ")
+		               .append("from JOURN_APP_ACCESS_BSS_T jas, ")
+		                 .append("AC_USERS_KNL_T au_FULL, ")
+		                  .append("ISP_BSS_T cl_org_full, ")
+		                   .append("ISP_BSS_T cl_usr_full, ")
+		                   .append("ISP_BSS_T cl_org_app, ")
+		                   .append("ISP_BSS_T cl_usr_app, ")
+		                   .append("ISP_BSS_T cl_dep_app, ")
+		                   .append("AC_IS_BSS_T arm, ")
+		                   .append("AC_USERS_KNL_T au_APP, ")
+		                .append("(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE ")
+		                  .append("from ISP_BSS_T cl_org ")
+		                  .append("where  CL_ORG.SIGN_OBJECT LIKE '%00000' ")
+		                  .append("group by CL_ORG.SIGN_OBJECT) t03, ")
+		                   .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
+		                              .append("from ISP_BSS_T cl_usr ")
+		                              .append("where CL_USR.FIO is not null ")
+		                              .append("group by CL_usr.SIGN_OBJECT) t02, ")
+		                   .append("(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE ")
+		                  .append("from ISP_BSS_T cl_org ")
+		                  .append("where  CL_ORG.SIGN_OBJECT LIKE '%00000' ")
+		                  .append("group by CL_ORG.SIGN_OBJECT) t03_app, ")
+		                   .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
+		                              .append("from ISP_BSS_T cl_usr ")
+		                              .append("where CL_USR.FIO is not null ")
+		                              .append("group by CL_usr.SIGN_OBJECT) t02_app, ")
+		                 .append("(select max(CL_dep.ID_SRV) CL_DEP_ID,  CL_DEP.SIGN_OBJECT  CL_DEP_CODE ")
+		                              .append("from ISP_BSS_T cl_dep ")
+		                              .append("where CL_dep.SIGN_OBJECT LIKE '%000' ")
+		                              .append("group by CL_DEP.SIGN_OBJECT) t04_app ")
+		                  .append("where JAS.UP_USER=AU_FULL.ID_SRV ")
+		                  .append("and AU_FULL.UP_SIGN=t03.CL_ORG_CODE ")
+		                  .append("and CL_ORG_FULL.ID_SRV=t03.CL_ORG_ID ")
+		                  .append("and AU_FULL.UP_SIGN_USER=t02.CL_USR_CODE(+) ")
+		                  .append("and CL_USR_FULL.ID_SRV(+)=t02.CL_USR_ID ")
+		                  .append("and ARM.ID_SRV =JAS.UP_IS_APP ")
+		                  .append("and au_APP.ID_SRV =JAS.UP_USER_APP ")
+		                  .append("and au_APP.UP_SIGN=t03_APP.CL_ORG_CODE ")
+		                  .append("and CL_ORG_app.ID_SRV=t03_APP.CL_ORG_ID ")
+		                  .append("and AU_APP.UP_SIGN_USER=t02_APP.CL_USR_CODE(+) ")
+		                  .append("and CL_USR_APP.ID_SRV(+)=t02_APP.CL_USR_ID ")
+		                  .append("and substr(au_APP.UP_SIGN,1,5)||'000'=t04_APP.CL_dep_CODE(+) ")
+		                  .append("and CL_dep_app.ID_SRV=t04_APP.CL_dep_ID ")
+		                  .append("and JAS.ID_SRV=? ")
+		               .append(") t1 ")
+		               .toString())
 	         .setParameter(1, idUser)
 	         .getResultList();
 	           
@@ -450,9 +432,9 @@ import iac.grn.serviceitems.HeaderTableItem;
 			 idApp =  Long.valueOf(sessionIdAppAccess); 
 			   
 			 Object[] app=(Object[]) entityManager.createNativeQuery(
-		    			  "select JAS.UP_USER_APP, JAS.UP_IS_APP, JAS.MODE_EXEC "+
-                          "from JOURN_APP_ACCESS_BSS_T jas "+
-                          "where  JAS.ID_SRV=? ")
+		    			  "select JAS.UP_USER_APP, JAS.UP_IS_APP, JAS.MODE_EXEC "
+                          + "from JOURN_APP_ACCESS_BSS_T jas "
+                          + "where  JAS.ID_SRV=? ")
 		    			.setParameter(1, idApp)
 		    			.getSingleResult();  
 			 
@@ -466,25 +448,27 @@ import iac.grn.serviceitems.HeaderTableItem;
 			 
 			 //список ролей, которые надо назначить пользователю по заявке
 			 List<String> roles_app=(List<String>) entityManager.createNativeQuery(
-	    			  "select to_char(RL.ID_SRV) "+
-                       "from JOURN_APP_ACCESS_BSS_T jas, "+
-                       "ROLES_APP_ACCESS_BSS_T rlapp, "+
-                       "AC_ROLES_BSS_T rl "+
-                       "where RLAPP.UP_APP_ACCESS=JAS.ID_SRV "+
-                       "and RL.ID_SRV=RLAPP.UP_ROLE "+
-                       "and JAS.ID_SRV=? "+
-                       "order by RL.FULL_ ")
+	    			  (new StringBuilder("select to_char(RL.ID_SRV) "))
+                      .append("from JOURN_APP_ACCESS_BSS_T jas, ")
+                      .append("ROLES_APP_ACCESS_BSS_T rlapp, ")
+                      .append("AC_ROLES_BSS_T rl ")
+                      .append("where RLAPP.UP_APP_ACCESS=JAS.ID_SRV ")
+                      .append("and RL.ID_SRV=RLAPP.UP_ROLE ")
+                      .append("and JAS.ID_SRV=? ")
+                      .append("order by RL.FULL_ ")
+	    			  .toString())
 	    			.setParameter(1, idApp)
 	    			.getResultList();
 			 
 			 //список ролей, которые уже есть у пользователя в системе 
 			 List<String> roles_user=(List<String>)entityManager.createNativeQuery(
-	    			  "select to_char(URL.UP_ROLES) "+
-                      "from AC_ROLES_BSS_T rl, "+
-                      "AC_USERS_LINK_KNL_T url "+
-                      "where RL.ID_SRV=URL.UP_ROLES "+
-                      "and RL.UP_IS=? "+
-                      "and URL.UP_USERS=? ")
+	    			  (new StringBuilder("select to_char(URL.UP_ROLES) "))
+                      .append("from AC_ROLES_BSS_T rl, ")
+                      .append("AC_USERS_LINK_KNL_T url ")
+                      .append("where RL.ID_SRV=URL.UP_ROLES ")
+                      .append("and RL.UP_IS=? ")
+                      .append("and URL.UP_USERS=? ")
+	    			  .toString())
 	    			.setParameter(1, idArm)
 	    			.setParameter(2, idUser)
 	    			.getResultList();
@@ -504,9 +488,9 @@ import iac.grn.serviceitems.HeaderTableItem;
 				 log.info("AppAccessManager:createAccess:rolesLine:"+rolesLine);
 				 
 				 entityManager.createNativeQuery(
-		 	     		 "DELETE FROM AC_USERS_LINK_KNL_T url "+
-                         "WHERE URL.UP_ROLES in ("+rolesLine+") "+
-                         "and URL.UP_USERS= ? ")
+		 	     		 "DELETE FROM AC_USERS_LINK_KNL_T url "
+                         + "WHERE URL.UP_ROLES in ("+rolesLine+") "
+                         + "and URL.UP_USERS= ? ")
 		 	     		 .setParameter(1, idUser)
 		 	     		 .executeUpdate();
 				 
@@ -514,8 +498,8 @@ import iac.grn.serviceitems.HeaderTableItem;
 				 for(String role :roles_app){
 					   
 						   entityManager.createNativeQuery(
-				 	     		   "insert into AC_USERS_LINK_KNL_T (UP_ROLES, UP_USERS, CREATOR, CREATED) "+
-		                           "values(?, ?, ?, sysdate) ")
+				 	     		   "insert into AC_USERS_LINK_KNL_T (UP_ROLES, UP_USERS, CREATOR, CREATED) "
+		                           + "values(?, ?, ?, sysdate) ")
 				 	     		 .setParameter(1, Long.valueOf(role))
 				 	     		 .setParameter(2, idUser)
 				 	     		 .setParameter(3, getCurrentUser().getIdUser())
@@ -529,8 +513,8 @@ import iac.grn.serviceitems.HeaderTableItem;
 				   if(!roles_user.contains(role)){
 					   
 					   entityManager.createNativeQuery(
-			 	     		   "insert into AC_USERS_LINK_KNL_T (UP_ROLES, UP_USERS, CREATOR, CREATED) "+
-	                           "values(?, ?, ?, sysdate) ")
+			 	     		   "insert into AC_USERS_LINK_KNL_T (UP_ROLES, UP_USERS, CREATOR, CREATED) "
+	                           + "values(?, ?, ?, sysdate) ")
 			 	     		 .setParameter(1, Long.valueOf(role))
 			 	     		 .setParameter(2, idUser)
 			 	     		 .setParameter(3, getCurrentUser().getIdUser())
@@ -550,9 +534,9 @@ import iac.grn.serviceitems.HeaderTableItem;
 				  }
 				 
 				 entityManager.createNativeQuery(
-		 	     		 "DELETE FROM AC_USERS_LINK_KNL_T url "+
-                         "WHERE URL.UP_ROLES in ("+rolesLine+") "+
-                         "and URL.UP_USERS= ? ")
+		 	     		 "DELETE FROM AC_USERS_LINK_KNL_T url "
+                         + "WHERE URL.UP_ROLES in ("+rolesLine+") "
+                         + "and URL.UP_USERS= ? ")
 		 	     		 .setParameter(1, idUser)
 		 	     		 .executeUpdate();
 			 }else{
@@ -561,9 +545,9 @@ import iac.grn.serviceitems.HeaderTableItem;
 			   
 			   
 		     entityManager.createNativeQuery(
-	 	     		   "update JOURN_APP_ACCESS_BSS_T t1 " +
-	 	     		   "set t1.STATUS=1, t1.UP_USER_EXEC=? " +
-	 	     		   "where t1.ID_SRV=? ")
+	 	     		   "update JOURN_APP_ACCESS_BSS_T t1 " 
+	 	     		   + "set t1.STATUS=1, t1.UP_USER_EXEC=? " 
+	 	     		   + "where t1.ID_SRV=? ")
 	 	     		 .setParameter(1, getCurrentUser().getBaseId())
 	 	     		 .setParameter(2, idApp)
 	         	 	 .executeUpdate();
@@ -588,9 +572,9 @@ import iac.grn.serviceitems.HeaderTableItem;
 		   try{
 			   
 		     entityManager.createNativeQuery(
-	 	     		   "update JOURN_APP_ACCESS_BSS_T t1 " +
-	 	     		   "set t1.STATUS=2,  t1.REJECT_REASON=?, t1.UP_USER_EXEC=? " +
-	 	     		   "where t1.ID_SRV=? ")
+	 	     		   "update JOURN_APP_ACCESS_BSS_T t1 " 
+	 	     		   + "set t1.STATUS=2,  t1.REJECT_REASON=?, t1.UP_USER_EXEC=? " 
+	 	     		   + "where t1.ID_SRV=? ")
 	 	     		 .setParameter(1, this.rejectReason)
 	 	     		 .setParameter(2, getCurrentUser().getBaseId())
 	 	     		 .setParameter(3, Long.valueOf(sessionId))
@@ -616,9 +600,9 @@ import iac.grn.serviceitems.HeaderTableItem;
 		   try{
 			   
 		     entityManager.createNativeQuery(
-	 	     		   "update JOURN_APP_ACCESS_BSS_T t1 " +
-	 	     		   "set t1.COMMENT_=? " +
-	 	     		   "where t1.ID_SRV=? ")
+	 	     		   "update JOURN_APP_ACCESS_BSS_T t1 " 
+	 	     		   + "set t1.COMMENT_=? " 
+	 	     		   + "where t1.ID_SRV=? ")
 	 	     		 .setParameter(1, this.commentText)
 	 	     		 .setParameter(2, Long.valueOf(sessionId))
 	 	     	 	 .executeUpdate();
@@ -704,14 +688,15 @@ import iac.grn.serviceitems.HeaderTableItem;
 		    	if(listRolesAppForView==null && sessionId!=null){
 		      	
 		    		lo=entityManager.createNativeQuery(
-		    				"select RL.ID_SRV,  RL.SIGN_OBJECT, RL.FULL_, RL.DESCRIPTION "+
-                            "from JOURN_APP_ACCESS_BSS_T jas, "+
-                            "ROLES_APP_ACCESS_BSS_T rlapp, "+
-                            "AC_ROLES_BSS_T rl "+
-                            "where RLAPP.UP_APP_ACCESS=JAS.ID_SRV "+
-                            "and RL.ID_SRV=RLAPP.UP_ROLE "+
-                            "and JAS.ID_SRV=? "+
-	                        "order by RL.FULL_ ")
+		    				(new StringBuilder("select RL.ID_SRV,  RL.SIGN_OBJECT, RL.FULL_, RL.DESCRIPTION "))
+                            .append("from JOURN_APP_ACCESS_BSS_T jas, ")
+                            .append("ROLES_APP_ACCESS_BSS_T rlapp, ")
+                            .append("AC_ROLES_BSS_T rl ")
+                            .append("where RLAPP.UP_APP_ACCESS=JAS.ID_SRV ")
+                            .append("and RL.ID_SRV=RLAPP.UP_ROLE ")
+                            .append("and JAS.ID_SRV=? ")
+	                          .append("order by RL.FULL_ ")
+		    				.toString())
 		    				.setParameter(1, Long.valueOf(sessionId))
 		    				.getResultList();
 		    		

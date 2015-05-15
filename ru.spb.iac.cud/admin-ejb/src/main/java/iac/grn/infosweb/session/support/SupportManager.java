@@ -55,9 +55,9 @@ import org.jboss.seam.transaction.Transaction;
 			 LinksMap linksMap = (LinksMap)
 					  Component.getInstance("linksMap",ScopeType.APPLICATION);
 			 
-			 entityManager.createNativeQuery("insert into HELP_DESK_PROTOTYPE( "+
-	          "ID_HELP, AUTHOR, POSITION,  PHONE,  EMAIL, MESSAGE, CREATOR, ID_APP) values( "+
-	          "SQNC_HELP_DESK_PROTOTYPE.nextval, :p1, :p2, :p3, :p4, :p5, :p6, :p7)")
+			 entityManager.createNativeQuery("insert into HELP_DESK_PROTOTYPE( "
+	          + "ID_HELP, AUTHOR, POSITION,  PHONE,  EMAIL, MESSAGE, CREATOR, ID_APP) values( "
+	          + "SQNC_HELP_DESK_PROTOTYPE.nextval, :p1, :p2, :p3, :p4, :p5, :p6, :p7)")
 	          .setParameter("p1", helpFio)
 	          .setParameter("p2", helpPost)
 	          .setParameter("p3", helpTel)

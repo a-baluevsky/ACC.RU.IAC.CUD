@@ -202,8 +202,8 @@ import org.jboss.seam.transaction.Transaction;
 				 
 				 
 				 auditCount = (Long)entityManager.createQuery(
-						 "select count(o) " +  
-				         "from AcApplication o "+
+						 "select count(o) " 
+				         + "from AcApplication o "+
 				         (st!=null ? " where "+st :""))
 		                .getSingleResult();
 				 
@@ -350,9 +350,9 @@ import org.jboss.seam.transaction.Transaction;
 		   String secret = TIDEncodePLBase64.getSecret();
 		   
 		   entityManager.createNativeQuery(
-				   "insert into JOURN_APP_SYSTEM_BSS_T (ID_SRV, FULL_NAME, SHORT_NAME, " +
-                             "DESCRIPTION, UP_USER, SECRET, COMMENT_APP) " +
-				   " values ( JOURN_APP_SYSTEM_SEQ.nextval, ?, ?, ?, ?, ?, ? ) ")
+				   "insert into JOURN_APP_SYSTEM_BSS_T (ID_SRV, FULL_NAME, SHORT_NAME, " 
+                             + "DESCRIPTION, UP_USER, SECRET, COMMENT_APP) " 
+				   + " values ( JOURN_APP_SYSTEM_SEQ.nextval, ?, ?, ?, ?, ?, ? ) ")
 				    .setParameter(1, armBeanCrt.getName())
 					.setParameter(2, armBeanCrt.getLinks())
 					.setParameter(3, armBeanCrt.getDescription())
@@ -471,9 +471,9 @@ import org.jboss.seam.transaction.Transaction;
 		   
 		   Transaction.instance().enlist(entityManager);
 		   
-		   entityManager.createNativeQuery("update AC_IS_BSS_T t1 " + 
-		   		                           "set T1.CERT_DATE=? " + 
-		   		                           "where t1.ID_SRV=? ")
+		   entityManager.createNativeQuery("update AC_IS_BSS_T t1 " 
+		   		                           + "set T1.CERT_DATE=? " 
+		   		                           + "where t1.ID_SRV=? ")
 		   .setParameter(1, x509CertArm)
 		   .setParameter(2, id_sys)
 		   .executeUpdate();  
@@ -505,9 +505,9 @@ import org.jboss.seam.transaction.Transaction;
   			   return;
   		   }
   			   
-  		   entityManager.createNativeQuery("update AC_IS_BSS_T t1 " + 
-  		   		                           "set T1.CERT_DATE=null " + 
-  		   		                           "where t1.ID_SRV=? ")
+  		   entityManager.createNativeQuery("update AC_IS_BSS_T t1 " 
+  		   		                           + "set T1.CERT_DATE=null " 
+  		   		                           + "where t1.ID_SRV=? ")
   		   .setParameter(1, Long.valueOf(sessionIdArm))
   		   .executeUpdate();  
   			 
@@ -576,11 +576,12 @@ import org.jboss.seam.transaction.Transaction;
 			  AcApplication aa = entityManager.find(AcApplication.class, Long.valueOf(sessionId));
 			  
 		      List<Object[]> lo = (List<Object[]>) entityManager.createNativeQuery(
-		    		                          "select JAS.ID_SRV, JAS.CREATED "+
-                                              "from JOURN_APP_SYSTEM_BSS_T jas, "+
-                                              "AC_IS_BSS_T arm "+
-                                              "where ARM.ID_SRV =JAS.UP_IS "+
-                                              "and ARM.ID_SRV=? ")
+                      (new StringBuilder("select JAS.ID_SRV, JAS.CREATED "))
+                      .append("from JOURN_APP_SYSTEM_BSS_T jas, ")
+                      .append("AC_IS_BSS_T arm ")
+                      .append("where ARM.ID_SRV =JAS.UP_IS ")
+                      .append("and ARM.ID_SRV=? ")
+                    .toString())
                            .setParameter(1, Long.valueOf(sessionId))
                            .getResultList();
 			  
@@ -622,10 +623,10 @@ import org.jboss.seam.transaction.Transaction;
 			   }
 		      }else{
 		    	  
-		    	  dellMessage="У ИС есть привязка к заявке на создание системы " +
-		    	  		      "<br/>№ "+lo.get(0)[0].toString()+
-		    	  		      " от "+df.format((Date)lo.get(0)[1])+
-		    			      ".<br/>Удаление невозможно! ";
+		    	  dellMessage="У ИС есть привязка к заявке на создание системы " 
+		    	  		      + "<br/>№ "+lo.get(0)[0].toString()
+		    	  		      + " от "+df.format((Date)lo.get(0)[1])
+		    			      + ".<br/>Удаление невозможно! ";
 		    	  delNot=1;
 		      }
 			 
@@ -649,9 +650,9 @@ import org.jboss.seam.transaction.Transaction;
  	     if(sessionIdArm!=null){
  	    	 
  	    	String certDataX = (String) entityManager.createNativeQuery(
- 	    			 "select to_char(T1.CERT_DATE) " + 
- 	    	 		 "from AC_IS_BSS_T t1 " + 
- 	    	 		 "where T1.ID_SRV=? ")
+ 	    			 "select to_char(T1.CERT_DATE) " 
+ 	    	 		 + "from AC_IS_BSS_T t1 " 
+ 	    	 		 + "where T1.ID_SRV=? ")
                  .setParameter(1, Long.valueOf(sessionIdArm))
                  .getSingleResult();
  	    	
@@ -702,8 +703,8 @@ import org.jboss.seam.transaction.Transaction;
 	    		 
 	    		if(au.getAllowedSys()!=null){
 	    			listArm=new ArrayList<AcApplication>(entityManager.createQuery(
-		       				  "select o from AcApplication o " +
-		       				  "where o.idArm in (:idsArm) order by o.name ")
+		       				  "select o from AcApplication o " 
+		       				  + "where o.idArm in (:idsArm) order by o.name ")
 		       				  .setParameter("idsArm", au.getAllowedSys())
 		       				  .getResultList());
 	    		}else{
@@ -772,24 +773,25 @@ import org.jboss.seam.transaction.Transaction;
 	 	        
 	 	            
 	 	       lo=entityManager.createNativeQuery(
-			    	   "select t1.t1_id, t1.t1_login, t1.t1_fio "+
-	                   "from (select AU_FULL.ID_SRV t1_id, AU_FULL.LOGIN t1_login, "+  
-	                  "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO) t1_fio "+
-	                     "from "+ 
-	                     "AC_USERS_KNL_T AU_full, "+ 
-	                     "LINK_ADMIN_USER_SYS uul, "+ 
-	                     "ISP_BSS_T CL_USR_FULL, "+
-	                     "(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "+
-	                         "from ISP_BSS_T cl_usr, "+ 
-	                         "AC_USERS_KNL_T au "+ 
-	                        "where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT "+ 
-	                        "group by CL_usr.SIGN_OBJECT) t2 "+   
-	                     "where  AU_FULL.UP_SIGN_USER=t2.CL_USR_CODE(+) "+ 
-	                     "and CL_USR_FULL.ID_SRV(+)=t2.CL_USR_ID "+
-	                   "and UUL.UP_USER= AU_FULL.ID_SRV "+ 
-	                     "and UUL.UP_SYS=? "+
-	                     "order by t1_fio "+ 
-	                     ") t1 ")
+			    	   (new StringBuilder("select t1.t1_id, t1.t1_login, t1.t1_fio "))
+	                     .append("from (select AU_FULL.ID_SRV t1_id, AU_FULL.LOGIN t1_login, ")
+	                    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO) t1_fio ")
+	                       .append("from ")
+	                       .append("AC_USERS_KNL_T AU_full, ")
+	                       .append("LINK_ADMIN_USER_SYS uul, ")
+	                       .append("ISP_BSS_T CL_USR_FULL, ")
+	                       .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
+	                           .append("from ISP_BSS_T cl_usr, ")
+	                           .append("AC_USERS_KNL_T au ")
+	                          .append("where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT ")
+	                          .append("group by CL_usr.SIGN_OBJECT) t2 ")
+	                       .append("where  AU_FULL.UP_SIGN_USER=t2.CL_USR_CODE(+) ")
+	                       .append("and CL_USR_FULL.ID_SRV(+)=t2.CL_USR_ID ")
+	                     .append("and UUL.UP_USER= AU_FULL.ID_SRV ")
+	                       .append("and UUL.UP_SYS=? ")
+	                       .append("order by t1_fio ")
+	                       .append(") t1 ")
+			    	   .toString())
 			      		.setParameter(1, Long.valueOf(sessionId))
 					 .getResultList();
 	 	    	 
@@ -873,9 +875,9 @@ import org.jboss.seam.transaction.Transaction;
 		if(armCode!=null){
 		  try{
 			  List<Object> lo=entityManager.createNativeQuery(
-					  "select rl.sign_object "+
-                      "from AC_IS_BSS_T rl "+
-                       "where RL.SIGN_OBJECT=? ")
+					  "select rl.sign_object "
+                      + "from AC_IS_BSS_T rl "
+                       + "where RL.SIGN_OBJECT=? ")
 	  				.setParameter(1, armCode)
 	  				.getResultList();
 	  
@@ -900,10 +902,11 @@ import org.jboss.seam.transaction.Transaction;
 		if(armCode!=null){
 		  try{
 			  List<Object> lo=entityManager.createNativeQuery(
-			  			        "select rl.sign_object "+
-                                "from AC_IS_BSS_T rl "+
-                                "where RL.SIGN_OBJECT=? "+ 
-                                "and RL.ID_SRV !=? ")
+	  			        (new StringBuilder("select rl.sign_object "))
+                        .append("from AC_IS_BSS_T rl ")
+                        .append("where RL.SIGN_OBJECT=? ")
+                        .append("and RL.ID_SRV !=? ")
+	  			        .toString())
 			  				.setParameter(1, armCode)
 			  				.setParameter(2, idArm)
 			  				.getResultList();

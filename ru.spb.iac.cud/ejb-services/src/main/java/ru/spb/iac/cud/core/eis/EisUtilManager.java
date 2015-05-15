@@ -59,23 +59,23 @@ import ru.spb.iac.cud.util.CommonUtil;
 			(new StringBuilder(" SELECT gr_id, '[' || sys_code || ']' || role_code role_full_code "))
 			.append(" FROM ( ")
 			.append(" SELECT gr.ID_SRV gr_id, SYS.SIGN_OBJECT sys_code, ROL.SIGN_OBJECT role_code ")
-			.append("    FROM AC_IS_BSS_T sys, ")
-			.append("         AC_ROLES_BSS_T rol, ")
-			.append("         GROUP_USERS_KNL_T gr, ")
-			.append("         LINK_GROUP_USERS_ROLES_KNL_T lugr, ")
-			.append("         GROUP_SYSTEMS_KNL_T gsys, ")
-			.append("         LINK_GROUP_SYS_SYS_KNL_T lgr ")
-			.append("   WHERE  ROL.ID_SRV = LUGR.UP_ROLES ")
-			.append("         AND LUGR.UP_GROUP_USERS = gr.ID_SRV ")
-			.append("         AND ROL.UP_IS = sys.ID_SRV ")
-			.append("         AND gr.ID_SRV IN (")
+			.append(" FROM AC_IS_BSS_T sys, ")
+			.append(" AC_ROLES_BSS_T rol, ")
+			.append(" GROUP_USERS_KNL_T gr, ")
+			.append(" LINK_GROUP_USERS_ROLES_KNL_T lugr, ")
+			.append(" GROUP_SYSTEMS_KNL_T gsys, ")
+			.append(" LINK_GROUP_SYS_SYS_KNL_T lgr ")
+			.append(" WHERE  ROL.ID_SRV = LUGR.UP_ROLES ")
+			.append(" AND LUGR.UP_GROUP_USERS = gr.ID_SRV ")
+			.append(" AND ROL.UP_IS = sys.ID_SRV ")
+			.append(" AND gr.ID_SRV IN (")
 			.toString();
 	
 	private static final String SELECT_ROLE_END =
 						        (new StringBuilder(") "))
-								.append("   AND GSYS.GROUP_CODE = :idIS ")
-								.append("   AND GSYS.ID_SRV = LGR.UP_GROUP_SYSTEMS ")
-								.append("   AND LGR.UP_SYSTEMS = SYS.ID_SRV ")
+								.append(" AND GSYS.GROUP_CODE = :idIS ")
+								.append(" AND GSYS.ID_SRV = LGR.UP_GROUP_SYSTEMS ")
+								.append(" AND LGR.UP_SYSTEMS = SYS.ID_SRV ")
 								.append("GROUP BY gr.ID_SRV, SYS.SIGN_OBJECT, ROL.SIGN_OBJECT ) ")
 								.append("ORDER BY gr_id, sys_code ")
 						        .toString();
@@ -324,22 +324,22 @@ import ru.spb.iac.cud.util.CommonUtil;
 				lo = em.createNativeQuery(
 						(new StringBuilder("select AU.ID_SRV, ROL.SIGN_OBJECT "))
 						  .append("from  AC_IS_BSS_T sys, ")
-						  .append("        AC_ROLES_BSS_T rol, ")
-						  .append("        AC_USERS_LINK_KNL_T url, ")
-						  .append("        AC_USERS_KNL_T AU, ")
-						  .append("        AC_SUBSYSTEM_CERT_BSS_T subsys, ")
-						  .append("        LINK_GROUP_USERS_ROLES_KNL_T lugr, ")
-						  .append("        LINK_GROUP_USERS_USERS_KNL_T lugu ")
+						  .append(" AC_ROLES_BSS_T rol, ")
+						  .append(" AC_USERS_LINK_KNL_T url, ")
+						  .append(" AC_USERS_KNL_T AU, ")
+						  .append(" AC_SUBSYSTEM_CERT_BSS_T subsys, ")
+						  .append(" LINK_GROUP_USERS_ROLES_KNL_T lugr, ")
+						  .append(" LINK_GROUP_USERS_USERS_KNL_T lugu ")
 						  .append("where (SYS.SIGN_OBJECT= :idIS or  SUBSYS.SUBSYSTEM_CODE=:idIS) ")
-						  .append("     and (ROL.ID_SRV = URL.UP_ROLES or ROL.ID_SRV = LUGR.UP_ROLES )  ")
-						  .append("     and LUGU.UP_GROUP_USERS= LUGR.UP_GROUP_USERS(+)  ")
-						  .append("     and LUGU.UP_USERS(+)  = AU.ID_SRV  ")
-						  .append("     and URL.UP_USERS(+)  = AU.ID_SRV ")
-						  .append("     and ROL.UP_IS=sys.ID_SRV   ")
-						  .append("     and AU.ID_SRV IN(")
+						  .append(" and (ROL.ID_SRV = URL.UP_ROLES or ROL.ID_SRV = LUGR.UP_ROLES )  ")
+						  .append(" and LUGU.UP_GROUP_USERS= LUGR.UP_GROUP_USERS(+)  ")
+						  .append(" and LUGU.UP_USERS(+)  = AU.ID_SRV  ")
+						  .append(" and URL.UP_USERS(+)  = AU.ID_SRV ")
+						  .append(" and ROL.UP_IS=sys.ID_SRV   ")
+						  .append(" and AU.ID_SRV IN(")
 						  .append(usersIdsLine)
 						  .append(")  ")
-						  .append("     and  SUBSYS.UP_IS(+) =SYS.ID_SRV  ")
+						  .append(" and  SUBSYS.UP_IS(+) =SYS.ID_SRV  ")
 						  .append("group by AU.ID_SRV, ROL.SIGN_OBJECT  ")
 						  .append("order by AU.ID_SRV, ROL.SIGN_OBJECT ")						  
 						  .toString()
@@ -439,84 +439,79 @@ import ru.spb.iac.cud.util.CommonUtil;
 				   
 				   resultCount = ((java.math.BigDecimal) em
 							.createNativeQuery(
-									"SELECT COUNT (*) " + 
-									"  FROM (  SELECT t1.t1_fio, t1.t1_org_name " + 
-									"            FROM (SELECT DECODE ( " + 
-									"                            AU_FULL.UP_SIGN_USER, " + 
-									"                            NULL,    AU_FULL.SURNAME " + 
-									"                                  || ' ' " + 
-									"                                  || AU_FULL.NAME_ " + 
-									"                                  || ' ' " + 
-									"                                  || AU_FULL.PATRONYMIC, " + 
-									"                            CL_USR_FULL.FIO) " + 
-									"                            t1_fio, " + 
-									"                         t1.CL_ORG_CODE t1_org_code, " + 
-									"                         CL_ORG_FULL.FULL_ t1_org_name " + 
-									"                    FROM (  SELECT MAX (CL_ORG.ID_SRV) CL_ORG_ID, " + 
-									"                                   CL_ORG.SIGN_OBJECT CL_ORG_CODE " + 
-									"                              FROM ISP_BSS_T cl_org, AC_USERS_KNL_T au " + 
-									"                             WHERE AU.UP_SIGN = CL_ORG.SIGN_OBJECT " + 
-									"                          GROUP BY CL_ORG.SIGN_OBJECT) t1, " + 
-									"                         (  SELECT MAX (CL_usr.ID_SRV) CL_USR_ID, " + 
-									"                                   CL_USR.SIGN_OBJECT CL_USR_CODE " + 
-									"                              FROM ISP_BSS_T cl_usr, AC_USERS_KNL_T au " + 
-									"                             WHERE AU.UP_SIGN_USER = CL_usr.SIGN_OBJECT " + 
-									"                          GROUP BY CL_usr.SIGN_OBJECT) t2, " + 
-									"                         (  SELECT t_core.t_core_id " + 
-									"                              FROM (  SELECT AU_FULL.ID_SRV t_core_id " + 
-									"                                        FROM AC_USERS_KNL_T au_full, " + 
-									"                                             LINK_GROUP_USERS_USERS_KNL_T lgu, " + 
-									"                                             AC_USERS_LINK_KNL_T lur, " + 
-									"                                             AC_ROLES_BSS_T rol, " + 
-									"                                             AC_ROLES_BSS_T rol_group, " + 
-									"                                             LINK_GROUP_USERS_ROLES_KNL_T lgr, " + 
-									"                                             AC_IS_BSS_T ais, " + 
-									"                                             AC_IS_BSS_T ais_group, " + 
-									"                                             GROUP_USERS_KNL_T gr " + 
-									"                                       WHERE     lur.UP_USERS(+) = AU_FULL.ID_SRV " + 
-									"                                             AND lgu.UP_USERS(+) = AU_FULL.ID_SRV " + 
-									"                                             AND ROL.ID_SRV(+) = LUR.UP_ROLES " + 
-									"                                             AND lgr.UP_GROUP_USERS(+) = GR.ID_SRV " + 
-									"                                             AND lgu.UP_GROUP_USERS = GR.ID_SRV(+) " + 
-									"                                             AND rol_group.ID_SRV(+) = LGR.UP_ROLES " + 
-									"                                             AND ROL.UP_IS = ais.ID_SRV(+) " + 
-									"                                             AND ROL_group.UP_IS = " + 
-									"                                                    ais_group.ID_SRV(+) " + 
-									"                                      and (ais.SIGN_OBJECT  = :idIS " + 
-									"                                      or ais_group.SIGN_OBJECT = :idIS " + 
-									"                                      or -1 = :onlyISUsers )  " + 
-									
-									(uidsLine != null ? "and to_char(au_full.ID_SRV) in ("
+									(new StringBuilder("SELECT COUNT (*) "))
+									  .append("  FROM (  SELECT t1.t1_fio, t1.t1_org_name ") 
+									  .append("            FROM (SELECT DECODE ( ") 
+									  .append("                            AU_FULL.UP_SIGN_USER, ") 
+									  .append("                            NULL,    AU_FULL.SURNAME ") 
+									  .append("                                  || ' ' ") 
+									  .append("                                  || AU_FULL.NAME_ ") 
+									  .append("                                  || ' ' ") 
+									  .append("                                  || AU_FULL.PATRONYMIC, ") 
+									  .append("                            CL_USR_FULL.FIO) ") 
+									  .append("                            t1_fio, ") 
+									  .append("                         t1.CL_ORG_CODE t1_org_code, ") 
+									  .append("                         CL_ORG_FULL.FULL_ t1_org_name ") 
+									  .append("                    FROM (  SELECT MAX (CL_ORG.ID_SRV) CL_ORG_ID, ") 
+									  .append("                                   CL_ORG.SIGN_OBJECT CL_ORG_CODE ") 
+									  .append("                              FROM ISP_BSS_T cl_org, AC_USERS_KNL_T au ") 
+									  .append("                             WHERE AU.UP_SIGN = CL_ORG.SIGN_OBJECT ") 
+									  .append("                          GROUP BY CL_ORG.SIGN_OBJECT) t1, ") 
+									  .append("                         (  SELECT MAX (CL_usr.ID_SRV) CL_USR_ID, ") 
+									  .append("                                   CL_USR.SIGN_OBJECT CL_USR_CODE ") 
+									  .append("                              FROM ISP_BSS_T cl_usr, AC_USERS_KNL_T au ") 
+									  .append("                             WHERE AU.UP_SIGN_USER = CL_usr.SIGN_OBJECT ") 
+									  .append("                          GROUP BY CL_usr.SIGN_OBJECT) t2, ") 
+									  .append("                         (  SELECT t_core.t_core_id ") 
+									  .append("                              FROM (  SELECT AU_FULL.ID_SRV t_core_id ") 
+									  .append("                                        FROM AC_USERS_KNL_T au_full, ") 
+									  .append("                                             LINK_GROUP_USERS_USERS_KNL_T lgu, ") 
+									  .append("                                             AC_USERS_LINK_KNL_T lur, ") 
+									  .append("                                             AC_ROLES_BSS_T rol, ") 
+									  .append("                                             AC_ROLES_BSS_T rol_group, ") 
+									  .append("                                             LINK_GROUP_USERS_ROLES_KNL_T lgr, ") 
+									  .append("                                             AC_IS_BSS_T ais, ") 
+									  .append("                                             AC_IS_BSS_T ais_group, ") 
+									  .append("                                             GROUP_USERS_KNL_T gr ") 
+									  .append("                                       WHERE     lur.UP_USERS(+) = AU_FULL.ID_SRV ") 
+									  .append("                                             AND lgu.UP_USERS(+) = AU_FULL.ID_SRV ") 
+									  .append("                                             AND ROL.ID_SRV(+) = LUR.UP_ROLES ") 
+									  .append("                                             AND lgr.UP_GROUP_USERS(+) = GR.ID_SRV ") 
+									  .append("                                             AND lgu.UP_GROUP_USERS = GR.ID_SRV(+) ") 
+									  .append("                                             AND rol_group.ID_SRV(+) = LGR.UP_ROLES ") 
+									  .append("                                             AND ROL.UP_IS = ais.ID_SRV(+) ") 
+									  .append("                                             AND ROL_group.UP_IS = ") 
+									  .append("                                                    ais_group.ID_SRV(+) ") 
+									  .append("                                      and (ais.SIGN_OBJECT  = :idIS ") 
+									  .append("                                      or ais_group.SIGN_OBJECT = :idIS ") 
+									  .append("                                      or -1 = :onlyISUsers )  ")
+									 .append(uidsLine != null ? "and to_char(au_full.ID_SRV) in ("
 											+ uidsLine + ") "
-											: " ")+
-
-									(filterSt != null ? filterSt : " ")+
-									
-									
-									"                         ORDER BY t_core_id) t_core " + 
-									"                          GROUP BY t_core_id " + 
-									"                          ORDER BY t_core.t_core_id) t4, " + 
-									"                         ISP_BSS_T cl_org_full, " + 
-									"                         ISP_BSS_T cl_usr_full, " + 
-									"                         AC_USERS_KNL_T au_full, " + 
-									"                         AC_USERS_KNL_T usr_crt, " + 
-									"                         AC_USERS_KNL_T usr_upd " + 
-									"                   WHERE     cl_org_full.ID_SRV = CL_ORG_ID " + 
-									"                         AND cl_usr_full.ID_SRV(+) = CL_USR_ID " + 
-									"                         AND au_full.UP_SIGN = CL_ORG_CODE " + 
-									"                         AND au_full.UP_SIGN_USER = CL_USR_CODE(+) " + 
-									"                         AND au_full.CREATOR = USR_CRT.ID_SRV " + 
-									"                         AND au_full.MODIFICATOR = USR_UPD.ID_SRV(+) " + 
-									"                         AND AU_FULL.ID_SRV = t4.t_core_id) t1 " + 
-									"           WHERE 1 = 1 " + 
-										
-									(settingsMap.containsKey("FILTER_FIO") ? 
-											 " and upper(t1_fio) LIKE  upper('%"+settingsMap.get("FILTER_FIO")+"%')" : "") +
-									
-									(settingsMap.containsKey("FILTER_ORG") ? 
-											 " and upper(t1_org_name) LIKE  upper('%"+settingsMap.get("FILTER_ORG")+"%')" : "") +
-								    
-									" ) ")
+											: " ")
+											.append(filterSt != null ? filterSt : " ")
+									  .append("                         ORDER BY t_core_id) t_core ") 
+									  .append("                          GROUP BY t_core_id ") 
+									  .append("                          ORDER BY t_core.t_core_id) t4, ") 
+									  .append("                         ISP_BSS_T cl_org_full, ") 
+									  .append("                         ISP_BSS_T cl_usr_full, ") 
+									  .append("                         AC_USERS_KNL_T au_full, ") 
+									  .append("                         AC_USERS_KNL_T usr_crt, ") 
+									  .append("                         AC_USERS_KNL_T usr_upd ") 
+									  .append("                   WHERE     cl_org_full.ID_SRV = CL_ORG_ID ") 
+									  .append("                         AND cl_usr_full.ID_SRV(+) = CL_USR_ID ") 
+									  .append("                         AND au_full.UP_SIGN = CL_ORG_CODE ") 
+									  .append("                         AND au_full.UP_SIGN_USER = CL_USR_CODE(+) ") 
+									  .append("                         AND au_full.CREATOR = USR_CRT.ID_SRV ") 
+									  .append("                         AND au_full.MODIFICATOR = USR_UPD.ID_SRV(+) ") 
+									  .append("                         AND AU_FULL.ID_SRV = t4.t_core_id) t1 ") 
+									  .append("           WHERE 1 = 1 ")
+									.append(settingsMap.containsKey("FILTER_FIO") ? 
+											 " and upper(t1_fio) LIKE  upper('%"+settingsMap.get("FILTER_FIO")+"%')" : "")
+									.append(settingsMap.containsKey("FILTER_ORG") ? 
+											 " and upper(t1_org_name) LIKE  upper('%"+settingsMap.get("FILTER_ORG")+"%')" : "") 
+									.append(" ) ")
+									.toString()
+									)
 							.setParameter("idIS", idIS)
 							.setParameter("onlyISUsers",
 									CUDConstants.categorySYS.equals(category) ? 1: -1).getSingleResult()).intValue();
@@ -552,114 +547,114 @@ import ru.spb.iac.cud.util.CommonUtil;
 
 				lo = em.createNativeQuery(
 						(new StringBuilder("select t1.t1_id, t1.t1_login, t1.t1_cert, t1.t1_usr_code, t1.t1_fio, t1.t1_tel, t1.t1_email,t1.t1_pos, t1.t1_dep_name,  "))
-						  .append("                        t1.t1_org_code, t1.t1_org_name, t1.t1_org_adr, t1.t1_org_tel, t1.t1_start, t1.t1_end, t1.t1_status,  ")
-						  .append("                         t1.t1_crt_date, t1.t1_crt_usr_login, t1.t1_upd_date, t1.t1_upd_usr_login,  ")
-						  .append("                         t1.t1_dep_code, t1.t1_org_status, t1.t1_usr_status, t1.t1_dep_status, t1.t1_org_okato, t1.t1_dep_adr   ")
-						  .append("                        from( ")
-						  .append("                        select AU_FULL.ID_SRV t1_id, AU_FULL.login t1_login, AU_FULL.CERTIFICATE t1_cert, t2.CL_USR_CODE t1_usr_code,  ")
-						  .append("                         decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_fio,    ")
-						  .append("                          decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.PHONE, CL_USR_FULL.PHONE ) t1_tel,     ")
-						  .append("                          decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.E_MAIL, CL_USR_FULL.EMAIL) t1_email,    ")
-						  .append("                          decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.POSITION, CL_USR_FULL.POSITION)t1_pos,    ")
-						  .append("                          decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.DEPARTMENT, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.FULL_)) t1_dep_name,   ")
-						  .append("                          t1.CL_ORG_CODE t1_org_code, CL_ORG_FULL.FULL_ t1_org_name,  ")
-						  .append("                          CL_ORG_FULL.PREFIX || decode(CL_ORG_FULL.HOUSE, null, null, ','  ||CL_ORG_FULL.HOUSE  ) t1_org_adr,  ")
-						  .append("                          CL_ORG_FULL.PHONE t1_org_tel,  ")
-						  .append("                          to_char(AU_FULL.START_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_start,   ")
-						  .append("                          to_char(AU_FULL.END_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_end,    ")
-						  .append("                          AU_FULL.STATUS t1_status,    ")
-						  .append("                          AU_FULL.CREATED t1_crt_date,   ")
-						  .append("                          USR_CRT.LOGIN t1_crt_usr_login,   ")
-						  .append("                          to_char(AU_FULL.MODIFIED, 'DD.MM.YY HH24:MI:SS') t1_upd_date,   ")
-						  .append("                          USR_UPD.LOGIN t1_upd_usr_login,   ")
-						  .append("                          decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.sign_object)) t1_dep_code,   ")
-						  .append("                          CL_ORG_FULL.STATUS t1_org_status,  CL_usr_FULL.STATUS t1_usr_status,   ")
-						  .append("                          decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.STATUS)) t1_dep_status,  ")
-						  .append("                          CL_ORG_FULL.SIGN_OKATO t1_org_okato, CL_DEP_FULL.PREFIX || decode(CL_DEP_FULL.HOUSE, null, null, ','  ||CL_DEP_FULL.HOUSE  ) t1_dep_adr        ")
-						  .append("                        from  ")
-						  .append("                        (select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE  ")
-						  .append("                        from ISP_BSS_T cl_org,  ")
-						  .append("                        AC_USERS_KNL_T au  ")
-						  .append("                        where AU.UP_SIGN = CL_ORG.SIGN_OBJECT  ")
-						  .append("                        group by CL_ORG.SIGN_OBJECT) t1,  ")
-						  .append("                        (select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE  ")
-						  .append("                        from ISP_BSS_T cl_usr,  ")
-						  .append("                        AC_USERS_KNL_T au  ")
-						  .append("                        where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT  ")
-						  .append("                        group by CL_usr.SIGN_OBJECT) t2,  ")
-						  .append("                        (select max(CL_dep.ID_SRV) CL_DEP_ID,  CL_DEP.SIGN_OBJECT  CL_DEP_CODE  ")
-						  .append("                        from ISP_BSS_T cl_dep,  ")
-						  .append("                        AC_USERS_KNL_T au  ")
-						  .append("                        where substr(au.UP_SIGN_USER,1,5)||'000'  =cl_dep.SIGN_OBJECT(+)  ")
-						  .append("                        group by CL_DEP.SIGN_OBJECT) t3,  ")
-						  .append("                        (  ")
-						  .append("                        ")
-						  .append("                       select t_core.t_core_id  ")
-						  .append("                        from(   ")
-						  .append("                        select AU_FULL.ID_SRV t_core_id   ")
-						  .append("                        from   ")
-						  .append("                        AC_USERS_KNL_T au_full,   ")
-						  .append("                        LINK_GROUP_USERS_USERS_KNL_T lgu,   ")
-						  .append("                       AC_USERS_LINK_KNL_T lur,  ")
-						  .append("                        AC_ROLES_BSS_T rol,  ")
-						  .append("                        AC_ROLES_BSS_T rol_group,  ")
-						  .append("                        LINK_GROUP_USERS_ROLES_KNL_T lgr,  ")
-						  .append("                        AC_IS_BSS_T ais,  ")
-						  .append("                        AC_IS_BSS_T ais_group, ")
-						  .append("                        GROUP_SYSTEMS_KNL_T sysgroup, ")
-						  .append("                        LINK_GROUP_SYS_SYS_KNL_T linksysgroup, ")
-						  .append("                        GROUP_USERS_KNL_T gr ")
-						  .append("                        where  ")
-						  .append("                        lur.UP_USERS(+)=AU_FULL.ID_SRV and  ")
-						  .append("                        lgu.UP_USERS(+)=AU_FULL.ID_SRV  ")
-						  .append("                        and ROL.ID_SRV(+)=LUR.UP_ROLES  ")
+						  .append(" t1.t1_org_code, t1.t1_org_name, t1.t1_org_adr, t1.t1_org_tel, t1.t1_start, t1.t1_end, t1.t1_status,  ")
+						  .append(" t1.t1_crt_date, t1.t1_crt_usr_login, t1.t1_upd_date, t1.t1_upd_usr_login,  ")
+						  .append(" t1.t1_dep_code, t1.t1_org_status, t1.t1_usr_status, t1.t1_dep_status, t1.t1_org_okato, t1.t1_dep_adr   ")
+						  .append(" from( ")
+						  .append(" select AU_FULL.ID_SRV t1_id, AU_FULL.login t1_login, AU_FULL.CERTIFICATE t1_cert, t2.CL_USR_CODE t1_usr_code,  ")
+						  .append(" decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_fio,    ")
+						  .append(" decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.PHONE, CL_USR_FULL.PHONE ) t1_tel,     ")
+						  .append(" decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.E_MAIL, CL_USR_FULL.EMAIL) t1_email,    ")
+						  .append(" decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.POSITION, CL_USR_FULL.POSITION)t1_pos,    ")
+						  .append(" decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.DEPARTMENT, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.FULL_)) t1_dep_name,   ")
+						  .append(" t1.CL_ORG_CODE t1_org_code, CL_ORG_FULL.FULL_ t1_org_name,  ")
+						  .append(" CL_ORG_FULL.PREFIX || decode(CL_ORG_FULL.HOUSE, null, null, ','  ||CL_ORG_FULL.HOUSE  ) t1_org_adr,  ")
+						  .append(" CL_ORG_FULL.PHONE t1_org_tel,  ")
+						  .append(" to_char(AU_FULL.START_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_start,   ")
+						  .append(" to_char(AU_FULL.END_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_end,    ")
+						  .append(" AU_FULL.STATUS t1_status,    ")
+						  .append(" AU_FULL.CREATED t1_crt_date,   ")
+						  .append(" USR_CRT.LOGIN t1_crt_usr_login,   ")
+						  .append(" to_char(AU_FULL.MODIFIED, 'DD.MM.YY HH24:MI:SS') t1_upd_date,   ")
+						  .append(" USR_UPD.LOGIN t1_upd_usr_login,   ")
+						  .append(" decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.sign_object)) t1_dep_code,   ")
+						  .append(" CL_ORG_FULL.STATUS t1_org_status,  CL_usr_FULL.STATUS t1_usr_status,   ")
+						  .append(" decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.STATUS)) t1_dep_status,  ")
+						  .append(" CL_ORG_FULL.SIGN_OKATO t1_org_okato, CL_DEP_FULL.PREFIX || decode(CL_DEP_FULL.HOUSE, null, null, ','  ||CL_DEP_FULL.HOUSE  ) t1_dep_adr        ")
+						  .append(" from  ")
+						  .append(" (select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE  ")
+						  .append(" from ISP_BSS_T cl_org,  ")
+						  .append(" AC_USERS_KNL_T au  ")
+						  .append(" where AU.UP_SIGN = CL_ORG.SIGN_OBJECT  ")
+						  .append(" group by CL_ORG.SIGN_OBJECT) t1,  ")
+						  .append(" (select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE  ")
+						  .append(" from ISP_BSS_T cl_usr,  ")
+						  .append(" AC_USERS_KNL_T au  ")
+						  .append(" where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT  ")
+						  .append(" group by CL_usr.SIGN_OBJECT) t2,  ")
+						  .append(" (select max(CL_dep.ID_SRV) CL_DEP_ID,  CL_DEP.SIGN_OBJECT  CL_DEP_CODE  ")
+						  .append(" from ISP_BSS_T cl_dep,  ")
+						  .append(" AC_USERS_KNL_T au  ")
+						  .append(" where substr(au.UP_SIGN_USER,1,5)||'000'  =cl_dep.SIGN_OBJECT(+)  ")
+						  .append(" group by CL_DEP.SIGN_OBJECT) t3,  ")
+						  .append(" (  ")
+						  .append(" ")
+						  .append(" select t_core.t_core_id  ")
+						  .append(" from(   ")
+						  .append(" select AU_FULL.ID_SRV t_core_id   ")
+						  .append(" from   ")
+						  .append(" AC_USERS_KNL_T au_full,   ")
+						  .append(" LINK_GROUP_USERS_USERS_KNL_T lgu,   ")
+						  .append(" AC_USERS_LINK_KNL_T lur,  ")
+						  .append(" AC_ROLES_BSS_T rol,  ")
+						  .append(" AC_ROLES_BSS_T rol_group,  ")
+						  .append(" LINK_GROUP_USERS_ROLES_KNL_T lgr,  ")
+						  .append(" AC_IS_BSS_T ais,  ")
+						  .append(" AC_IS_BSS_T ais_group, ")
+						  .append(" GROUP_SYSTEMS_KNL_T sysgroup, ")
+						  .append(" LINK_GROUP_SYS_SYS_KNL_T linksysgroup, ")
+						  .append(" GROUP_USERS_KNL_T gr ")
+						  .append(" where  ")
+						  .append(" lur.UP_USERS(+)=AU_FULL.ID_SRV and  ")
+						  .append(" lgu.UP_USERS(+)=AU_FULL.ID_SRV  ")
+						  .append(" and ROL.ID_SRV(+)=LUR.UP_ROLES  ")
 								// "                        and lgr.UP_GROUP_USERS(+)=lgu.UP_GROUP_USERS  "
 								// +				
 							  .append("and lgr.UP_GROUP_USERS(+)=GR.ID_SRV ")
 							  .append("and lgu.UP_GROUP_USERS=GR.ID_SRV(+) ")
-							  .append("                        and rol_group.ID_SRV(+) =LGR.UP_ROLES  ")
-							  .append("                        and ROL.UP_IS=ais.ID_SRV(+)   ")
-							  .append("                        and ROL_group.UP_IS=ais_group.ID_SRV(+)   ")
-							  .append("                       and SYSGROUP.ID_SRV = LINKSYSGROUP.UP_GROUP_SYSTEMS ")
-							  .append("                       and ( ")
-							  .append("                        (LINKSYSGROUP.UP_SYSTEMS=AIS.ID_SRV ")
-							  .append("                         or LINKSYSGROUP.UP_SYSTEMS=AIS_GROUP.ID_SRV) ")
-							  .append("                         and SYSGROUP.GROUP_CODE = :idIS ")
-							  .append("                         or -1 = :onlyISUsers   ")
-							  .append("                        ) ")		
+							  .append(" and rol_group.ID_SRV(+) =LGR.UP_ROLES  ")
+							  .append(" and ROL.UP_IS=ais.ID_SRV(+)   ")
+							  .append(" and ROL_group.UP_IS=ais_group.ID_SRV(+)   ")
+							  .append(" and SYSGROUP.ID_SRV = LINKSYSGROUP.UP_GROUP_SYSTEMS ")
+							  .append(" and ( ")
+							  .append(" (LINKSYSGROUP.UP_SYSTEMS=AIS.ID_SRV ")
+							  .append(" or LINKSYSGROUP.UP_SYSTEMS=AIS_GROUP.ID_SRV) ")
+							  .append(" and SYSGROUP.GROUP_CODE = :idIS ")
+							  .append(" or -1 = :onlyISUsers   ")
+							  .append(" ) ")		
 							  .append(uidsLine != null ? "and to_char(au_full.ID_SRV) in ("
 										+ uidsLine + ") "
 										: " ")
 							  .append(filterSt != null ? filterSt : " ")						  
-								  .append("                      order by t_core_id  ")
-								  .append("                      )t_core   ")
-								  .append("                       group by t_core_id  ")
-								  .append("                       order by t_core.t_core_id  ")
-								  .append("                         ")
-								  .append("                        ) t4, ")
-								  .append("                         ")
-								  .append("                        ISP_BSS_T cl_org_full,  ")
-								  .append("                        ISP_BSS_T cl_usr_full,  ")
-								  .append("                        ISP_BSS_T cl_dep_full,  ")
-								  .append("                        AC_USERS_KNL_T au_full,  ")
-								  .append("                        AC_USERS_KNL_T usr_crt,    ")
-								  .append("                        AC_USERS_KNL_T usr_upd ")
-								  .append("                        where cl_org_full.ID_SRV= CL_ORG_ID  ")
-								  .append("                        and cl_usr_full.ID_SRV(+)=CL_USR_ID ")
-								  .append("                        and cl_DEP_full.ID_SRV(+)=CL_DEP_ID  ")
-								  .append("                        and au_full.UP_SIGN = CL_ORG_CODE  ")
-								  .append("                        and au_full.UP_SIGN_USER  =  CL_USR_CODE(+)  ")
-								  .append("                        and substr(au_full.UP_SIGN_USER,1,5)||'000'  =  CL_DEP_CODE(+)  ")
-								  .append("                        and au_full.CREATOR=USR_CRT.ID_SRV   ")
-								  .append("                        and au_full.MODIFICATOR=USR_UPD.ID_SRV(+)   ")
-								  .append("                        and AU_FULL.ID_SRV=t4.t_core_id ")
-								  .append("                        )t1  ")
+								  .append(" order by t_core_id  ")
+								  .append(" )t_core   ")
+								  .append(" group by t_core_id  ")
+								  .append(" order by t_core.t_core_id  ")
+								  .append(" ")
+								  .append(" ) t4, ")
+								  .append(" ")
+								  .append(" ISP_BSS_T cl_org_full,  ")
+								  .append(" ISP_BSS_T cl_usr_full,  ")
+								  .append(" ISP_BSS_T cl_dep_full,  ")
+								  .append(" AC_USERS_KNL_T au_full,  ")
+								  .append(" AC_USERS_KNL_T usr_crt,    ")
+								  .append(" AC_USERS_KNL_T usr_upd ")
+								  .append(" where cl_org_full.ID_SRV= CL_ORG_ID  ")
+								  .append(" and cl_usr_full.ID_SRV(+)=CL_USR_ID ")
+								  .append(" and cl_DEP_full.ID_SRV(+)=CL_DEP_ID  ")
+								  .append(" and au_full.UP_SIGN = CL_ORG_CODE  ")
+								  .append(" and au_full.UP_SIGN_USER  =  CL_USR_CODE(+)  ")
+								  .append(" and substr(au_full.UP_SIGN_USER,1,5)||'000'  =  CL_DEP_CODE(+)  ")
+								  .append(" and au_full.CREATOR=USR_CRT.ID_SRV   ")
+								  .append(" and au_full.MODIFICATOR=USR_UPD.ID_SRV(+)   ")
+								  .append(" and AU_FULL.ID_SRV=t4.t_core_id ")
+								  .append(" )t1  ")
 								  .append("where 1=1 ")
 								  .append(settingsMap.containsKey("FILTER_FIO") ? 
 										  " and upper(t1_fio) LIKE  upper('%"+settingsMap.get("FILTER_FIO")+"%')" : "")									
 								  .append(settingsMap.containsKey("FILTER_ORG") ? 
 										  " and upper(t1_org_name) LIKE  upper('%"+settingsMap.get("FILTER_ORG")+"%')" : "")
-								  .append("                        order by t1_fio   ")
+								  .append(" order by t1_fio   ")
 								  .toString()								
 						 )
 						.setParameter("idIS", idIS)
@@ -682,22 +677,22 @@ import ru.spb.iac.cud.util.CommonUtil;
 						(new StringBuilder("SELECT user_id, '[' || sys_code || ']' || role_code role_full_code "))
 						  .append("FROM (  SELECT AU.ID_SRV user_id, SYS.SIGN_OBJECT sys_code, ROL.SIGN_OBJECT role_code ")
 						  .append("FROM GROUP_SYSTEMS_KNL_T gsys, ")
-						  .append("    AC_IS_BSS_T sys, ")
-						  .append("    AC_ROLES_BSS_T rol, ")
-						  .append("    LINK_GROUP_SYS_SYS_KNL_T lgr, ")
-						  .append("    LINK_GROUP_USERS_ROLES_KNL_T lugr, ")
-						  .append("    LINK_GROUP_USERS_USERS_KNL_T lugu, ")
-						  .append("    AC_USERS_LINK_KNL_T url, ")
-						  .append("    AC_USERS_KNL_T AU ")
+						  .append(" AC_IS_BSS_T sys, ")
+						  .append(" AC_ROLES_BSS_T rol, ")
+						  .append(" LINK_GROUP_SYS_SYS_KNL_T lgr, ")
+						  .append(" LINK_GROUP_USERS_ROLES_KNL_T lugr, ")
+						  .append(" LINK_GROUP_USERS_USERS_KNL_T lugu, ")
+						  .append(" AC_USERS_LINK_KNL_T url, ")
+						  .append(" AC_USERS_KNL_T AU ")
 						  .append("WHERE     GSYS.GROUP_CODE = :idIS ")
-						  .append("    AND GSYS.ID_SRV = LGR.UP_GROUP_SYSTEMS ")
-						  .append("    AND LGR.UP_SYSTEMS = SYS.ID_SRV ")
-						  .append("    AND ROL.UP_IS = SYS.ID_SRV ")
-						  .append("    AND (ROL.ID_SRV = URL.UP_ROLES OR ROL.ID_SRV = LUGR.UP_ROLES) ")
-						  .append("    AND LUGU.UP_GROUP_USERS = LUGR.UP_GROUP_USERS(+) ")
-						  .append("    AND LUGU.UP_USERS(+) = AU.ID_SRV ")
-						  .append("    AND URL.UP_USERS(+) = AU.ID_SRV ")
-						  .append("     and AU.ID_SRV IN(")
+						  .append(" AND GSYS.ID_SRV = LGR.UP_GROUP_SYSTEMS ")
+						  .append(" AND LGR.UP_SYSTEMS = SYS.ID_SRV ")
+						  .append(" AND ROL.UP_IS = SYS.ID_SRV ")
+						  .append(" AND (ROL.ID_SRV = URL.UP_ROLES OR ROL.ID_SRV = LUGR.UP_ROLES) ")
+						  .append(" AND LUGU.UP_GROUP_USERS = LUGR.UP_GROUP_USERS(+) ")
+						  .append(" AND LUGU.UP_USERS(+) = AU.ID_SRV ")
+						  .append(" AND URL.UP_USERS(+) = AU.ID_SRV ")
+						  .append(" and AU.ID_SRV IN(")
 						  .append(usersIdsLine)
 						  .append(")  ")
 						  .append("GROUP BY AU.ID_SRV, SYS.SIGN_OBJECT, ROL.SIGN_OBJECT) ")
@@ -811,90 +806,88 @@ import ru.spb.iac.cud.util.CommonUtil;
 				   
 				   resultCount = ((java.math.BigDecimal) em
 							.createNativeQuery(
-									"SELECT COUNT (*) " + 
-									"  FROM (SELECT t1.t1_fio, t1.t1_org_name " + 
-									"          FROM (SELECT DECODE ( " + 
-									"                          AU_FULL.UP_SIGN_USER, " + 
-									"                          NULL,    AU_FULL.SURNAME " + 
-									"                                || ' ' " + 
-									"                                || AU_FULL.NAME_ " + 
-									"                                || ' ' " + 
-									"                                || AU_FULL.PATRONYMIC, " + 
-									"                          CL_USR_FULL.FIO) " + 
-									"                          t1_fio, " + 
-									"                       CL_ORG_FULL.FULL_ t1_org_name " + 
-									"                  FROM (  SELECT MAX (CL_ORG.ID_SRV) CL_ORG_ID, " + 
-									"                                 CL_ORG.SIGN_OBJECT CL_ORG_CODE " + 
-									"                            FROM ISP_BSS_T cl_org, AC_USERS_KNL_T au " + 
-									"                           WHERE AU.UP_SIGN = CL_ORG.SIGN_OBJECT " + 
-									"                        GROUP BY CL_ORG.SIGN_OBJECT) t1, " + 
-									"                       (  SELECT MAX (CL_usr.ID_SRV) CL_USR_ID, " + 
-									"                                 CL_USR.SIGN_OBJECT CL_USR_CODE " + 
-									"                            FROM ISP_BSS_T cl_usr, AC_USERS_KNL_T au " + 
-									"                           WHERE AU.UP_SIGN_USER = CL_usr.SIGN_OBJECT " + 
-									"                        GROUP BY CL_usr.SIGN_OBJECT) t2, " + 
-									"                       (  SELECT t_core.t_core_id " + 
-									"                            FROM (  SELECT AU_FULL.ID_SRV t_core_id " + 
-									"                                      FROM AC_USERS_KNL_T au_full, " + 
-									"                                           LINK_GROUP_USERS_USERS_KNL_T lgu, " + 
-									"                                           AC_USERS_LINK_KNL_T lur, " + 
-									"                                           AC_ROLES_BSS_T rol, " + 
-									"                                           AC_ROLES_BSS_T rol_group, " + 
-									"                                           LINK_GROUP_USERS_ROLES_KNL_T lgr, " + 
-									"                                           AC_IS_BSS_T ais, " + 
-									"                                           AC_IS_BSS_T ais_group, " + 
-									"                                           GROUP_SYSTEMS_KNL_T sysgroup, " + 
-									"                                           LINK_GROUP_SYS_SYS_KNL_T linksysgroup, " + 
-									"                                           GROUP_USERS_KNL_T gr " + 
-									"                                     WHERE     lur.UP_USERS(+) = AU_FULL.ID_SRV " + 
-									"                                           AND lgu.UP_USERS(+) = AU_FULL.ID_SRV " + 
-									"                                           AND ROL.ID_SRV(+) = LUR.UP_ROLES " + 
-									"                                           AND lgr.UP_GROUP_USERS(+) = GR.ID_SRV " + 
-									"                                           AND lgu.UP_GROUP_USERS = GR.ID_SRV(+) " + 
-									"                                           AND rol_group.ID_SRV(+) = LGR.UP_ROLES " + 
-									"                                           AND ROL.UP_IS = ais.ID_SRV(+) " + 
-									"                                           AND ROL_group.UP_IS = " + 
-									"                                                  ais_group.ID_SRV(+) " + 
-									"                                           AND SYSGROUP.ID_SRV = " + 
-									"                                                  LINKSYSGROUP.UP_GROUP_SYSTEMS " + 
-									"                                   and ( " + 
-									"                                     (LINKSYSGROUP.UP_SYSTEMS=AIS.ID_SRV " + 
-									"                                      or LINKSYSGROUP.UP_SYSTEMS=AIS_GROUP.ID_SRV) " + 
-									"                                      and SYSGROUP.GROUP_CODE = :idIS " + 
-									"                                      or -1 = :onlyISUsers " + 
-									"                                     )  " + 
-									 
-(uidsLine != null ? "and to_char(au_full.ID_SRV) in ("
-		+ uidsLine + ") "
-		: " ") +
-
-(filterSt != null ? filterSt : " ") +
- 
-									 
-									"                                  ORDER BY t_core_id) t_core " + 
-									"                        GROUP BY t_core_id " + 
-									"                        ORDER BY t_core.t_core_id) t4, " + 
-									"                       ISP_BSS_T cl_org_full, " + 
-									"                       ISP_BSS_T cl_usr_full, " + 
-									"                       AC_USERS_KNL_T au_full, " + 
-									"                       AC_USERS_KNL_T usr_crt, " + 
-									"                       AC_USERS_KNL_T usr_upd " + 
-									"                 WHERE     cl_org_full.ID_SRV = CL_ORG_ID " + 
-									"                       AND cl_usr_full.ID_SRV(+) = CL_USR_ID " + 
-									"                       AND au_full.UP_SIGN = CL_ORG_CODE " + 
-									"                       AND au_full.UP_SIGN_USER = CL_USR_CODE(+) " + 
-									"                       AND au_full.CREATOR = USR_CRT.ID_SRV " + 
-									"                       AND au_full.MODIFICATOR = USR_UPD.ID_SRV(+) " + 
-									"                       AND AU_FULL.ID_SRV = t4.t_core_id) t1 " + 
-									"         WHERE 1 = 1  " + 
+									(new StringBuilder("SELECT COUNT (*) "))
+									  .append("  FROM (SELECT t1.t1_fio, t1.t1_org_name ") 
+									  .append("          FROM (SELECT DECODE ( ") 
+									  .append("                          AU_FULL.UP_SIGN_USER, ") 
+									  .append("                          NULL,    AU_FULL.SURNAME ") 
+									  .append("                                || ' ' ") 
+									  .append("                                || AU_FULL.NAME_ ") 
+									  .append("                                || ' ' ") 
+									  .append("                                || AU_FULL.PATRONYMIC, ") 
+									  .append("                          CL_USR_FULL.FIO) ") 
+									  .append("                          t1_fio, ") 
+									  .append("                       CL_ORG_FULL.FULL_ t1_org_name ") 
+									  .append("                  FROM (  SELECT MAX (CL_ORG.ID_SRV) CL_ORG_ID, ") 
+									  .append("                                 CL_ORG.SIGN_OBJECT CL_ORG_CODE ") 
+									  .append("                            FROM ISP_BSS_T cl_org, AC_USERS_KNL_T au ") 
+									  .append("                           WHERE AU.UP_SIGN = CL_ORG.SIGN_OBJECT ") 
+									  .append("                        GROUP BY CL_ORG.SIGN_OBJECT) t1, ") 
+									  .append("                       (  SELECT MAX (CL_usr.ID_SRV) CL_USR_ID, ") 
+									  .append("                                 CL_USR.SIGN_OBJECT CL_USR_CODE ") 
+									  .append("                            FROM ISP_BSS_T cl_usr, AC_USERS_KNL_T au ") 
+									  .append("                           WHERE AU.UP_SIGN_USER = CL_usr.SIGN_OBJECT ") 
+									  .append("                        GROUP BY CL_usr.SIGN_OBJECT) t2, ") 
+									  .append("                       (  SELECT t_core.t_core_id ") 
+									  .append("                            FROM (  SELECT AU_FULL.ID_SRV t_core_id ") 
+									  .append("                                      FROM AC_USERS_KNL_T au_full, ") 
+									  .append("                                           LINK_GROUP_USERS_USERS_KNL_T lgu, ") 
+									  .append("                                           AC_USERS_LINK_KNL_T lur, ") 
+									  .append("                                           AC_ROLES_BSS_T rol, ") 
+									  .append("                                           AC_ROLES_BSS_T rol_group, ") 
+									  .append("                                           LINK_GROUP_USERS_ROLES_KNL_T lgr, ") 
+									  .append("                                           AC_IS_BSS_T ais, ") 
+									  .append("                                           AC_IS_BSS_T ais_group, ") 
+									  .append("                                           GROUP_SYSTEMS_KNL_T sysgroup, ") 
+									  .append("                                           LINK_GROUP_SYS_SYS_KNL_T linksysgroup, ") 
+									  .append("                                           GROUP_USERS_KNL_T gr ") 
+									  .append("                                     WHERE     lur.UP_USERS(+) = AU_FULL.ID_SRV ") 
+									  .append("                                           AND lgu.UP_USERS(+) = AU_FULL.ID_SRV ") 
+									  .append("                                           AND ROL.ID_SRV(+) = LUR.UP_ROLES ") 
+									  .append("                                           AND lgr.UP_GROUP_USERS(+) = GR.ID_SRV ") 
+									  .append("                                           AND lgu.UP_GROUP_USERS = GR.ID_SRV(+) ") 
+									  .append("                                           AND rol_group.ID_SRV(+) = LGR.UP_ROLES ") 
+									  .append("                                           AND ROL.UP_IS = ais.ID_SRV(+) ") 
+									  .append("                                           AND ROL_group.UP_IS = ") 
+									  .append("                                                  ais_group.ID_SRV(+) ") 
+									  .append("                                           AND SYSGROUP.ID_SRV = ") 
+									  .append("                                                  LINKSYSGROUP.UP_GROUP_SYSTEMS ") 
+									  .append("                                   and ( ") 
+									  .append("                                     (LINKSYSGROUP.UP_SYSTEMS=AIS.ID_SRV ") 
+									  .append("                                      or LINKSYSGROUP.UP_SYSTEMS=AIS_GROUP.ID_SRV) ") 
+									  .append("                                      and SYSGROUP.GROUP_CODE = :idIS ") 
+									  .append("                                      or -1 = :onlyISUsers ") 
+									  .append("                                     )  ")
+									 .append(uidsLine != null ? "and to_char(au_full.ID_SRV) in ("
+											 + uidsLine + ") ": " ") 
+									.append(filterSt != null ? filterSt : " ") 
+									  .append("                                  ORDER BY t_core_id) t_core ") 
+									  .append("                        GROUP BY t_core_id ") 
+									  .append("                        ORDER BY t_core.t_core_id) t4, ") 
+									  .append("                       ISP_BSS_T cl_org_full, ") 
+									  .append("                       ISP_BSS_T cl_usr_full, ") 
+									  .append("                       AC_USERS_KNL_T au_full, ") 
+									  .append("                       AC_USERS_KNL_T usr_crt, ") 
+									  .append("                       AC_USERS_KNL_T usr_upd ") 
+									  .append("                 WHERE     cl_org_full.ID_SRV = CL_ORG_ID ") 
+									  .append("                       AND cl_usr_full.ID_SRV(+) = CL_USR_ID ") 
+									  .append("                       AND au_full.UP_SIGN = CL_ORG_CODE ") 
+									  .append("                       AND au_full.UP_SIGN_USER = CL_USR_CODE(+) ") 
+									  .append("                       AND au_full.CREATOR = USR_CRT.ID_SRV ") 
+									  .append("                       AND au_full.MODIFICATOR = USR_UPD.ID_SRV(+) ") 
+									  .append("                       AND AU_FULL.ID_SRV = t4.t_core_id) t1 ") 
+									  .append("         WHERE 1 = 1  ") 
 									
+									.append									
 									(settingsMap.containsKey("FILTER_FIO") ? 
 											 " and upper(t1_fio) LIKE  upper('%"+settingsMap.get("FILTER_FIO")+"%')" : "")
-									+
+									.append
 									(settingsMap.containsKey("FILTER_ORG") ? 
 											 " and upper(t1_org_name) LIKE  upper('%"+settingsMap.get("FILTER_ORG")+"%')" : "")
-                                    +
-									"  ) ")
+                                    
+									  .append("  ) ")
+									
+									.toString())
 							.setParameter("idIS", idIS)
 							.setParameter("onlyISUsers",
 									CUDConstants.categorySYS.equals(category) ? 1: -1).getSingleResult()).intValue();
@@ -1119,20 +1112,20 @@ import ru.spb.iac.cud.util.CommonUtil;
 
 				loGr = em.createNativeQuery(
 						(new StringBuilder("  SELECT gr.ID_SRV, ROL.SIGN_OBJECT "))
-						  .append("    FROM AC_IS_BSS_T sys, ")
-						  .append("         AC_ROLES_BSS_T rol, ")
-						  .append("         GROUP_USERS_KNL_T gr, ")
-						  .append("         AC_SUBSYSTEM_CERT_BSS_T subsys, ")
-						  .append("         LINK_GROUP_USERS_ROLES_KNL_T lugr ")
-						  .append("   WHERE (SYS.SIGN_OBJECT = :idIS ")
-						  .append("          OR SUBSYS.SUBSYSTEM_CODE = :idIS ) ")
-						  .append("         AND ROL.ID_SRV = LUGR.UP_ROLES ")
-						  .append("         AND LUGR.UP_GROUP_USERS = gr.ID_SRV ")
-						  .append("         AND ROL.UP_IS = sys.ID_SRV ")
-						  .append("         AND gr.ID_SRV IN (")
+						  .append(" FROM AC_IS_BSS_T sys, ")
+						  .append(" AC_ROLES_BSS_T rol, ")
+						  .append(" GROUP_USERS_KNL_T gr, ")
+						  .append(" AC_SUBSYSTEM_CERT_BSS_T subsys, ")
+						  .append(" LINK_GROUP_USERS_ROLES_KNL_T lugr ")
+						  .append(" WHERE (SYS.SIGN_OBJECT = :idIS ")
+						  .append(" OR SUBSYS.SUBSYSTEM_CODE = :idIS ) ")
+						  .append(" AND ROL.ID_SRV = LUGR.UP_ROLES ")
+						  .append(" AND LUGR.UP_GROUP_USERS = gr.ID_SRV ")
+						  .append(" AND ROL.UP_IS = sys.ID_SRV ")
+						  .append(" AND gr.ID_SRV IN (")
 						  .append(usersIdsLine)
 						  .append(") ")
-						  .append("         AND SUBSYS.UP_IS(+) = SYS.ID_SRV ")
+						  .append(" AND SUBSYS.UP_IS(+) = SYS.ID_SRV ")
 						  .append("GROUP BY gr.ID_SRV, ROL.SIGN_OBJECT ")
 						  .toString())
 						.setParameter("idIS", idIS).getResultList();
@@ -1549,20 +1542,20 @@ import ru.spb.iac.cud.util.CommonUtil;
 
 				lo = em.createNativeQuery(
 						(new StringBuilder(" SELECT res_full.ID_SRV, "))
-						  .append("         res_full.SIGN_OBJECT, ")
-						  .append("         res_full.FULL_, ")
-						  .append("         res_full.DESCRIPTION ")
-						  .append("    FROM AC_RESOURCES_BSS_T res_full, ")
-						  .append("         (  SELECT res.ID_SRV res_id ")
-						  .append("              FROM AC_RESOURCES_BSS_T res, ")
-						  .append("                   AC_LINK_ROLE_RESOURCE_KNL_T lgr, ")
-						  .append("                   AC_ROLES_BSS_T rol, ")
-						  .append("                   AC_IS_BSS_T sys ")
-						  .append("             WHERE     res.ID_SRV = LGR.UP_RESOURCE(+) ")
-						  .append("                   AND ROL.ID_SRV(+) = LGR.UP_ROLE ")
-						  .append("                   AND SYS.ID_SRV(+) = ROL.UP_IS ")
-						  .append("                   AND res.up_is = SYS.ID_SRV ")
-						  .append("                   AND (SYS.SIGN_OBJECT = :idIS OR -1 = :onlyISUsers) ")
+						  .append(" res_full.SIGN_OBJECT, ")
+						  .append(" res_full.FULL_, ")
+						  .append(" res_full.DESCRIPTION ")
+						  .append(" FROM AC_RESOURCES_BSS_T res_full, ")
+						  .append(" (  SELECT res.ID_SRV res_id ")
+						  .append(" FROM AC_RESOURCES_BSS_T res, ")
+						  .append(" AC_LINK_ROLE_RESOURCE_KNL_T lgr, ")
+						  .append(" AC_ROLES_BSS_T rol, ")
+						  .append(" AC_IS_BSS_T sys ")
+						  .append(" WHERE     res.ID_SRV = LGR.UP_RESOURCE(+) ")
+						  .append(" AND ROL.ID_SRV(+) = LGR.UP_ROLE ")
+						  .append(" AND SYS.ID_SRV(+) = ROL.UP_IS ")
+						  .append(" AND res.up_is = SYS.ID_SRV ")
+						  .append(" AND (SYS.SIGN_OBJECT = :idIS OR -1 = :onlyISUsers) ")
 				
 								.append (uidsLine != null ? "   and res.SIGN_OBJECT in ("
 										+ uidsLine + ") "
@@ -1573,8 +1566,8 @@ import ru.spb.iac.cud.util.CommonUtil;
 										+ ") and SYS.SIGN_OBJECT = :idIS ) "
 										: "") 
 										
-								  .append("          GROUP BY res.ID_SRV) ")
-								  .append("   WHERE res_id = res_full.ID_SRV ")
+								  .append(" GROUP BY res.ID_SRV) ")
+								  .append(" WHERE res_id = res_full.ID_SRV ")
 								  .append("ORDER BY res_full.FULL_")
 								
 								.toString())
@@ -1612,20 +1605,20 @@ import ru.spb.iac.cud.util.CommonUtil;
 
 				lo = em.createNativeQuery(
 						(new StringBuilder("  SELECT gr.ID_SRV, ROL.SIGN_OBJECT "))
-						  .append("    FROM AC_IS_BSS_T sys, ")
-						  .append("         AC_ROLES_BSS_T rol, ")
-						  .append("         GROUP_USERS_KNL_T gr, ")
-						  .append("         AC_SUBSYSTEM_CERT_BSS_T subsys, ")
-						  .append("         LINK_GROUP_USERS_ROLES_KNL_T lugr ")
-						  .append("   WHERE (SYS.SIGN_OBJECT = :idIS ")
-						  .append("          OR SUBSYS.SUBSYSTEM_CODE = :idIS ) ")
-						  .append("         AND ROL.ID_SRV = LUGR.UP_ROLES ")
-						  .append("         AND LUGR.UP_GROUP_USERS = gr.ID_SRV ")
-						  .append("         AND ROL.UP_IS = sys.ID_SRV ")
-						  .append("         AND gr.ID_SRV IN (")
+						  .append(" FROM AC_IS_BSS_T sys, ")
+						  .append(" AC_ROLES_BSS_T rol, ")
+						  .append(" GROUP_USERS_KNL_T gr, ")
+						  .append(" AC_SUBSYSTEM_CERT_BSS_T subsys, ")
+						  .append(" LINK_GROUP_USERS_ROLES_KNL_T lugr ")
+						  .append(" WHERE (SYS.SIGN_OBJECT = :idIS ")
+						  .append(" OR SUBSYS.SUBSYSTEM_CODE = :idIS ) ")
+						  .append(" AND ROL.ID_SRV = LUGR.UP_ROLES ")
+						  .append(" AND LUGR.UP_GROUP_USERS = gr.ID_SRV ")
+						  .append(" AND ROL.UP_IS = sys.ID_SRV ")
+						  .append(" AND gr.ID_SRV IN (")
 				  .append( usersIdsLine)
 				  .append(") ")
-				  .append("         AND SUBSYS.UP_IS(+) = SYS.ID_SRV ")
+				  .append(" AND SUBSYS.UP_IS(+) = SYS.ID_SRV ")
 				  .append("GROUP BY gr.ID_SRV, ROL.SIGN_OBJECT ")
 								
 							.toString())
@@ -1900,21 +1893,21 @@ import ru.spb.iac.cud.util.CommonUtil;
 					lo = em.createNativeQuery(
 							(new StringBuilder("select sys_full.ID_SRV, sys_full.SIGN_OBJECT, sys_full.FULL_, SYS_FULL.DESCRIPTION, sys_full.LINKS from AC_IS_BSS_T sys_full,"))
 							  .append(" (select   SYS.ID_SRV sys_id")
-							  .append("                     from  AC_IS_BSS_T sys,     ")
-							  .append("                              AC_ROLES_BSS_T rol,     ")
-							  .append("                              AC_USERS_LINK_KNL_T url,     ")
-							  .append("                              AC_USERS_KNL_T AU,     ")
-							  .append("                              LINK_GROUP_USERS_ROLES_KNL_T lugr,   ")
-							  .append("                              LINK_GROUP_USERS_USERS_KNL_T lugu     ")
-							  .append("                     where SYS.SIGN_OBJECT= :idIS      ")
-							  .append("                           and (ROL.ID_SRV = URL.UP_ROLES or ROL.ID_SRV = LUGR.UP_ROLES )   ")
-							  .append("                           and LUGU.UP_GROUP_USERS= LUGR.UP_GROUP_USERS(+)   ")
-							  .append("                           and LUGU.UP_USERS(+)  = AU.ID_SRV   ")
-							  .append("                           and URL.UP_USERS(+)  = AU.ID_SRV   ")
-							  .append("                           and ROL.UP_IS=sys.ID_SRV    ")
-							  .append("                           and AU.ID_SRV = :idUser       ")
-							  .append("                     group by SYS.ID_SRV  ) t1 ")
-							  .append("                     where t1.sys_id = SYS_FULL.ID_SRV ")
+							  .append(" from  AC_IS_BSS_T sys,     ")
+							  .append(" AC_ROLES_BSS_T rol,     ")
+							  .append(" AC_USERS_LINK_KNL_T url,     ")
+							  .append(" AC_USERS_KNL_T AU,     ")
+							  .append(" LINK_GROUP_USERS_ROLES_KNL_T lugr,   ")
+							  .append(" LINK_GROUP_USERS_USERS_KNL_T lugu     ")
+							  .append(" where SYS.SIGN_OBJECT= :idIS      ")
+							  .append(" and (ROL.ID_SRV = URL.UP_ROLES or ROL.ID_SRV = LUGR.UP_ROLES )   ")
+							  .append(" and LUGU.UP_GROUP_USERS= LUGR.UP_GROUP_USERS(+)   ")
+							  .append(" and LUGU.UP_USERS(+)  = AU.ID_SRV   ")
+							  .append(" and URL.UP_USERS(+)  = AU.ID_SRV   ")
+							  .append(" and ROL.UP_IS=sys.ID_SRV    ")
+							  .append(" and AU.ID_SRV = :idUser       ")
+							  .append(" group by SYS.ID_SRV  ) t1 ")
+							  .append(" where t1.sys_id = SYS_FULL.ID_SRV ")
 							.toString()
 							)
 							.setParameter("idIS", idIS)
@@ -1974,28 +1967,28 @@ import ru.spb.iac.cud.util.CommonUtil;
 
 					lo = em.createNativeQuery(
 							(new StringBuilder("select sys_full.ID_SRV,  sys_full.SIGN_OBJECT, sys_full.FULL_, SYS_FULL.DESCRIPTION , sys_full.LINKS "))
-							  .append("                         from AC_IS_BSS_T sys_full, (   ")
-							  .append("                         select SYS.ID_SRV sys_id  ")
-							  .append("                         from GROUP_SYSTEMS_KNL_T gsys,   ")
-							  .append("                         AC_IS_BSS_T sys,   ")
-							  .append("                          AC_ROLES_BSS_T rol,   ")
-							  .append("                          LINK_GROUP_SYS_SYS_KNL_T lgr,   ")
-							  .append("                          LINK_GROUP_USERS_ROLES_KNL_T lugr,   ")
-							  .append("                          LINK_GROUP_USERS_USERS_KNL_T lugu,   ")
-							  .append("                          AC_USERS_LINK_KNL_T url,   ")
-							  .append("                          AC_USERS_KNL_T AU    ")
-							  .append("                         where GSYS.GROUP_CODE=:idIS   ")
-							  .append("                         and GSYS.ID_SRV=LGR.UP_GROUP_SYSTEMS   ")
-							  .append("                         and LGR.UP_SYSTEMS=SYS.ID_SRV   ")
-							  .append("                         and ROL.UP_IS= SYS.ID_SRV   ")
-							  .append("                         and (ROL.ID_SRV = URL.UP_ROLES or ROL.ID_SRV = LUGR.UP_ROLES )   ")
-							  .append("                         and LUGU.UP_GROUP_USERS = LUGR.UP_GROUP_USERS(+)   ")
-							  .append("                         and LUGU.UP_USERS(+)  = AU.ID_SRV   ")
-							  .append("                         and URL.UP_USERS(+)  = AU.ID_SRV   ")
-							  .append("                        and AU.ID_SRV = :idUser   ")
-							  .append("                         group by SYS.ID_SRV )   t1 ")
-							  .append("                          where t1.sys_id = SYS_FULL.ID_SRV ")
-							  .append("                         order by sys_full.SIGN_OBJECT ")
+							  .append(" from AC_IS_BSS_T sys_full, (   ")
+							  .append(" select SYS.ID_SRV sys_id  ")
+							  .append(" from GROUP_SYSTEMS_KNL_T gsys,   ")
+							  .append(" AC_IS_BSS_T sys,   ")
+							  .append(" AC_ROLES_BSS_T rol,   ")
+							  .append(" LINK_GROUP_SYS_SYS_KNL_T lgr,   ")
+							  .append(" LINK_GROUP_USERS_ROLES_KNL_T lugr,   ")
+							  .append(" LINK_GROUP_USERS_USERS_KNL_T lugu,   ")
+							  .append(" AC_USERS_LINK_KNL_T url,   ")
+							  .append(" AC_USERS_KNL_T AU    ")
+							  .append(" where GSYS.GROUP_CODE=:idIS   ")
+							  .append(" and GSYS.ID_SRV=LGR.UP_GROUP_SYSTEMS   ")
+							  .append(" and LGR.UP_SYSTEMS=SYS.ID_SRV   ")
+							  .append(" and ROL.UP_IS= SYS.ID_SRV   ")
+							  .append(" and (ROL.ID_SRV = URL.UP_ROLES or ROL.ID_SRV = LUGR.UP_ROLES )   ")
+							  .append(" and LUGU.UP_GROUP_USERS = LUGR.UP_GROUP_USERS(+)   ")
+							  .append(" and LUGU.UP_USERS(+)  = AU.ID_SRV   ")
+							  .append(" and URL.UP_USERS(+)  = AU.ID_SRV   ")
+							  .append(" and AU.ID_SRV = :idUser   ")
+							  .append(" group by SYS.ID_SRV )   t1 ")
+							  .append(" where t1.sys_id = SYS_FULL.ID_SRV ")
+							  .append(" order by sys_full.SIGN_OBJECT ")
 							  .toString())
 							.setParameter("idIS", idIS)
 							.setParameter("idUser", idUserAuth).getResultList();
@@ -2083,20 +2076,20 @@ import ru.spb.iac.cud.util.CommonUtil;
 						 lo = em
 								.createNativeQuery(
 										(new StringBuilder("  SELECT '[' || sys_code || ']' || role_full.SIGN_OBJECT role_is_code, "))
-										  .append("         role_full.FULL_, ")
-										  .append("         role_full.DESCRIPTION ")
-										  .append("    FROM (  SELECT SYS.SIGN_OBJECT sys_code, ROL.ID_SRV role_id ")
-										  .append("              FROM GROUP_SYSTEMS_KNL_T gsys, ")
-										  .append("                   AC_IS_BSS_T sys, ")
-										  .append("                   AC_ROLES_BSS_T rol, ")
-										  .append("                   LINK_GROUP_SYS_SYS_KNL_T lgr ")
-										  .append("             WHERE     GSYS.GROUP_CODE = ? ")
-										  .append("                   AND GSYS.ID_SRV = LGR.UP_GROUP_SYSTEMS ")
-										  .append("                   AND LGR.UP_SYSTEMS = SYS.ID_SRV ")
-										  .append("                   AND ROL.UP_IS = SYS.ID_SRV ")
-										  .append("          GROUP BY SYS.SIGN_OBJECT, ROL.ID_SRV), ")
-										  .append("         AC_ROLES_BSS_T role_full ")
-										  .append("   WHERE role_full.ID_SRV = role_id ")
+										  .append(" role_full.FULL_, ")
+										  .append(" role_full.DESCRIPTION ")
+										  .append(" FROM (  SELECT SYS.SIGN_OBJECT sys_code, ROL.ID_SRV role_id ")
+										  .append(" FROM GROUP_SYSTEMS_KNL_T gsys, ")
+										  .append(" AC_IS_BSS_T sys, ")
+										  .append(" AC_ROLES_BSS_T rol, ")
+										  .append(" LINK_GROUP_SYS_SYS_KNL_T lgr ")
+										  .append(" WHERE     GSYS.GROUP_CODE = ? ")
+										  .append(" AND GSYS.ID_SRV = LGR.UP_GROUP_SYSTEMS ")
+										  .append(" AND LGR.UP_SYSTEMS = SYS.ID_SRV ")
+										  .append(" AND ROL.UP_IS = SYS.ID_SRV ")
+										  .append(" GROUP BY SYS.SIGN_OBJECT, ROL.ID_SRV), ")
+										  .append(" AC_ROLES_BSS_T role_full ")
+										  .append(" WHERE role_full.ID_SRV = role_id ")
 										  .append("ORDER BY sys_code ")
 										  .toString())
 								.setParameter(1, idIS).getResultList();
@@ -2130,47 +2123,49 @@ import ru.spb.iac.cud.util.CommonUtil;
 													+ "WHERE role_full.ID_SRV = role_id "
 													+ "order by sys_code "*/
 											
-											" SELECT '[' || sys_code || ']' || role_full.SIGN_OBJECT role_full_code, " + 
-											"         role_full.FULL_, " + 
-											"         role_full.DESCRIPTION " + 
-											"    FROM (  SELECT sys_code, role_id " + 
-											"              FROM (  SELECT SYS.SIGN_OBJECT sys_code, ROL.ID_SRV role_id " + 
-											"                        FROM GROUP_SYSTEMS_KNL_T gsys, " + 
-											"                             AC_IS_BSS_T sys, " + 
-											"                             AC_ROLES_BSS_T rol, " + 
-											"                             LINK_GROUP_SYS_SYS_KNL_T lgr, " + 
-											"                             AC_USERS_LINK_KNL_T url, " + 
-											"                             AC_USERS_KNL_T AU " + 
-											"                       WHERE     GSYS.GROUP_CODE = :idIs " + 
-											"                             AND GSYS.ID_SRV = LGR.UP_GROUP_SYSTEMS " + 
-											"                             AND LGR.UP_SYSTEMS = SYS.ID_SRV " + 
-											"                             AND ROL.UP_IS = SYS.ID_SRV " + 
-											"                             AND ROL.ID_SRV = URL.UP_ROLES " + 
-											"                             AND URL.UP_USERS = AU.ID_SRV " + 
-											"                             AND AU.ID_SRV = :idUser " + 
-											"                    GROUP BY SYS.SIGN_OBJECT, ROL.ID_SRV " + 
-											"                    UNION ALL " + 
-											"                      SELECT SYS.SIGN_OBJECT sys_code, ROL.ID_SRV role_id " + 
-											"                        FROM GROUP_SYSTEMS_KNL_T gsys, " + 
-											"                             AC_IS_BSS_T sys, " + 
-											"                             AC_ROLES_BSS_T rol, " + 
-											"                             LINK_GROUP_SYS_SYS_KNL_T lgr, " + 
-											"                             LINK_GROUP_USERS_ROLES_KNL_T lugr, " + 
-											"                             LINK_GROUP_USERS_USERS_KNL_T lugu, " + 
-											"                             AC_USERS_KNL_T AU " + 
-											"                       WHERE     GSYS.GROUP_CODE = :idIs " + 
-											"                             AND GSYS.ID_SRV = LGR.UP_GROUP_SYSTEMS " + 
-											"                             AND LGR.UP_SYSTEMS = SYS.ID_SRV " + 
-											"                             AND ROL.UP_IS = SYS.ID_SRV " + 
-											"                             AND ROL.ID_SRV = LUGR.UP_ROLES " + 
-											"                             AND LUGU.UP_GROUP_USERS = LUGR.UP_GROUP_USERS " + 
-											"                             AND LUGU.UP_USERS = AU.ID_SRV " + 
-											"                             AND AU.ID_SRV = :idUser " + 
-											"                    GROUP BY SYS.SIGN_OBJECT, ROL.ID_SRV) " + 
-											"          GROUP BY sys_code, role_id), " + 
-											"         AC_ROLES_BSS_T role_full " + 
-											"   WHERE role_full.ID_SRV = role_id " + 
-											"ORDER BY sys_code " )
+											(new StringBuilder(" SELECT '[' || sys_code || ']' || role_full.SIGN_OBJECT role_full_code, "))
+											  .append("         role_full.FULL_, ") 
+											  .append("         role_full.DESCRIPTION ") 
+											  .append("    FROM (  SELECT sys_code, role_id ") 
+											  .append("              FROM (  SELECT SYS.SIGN_OBJECT sys_code, ROL.ID_SRV role_id ") 
+											  .append("                        FROM GROUP_SYSTEMS_KNL_T gsys, ") 
+											  .append("                             AC_IS_BSS_T sys, ") 
+											  .append("                             AC_ROLES_BSS_T rol, ") 
+											  .append("                             LINK_GROUP_SYS_SYS_KNL_T lgr, ") 
+											  .append("                             AC_USERS_LINK_KNL_T url, ") 
+											  .append("                             AC_USERS_KNL_T AU ") 
+											  .append("                       WHERE     GSYS.GROUP_CODE = :idIs ") 
+											  .append("                             AND GSYS.ID_SRV = LGR.UP_GROUP_SYSTEMS ") 
+											  .append("                             AND LGR.UP_SYSTEMS = SYS.ID_SRV ") 
+											  .append("                             AND ROL.UP_IS = SYS.ID_SRV ") 
+											  .append("                             AND ROL.ID_SRV = URL.UP_ROLES ") 
+											  .append("                             AND URL.UP_USERS = AU.ID_SRV ") 
+											  .append("                             AND AU.ID_SRV = :idUser ") 
+											  .append("                    GROUP BY SYS.SIGN_OBJECT, ROL.ID_SRV ") 
+											  .append("                    UNION ALL ") 
+											  .append("                      SELECT SYS.SIGN_OBJECT sys_code, ROL.ID_SRV role_id ") 
+											  .append("                        FROM GROUP_SYSTEMS_KNL_T gsys, ") 
+											  .append("                             AC_IS_BSS_T sys, ") 
+											  .append("                             AC_ROLES_BSS_T rol, ") 
+											  .append("                             LINK_GROUP_SYS_SYS_KNL_T lgr, ") 
+											  .append("                             LINK_GROUP_USERS_ROLES_KNL_T lugr, ") 
+											  .append("                             LINK_GROUP_USERS_USERS_KNL_T lugu, ") 
+											  .append("                             AC_USERS_KNL_T AU ") 
+											  .append("                       WHERE     GSYS.GROUP_CODE = :idIs ") 
+											  .append("                             AND GSYS.ID_SRV = LGR.UP_GROUP_SYSTEMS ") 
+											  .append("                             AND LGR.UP_SYSTEMS = SYS.ID_SRV ") 
+											  .append("                             AND ROL.UP_IS = SYS.ID_SRV ") 
+											  .append("                             AND ROL.ID_SRV = LUGR.UP_ROLES ") 
+											  .append("                             AND LUGU.UP_GROUP_USERS = LUGR.UP_GROUP_USERS ") 
+											  .append("                             AND LUGU.UP_USERS = AU.ID_SRV ") 
+											  .append("                             AND AU.ID_SRV = :idUser ") 
+											  .append("                    GROUP BY SYS.SIGN_OBJECT, ROL.ID_SRV) ") 
+											  .append("          GROUP BY sys_code, role_id), ") 
+											  .append("         AC_ROLES_BSS_T role_full ") 
+											  .append("   WHERE role_full.ID_SRV = role_id ") 
+											  .append("ORDER BY sys_code ")
+											
+											.toString() )
 									.setParameter("idIs", idIS)
 									.setParameter("idUser", idUserAuth).getResultList();
 						}
@@ -2206,7 +2201,7 @@ import ru.spb.iac.cud.util.CommonUtil;
 						 lo = em
 								.createNativeQuery(
 										(new StringBuilder("SELECT ROL.SIGN_OBJECT, ROL.FULL_, ROL.DESCRIPTION "))
-										  .append("  FROM AC_IS_BSS_T app, AC_ROLES_BSS_T rol ")
+										  .append(" FROM AC_IS_BSS_T app, AC_ROLES_BSS_T rol ")
 										  .append(" WHERE APP.SIGN_OBJECT = ? AND ROL.UP_IS = APP.ID_SRV ")
 								.toString())
 								.setParameter(1, idIS).getResultList();
@@ -2232,38 +2227,40 @@ import ru.spb.iac.cud.util.CommonUtil;
 													+ "      and AU.ID_SRV= :idUser "
 													+ "      and  SUBSYS.UP_IS(+) =SYS.ID_SRV "
 													+ "group by ROL.SIGN_OBJECT, ROL.FULL_, ROL.DESCRIPTION "*/
-													
-											"SELECT SIGN_OBJECT, FULL_, DESCRIPTION " + 
-											"    FROM (  SELECT ROL.SIGN_OBJECT, ROL.FULL_, ROL.DESCRIPTION " + 
-											"              FROM AC_IS_BSS_T sys, " + 
-											"                   AC_ROLES_BSS_T rol, " + 
-											"                   AC_USERS_LINK_KNL_T url, " + 
-											"                   AC_USERS_KNL_T AU, " + 
-											"                   AC_SUBSYSTEM_CERT_BSS_T subsys " + 
-											"             WHERE     (SYS.SIGN_OBJECT = :idIs OR SUBSYS.SUBSYSTEM_CODE = :idIs) " + 
-											"                   AND ROL.ID_SRV = URL.UP_ROLES " + 
-											"                   AND URL.UP_USERS = AU.ID_SRV " + 
-											"                   AND ROL.UP_IS = sys.ID_SRV " + 
-											"                   AND AU.ID_SRV = :idUser " + 
-											"                   AND SUBSYS.UP_IS(+) = SYS.ID_SRV " + 
-											"          GROUP BY ROL.SIGN_OBJECT, ROL.FULL_, ROL.DESCRIPTION " + 
-											"          UNION ALL " + 
-											"            SELECT ROL.SIGN_OBJECT, ROL.FULL_, ROL.DESCRIPTION " + 
-											"              FROM AC_IS_BSS_T sys, " + 
-											"                   AC_ROLES_BSS_T rol, " + 
-											"                   AC_USERS_KNL_T AU, " + 
-											"                   AC_SUBSYSTEM_CERT_BSS_T subsys, " + 
-											"                   LINK_GROUP_USERS_ROLES_KNL_T lugr, " + 
-											"                   LINK_GROUP_USERS_USERS_KNL_T lugu " + 
-											"             WHERE     (SYS.SIGN_OBJECT = :idIs OR SUBSYS.SUBSYSTEM_CODE = :idIs) " + 
-											"                   AND ROL.ID_SRV = LUGR.UP_ROLES " + 
-											"                   AND LUGU.UP_GROUP_USERS = LUGR.UP_GROUP_USERS " + 
-											"                   AND LUGU.UP_USERS = AU.ID_SRV " + 
-											"                   AND ROL.UP_IS = sys.ID_SRV " + 
-											"                   AND AU.ID_SRV = :idUser " + 
-											"                   AND SUBSYS.UP_IS(+) = SYS.ID_SRV " + 
-											"          GROUP BY ROL.SIGN_OBJECT, ROL.FULL_, ROL.DESCRIPTION) " + 
-											"GROUP BY SIGN_OBJECT, FULL_, DESCRIPTION "
+											
+									(new StringBuilder("SELECT SIGN_OBJECT, FULL_, DESCRIPTION "))
+									  .append("    FROM (  SELECT ROL.SIGN_OBJECT, ROL.FULL_, ROL.DESCRIPTION ") 
+									  .append("              FROM AC_IS_BSS_T sys, ") 
+									  .append("                   AC_ROLES_BSS_T rol, ") 
+									  .append("                   AC_USERS_LINK_KNL_T url, ") 
+									  .append("                   AC_USERS_KNL_T AU, ") 
+									  .append("                   AC_SUBSYSTEM_CERT_BSS_T subsys ") 
+									  .append("             WHERE     (SYS.SIGN_OBJECT = :idIs OR SUBSYS.SUBSYSTEM_CODE = :idIs) ") 
+									  .append("                   AND ROL.ID_SRV = URL.UP_ROLES ") 
+									  .append("                   AND URL.UP_USERS = AU.ID_SRV ") 
+									  .append("                   AND ROL.UP_IS = sys.ID_SRV ") 
+									  .append("                   AND AU.ID_SRV = :idUser ") 
+									  .append("                   AND SUBSYS.UP_IS(+) = SYS.ID_SRV ") 
+									  .append("          GROUP BY ROL.SIGN_OBJECT, ROL.FULL_, ROL.DESCRIPTION ") 
+									  .append("          UNION ALL ") 
+									  .append("            SELECT ROL.SIGN_OBJECT, ROL.FULL_, ROL.DESCRIPTION ") 
+									  .append("              FROM AC_IS_BSS_T sys, ") 
+									  .append("                   AC_ROLES_BSS_T rol, ") 
+									  .append("                   AC_USERS_KNL_T AU, ") 
+									  .append("                   AC_SUBSYSTEM_CERT_BSS_T subsys, ") 
+									  .append("                   LINK_GROUP_USERS_ROLES_KNL_T lugr, ") 
+									  .append("                   LINK_GROUP_USERS_USERS_KNL_T lugu ") 
+									  .append("             WHERE     (SYS.SIGN_OBJECT = :idIs OR SUBSYS.SUBSYSTEM_CODE = :idIs) ") 
+									  .append("                   AND ROL.ID_SRV = LUGR.UP_ROLES ") 
+									  .append("                   AND LUGU.UP_GROUP_USERS = LUGR.UP_GROUP_USERS ") 
+									  .append("                   AND LUGU.UP_USERS = AU.ID_SRV ") 
+									  .append("                   AND ROL.UP_IS = sys.ID_SRV ") 
+									  .append("                   AND AU.ID_SRV = :idUser ") 
+									  .append("                   AND SUBSYS.UP_IS(+) = SYS.ID_SRV ") 
+									  .append("          GROUP BY ROL.SIGN_OBJECT, ROL.FULL_, ROL.DESCRIPTION) ") 
+									  .append("GROUP BY SIGN_OBJECT, FULL_, DESCRIPTION ")
+											
+									.toString()
 											)
 									.setParameter("idIs", idIS)
 									.setParameter("idUser", idUserAuth).getResultList();

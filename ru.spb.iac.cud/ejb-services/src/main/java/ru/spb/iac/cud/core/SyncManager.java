@@ -16,6 +16,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.UserTransaction;
 
+import org.apache.openjpa.util.GeneralException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,12 +48,41 @@ import ru.spb.iac.cud.items.Role;
 	public SyncManager() {
 	}
 
+	private static void assertNonNull(String loggerMsg, Object o, String xMsg) throws GeneralFailure {
+		if(o==null){
+			LOGGER.debug(loggerMsg);
+			throw new GeneralFailure(xMsg);
+		}
+	}
+	private static void assertTrue(String loggerMsg, String xMsg, boolean value) throws GeneralFailure {
+		if(!value) {
+			LOGGER.debug(loggerMsg);
+			throw new GeneralFailure(xMsg);
+		}		
+	}
+	private static void assertFalse(String loggerMsg, String xMsg, boolean value) throws GeneralFailure {
+		if(value) {
+			LOGGER.debug(loggerMsg);
+			throw new GeneralFailure(xMsg);
+		}		
+	}	
+	
 	/**
 	 * синхронизация систем
 	 */
 	public void sync_roles(String idIS, List<Role> roles, String modeExec,
 			Long idUserAuth, String IPAddress) throws GeneralFailure {
-
+		// check!
+		assertNonNull("sync_roles:return", utx, "utx==null");
+		assertNonNull("sync_roles:return", idIS, "idIS is null");
+		assertFalse("sync_roles:return",  "Отсутствует список ролей!", roles == null || roles.isEmpty());
+		assertFalse("sync_roles:return", "Некорректные данные [modeExec]",
+						modeExec == null || modeExec.trim().isEmpty()
+						|| (!"REPLACE".equals(modeExec) 
+								&& !"ADD".equals(modeExec) 
+								&& !"REMOVE".equals(modeExec)));
+				
+		
 		// для систем и подсистем
 
 		// modeExec:
@@ -69,30 +99,9 @@ import ru.spb.iac.cud.items.Role;
 
 		Map<String, Long> rolescl = new HashMap<String, Long>();
 
+		// go!
 		try {
-
-			if(utx!=null){
-			  utx.begin();
-			}
-			
-			if (idIS == null) {
-				LOGGER.debug("sync_roles:return");
-				throw new GeneralFailure("idIS is null");
-			}
-
-			
-			if (roles == null || roles.isEmpty()) {
-				LOGGER.debug("sync_roles:return");
-				throw new GeneralFailure("Отсутствует список ролей!");
-			}
-
-			
-			if (modeExec == null|| modeExec.trim().isEmpty()
-					|| (!"REPLACE".equals(modeExec) && !"ADD".equals(modeExec) && 
-							!"REMOVE".equals(modeExec))) {
-				throw new GeneralFailure("Некорректные данные [modeExec]");
-			}
-
+			utx.begin();
 			int modeSyncRoles = 1;
 
 			if ("REPLACE".equals(modeExec)) {
@@ -102,12 +111,9 @@ import ru.spb.iac.cud.items.Role;
 			} else if ("REMOVE".equals(modeExec)) {
 				modeSyncRoles = 2;
 			}
-
-			
 			// !!!
 			idIS = get_code_is(idIS);
 
-			
 			if (modeSyncRoles == 1) { // //ADD
 
 				// имеющиеся роли
@@ -288,24 +294,21 @@ import ru.spb.iac.cud.items.Role;
 
 		} catch (Exception eSr) {
 			try {
-				if(utx!=null) {
-					utx.rollback();
-					utx.begin();
-					sys_audit(12L, "idIS:" + idIS, "error", IPAddress, null);
-					utx.commit();
-				}
+				utx.rollback();
+				utx.begin();
+				sys_audit(12L, "idIS:" + idIS, "error", IPAddress, null);
+				utx.commit();
 
 			} catch (Exception erSr) {
 				try {
 					utx.rollback();
 				} catch (Exception errSr) {
-					LOGGER.error("rollback:Error1:", errSr);
+					LOGGER.error("rollback:Error2:", errSr);
 				}
-				LOGGER.error("rollback:Error:", erSr);
+				LOGGER.error("rollback:Error10:", erSr);
 			}
 			throw new GeneralFailure(eSr.getMessage());
 		}
-
 	}
 
 	/**
@@ -571,7 +574,7 @@ import ru.spb.iac.cud.items.Role;
 				} catch (Exception errSf) {
 					LOGGER.error("rollback:Error1:", errSf);
 				}
-				LOGGER.error("rollback:Error:", erSf);
+				LOGGER.error("rollback:Error11:", erSf);
 			}
 
 			throw new GeneralFailure(eSf.getMessage());
@@ -606,20 +609,20 @@ import ru.spb.iac.cud.items.Role;
 				List<Object[]> loIr = em
 						.createNativeQuery(
 								(new StringBuilder("  SELECT '[' || sys_code || ']' || role_full.SIGN_OBJECT role_is_code, "))
-								  .append("         role_full.FULL_, ")
-								  .append("         role_full.DESCRIPTION ")
-								  .append("    FROM (  SELECT SYS.SIGN_OBJECT sys_code, ROL.ID_SRV role_id ")
-								  .append("              FROM GROUP_SYSTEMS_KNL_T gsys, ")
-								  .append("                   AC_IS_BSS_T sys, ")
-								  .append("                   AC_ROLES_BSS_T rol, ")
-								  .append("                   LINK_GROUP_SYS_SYS_KNL_T lgr ")
-								  .append("             WHERE     GSYS.GROUP_CODE = ? ")
-								  .append("                   AND GSYS.ID_SRV = LGR.UP_GROUP_SYSTEMS ")
-								  .append("                   AND LGR.UP_SYSTEMS = SYS.ID_SRV ")
-								  .append("                   AND ROL.UP_IS = SYS.ID_SRV ")
-								  .append("          GROUP BY SYS.SIGN_OBJECT, ROL.ID_SRV), ")
-								  .append("         AC_ROLES_BSS_T role_full ")
-								  .append("   WHERE role_full.ID_SRV = role_id ")
+								  .append(" role_full.FULL_, ")
+								  .append(" role_full.DESCRIPTION ")
+								  .append(" FROM (  SELECT SYS.SIGN_OBJECT sys_code, ROL.ID_SRV role_id ")
+								  .append(" FROM GROUP_SYSTEMS_KNL_T gsys, ")
+								  .append(" AC_IS_BSS_T sys, ")
+								  .append(" AC_ROLES_BSS_T rol, ")
+								  .append(" LINK_GROUP_SYS_SYS_KNL_T lgr ")
+								  .append(" WHERE     GSYS.GROUP_CODE = ? ")
+								  .append(" AND GSYS.ID_SRV = LGR.UP_GROUP_SYSTEMS ")
+								  .append(" AND LGR.UP_SYSTEMS = SYS.ID_SRV ")
+								  .append(" AND ROL.UP_IS = SYS.ID_SRV ")
+								  .append(" GROUP BY SYS.SIGN_OBJECT, ROL.ID_SRV), ")
+								  .append(" AC_ROLES_BSS_T role_full ")
+								  .append(" WHERE role_full.ID_SRV = role_id ")
 								  .append("ORDER BY sys_code ")
 						.toString())
 						.setParameter(1, idIS).getResultList();
@@ -652,7 +655,7 @@ import ru.spb.iac.cud.items.Role;
 				List<Object[]> loIr = em
 						.createNativeQuery(
 								(new StringBuilder("SELECT ROL.SIGN_OBJECT, ROL.FULL_, ROL.DESCRIPTION "))
-								  .append("  FROM AC_IS_BSS_T app, AC_ROLES_BSS_T rol ")
+								  .append(" FROM AC_IS_BSS_T app, AC_ROLES_BSS_T rol ")
 								  .append(" WHERE APP.SIGN_OBJECT = ? AND ROL.UP_IS = APP.ID_SRV ")
 						.toString())
 						.setParameter(1, idIS).getResultList();
@@ -714,20 +717,20 @@ import ru.spb.iac.cud.items.Role;
 				List<Object[]> lo = em
 						.createNativeQuery(
 								(new StringBuilder(" SELECT '[' || sys_code || ']' || act_full.SIGN_OBJECT act_is_code, "))
-								  .append("         act_full.FULL_, ")
-								  .append("         act_full.DESCRIPTIONS ")
-								  .append("    FROM (  SELECT SYS.SIGN_OBJECT sys_code, act.ID_SRV act_id ")
-								  .append("              FROM GROUP_SYSTEMS_KNL_T gsys, ")
-								  .append("                   AC_IS_BSS_T sys, ")
-								  .append("                   ACTIONS_BSS_T act, ")
-								  .append("                   LINK_GROUP_SYS_SYS_KNL_T lgr ")
-								  .append("             WHERE     GSYS.GROUP_CODE = ? ")
-								  .append("                   AND GSYS.ID_SRV = LGR.UP_GROUP_SYSTEMS ")
-								  .append("                   AND LGR.UP_SYSTEMS = SYS.ID_SRV ")
-								  .append("                   AND act.UP_IS = SYS.ID_SRV ")
-								  .append("          GROUP BY SYS.SIGN_OBJECT, act.ID_SRV), ")
-								  .append("         ACTIONS_BSS_T act_full ")
-								  .append("   WHERE act_full.ID_SRV = act_id ")
+								  .append(" act_full.FULL_, ")
+								  .append(" act_full.DESCRIPTIONS ")
+								  .append(" FROM (  SELECT SYS.SIGN_OBJECT sys_code, act.ID_SRV act_id ")
+								  .append(" FROM GROUP_SYSTEMS_KNL_T gsys, ")
+								  .append(" AC_IS_BSS_T sys, ")
+								  .append(" ACTIONS_BSS_T act, ")
+								  .append(" LINK_GROUP_SYS_SYS_KNL_T lgr ")
+								  .append(" WHERE     GSYS.GROUP_CODE = ? ")
+								  .append(" AND GSYS.ID_SRV = LGR.UP_GROUP_SYSTEMS ")
+								  .append(" AND LGR.UP_SYSTEMS = SYS.ID_SRV ")
+								  .append(" AND act.UP_IS = SYS.ID_SRV ")
+								  .append(" GROUP BY SYS.SIGN_OBJECT, act.ID_SRV), ")
+								  .append(" ACTIONS_BSS_T act_full ")
+								  .append(" WHERE act_full.ID_SRV = act_id ")
 								  .append("ORDER BY sys_code")
 						.toString())
 						.setParameter(1, idIS).getResultList();
@@ -1104,9 +1107,9 @@ import ru.spb.iac.cud.items.Role;
 				try {					
 						utx.rollback();					
 				} catch (Exception errSg) {
-					LOGGER.error("rollback:Error1:", errSg);
+					LOGGER.error("rollback:Error3:", errSg);
 				}
-				LOGGER.error("rollback:Error:", erSg);
+				LOGGER.error("rollback:Error4:", erSg);
 			}
 			throw new GeneralFailure(eSg.getMessage());
 		}
@@ -1120,6 +1123,19 @@ import ru.spb.iac.cud.items.Role;
 			List<String> codesRoles, String modeExec, Long idUserAuth,
 			String IPAddress) throws GeneralFailure {
 
+		assertNonNull("sync_groups_roles", utx, "utx can't be null");
+		assertNonNull("sync_groups_roles", idIS, "idIS is null!");
+		assertFalse("sync_groups_roles", "Отсутствует список групп!", 
+				codesGroups == null || codesGroups.isEmpty());
+		assertFalse("sync_groups_roles", "Отсутствует список ролей!",
+					codesRoles == null || codesRoles.isEmpty());
+		assertFalse("sync_groups_roles", "Некорректные данные [modeExec]!",
+					modeExec == null
+						|| modeExec.trim().isEmpty()
+						|| (!"REPLACE".equals(modeExec) && !"ADD".equals(modeExec) && 
+								!"REMOVE".equals(modeExec)));
+		
+	
 		// для систем и подсистем
 
 		// !!!
@@ -1140,35 +1156,11 @@ import ru.spb.iac.cud.items.Role;
 		List<String> role_cl = null;
 
 		try {
-
-			if(utx!=null){
-				  utx.begin();
-				}
-
+			  utx.begin();
 			/*
 			 * проверка на уровне выше - is exist
 			      Отсутствует код системы!
 			 */
-
-			if (idIS == null) {
-				throw new GeneralFailure("idIS is null!");
-			}
-			
-			if (codesGroups == null || codesGroups.isEmpty()) {
-				throw new GeneralFailure("Отсутствует список групп!");
-			}
-			
-			if (codesRoles == null || codesRoles.isEmpty()) {
-					throw new GeneralFailure("Отсутствует список ролей!");
-			}
-
-			
-
-			if (modeExec == null|| modeExec.trim().isEmpty()|| (!"REPLACE".equals(modeExec) && !"ADD".equals(modeExec) && 
-					!"REMOVE".equals(modeExec))) {
-				throw new GeneralFailure("Некорректные данные [modeExec]!");
-			}
-
 			int modeSyncGroupRoles = 1;
 
 			if ("REPLACE".equals(modeExec)) {
@@ -1342,27 +1334,23 @@ import ru.spb.iac.cud.items.Role;
 			}
 
 			sys_audit(12L, "idIS:" + idIS, "true", IPAddress, null);
-			if(utx!=null){
-				utx.commit();
-			}
+			utx.commit();
 
 		} catch (Exception eSgr) {
 			try {
-				if(utx!=null){
-					utx.rollback();
-	
-					utx.begin();
-					sys_audit(12L, "idIS:" + idIS, "error", IPAddress, null);
-					utx.commit();
-				}
+				utx.rollback();
+
+				utx.begin();
+				sys_audit(12L, "idIS:" + idIS, "error", IPAddress, null);
+				utx.commit();
 
 			} catch (Exception erSgr) {
 				try {
 					utx.rollback();
 				} catch (Exception errSgr) {
-					LOGGER.error("rollback:Error1:", errSgr);
+					LOGGER.error("rollback:Error5:", errSgr);
 				}
-				LOGGER.error("rollback:Error:", erSgr);
+				LOGGER.error("rollback:Error12:", erSgr);
 			}
 			throw new GeneralFailure(eSgr.getMessage());
 		}
@@ -1383,6 +1371,13 @@ import ru.spb.iac.cud.items.Role;
 		 
 		 LOGGER.debug("sync_resources:01");
 		 
+			assertNonNull("sync_resources", utx, "utx can't be null");
+			assertFalse("sync_resources", "idIS is null!", idIS==null||idIS.trim().isEmpty());
+			assertFalse("sync_resources", "Некорректные данные [modeExec]!",
+						modeExec == null
+							|| modeExec.trim().isEmpty()
+							|| !"ADD".equals(modeExec) );
+			
 		 //ADD - это ADD или UPDATE
 		 
 		 //для систем - это UPDATE
@@ -1393,20 +1388,9 @@ import ru.spb.iac.cud.items.Role;
 		 String linksLine=null;
 		 
 		 try{
-			 if(utx!=null){
-				  utx.begin();
-				}
+			  utx.begin();
 			 
-			 if(idIS==null||idIS.trim().isEmpty()){
-				 throw new GeneralFailure("idIS is null!");
-			 }
-			 
-			 if(modeExec==null || modeExec.trim().isEmpty()||
-					 (!"ADD".equals(modeExec))){
-	    		 throw new GeneralFailure("Некорректные данные [modeExec]!");
-	    	 }
-			 
-			 Map<String, Long> res_cl=new HashMap<String, Long>();
+			  Map<String, Long> res_cl=new HashMap<String, Long>();
 			 
 			 int mode=1;
 				
@@ -1451,9 +1435,9 @@ import ru.spb.iac.cud.items.Role;
 							   
 							 	
 								   em.createNativeQuery(
-										"UPDATE AC_IS_BSS_T sys "+
-	                                      "set sys.FULL_=?, sys.DESCRIPTION=?, sys.LINKS=?  "+
-	                                      "where sys.SIGN_OBJECT = ?  ")
+										"UPDATE AC_IS_BSS_T sys "
+	                                      + "set sys.FULL_=?, sys.DESCRIPTION=?, sys.LINKS=?  "
+	                                      + "where sys.SIGN_OBJECT = ?  ")
 							         .setParameter(1, resource.getName())
 						             .setParameter(2, resource.getDescription())
 						             .setParameter(3, linksLine)
@@ -1474,13 +1458,14 @@ import ru.spb.iac.cud.items.Role;
 			    	   //имеющиеся ресурсы (подсистемы) у группы систем
 			    	   List<Object[]> lo=
 				    			em.createNativeQuery(
-				    					" select  SYS.SIGN_OBJECT, SYS.ID_SRV, SYS.FULL_, SYS.DESCRIPTION, sys.LINKS from " + 
-				    							" GROUP_SYSTEMS_KNL_T gsys, " + 
-				    							" AC_IS_BSS_T sys, " + 
-				    							" LINK_GROUP_SYS_SYS_KNL_T lgr " + 
-				    							" where GSYS.ID_SRV=LGR.UP_GROUP_SYSTEMS " + 
-				    							" and LGR.UP_SYSTEMS= SYS.ID_SRV " + 
-				    							" and GSYS.GROUP_CODE=:idIS ")
+				    					(new StringBuilder(" select  SYS.SIGN_OBJECT, SYS.ID_SRV, SYS.FULL_, SYS.DESCRIPTION, sys.LINKS from "))
+		    							  .append(" GROUP_SYSTEMS_KNL_T gsys, ") 
+		    							  .append(" AC_IS_BSS_T sys, ") 
+		    							  .append(" LINK_GROUP_SYS_SYS_KNL_T lgr ") 
+		    							  .append(" where GSYS.ID_SRV=LGR.UP_GROUP_SYSTEMS ") 
+		    							  .append(" and LGR.UP_SYSTEMS= SYS.ID_SRV ") 
+		    							  .append(" and GSYS.GROUP_CODE=:idIS ")
+		    					.toString())
 				                .setParameter("idIS", idIS)
 				       	      	.getResultList();
 					   LOGGER.debug("sync_resources:02");
@@ -1516,9 +1501,9 @@ import ru.spb.iac.cud.items.Role;
 						   if(res_cl.containsKey(resource.getCode())){
 							
 							   em.createNativeQuery(
-									"UPDATE AC_IS_BSS_T sys "+
-                                     "set sys.FULL_=?, sys.DESCRIPTION=?, sys.LINKS=?  "+
-                                     "where sys.SIGN_OBJECT = ?  ")
+									"UPDATE AC_IS_BSS_T sys "
+                                     + "set sys.FULL_=?, sys.DESCRIPTION=?, sys.LINKS=?  "
+                                     + "where sys.SIGN_OBJECT = ?  ")
 						         .setParameter(1, resource.getName())
 					             .setParameter(2, resource.getDescription())
 					             .setParameter(3, linksLine)
@@ -1534,8 +1519,8 @@ import ru.spb.iac.cud.items.Role;
 					         Long newIdRes = ((BigDecimal)results.get(0)).longValue();
 					            
 							 em.createNativeQuery(
-								     "insert into AC_IS_BSS_T(ID_SRV, SIGN_OBJECT, FULL_ , DESCRIPTION, LINKS, CREATOR,  created ) "+
-				                     "values(?, ?, ?, ?, ?, 1, sysdate) ")
+								     "insert into AC_IS_BSS_T(ID_SRV, SIGN_OBJECT, FULL_ , DESCRIPTION, LINKS, CREATOR,  created ) "
+				                     + "values(?, ?, ?, ?, ?, 1, sysdate) ")
 					         .setParameter(1, newIdRes)
 				             .setParameter(2, resource.getCode())
 					         .setParameter(3, resource.getName())
@@ -1545,8 +1530,8 @@ import ru.spb.iac.cud.items.Role;
 							 
 							 
 							 em.createNativeQuery(
-								     "insert into LINK_GROUP_SYS_SYS_KNL_T(UP_SYSTEMS, UP_GROUP_SYSTEMS, CREATOR, CREATED  ) "+
-				                     "values(?, (select gr_sys.ID_SRV from GROUP_SYSTEMS_KNL_T gr_sys where gr_sys.GROUP_CODE = ? ), 1, sysdate) ")
+								     "insert into LINK_GROUP_SYS_SYS_KNL_T(UP_SYSTEMS, UP_GROUP_SYSTEMS, CREATOR, CREATED  ) "
+				                     + "values(?, (select gr_sys.ID_SRV from GROUP_SYSTEMS_KNL_T gr_sys where gr_sys.GROUP_CODE = ? ), 1, sysdate) ")
 					         .setParameter(1, newIdRes)
 				             .setParameter(2, idIS)
 					         .executeUpdate();
@@ -1557,28 +1542,25 @@ import ru.spb.iac.cud.items.Role;
 		 		}
 		 
 		  sys_audit(101L, "idIS:"+idIS, "true", IPAddress, null ); 
-		  if(utx!=null){
-			  utx.commit();
-		  }
+		  utx.commit();
+		  
 		  
 		 }catch(Exception eSres){
 			 
 		  try{ 
-			  if(utx!=null){
 				 utx.rollback();					
 				 utx.begin();
 				 sys_audit(101L, "idIS:"+idIS, "error", IPAddress, null );
 				 utx.commit();
-			  }
 			 
 		    }catch (Exception erSres) {
 				try{
 					utx.rollback();
 				}catch (Exception errSres) 
 				{
-					LOGGER.error("rollback:Error1:"+errSres);
+					LOGGER.error("rollback:Error6:"+errSres);
 				} 
-				LOGGER.error("rollback:Error:"+erSres);
+				LOGGER.error("rollback:Error7:"+erSres);
 			} 
 		 
 			 throw new GeneralFailure(eSres.getMessage());
@@ -1594,6 +1576,17 @@ import ru.spb.iac.cud.items.Role;
 			List<String> codesRoles, String modeExec, Long idUserAuth,
 			String IPAddress) throws GeneralFailure {
 
+		assertNonNull("sync_resources_roles", utx, "utx can't be null");
+		assertNonNull("sync_resources_roles", idIS, "idIS is null!");
+		assertFalse("sync_resources_roles", "Отсутствует список ресурсов!", 
+					codesResources == null || codesResources.isEmpty());
+		assertFalse("sync_resources_roles", "Отсутствует список ролей!",
+					codesRoles == null || codesRoles.isEmpty());
+		assertFalse("sync_resources_roles", "Некорректные данные [modeExec]!",
+					modeExec == null
+						|| modeExec.trim().isEmpty()
+						|| (!"REPLACE".equals(modeExec) && !"ADD".equals(modeExec) && 
+								!"REMOVE".equals(modeExec)));
 		// для систем и подсистем
 
 		// !!!
@@ -1614,37 +1607,10 @@ import ru.spb.iac.cud.items.Role;
 		List<String> role_cl = null;
 
 		try {
-
-			if(utx!=null){
-				  utx.begin();
-				}
-
+			utx.begin();
 			/*
 			 * проверка на уровне выше - is_exist()
 			 */
-
-			if (idIS == null) {
-				throw new GeneralFailure("idIS is null!");
-			}
-			
-			if (codesResources == null 
-					|| codesResources.isEmpty()) {
-				throw new GeneralFailure("Отсутствует список ресурсов!");
-			}
-			if (codesRoles == null 
-					|| codesRoles.isEmpty()) {
-				throw new GeneralFailure("Отсутствует список ролей!");
-			}
-
-			
-
-			if (modeExec == null
-					|| modeExec.trim().isEmpty()
-					|| (!"REPLACE".equals(modeExec) && !"ADD".equals(modeExec) && 
-							!"REMOVE".equals(modeExec))) {
-				throw new GeneralFailure("Некорректные данные [modeExec]!");
-			}
-
 			int modeSyncResRoles = 1;
 
 			if ("REPLACE".equals(modeExec)) {
@@ -1833,27 +1799,22 @@ import ru.spb.iac.cud.items.Role;
 			}
 
 			sys_audit(12L, "idIS:" + idIS, "true", IPAddress, null);
+			utx.commit();
 
-			if(utx!=null){
-				utx.commit();
-			}
-
-		} catch (Exception eSresr) {
-			
+		} catch (Exception eSresr) {			
 			try {
-				if(utx!=null){
 					utx.rollback();
 					utx.begin();
 					sys_audit(12L, "idIS:" + idIS, "error", IPAddress, null);
 					utx.commit();
-				}
+
 			} catch (Exception erSresr) {
 				try {
 					utx.rollback();
 				} catch (Exception errSresr) {
-					LOGGER.error("rollback:Error1:", errSresr);
+					LOGGER.error("rollback:Error8:", errSresr);
 				}
-				LOGGER.error("rollback:Error:", erSresr);
+				LOGGER.error("rollback:Error9:", erSresr);
 			}
 			throw new GeneralFailure(eSresr.getMessage());
 		}

@@ -20,6 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
+import javaw.io.Closeable;
+
 import javax.faces.context.FacesContext;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -447,16 +449,10 @@ import org.jboss.seam.log.Log;
 		  }catch (Exception eBubRun) {
 				log.error("procBindUnBindManager:procRun:error:"+eBubRun);
 		  }finally{
-			 try {
-				if(os!=null){
-					 os.close();
+				String[] errMsg = new String[]{"procBindUnBindManager:procRun:finally:error:"};
+				if(!Closeable.Close(errMsg, os, fi)) {
+					log.error(errMsg);
 				}
-				if(fi!=null) { 
-					fi.close();
-				}				
-			 } catch (Exception eBubRun) {
-				log.error("procBindUnBindManager:procRun:os:error:"+eBubRun);
-			 }
 		 }
 	}
 	

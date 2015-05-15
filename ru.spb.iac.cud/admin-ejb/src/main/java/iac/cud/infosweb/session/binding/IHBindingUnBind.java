@@ -175,20 +175,21 @@ import org.apache.log4j.Logger;
 	    	  utx.begin();
 
 	    	  em.createNativeQuery(
-		              "delete from BINDING_AUTO_LINK_BSS_T tt " +
-		              "WHERE TT.TYPE_BINDING = 1 ")
+		              "delete from BINDING_AUTO_LINK_BSS_T tt " 
+		              + "WHERE TT.TYPE_BINDING = 1 ")
                       .executeUpdate();
 	    	 
 	    	  em.createNativeQuery(
-		              "INSERT INTO BINDING_AUTO_LINK_BSS_T (UP_USERS, UP_ISP_SIGN_USER, TYPE_BINDING) "+
-                      "select AU.ID_SRV, CL_USER.SIGN_OBJECT, 1 "+
-                      "from AC_USERS_KNL_T au, "+
-                      "ISP_BSS_T cl_user "+
-                      "where AU.UP_SIGN_USER is null "+
-                      "and CL_USER.STATUS='A' "+
-                      "and CL_USER.FIO like AU.SURNAME ||'% '||AU.NAME_ || '%'||AU.PATRONYMIC "+
-                      "and AU.UP_SIGN= substr(CL_USER.SIGN_OBJECT,1,3)||'00000' " +
-	    			  "group by AU.ID_SRV, CL_USER.SIGN_OBJECT ")
+		              (new StringBuilder("INSERT INTO BINDING_AUTO_LINK_BSS_T (UP_USERS, UP_ISP_SIGN_USER, TYPE_BINDING) "))
+                      .append("select AU.ID_SRV, CL_USER.SIGN_OBJECT, 1 ")
+                      .append("from AC_USERS_KNL_T au, ")
+                      .append("ISP_BSS_T cl_user ")
+                      .append("where AU.UP_SIGN_USER is null ")
+                      .append("and CL_USER.STATUS='A' ")
+                      .append("and CL_USER.FIO like AU.SURNAME ||'% '||AU.NAME_ || '%'||AU.PATRONYMIC ")
+                      .append("and AU.UP_SIGN= substr(CL_USER.SIGN_OBJECT,1,3)||'00000' ") 
+	    			    .append("group by AU.ID_SRV, CL_USER.SIGN_OBJECT ")
+		              .toString())
                     .executeUpdate();
 	    	  
 	 	    

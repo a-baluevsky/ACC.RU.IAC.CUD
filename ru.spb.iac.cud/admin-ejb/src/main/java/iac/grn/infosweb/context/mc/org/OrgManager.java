@@ -146,8 +146,8 @@ import javaw.util.ArrayList;
 			 } else if("count".equals(type)){
 				 log.info("OrgList:count:01");
 				 auditCount = (Long)entityManager.createQuery(
-						 "select count(o) " +
-				         "from AcOrganization o ")
+						 "select count(o) " 
+				         + "from AcOrganization o ")
 		                .getSingleResult();
 				 
                log.info("Org:invokeLocal:count:02:"+auditCount);

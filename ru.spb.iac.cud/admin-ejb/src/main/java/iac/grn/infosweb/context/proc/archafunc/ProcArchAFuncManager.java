@@ -20,6 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
+import javaw.io.Closeable;
+
 import javax.faces.context.FacesContext;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -341,20 +343,10 @@ import org.jboss.seam.log.Log;
         }catch (Exception e) {
 				log.error("confLogContrManager:procPause:error:"+e);
 	   }finally{
-		 try {
-			if(os!=null){
-				 os.close();
-			}
-		 } catch (Exception e) {
-			log.error("confLogContrManager:procPause:os:error:"+e);
-		 }
-		 try {
-			  if(is!=null){
-			    is.close();
-			  }
-		} catch (Exception e) {
-			log.error("confLogContrManager:procDel:finally:is:error:"+e);
-		}
+			String[] errMsg = new String[]{"confLogContrManager:procPause:close:error:"};
+			if(!Closeable.Close(errMsg, os, is)) {
+				log.error(errMsg);
+			}	
 	 }
 	}
 	public synchronized void procRun(){
@@ -393,16 +385,10 @@ import org.jboss.seam.log.Log;
 		  }catch (Exception e) {
 				log.error("confLogContrManager:procRun:error:"+e);
 		  }finally{
-			 try {
-				if(os!=null){
-					 os.close();
-				}
-				if(fi!=null) { 
-					fi.close();
-				}
-			 } catch (Exception e) {
-				log.error("confLogContrManager:procRun:os:error:"+e);
-			 }
+				String[] errMsg = new String[]{"confLogContrManager:procRun:os:error:"};
+				if(!Closeable.Close(errMsg, os, fi)) {
+					log.error(errMsg);
+				}			  
 		 }
 	}
 	

@@ -200,16 +200,17 @@ import ru.spb.iac.crypto.export.Crypto15Init;
     	
     	try{
      	 List<AcRole> alist = entityManager.createQuery(
-                 "select ar " +
-                 "from AcUser au, AcRole ar, AcLinkUserToRoleToRaion aur, " +
-                 "AcLinkRoleAppPagePrmssn arp, AcAppPage ap where " +
-                 "aur.acRole is not null and aur.acRole.idRol=ar.idRol and " +
-                 "aur.acUser is not null and aur.acUser.idUser=au.idUser and " +
-                 "arp.acRole is not null and arp.acRole.idRol=ar.idRol and " +
-                 "arp.acAppPage is not null and arp.acAppPage.idRes=ap.idRes and " +
-                 "ap.pageCode=:pageCode and " +
-                 "ap.acApplication=:acApplication and " +
-                 "au.idUser=:idUser " )
+                 (new StringBuilder("select ar "))
+                 .append("from AcUser au, AcRole ar, AcLinkUserToRoleToRaion aur, ") 
+                 .append("AcLinkRoleAppPagePrmssn arp, AcAppPage ap where ") 
+                 .append("aur.acRole is not null and aur.acRole.idRol=ar.idRol and ") 
+                 .append("aur.acUser is not null and aur.acUser.idUser=au.idUser and ") 
+                 .append("arp.acRole is not null and arp.acRole.idRol=ar.idRol and ") 
+                 .append("arp.acAppPage is not null and arp.acAppPage.idRes=ap.idRes and ") 
+                 .append("ap.pageCode=:pageCode and ") 
+                 .append("ap.acApplication=:acApplication and ") 
+                 .append("au.idUser=:idUser ")
+               .toString() )
                  .setParameter("pageCode", pageCode)
                  .setParameter("acApplication", linksMap.getAppCode())
                  .setParameter("idUser", currentUser.getIdUser())
@@ -251,18 +252,19 @@ import ru.spb.iac.crypto.export.Crypto15Init;
     	
     	try{
      	 List<AcRole> alist = entityManager.createQuery(
-                 "select ar " +
-                 "from AcUser au, AcRole ar, AcLinkUserToRoleToRaion aur, " +
-                 "AcLinkRoleAppPagePrmssn arp, AcAppPage ap, AcPermissionsList aperm where " +
-                 "aur.acRole is not null and aur.acRole.idRol=ar.idRol and " +
-                 "aur.acUser is not null and aur.acUser.idUser=au.idUser and " +
-                 "arp.acRole is not null and arp.acRole.idRol=ar.idRol and " +
-                 "arp.acAppPage is not null and arp.acAppPage.idRes=ap.idRes and " +
-                 "arp.acPermissionsList is not null and arp.acPermissionsList.idPerm=aperm.idPerm and " +
-                 "ap.pageCode=:pageCode and " +
-                 "aperm.idPerm=:idPerm and " +
-                 "ap.acApplication=:acApplication and " +
-                 "au.idUser=:idUser " )
+                 (new StringBuilder("select ar "))
+                 .append("from AcUser au, AcRole ar, AcLinkUserToRoleToRaion aur, ") 
+                 .append("AcLinkRoleAppPagePrmssn arp, AcAppPage ap, AcPermissionsList aperm where ") 
+                 .append("aur.acRole is not null and aur.acRole.idRol=ar.idRol and ") 
+                 .append("aur.acUser is not null and aur.acUser.idUser=au.idUser and ") 
+                 .append("arp.acRole is not null and arp.acRole.idRol=ar.idRol and ") 
+                 .append("arp.acAppPage is not null and arp.acAppPage.idRes=ap.idRes and ") 
+                 .append("arp.acPermissionsList is not null and arp.acPermissionsList.idPerm=aperm.idPerm and ") 
+                 .append("ap.pageCode=:pageCode and ") 
+                 .append("aperm.idPerm=:idPerm and ") 
+                 .append("ap.acApplication=:acApplication and ") 
+                 .append("au.idUser=:idUser ")
+               .toString() )
                  .setParameter("pageCode", pageCode)
                  .setParameter("idPerm", Long.valueOf(permCode))
                  .setParameter("acApplication", linksMap.getAppCode())
@@ -1008,8 +1010,8 @@ import ru.spb.iac.crypto.export.Crypto15Init;
 		        LogoutRequestType logout = (LogoutRequestType) parsedObject;
 		        
 		       
-		        String samlDestination = logout.getDestination().toString()+
-		        		                 "?logoutBackUrl="+URLEncoder.encode(logoutBackUrl, "utf-8");
+		        String samlDestination = logout.getDestination().toString()
+		        		                 + "?logoutBackUrl="+URLEncoder.encode(logoutBackUrl, "utf-8");
 		        
 		        logout.setDestination(URI.create(samlDestination));		        
 		        
@@ -1114,9 +1116,9 @@ import ru.spb.iac.crypto.export.Crypto15Init;
          {
      	   LOGGER.debug("auth_01");
      	   AcUser user = (AcUser) entityManager.createQuery(
-               "select au from AcUser au where " +
-               "au.login = :login and au.password = :password and " +
-               "(au.start is null or au.start <= sysdate) and (au.finish is null or au.finish > sysdate) ")
+               "select au from AcUser au where " 
+               + "au.login = :login and au.password = :password and " 
+               + "(au.start is null or au.start <= sysdate) and (au.finish is null or au.finish > sysdate) ")
                .setParameter("login", credentials.getUsername())
                .setParameter("password", credentials.getPassword())
                .getSingleResult();
@@ -1349,10 +1351,10 @@ import ru.spb.iac.crypto.export.Crypto15Init;
 	       }
 	    	   
 	        
-	       result="?"+login_key+"="+URLEncoder.encode(login, "UTF-8")+
-	        	   "&"+password_encrypt_key+"="+URLEncoder.encode(passwordEncryptBase64, "UTF-8")+
-	        	   "&"+secret_key_key+"="+URLEncoder.encode(secretKeyBase64, "UTF-8")+
-	        	   "&"+initialization_vector_key+"="+URLEncoder.encode(ivBase64, "UTF-8");
+	       result="?"+login_key+"="+URLEncoder.encode(login, "UTF-8")
+	        	   + "&"+password_encrypt_key+"="+URLEncoder.encode(passwordEncryptBase64, "UTF-8")
+	        	   + "&"+secret_key_key+"="+URLEncoder.encode(secretKeyBase64, "UTF-8")
+	        	   + "&"+initialization_vector_key+"="+URLEncoder.encode(ivBase64, "UTF-8");
 	       		
 	    	//resu/lt=/"?tokenId="
 	     	//	+ "MV8xNDEyNjY5MzcyMDg4X3VybjpvYXNpczpuYW1lczp0YzpTQU1MOjIuMDphYzpjbGFzc2VzOnBhc3N3b3JkX3NnR21Gemt5T1JJOXd4TjY2Ynl2aGMvTFBpNlRpL0tWblo1NmVsVG9LbmljV2RWQUxEU0dqbUNWSUxFdmtDV0FXcm8xV0xlaDd1ZkR0MmE0RWlVbmVBPT0=";
@@ -1622,10 +1624,11 @@ import ru.spb.iac.crypto.export.Crypto15Init;
 		    
 	    	try{
 	    	  List<Object> slist = entityManager.createNativeQuery(
-	                 "select to_char(lus.UP_SYS) up_sys " +
-	                 "from LINK_ADMIN_USER_SYS lus " +
-	                 "where " +
-	                 "lus.UP_USER =:idUser " )
+		                 (new StringBuilder("select to_char(lus.UP_SYS) up_sys "))
+		                   .append("from LINK_ADMIN_USER_SYS lus ") 
+		                   .append("where ") 
+		                   .append("lus.UP_USER =:idUser ")
+		                 .toString() )
 	                 .setParameter("idUser", idUser)
 	                 .getResultList();
 	  
@@ -1651,13 +1654,14 @@ import ru.spb.iac.crypto.export.Crypto15Init;
 		    
 	    	try{
 	    		result = entityManager.createNativeQuery(
-						  "select DOM.PAGE_CODE||':'|| PERM.ID_SRV code  " + 
-						  "from LINK_ADMIN_USER_DOM_PRM udp,  " + 
-						  "AC_APP_DOMAINS_BSS_T dom,  " + 
-						  "AC_PERMISSIONS_LIST_BSS_T perm  " + 
-						  "where DOM.ID_SRV=UDP.UP_DOM  " + 
-						  "and PERM.ID_SRV=UDP.UP_PRM  " + 
-						  "and UDP.UP_USER = :idUser")
+						  (new StringBuilder("select DOM.PAGE_CODE||':'|| PERM.ID_SRV code  "))
+						    .append("from LINK_ADMIN_USER_DOM_PRM udp,  ") 
+						    .append("AC_APP_DOMAINS_BSS_T dom,  ") 
+						    .append("AC_PERMISSIONS_LIST_BSS_T perm  ") 
+						    .append("where DOM.ID_SRV=UDP.UP_DOM  ") 
+						    .append("and PERM.ID_SRV=UDP.UP_PRM  ") 
+						    .append("and UDP.UP_USER = :idUser")
+						  .toString())
 			           .setParameter("idUser", idUser)
 			           .getResultList();
 	  	}catch(Exception e){
@@ -1680,8 +1684,8 @@ import ru.spb.iac.crypto.export.Crypto15Init;
 		    
 	    	try{
 	    		Long isAccOrgManager = (Long) entityManager
-	  				  .createQuery("select au.isAccOrgManager from AcUser au " +
-	  				  		        "where au.idUser= :idUser")
+	  				  .createQuery("select au.isAccOrgManager from AcUser au " 
+	  				  		        + "where au.idUser= :idUser")
 	  				  .setParameter("idUser", idUser)		        
 	                    .getSingleResult();
 	    		

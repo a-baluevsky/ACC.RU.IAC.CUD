@@ -148,8 +148,8 @@ import iac.grn.serviceitems.BaseTableItem;
 			 } else if("count".equals(type)){
 				 log.info("CParList:count:01");
 				 auditCount = (Long)entityManager.createQuery(
-						 "select count(o) " +
-				         "from SettingsKnlT o ")
+						 "select count(o) " 
+				         + "from SettingsKnlT o ")
 		                .getSingleResult();
 				 
                log.info("CPar:invokeLocal:count:02:"+auditCount);
@@ -268,9 +268,9 @@ import iac.grn.serviceitems.BaseTableItem;
     	try{
     		if(setting==null){
     		    setting = entityManager.createQuery(
-					   "select o " +
-			           "from SettingsKnlT o " +
-			           "where o.signObject = :codeParam ", SettingsKnlT.class)
+					   "select o " 
+			           + "from SettingsKnlT o " 
+			           + "where o.signObject = :codeParam ", SettingsKnlT.class)
 			           .setParameter("codeParam", codeParam)
 	                   .getSingleResult();
     		 
@@ -288,9 +288,9 @@ import iac.grn.serviceitems.BaseTableItem;
     	try{
     		if(settingValue==null){
     			settingValue = (String) entityManager.createQuery(
-					   "select o.valueParam " +
-			           "from SettingsKnlT o " +
-			           "where o.signObject = :codeParam ")
+					   "select o.valueParam " 
+			           + "from SettingsKnlT o " 
+			           + "where o.signObject = :codeParam ")
 			           .setParameter("codeParam", codeParam)
 	                   .getSingleResult();
     		 

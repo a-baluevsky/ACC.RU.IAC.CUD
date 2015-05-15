@@ -205,27 +205,28 @@ import org.jboss.seam.log.Log;
 			 // TODO: use QuerySvc to analyze filter data and produce consistent SQL-query	
 			 AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
 			 String sQuerySqlT1 =
-					 "(select AL.ID_SRV act_id, "+  
-						 "AL.DATE_ACTION act_dat, to_char(AL.DATE_ACTION, 'DD.MM.YY HH24:MI:SS') act_dat_value, "+ 
-						 "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO) usr_fio, "+ 
-						 "ARM.ID_SRV arm_id, ARM.FULL_ arm_name, ACT.FULL_ act_name "+ 
-						 "from ACTIONS_LOG_KNL_T al, "+ 
-						 "AC_IS_BSS_T arm, "+ 
-						 "ACTIONS_BSS_T act, "+ 
-						 "AC_USERS_KNL_T AU_FULL, "+ 
-						 "ISP_BSS_T cl_usr_full, "+
-							 "(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "+ 
-							 "from ISP_BSS_T cl_usr, "+ 
-							 "AC_USERS_KNL_T au "+ 
-							 "where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT "+ 
-							 "group by CL_usr.SIGN_OBJECT) t2 "+ 
-						 "where ACT.ID_SRV=AL.UP_ACTIONS "+ 
-						 "and ACT.UP_IS=ARM.ID_SRV "+ 
-						 "and AU_FULL.UP_SIGN_USER=t2.CL_USR_CODE(+) "+ 
-						 "and AU_FULL.ID_SRV=AL.UP_USERS "+ 
-						 "and CL_USR_FULL.ID_SRV(+)=t2.CL_USR_ID "+
-						 (au.getIsAccOrgManagerValue() ? "and au_full.UP_SIGN = "+au.getUpSign() : "" )+
-					 ") t1 ";
+					 (new StringBuilder("(select AL.ID_SRV act_id, "))
+					   .append("AL.DATE_ACTION act_dat, to_char(AL.DATE_ACTION, 'DD.MM.YY HH24:MI:SS') act_dat_value, ")
+					   .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO) usr_fio, ")
+					   .append("ARM.ID_SRV arm_id, ARM.FULL_ arm_name, ACT.FULL_ act_name ")
+					   .append("from ACTIONS_LOG_KNL_T al, ")
+					   .append("AC_IS_BSS_T arm, ")
+					   .append("ACTIONS_BSS_T act, ")
+					   .append("AC_USERS_KNL_T AU_FULL, ")
+					   .append("ISP_BSS_T cl_usr_full, ")
+						   .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
+						   .append("from ISP_BSS_T cl_usr, ")
+						   .append("AC_USERS_KNL_T au ")
+						   .append("where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT ")
+						   .append("group by CL_usr.SIGN_OBJECT) t2 ")
+					   .append("where ACT.ID_SRV=AL.UP_ACTIONS ")
+					   .append("and ACT.UP_IS=ARM.ID_SRV ")
+					   .append("and AU_FULL.UP_SIGN_USER=t2.CL_USR_CODE(+) ")
+					   .append("and AU_FULL.ID_SRV=AL.UP_USERS ")
+					   .append("and CL_USR_FULL.ID_SRV(+)=t2.CL_USR_ID ")
+					   .append(au.getIsAccOrgManagerValue() ? "and au_full.UP_SIGN = "+au.getUpSign() : "" )
+					   .append(") t1 ")					 
+					 .toString();
 			 Set<Map.Entry<String, String>> set = aFuncStateHolder.getSortOrders().entrySet();			 
 			 resetOrderBy(); putOrderByFromStringSet(set);
 			 String orderQuery=getOrderByClause();
@@ -249,8 +250,8 @@ import org.jboss.seam.log.Log;
              log.info("AFunc:invokeLocal:filterQuery:"+getWhereAndClause());
 			 if("list".equals(type)) {
 				 log.info("AFunc:invokeLocal:list:01");
-                 sQuerySql = "select t1.act_id, t1.act_dat_value, t1.usr_fio, t1.arm_name, t1.act_name "+
-                		 	 "from "+sQuerySqlT1;
+                 sQuerySql = "select t1.act_id, t1.act_dat_value, t1.usr_fio, t1.arm_name, t1.act_name "
+                		 	 + "from "+sQuerySqlT1;
                  putOrderBy("act_id", "desc"); 
  	    		if(au.getAllowedSys()!=null){
 					putWhereCondition("arm_id", "in", ":idsArm");
@@ -298,10 +299,11 @@ import org.jboss.seam.log.Log;
 				 log.info("AFunc:invokeLocal:listReport:01");
                  
 				 auditReportList = new ArrayList<BaseItem>(entityManager.createQuery(
-						 "select o from ActionsLogKnlT o  " +
-						 "where o.dateAction >= :date1 " +
-						 "and o.dateAction <= :date2 " +
-						 "order by o.idSrv desc ")
+						 (new StringBuilder("select o from ActionsLogKnlT o  "))
+						   .append("where o.dateAction >= :date1 ") 
+						   .append("and o.dateAction <= :date2 ") 
+						   .append("order by o.idSrv desc ")
+						 .toString())
 						 .setParameter("date1", this.reportDate1)
     	                 .setParameter("date2", this.reportDate2)
 	                     .getResultList());
@@ -540,9 +542,9 @@ public Long getArchiveParamValue() {
 		   
 		   try{
 			   List<String> losAFunc = entityManager.createNativeQuery(
-			              "select ST.VALUE_PARAM "+
-	                      "from SETTINGS_KNL_T st "+
-	                      "where ST.SIGN_OBJECT=? ")
+			              "select ST.VALUE_PARAM "
+	                      + "from SETTINGS_KNL_T st "
+	                      + "where ST.SIGN_OBJECT=? ")
 	                      .setParameter(1, param_code)
 	                      .getResultList();
 		    	  

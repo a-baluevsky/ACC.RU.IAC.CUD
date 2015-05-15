@@ -151,15 +151,15 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppUserBssT;
         	
         	LOGGER.debug("UserForgotEJB:step1:02:"+link);
         	 
-        	String content = "Добрый день!<br/>"+
-        	 "Мы получили запрос на сброс Вашего пароля в ИАЦ ПААА.<br/>" +
-        	 "Если Вы запрашивали сброс Вашего пароля, пожалуйста, следуйте инструкциям ниже. "+ 
-        	 "Если Вам это не требуется, просто проигнорируйте это сообщение. <br/>"+
-        	 "Чтобы сбросить пароль перейдите по следующей ссылке: <br/>" +
-        	 "<a href=\""+link+"\">" + link +"</a> <br/><br/>" +
-        	 "---<br/>" +
-        	 "С уважением,<br/> " +
-        	 "ИАЦ";
+        	String content = "Добрый день!<br/>"
+        	 + "Мы получили запрос на сброс Вашего пароля в ИАЦ ПААА.<br/>" 
+        	 + "Если Вы запрашивали сброс Вашего пароля, пожалуйста, следуйте инструкциям ниже. "
+        	 + "Если Вам это не требуется, просто проигнорируйте это сообщение. <br/>"
+        	 + "Чтобы сбросить пароль перейдите по следующей ссылке: <br/>" 
+        	 + "<a href=\""+link+"\">" + link +"</a> <br/><br/>" 
+        	 + "---<br/>" 
+        	 + "С уважением,<br/> " 
+        	 + "ИАЦ";
         	
         	m.setContent(content, "text/html; charset=utf-8");
         	
@@ -185,9 +185,9 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppUserBssT;
    	 try{
    		 
    		     entityManager.createNativeQuery(
-         		   "update AC_USERS_KNL_T t1 " +
-         		   "set t1.PASSWORD_ = ? "+
-         		   "where t1.LOGIN = ? ")
+         		   "update AC_USERS_KNL_T t1 " 
+         		   + "set t1.PASSWORD_ = ? "
+         		   + "where t1.LOGIN = ? ")
          		   .setParameter(1, newPassword)
          		   .setParameter(2, loginUser)
                  .executeUpdate();

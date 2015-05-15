@@ -193,8 +193,8 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 				 
 				 
 				 auditCount = (Long)entityManager.createQuery(
-						 "select count(o) " +  
-				         "from GroupSystemsKnlT o "+
+						 "select count(o) " 
+				         + "from GroupSystemsKnlT o "+
 				         (st!=null ? " where "+st :""))
 		                .getSingleResult();
 				 
@@ -252,12 +252,13 @@ import ru.spb.iac.cud.core.util.CUDConstants;
    		   
    			//список ИС в группе, которых нет в привязке к пользователю  
 		    List<Object> list= entityManager.createNativeQuery(
-                        "SELECT LGS.UP_SYSTEMS " + 
-                        "   FROM GROUP_SYSTEMS_KNL_T gr, LINK_GROUP_SYS_SYS_KNL_T lgs " + 
-                        "   WHERE     GR.ID_SRV = LGS.UP_GROUP_SYSTEMS " + 
-                        "         AND GR.ID_SRV = :idGr " + 
-                        "         AND LGS.UP_SYSTEMS NOT IN (:idsArm) " + 
-                        "GROUP BY LGS.UP_SYSTEMS ")
+                    (new StringBuilder("SELECT LGS.UP_SYSTEMS "))
+                    .append("   FROM GROUP_SYSTEMS_KNL_T gr, LINK_GROUP_SYS_SYS_KNL_T lgs ") 
+                    .append("   WHERE     GR.ID_SRV = LGS.UP_GROUP_SYSTEMS ") 
+                    .append("         AND GR.ID_SRV = :idGr ") 
+                    .append("         AND LGS.UP_SYSTEMS NOT IN (:idsArm) ") 
+                    .append("GROUP BY LGS.UP_SYSTEMS ")
+                    .toString())
                       .setParameter("idGr", idGr)
                       .setParameter("idsArm", au.getAllowedSys())
                       .getResultList();
@@ -462,9 +463,9 @@ import ru.spb.iac.cud.core.util.CUDConstants;
  			                	guuExistList.remove(au);
  			                	
  			                	entityManager.createQuery(
- 			                		"delete from LinkGroupSysSysKnlT lgu " +
- 			                		"where lgu.pk.acIsBssT = :acIsBssT " +
- 			                		"and lgu.pk.groupSystemsKnlT = :groupSystemsKnlT ")
+ 			                		"delete from LinkGroupSysSysKnlT lgu " 
+ 			                		+ "where lgu.pk.acIsBssT = :acIsBssT " 
+ 			                		+ "and lgu.pk.groupSystemsKnlT = :groupSystemsKnlT ")
  			                	.setParameter("acIsBssT", ((AcApplication)is).getIdArm())
  			                	.setParameter("groupSystemsKnlT", Long.valueOf(sessionId))
  			                	.executeUpdate();
@@ -549,9 +550,9 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 		   
 		   Transaction.instance().enlist(entityManager);
 		   
-		   entityManager.createNativeQuery("update GROUP_SYSTEMS_KNL_T t1 " + 
-		   		                           "set T1.CERT_DATA=? " + 
-		   		                           "where t1.ID_SRV=? ")
+		   entityManager.createNativeQuery("update GROUP_SYSTEMS_KNL_T t1 " 
+		   		                           + "set T1.CERT_DATA=? " 
+		   		                           + "where t1.ID_SRV=? ")
 		   .setParameter(1, x509Cert)
 		   .setParameter(2, id_sys)
 		   .executeUpdate();  
@@ -581,9 +582,9 @@ import ru.spb.iac.cud.core.util.CUDConstants;
  			   return;
  		   }
  			   
- 		   entityManager.createNativeQuery("update GROUP_SYSTEMS_KNL_T t1 " + 
- 		   		                           "set T1.CERT_DATA=null " + 
- 		   		                           "where t1.ID_SRV=? ")
+ 		   entityManager.createNativeQuery("update GROUP_SYSTEMS_KNL_T t1 " 
+ 		   		                           + "set T1.CERT_DATA=null " 
+ 		   		                           + "where t1.ID_SRV=? ")
  		   .setParameter(1, Long.valueOf(sessionId))
  		   .executeUpdate();  
  			 
@@ -675,9 +676,9 @@ import ru.spb.iac.cud.core.util.CUDConstants;
  	     if(sessionId!=null){
  	    	 
  	    	String certDataX = (String) entityManager.createNativeQuery(
- 	    			 "select to_char(T1.CERT_DATA) " + 
- 	    	 		 "from GROUP_SYSTEMS_KNL_T t1 " + 
- 	    	 		 "where T1.ID_SRV=? ")
+ 	    			 "select to_char(T1.CERT_DATA) " 
+ 	    	 		 + "from GROUP_SYSTEMS_KNL_T t1 " 
+ 	    	 		 + "where T1.ID_SRV=? ")
                  .setParameter(1, Long.valueOf(sessionId))
                  .getSingleResult();
  	    	
@@ -807,9 +808,9 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 		if(armGroupCode!=null){
 		  try{
 			  List<Object> lo=entityManager.createNativeQuery(
-					  "select 1 "+
-                      "from GROUP_SYSTEMS_KNL_T ass "+
-                      "where ASS.GROUP_CODE = ? ")
+					  "select 1 "
+                      + "from GROUP_SYSTEMS_KNL_T ass "
+                      + "where ASS.GROUP_CODE = ? ")
 	  				.setParameter(1, armGroupCode)
 	  				.getResultList();
 	  
@@ -836,10 +837,11 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 		if(armGroupCode!=null){
 		  try{
 			  List<Object> lo=entityManager.createNativeQuery(
-					          "select 1 "+
-		                      "from GROUP_SYSTEMS_KNL_T ass "+
-		                      "where ASS.GROUP_CODE = ? " +
-		                      "and ASS.ID_SRV!= ? ")
+			          (new StringBuilder("select 1 "))
+                      .append("from GROUP_SYSTEMS_KNL_T ass ")
+                      .append("where ASS.GROUP_CODE = ? ") 
+                      .append("and ASS.ID_SRV!= ? ")
+			          .toString())
 			  				.setParameter(1, armGroupCode)
 			  				.setParameter(2, idArmGroup)
 			  				.getResultList();
@@ -910,18 +912,18 @@ import ru.spb.iac.cud.core.util.CUDConstants;
    		  if(au.getAllowedSys()!=null){
 		   
 		   this.ISList = entityManager.createQuery(
-				   "select o from AcApplication o " +
-				   "where o.idArm in (:idsArm) "+
-					(st!=null ? " and "+st :" ")+
-				   " order by o.name ")
+				   "select o from AcApplication o " 
+				   + "where o.idArm in (:idsArm) "+
+					(st!=null ? " and "+st :" ")
+				   + " order by o.name ")
 				   .setParameter("idsArm", au.getAllowedSys())
 				   .getResultList();
 		 
    		  }else{
    			 this.ISList = entityManager.createQuery(
   				   "select o from AcApplication o " +
-  					(st!=null ? " where "+st :" ")+
-  				   " order by o.name ")
+  					(st!=null ? " where "+st :" ")
+  				   + " order by o.name ")
   				   .getResultList();
    		  }
 		  
@@ -980,13 +982,14 @@ import ru.spb.iac.cud.core.util.CUDConstants;
  	    
  	        
  	       lo=entityManager.createNativeQuery(
-		    		"select ARM.FULL_, ARM.SIGN_OBJECT "+
-                    "from AC_IS_BSS_T arm, "+
-                    "GROUP_SYSTEMS_KNL_T garm, "+
-                    "LINK_GROUP_SYS_SYS_KNL_T lga "+
-                    "where ARM.ID_SRV=LGA.UP_SYSTEMS "+
-                    "and GARM.ID_SRV=LGA.UP_GROUP_SYSTEMS "+
-                    "and GARM.ID_SRV = ? ")
+		    		(new StringBuilder("select ARM.FULL_, ARM.SIGN_OBJECT "))
+                    .append("from AC_IS_BSS_T arm, ")
+                    .append("GROUP_SYSTEMS_KNL_T garm, ")
+                    .append("LINK_GROUP_SYS_SYS_KNL_T lga ")
+                    .append("where ARM.ID_SRV=LGA.UP_SYSTEMS ")
+                    .append("and GARM.ID_SRV=LGA.UP_GROUP_SYSTEMS ")
+                    .append("and GARM.ID_SRV = ? ")
+		    		.toString())
 		      		.setParameter(1, Long.valueOf(sessionId))
 				 .getResultList();
  	    	 

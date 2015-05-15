@@ -95,9 +95,9 @@ import org.jboss.seam.log.Log;
 			 	
 			 	try{
 			 		 List<Long> listUsr=entityManager.createQuery(
-	   	 		    		 "select o.idUser from AcUser o,  LinkGroupUsersUsersKnlT o1 " +
-	   	 		    		 "where o1.pk.acUser = o.idUser " +
-	   	 		    		 "and o1.pk.groupUser = :groupUser ")
+	   	 		    		 "select o.idUser from AcUser o,  LinkGroupUsersUsersKnlT o1 " 
+	   	 		    		 + "where o1.pk.acUser = o.idUser " 
+	   	 		    		 + "and o1.pk.groupUser = :groupUser ")
 	   	 					 .setParameter("groupUser", Long.valueOf(sessionId))
 	   	 		      		 .getResultList();
 	   	 		 
@@ -265,9 +265,9 @@ import org.jboss.seam.log.Log;
 								 lguu=new LinkGroupUsersUsersKnlT(user.getBaseId(), Long.valueOf(sessionId));
 								 if(oldLinkList.contains(lguu)){ 
 									oldLinkList.remove(lguu);
-									entityManager.createQuery("DELETE FROM LinkGroupUsersUsersKnlT gu " +
-											                  "WHERE gu.pk.groupUser=:groupUser " +
-											                  "and gu.pk.acUser=:acUser ")
+									entityManager.createQuery("DELETE FROM LinkGroupUsersUsersKnlT gu " 
+											                  + "WHERE gu.pk.groupUser=:groupUser " 
+											                  + "and gu.pk.acUser=:acUser ")
 									    .setParameter("groupUser", Long.valueOf(sessionId))
 									    .setParameter("acUser", user.getBaseId())
 									    .executeUpdate();

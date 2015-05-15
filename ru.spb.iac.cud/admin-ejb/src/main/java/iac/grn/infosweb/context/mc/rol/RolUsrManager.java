@@ -90,9 +90,9 @@ import org.jboss.seam.log.Log;
 			 	
 			 	try{
 			 		 List<Long> listUsrRolUsr=entityManager.createQuery(
-	   	 		    		 "select o.idUser from AcUser o,  AcLinkUserToRoleToRaion o1 " +
-	   	 		    		 "where o1.pk.acUser = o.idUser " +
-	   	 		    		 "and o1.pk.acRole = :acRole ")
+	   	 		    		 "select o.idUser from AcUser o,  AcLinkUserToRoleToRaion o1 " 
+	   	 		    		 + "where o1.pk.acUser = o.idUser " 
+	   	 		    		 + "and o1.pk.acRole = :acRole ")
 	   	 					 .setParameter("acRole", Long.valueOf(sessionId))
 	   	 		      		 .getResultList();
 	   	 		 
@@ -263,9 +263,9 @@ import org.jboss.seam.log.Log;
 								 lguu=new AcLinkUserToRoleToRaion(Long.valueOf(sessionId), user.getBaseId());
 								 if(oldLinkList.contains(lguu)){ 
 									oldLinkList.remove(lguu);
-									entityManager.createQuery("DELETE FROM AcLinkUserToRoleToRaion gu " +
-							                  "WHERE gu.pk.acRole=:acRole " +
-							                  "and gu.pk.acUser=:acUser ")
+									entityManager.createQuery("DELETE FROM AcLinkUserToRoleToRaion gu " 
+							                  + "WHERE gu.pk.acRole=:acRole " 
+							                  + "and gu.pk.acUser=:acUser ")
 					                         .setParameter("acRole", Long.valueOf(sessionId))
 					                         .setParameter("acUser", user.getBaseId())
 									    .executeUpdate();
@@ -375,67 +375,68 @@ import org.jboss.seam.log.Log;
           List<BaseItem>  resultList = new ArrayList<BaseItem>();
           
           lo=entityManager.createNativeQuery(
-					"select t1.t1_id, t1.t1_login, t1.t1_cert, t1.t1_usr_code, t1.t1_fio, " +
-					       "t1.t1_tel, t1.t1_email,t1.t1_pos, t1.t1_dep_name, t1.t1_org_code, " +
-					       "t1.t1_org_name, t1.t1_org_adr, t1.t1_org_tel, t1.t1_start, t1.t1_end, " +
-					       "t1.t1_status, t1.t1_crt_date, t1.t1_crt_usr_login, t1.t1_upd_date, t1.t1_upd_usr_login, "+
-					       "t1.t1_dep_code, t1.t1_org_status, t1.t1_usr_status, t1.t1_dep_status, t1.t1_iogv_bind_type  "+ 
-					"from( "+
-					"select AU_FULL.ID_SRV t1_id, AU_FULL.login t1_login, AU_FULL.CERTIFICATE t1_cert, t2.CL_USR_CODE t1_usr_code, "+
-					 "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_fio, "+  
-					  "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.PHONE, CL_USR_FULL.PHONE ) t1_tel, "+   
-					  "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.E_MAIL, CL_USR_FULL.EMAIL) t1_email, "+  
-					  "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.POSITION, CL_USR_FULL.POSITION)t1_pos, "+  
-					  "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.DEPARTMENT, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.FULL_)) t1_dep_name, "+ 
-					  "t1.CL_ORG_CODE t1_org_code, CL_ORG_FULL.FULL_ t1_org_name, "+
-					  "CL_ORG_FULL.PREFIX || decode(CL_ORG_FULL.HOUSE, null, null, ','  ||CL_ORG_FULL.HOUSE  ) t1_org_adr, "+
-					  "CL_ORG_FULL.PHONE t1_org_tel, "+
-					  "to_char(AU_FULL.START_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_start, "+ 
-					  "to_char(AU_FULL.END_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_end, "+  
-					  "AU_FULL.STATUS t1_status, "+  
-					  "AU_FULL.CREATED t1_crt_date, "+ 
-					  "USR_CRT.LOGIN t1_crt_usr_login, "+ 
-					  "to_char(AU_FULL.MODIFIED, 'DD.MM.YY HH24:MI:SS') t1_upd_date, "+ 
-					  "USR_UPD.LOGIN t1_upd_usr_login, "+ 
-					  "decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.sign_object)) t1_dep_code, "+ 
-					  "CL_ORG_FULL.STATUS t1_org_status,  CL_usr_FULL.STATUS t1_usr_status, "+ 
-					   "decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.STATUS)) t1_dep_status, " +
-					   "AU_FULL.UP_BINDING t1_iogv_bind_type "+      
-					"from "+
-					"(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE "+
-					"from ISP_BSS_T cl_org, "+
-					"AC_USERS_KNL_T au "+
-					"where AU.UP_SIGN = CL_ORG.SIGN_OBJECT "+
-					"group by CL_ORG.SIGN_OBJECT) t1, "+
-					"(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "+
-					"from ISP_BSS_T cl_usr, "+
-					"AC_USERS_KNL_T au "+
-					"where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT "+
-					"group by CL_usr.SIGN_OBJECT) t2, "+
-					"(select max(CL_dep.ID_SRV) CL_DEP_ID,  CL_DEP.SIGN_OBJECT  CL_DEP_CODE "+
-					"from ISP_BSS_T cl_dep, "+
-					"AC_USERS_KNL_T au "+
-					"where substr(au.UP_SIGN_USER,1,5)||'000'  =cl_dep.SIGN_OBJECT(+) "+
-					"group by CL_DEP.SIGN_OBJECT) t3, "+
-					"ISP_BSS_T cl_org_full, "+
-					"ISP_BSS_T cl_usr_full, "+
-					"ISP_BSS_T cl_dep_full, "+
-					"AC_USERS_KNL_T au_full, "+
-					"AC_USERS_KNL_T usr_crt, "+  
-					"AC_USERS_KNL_T usr_upd "+
-					"where cl_org_full.ID_SRV= CL_ORG_ID "+
-					"and cl_usr_full.ID_SRV(+)=CL_USR_ID "+
-					"and cl_DEP_full.ID_SRV(+)=CL_DEP_ID "+
-					"and au_full.UP_SIGN = CL_ORG_CODE "+
-					"and au_full.UP_SIGN_USER  =  CL_USR_CODE(+) "+
-					"and substr(au_full.UP_SIGN_USER,1,5)||'000'  =  CL_DEP_CODE(+) "+
-					"and au_full.CREATOR=USR_CRT.ID_SRV "+ 
-					"and au_full.MODIFICATOR=USR_UPD.ID_SRV(+) "+ 
+					(new StringBuilder("select t1.t1_id, t1.t1_login, t1.t1_cert, t1.t1_usr_code, t1.t1_fio, "))
+			         .append("t1.t1_tel, t1.t1_email,t1.t1_pos, t1.t1_dep_name, t1.t1_org_code, ") 
+			         .append("t1.t1_org_name, t1.t1_org_adr, t1.t1_org_tel, t1.t1_start, t1.t1_end, ") 
+			         .append("t1.t1_status, t1.t1_crt_date, t1.t1_crt_usr_login, t1.t1_upd_date, t1.t1_upd_usr_login, ")
+			         .append("t1.t1_dep_code, t1.t1_org_status, t1.t1_usr_status, t1.t1_dep_status, t1.t1_iogv_bind_type  ")
+			  .append("from( ")
+			  .append("select AU_FULL.ID_SRV t1_id, AU_FULL.login t1_login, AU_FULL.CERTIFICATE t1_cert, t2.CL_USR_CODE t1_usr_code, ")
+			   .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_fio, ")
+			    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.PHONE, CL_USR_FULL.PHONE ) t1_tel, ")
+			    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.E_MAIL, CL_USR_FULL.EMAIL) t1_email, ")
+			    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.POSITION, CL_USR_FULL.POSITION)t1_pos, ")
+			    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.DEPARTMENT, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.FULL_)) t1_dep_name, ")
+			    .append("t1.CL_ORG_CODE t1_org_code, CL_ORG_FULL.FULL_ t1_org_name, ")
+			    .append("CL_ORG_FULL.PREFIX || decode(CL_ORG_FULL.HOUSE, null, null, ','  ||CL_ORG_FULL.HOUSE  ) t1_org_adr, ")
+			    .append("CL_ORG_FULL.PHONE t1_org_tel, ")
+			    .append("to_char(AU_FULL.START_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_start, ")
+			    .append("to_char(AU_FULL.END_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_end, ")
+			    .append("AU_FULL.STATUS t1_status, ")
+			    .append("AU_FULL.CREATED t1_crt_date, ")
+			    .append("USR_CRT.LOGIN t1_crt_usr_login, ")
+			    .append("to_char(AU_FULL.MODIFIED, 'DD.MM.YY HH24:MI:SS') t1_upd_date, ")
+			    .append("USR_UPD.LOGIN t1_upd_usr_login, ")
+			    .append("decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.sign_object)) t1_dep_code, ")
+			    .append("CL_ORG_FULL.STATUS t1_org_status,  CL_usr_FULL.STATUS t1_usr_status, ")
+			     .append("decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.STATUS)) t1_dep_status, ") 
+			     .append("AU_FULL.UP_BINDING t1_iogv_bind_type ")
+			  .append("from ")
+			  .append("(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE ")
+			  .append("from ISP_BSS_T cl_org, ")
+			  .append("AC_USERS_KNL_T au ")
+			  .append("where AU.UP_SIGN = CL_ORG.SIGN_OBJECT ")
+			  .append("group by CL_ORG.SIGN_OBJECT) t1, ")
+			  .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
+			  .append("from ISP_BSS_T cl_usr, ")
+			  .append("AC_USERS_KNL_T au ")
+			  .append("where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT ")
+			  .append("group by CL_usr.SIGN_OBJECT) t2, ")
+			  .append("(select max(CL_dep.ID_SRV) CL_DEP_ID,  CL_DEP.SIGN_OBJECT  CL_DEP_CODE ")
+			  .append("from ISP_BSS_T cl_dep, ")
+			  .append("AC_USERS_KNL_T au ")
+			  .append("where substr(au.UP_SIGN_USER,1,5)||'000'  =cl_dep.SIGN_OBJECT(+) ")
+			  .append("group by CL_DEP.SIGN_OBJECT) t3, ")
+			  .append("ISP_BSS_T cl_org_full, ")
+			  .append("ISP_BSS_T cl_usr_full, ")
+			  .append("ISP_BSS_T cl_dep_full, ")
+			  .append("AC_USERS_KNL_T au_full, ")
+			  .append("AC_USERS_KNL_T usr_crt, ")
+			  .append("AC_USERS_KNL_T usr_upd ")
+			  .append("where cl_org_full.ID_SRV= CL_ORG_ID ")
+			  .append("and cl_usr_full.ID_SRV(+)=CL_USR_ID ")
+			  .append("and cl_DEP_full.ID_SRV(+)=CL_DEP_ID ")
+			  .append("and au_full.UP_SIGN = CL_ORG_CODE ")
+			  .append("and au_full.UP_SIGN_USER  =  CL_USR_CODE(+) ")
+			  .append("and substr(au_full.UP_SIGN_USER,1,5)||'000'  =  CL_DEP_CODE(+) ")
+			  .append("and au_full.CREATOR=USR_CRT.ID_SRV ")
+			  .append("and au_full.MODIFICATOR=USR_UPD.ID_SRV(+) ")
 					//!!!
-					"and AU_FULL.STATUS !=3 "+
-					")t1 "+
-                 (st!=null ? " where "+st :" ")+
-                 (orderQuery!=null ? orderQuery+", t1_fio " : " order by t1_fio "))
+			  	.append("and AU_FULL.STATUS !=3 ")
+				.append(")t1 ")
+                .append (st!=null ? " where "+st :" ")
+                .append (orderQuery!=null ? orderQuery+", t1_fio " : " order by t1_fio ")
+                 .toString())
          .setFirstResult(firstRow)
          .setMaxResults(numberOfRows)
          .getResultList();
@@ -486,63 +487,64 @@ public Long getSharedUserCount( String st){
    
 	 Long resultCount = null;
 	 resultCount = ((java.math.BigDecimal)entityManager.createNativeQuery(
-		        "select count(*) "+ 
-				 "from( "+
-				 "select AU_FULL.ID_SRV t1_id, AU_FULL.login t1_login, AU_FULL.CERTIFICATE t1_cert, t2.CL_USR_CODE t1_usr_code, "+
-				  "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_fio, "+  
-				   "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.PHONE, CL_USR_FULL.PHONE ) t1_tel, "+   
-				   "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.E_MAIL, CL_USR_FULL.EMAIL) t1_email, "+  
-				   "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.POSITION, CL_USR_FULL.POSITION)t1_pos, "+  
-				   "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.DEPARTMENT, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.FULL_)) t1_dep_name, "+ 
-				   "t1.CL_ORG_CODE t1_org_code, CL_ORG_FULL.FULL_ t1_org_name, "+
-				   "CL_ORG_FULL.PREFIX || decode(CL_ORG_FULL.HOUSE, null, null, ','  ||CL_ORG_FULL.HOUSE  ) t1_org_adr, "+
-				   "CL_ORG_FULL.PHONE t1_org_tel, "+
-				   "to_char(AU_FULL.START_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_start, "+ 
-				   "to_char(AU_FULL.END_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_end, "+  
-				   "AU_FULL.STATUS t1_status, "+  
-				   "AU_FULL.CREATED t1_crt_date, "+ 
-				   "USR_CRT.LOGIN t1_crt_usr_login, "+ 
-				   "to_char(AU_FULL.MODIFIED, 'DD.MM.YY HH24:MI:SS') t1_upd_date, "+ 
-				   "USR_UPD.LOGIN t1_upd_usr_login, "+ 
-				   "decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.sign_object)) t1_dep_code, "+ 
-				   "CL_ORG_FULL.STATUS t1_org_status,  CL_usr_FULL.STATUS t1_usr_status, "+ 
-				    "decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.STATUS)) t1_dep_status, " +
-				    "AU_FULL.UP_BINDING t1_iogv_bind_type "+      
-				 "from "+
-				 "(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE "+
-				 "from ISP_BSS_T cl_org, "+
-				 "AC_USERS_KNL_T au "+
-				 "where AU.UP_SIGN = CL_ORG.SIGN_OBJECT "+
-				 "group by CL_ORG.SIGN_OBJECT) t1, "+
-				 "(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "+
-				 "from ISP_BSS_T cl_usr, "+
-				 "AC_USERS_KNL_T au "+
-				 "where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT "+
-				 "group by CL_usr.SIGN_OBJECT) t2, "+
-				 "(select max(CL_dep.ID_SRV) CL_DEP_ID,  CL_DEP.SIGN_OBJECT  CL_DEP_CODE "+
-				 "from ISP_BSS_T cl_dep, "+
-				 "AC_USERS_KNL_T au "+
-				 "where substr(au.UP_SIGN_USER,1,5)||'000'  =cl_dep.SIGN_OBJECT(+) "+
-				 "group by CL_DEP.SIGN_OBJECT) t3, "+
-				 "ISP_BSS_T cl_org_full, "+
-				 "ISP_BSS_T cl_usr_full, "+
-				 "ISP_BSS_T cl_dep_full, "+
-				 "AC_USERS_KNL_T au_full, "+
-				 "AC_USERS_KNL_T usr_crt, "+  
-				 "AC_USERS_KNL_T usr_upd "+
-				 "where cl_org_full.ID_SRV= CL_ORG_ID "+
-				 "and cl_usr_full.ID_SRV(+)=CL_USR_ID "+
-				 "and cl_DEP_full.ID_SRV(+)=CL_DEP_ID "+
-				 "and au_full.UP_SIGN = CL_ORG_CODE "+
-				 "and au_full.UP_SIGN_USER  =  CL_USR_CODE(+) "+
-				 "and substr(au_full.UP_SIGN_USER,1,5)||'000'  =  CL_DEP_CODE(+) "+
-				 "and au_full.CREATOR=USR_CRT.ID_SRV "+ 
-				 "and au_full.MODIFICATOR=USR_UPD.ID_SRV(+) "+ 
+		        (new StringBuilder("select count(*) "))
+				   .append("from( ")
+				   .append("select AU_FULL.ID_SRV t1_id, AU_FULL.login t1_login, AU_FULL.CERTIFICATE t1_cert, t2.CL_USR_CODE t1_usr_code, ")
+				    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_fio, ")
+				     .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.PHONE, CL_USR_FULL.PHONE ) t1_tel, ")
+				     .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.E_MAIL, CL_USR_FULL.EMAIL) t1_email, ")
+				     .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.POSITION, CL_USR_FULL.POSITION)t1_pos, ")
+				     .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.DEPARTMENT, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.FULL_)) t1_dep_name, ")
+				     .append("t1.CL_ORG_CODE t1_org_code, CL_ORG_FULL.FULL_ t1_org_name, ")
+				     .append("CL_ORG_FULL.PREFIX || decode(CL_ORG_FULL.HOUSE, null, null, ','  ||CL_ORG_FULL.HOUSE  ) t1_org_adr, ")
+				     .append("CL_ORG_FULL.PHONE t1_org_tel, ")
+				     .append("to_char(AU_FULL.START_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_start, ")
+				     .append("to_char(AU_FULL.END_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_end, ")
+				     .append("AU_FULL.STATUS t1_status, ")
+				     .append("AU_FULL.CREATED t1_crt_date, ")
+				     .append("USR_CRT.LOGIN t1_crt_usr_login, ")
+				     .append("to_char(AU_FULL.MODIFIED, 'DD.MM.YY HH24:MI:SS') t1_upd_date, ")
+				     .append("USR_UPD.LOGIN t1_upd_usr_login, ")
+				     .append("decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.sign_object)) t1_dep_code, ")
+				     .append("CL_ORG_FULL.STATUS t1_org_status,  CL_usr_FULL.STATUS t1_usr_status, ")
+				      .append("decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.STATUS)) t1_dep_status, ") 
+				      .append("AU_FULL.UP_BINDING t1_iogv_bind_type ")
+				   .append("from ")
+				   .append("(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE ")
+				   .append("from ISP_BSS_T cl_org, ")
+				   .append("AC_USERS_KNL_T au ")
+				   .append("where AU.UP_SIGN = CL_ORG.SIGN_OBJECT ")
+				   .append("group by CL_ORG.SIGN_OBJECT) t1, ")
+				   .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
+				   .append("from ISP_BSS_T cl_usr, ")
+				   .append("AC_USERS_KNL_T au ")
+				   .append("where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT ")
+				   .append("group by CL_usr.SIGN_OBJECT) t2, ")
+				   .append("(select max(CL_dep.ID_SRV) CL_DEP_ID,  CL_DEP.SIGN_OBJECT  CL_DEP_CODE ")
+				   .append("from ISP_BSS_T cl_dep, ")
+				   .append("AC_USERS_KNL_T au ")
+				   .append("where substr(au.UP_SIGN_USER,1,5)||'000'  =cl_dep.SIGN_OBJECT(+) ")
+				   .append("group by CL_DEP.SIGN_OBJECT) t3, ")
+				   .append("ISP_BSS_T cl_org_full, ")
+				   .append("ISP_BSS_T cl_usr_full, ")
+				   .append("ISP_BSS_T cl_dep_full, ")
+				   .append("AC_USERS_KNL_T au_full, ")
+				   .append("AC_USERS_KNL_T usr_crt, ")
+				   .append("AC_USERS_KNL_T usr_upd ")
+				   .append("where cl_org_full.ID_SRV= CL_ORG_ID ")
+				   .append("and cl_usr_full.ID_SRV(+)=CL_USR_ID ")
+				   .append("and cl_DEP_full.ID_SRV(+)=CL_DEP_ID ")
+				   .append("and au_full.UP_SIGN = CL_ORG_CODE ")
+				   .append("and au_full.UP_SIGN_USER  =  CL_USR_CODE(+) ")
+				   .append("and substr(au_full.UP_SIGN_USER,1,5)||'000'  =  CL_DEP_CODE(+) ")
+				   .append("and au_full.CREATOR=USR_CRT.ID_SRV ")
+				   .append("and au_full.MODIFICATOR=USR_UPD.ID_SRV(+) ")		        
 				 //!!!
-				 "and AU_FULL.STATUS !=3 "+
-				 ")t1 "+
-(st!=null ? " where "+st :" "))
-.getSingleResult()).longValue();
+				   .append("and AU_FULL.STATUS !=3 ")
+				   .append(")t1 ")
+				   .append(st!=null ? " where "+st :" ")
+				   .toString())
+				   .getSingleResult()).longValue();
           
           return resultCount;
 	  }

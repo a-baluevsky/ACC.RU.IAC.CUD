@@ -210,29 +210,30 @@ import javax.servlet.http.HttpServletResponse;
 				
 				 
                  List<Object[]> lo = entityManager.createNativeQuery(
-                		 "select t1.sys_id, t1.crt_date, t1.serv_name, t1.input_param, t1.RESULT_VALUE, "+ 
-                         "t1.IP_ADDRESS, t1.fio "+
-                         "from( "+
-                         "select SL.ID_SRV sys_id , "+
-                         "SL.CREATED crt_date, "+ 
-                          "SERV.FULL_ serv_name, SL.INPUT_PARAM input_param, SL.RESULT_VALUE RESULT_VALUE, SL.IP_ADDRESS, "+
-                         "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO) fio "+
-                         "from SERVICES_LOG_KNL_T sl,  "+
-                         "SERVICES_BSS_T serv, "+
-                         "AC_USERS_KNL_T AU_FULL, "+
-                         "ISP_BSS_T cl_usr_full, "+
-                         "(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "+ 
-                         "from ISP_BSS_T cl_usr, "+ 
-                         "AC_USERS_KNL_T au "+ 
-                         "where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT "+ 
-                         "group by CL_usr.SIGN_OBJECT) t2 "+
-                         "where SERV.ID_SRV=SL.UP_SERVICES "+
-                         "and AU_FULL.UP_SIGN_USER=t2.CL_USR_CODE(+) "+ 
-                         "and AU_FULL.ID_SRV (+)=SL.UP_USERS "+
-                         "and CL_USR_FULL.ID_SRV(+)=t2.CL_USR_ID "+
-                         ") t1"+
-                         (st!=null ? " where "+st :" ")+
-                         (orderQuery!=null ? orderQuery+", sys_id desc " : " order by sys_id desc "))
+                		 (new StringBuilder("select t1.sys_id, t1.crt_date, t1.serv_name, t1.input_param, t1.RESULT_VALUE, "))
+                         .append("t1.IP_ADDRESS, t1.fio ")
+                         .append("from( ")
+                         .append("select SL.ID_SRV sys_id , ")
+                         .append("SL.CREATED crt_date, ")
+                          .append("SERV.FULL_ serv_name, SL.INPUT_PARAM input_param, SL.RESULT_VALUE RESULT_VALUE, SL.IP_ADDRESS, ")
+                         .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO) fio ")
+                         .append("from SERVICES_LOG_KNL_T sl,  ")
+                         .append("SERVICES_BSS_T serv, ")
+                         .append("AC_USERS_KNL_T AU_FULL, ")
+                         .append("ISP_BSS_T cl_usr_full, ")
+                         .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
+                         .append("from ISP_BSS_T cl_usr, ")
+                         .append("AC_USERS_KNL_T au ")
+                         .append("where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT ")
+                         .append("group by CL_usr.SIGN_OBJECT) t2 ")
+                         .append("where SERV.ID_SRV=SL.UP_SERVICES ")
+                         .append("and AU_FULL.UP_SIGN_USER=t2.CL_USR_CODE(+) ")
+                         .append("and AU_FULL.ID_SRV (+)=SL.UP_USERS ")
+                         .append("and CL_USR_FULL.ID_SRV(+)=t2.CL_USR_ID ")
+                         .append(") t1")
+                         .append(st!=null ? " where "+st :" ")
+                         .append(orderQuery!=null ? orderQuery+", sys_id desc " : " order by sys_id desc ")
+                         .toString())
                           .setFirstResult(firstRow)
                           .setMaxResults(numberOfRows)
         		          .getResultList();
@@ -279,31 +280,29 @@ import javax.servlet.http.HttpServletResponse;
     	    	   }
                  log.info("ASys:invokeLocal:count:filterQuery:"+st);
 				 
-				
-				 
 				 auditCount = ((java.math.BigDecimal)entityManager.createNativeQuery(
-					        "select count(*) "+ 
-			                         "from( "+
-			                         "select SL.ID_SRV sys_id , "+
-			                         "SL.CREATED crt_date, "+ 
-			                       //"to_char(SL.CREATED , 'DD.MM.YY HH24:MI:SS') crt_value, "+ 
-			                         "SERV.FULL_ serv_name, SL.INPUT_PARAM input_param, SL.RESULT_VALUE RESULT_VALUE, SL.IP_ADDRESS, "+
-			                         "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO) fio "+
-			                         "from SERVICES_LOG_KNL_T sl,  "+
-			                         "SERVICES_BSS_T serv, "+
-			                         "AC_USERS_KNL_T AU_FULL, "+
-			                         "ISP_BSS_T cl_usr_full, "+
-			                         "(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "+ 
-			                         "from ISP_BSS_T cl_usr, "+ 
-			                         "AC_USERS_KNL_T au "+ 
-			                         "where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT "+ 
-			                         "group by CL_usr.SIGN_OBJECT) t2 "+
-			                         "where SERV.ID_SRV=SL.UP_SERVICES "+
-			                         "and AU_FULL.UP_SIGN_USER=t2.CL_USR_CODE(+) "+ 
-			                         "and AU_FULL.ID_SRV (+)=SL.UP_USERS "+
-			                         "and CL_USR_FULL.ID_SRV(+)=t2.CL_USR_ID "+
-			                         ") t1"+    
-	               (st!=null ? " where "+st :" "))
+					        (new StringBuilder("select count(*) "))
+	                           .append("from( ")
+	                           .append("select SL.ID_SRV sys_id , ")
+	                           .append("SL.CREATED crt_date, ") /*"to_char(SL.CREATED , 'DD.MM.YY HH24:MI:SS') crt_value, "*/
+	                           .append("SERV.FULL_ serv_name, SL.INPUT_PARAM input_param, SL.RESULT_VALUE RESULT_VALUE, SL.IP_ADDRESS, ")
+	                           .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO) fio ")
+	                           .append("from SERVICES_LOG_KNL_T sl,  ")
+	                           .append("SERVICES_BSS_T serv, ")
+	                           .append("AC_USERS_KNL_T AU_FULL, ")
+	                           .append("ISP_BSS_T cl_usr_full, ")
+	                           .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
+	                           .append("from ISP_BSS_T cl_usr, ")
+	                           .append("AC_USERS_KNL_T au ")
+	                           .append("where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT ")
+	                           .append("group by CL_usr.SIGN_OBJECT) t2 ")
+	                           .append("where SERV.ID_SRV=SL.UP_SERVICES ")
+	                           .append("and AU_FULL.UP_SIGN_USER=t2.CL_USR_CODE(+) ")
+	                           .append("and AU_FULL.ID_SRV (+)=SL.UP_USERS ")
+	                           .append("and CL_USR_FULL.ID_SRV(+)=t2.CL_USR_ID ")
+	                           .append(") t1")
+			                   .append(st!=null ? " where "+st :" ")
+	               			 .toString())
                    .getSingleResult()).longValue();
                  
                log.info("ASys:invokeLocal:count:02:"+auditCount);
@@ -312,10 +311,11 @@ import javax.servlet.http.HttpServletResponse;
 				 log.info("invokeLocal:listReport:01");
                  
 				 auditReportList = entityManager.createQuery(
-						 "select o from ServicesLogKnlT o  " +
-						 "where o.dateAction >= :date1 " +
-						 "and o.dateAction <= :date2 " +
-						 "order by o.idSrv desc ")
+						 (new StringBuilder("select o from ServicesLogKnlT o  "))
+						   .append("where o.dateAction >= :date1 ") 
+						   .append("and o.dateAction <= :date2 ") 
+						   .append("order by o.idSrv desc ")
+						 .toString())
 						 .setParameter("date1", this.reportDate1)
     	                 .setParameter("date2", this.reportDate2)
 	                     .getResultList();
@@ -532,9 +532,9 @@ import javax.servlet.http.HttpServletResponse;
 		   
 		   try{
 			   List<String> los = entityManager.createNativeQuery(
-			              "select ST.VALUE_PARAM "+
-	                      "from SETTINGS_KNL_T st "+
-	                      "where ST.SIGN_OBJECT=? ")
+			              "select ST.VALUE_PARAM "
+	                      + "from SETTINGS_KNL_T st "
+	                      + "where ST.SIGN_OBJECT=? ")
 	                      .setParameter(1, param_code)
 	                      .getResultList();
 		    	  

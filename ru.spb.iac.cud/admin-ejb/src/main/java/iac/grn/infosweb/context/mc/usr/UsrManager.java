@@ -278,67 +278,70 @@ import org.slf4j.LoggerFactory;
                DateFormat df = new SimpleDateFormat ("dd.MM.yy HH:mm:ss");
      
                lo=entityManager.createNativeQuery(
-					"select t1.t1_id, t1.t1_login, t1.t1_cert, t1.t1_usr_code, t1.t1_fio, " +
-					       "t1.t1_tel, t1.t1_email,t1.t1_pos, t1.t1_dep_name, t1.t1_org_code, " +
-					       "t1.t1_org_name, t1.t1_org_adr, t1.t1_org_tel, t1.t1_start, t1.t1_end, " +
-					       "t1.t1_status, t1.t1_crt_date, t1.t1_crt_usr_login, t1.t1_upd_date, t1.t1_upd_usr_login, "+
-					       "t1.t1_dep_code, t1.t1_org_status, t1.t1_usr_status, t1.t1_dep_status, t1.t1_iogv_bind_type  "+ 
-					"from( "+
-					"select AU_FULL.ID_SRV t1_id, AU_FULL.login t1_login, AU_FULL.CERTIFICATE t1_cert, t2.CL_USR_CODE t1_usr_code, "+
-					 "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_fio, "+  
-					  "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.PHONE, CL_USR_FULL.PHONE ) t1_tel, "+   
-					  "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.E_MAIL, CL_USR_FULL.EMAIL) t1_email, "+  
-					  "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.POSITION, CL_USR_FULL.POSITION)t1_pos, "+  
-					  "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.DEPARTMENT, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.FULL_)) t1_dep_name, "+ 
-					  "t1.CL_ORG_CODE t1_org_code, CL_ORG_FULL.FULL_ t1_org_name, "+
-					  "CL_ORG_FULL.PREFIX || decode(CL_ORG_FULL.HOUSE, null, null, ','  ||CL_ORG_FULL.HOUSE  ) t1_org_adr, "+
-					  "CL_ORG_FULL.PHONE t1_org_tel, "+
-					  "to_char(AU_FULL.START_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_start, "+ 
-					  "to_char(AU_FULL.END_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_end, "+  
-					  "AU_FULL.STATUS t1_status, "+  
-					  "AU_FULL.CREATED t1_crt_date, "+ 
-					  "USR_CRT.LOGIN t1_crt_usr_login, "+ 
-					  "to_char(AU_FULL.MODIFIED, 'DD.MM.YY HH24:MI:SS') t1_upd_date, "+ 
-					  "USR_UPD.LOGIN t1_upd_usr_login, "+ 
-					  "decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.sign_object)) t1_dep_code, "+ 
-					  "CL_ORG_FULL.STATUS t1_org_status,  CL_usr_FULL.STATUS t1_usr_status, "+ 
-					   "decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.STATUS)) t1_dep_status, " +
-					   "AU_FULL.UP_BINDING t1_iogv_bind_type "+      
-					"from "+
-					"(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE "+
-					"from ISP_BSS_T cl_org, "+
-					"AC_USERS_KNL_T au "+
-					"where AU.UP_SIGN = CL_ORG.SIGN_OBJECT "+
-					"group by CL_ORG.SIGN_OBJECT) t1, "+
-					"(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "+
-					"from ISP_BSS_T cl_usr, "+
-					"AC_USERS_KNL_T au "+
-					"where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT "+
-					"group by CL_usr.SIGN_OBJECT) t2, "+
-					"(select max(CL_dep.ID_SRV) CL_DEP_ID,  CL_DEP.SIGN_OBJECT  CL_DEP_CODE "+
-					"from ISP_BSS_T cl_dep, "+
-					"AC_USERS_KNL_T au "+
-					"where substr(au.UP_SIGN_USER,1,5)||'000'  =cl_dep.SIGN_OBJECT(+) "+
-					"group by CL_DEP.SIGN_OBJECT) t3, "+
-					"ISP_BSS_T cl_org_full, "+
-					"ISP_BSS_T cl_usr_full, "+
-					"ISP_BSS_T cl_dep_full, "+
-					"AC_USERS_KNL_T au_full, "+
-					"AC_USERS_KNL_T usr_crt, "+  
-					"AC_USERS_KNL_T usr_upd "+
-					"where cl_org_full.ID_SRV= CL_ORG_ID "+
-					"and cl_usr_full.ID_SRV(+)=CL_USR_ID "+
-					"and cl_DEP_full.ID_SRV(+)=CL_DEP_ID "+
-					"and au_full.UP_SIGN = CL_ORG_CODE "+
-					"and au_full.UP_SIGN_USER  =  CL_USR_CODE(+) "+
-					"and substr(au_full.UP_SIGN_USER,1,5)||'000'  =  CL_DEP_CODE(+) "+
-					"and au_full.CREATOR=USR_CRT.ID_SRV "+ 
-					"and au_full.MODIFICATOR=USR_UPD.ID_SRV(+) "+ 
+   					(new StringBuilder("select t1.t1_id, t1.t1_login, t1.t1_cert, t1.t1_usr_code, t1.t1_fio, "))
+			         .append("t1.t1_tel, t1.t1_email,t1.t1_pos, t1.t1_dep_name, t1.t1_org_code, ") 
+			         .append("t1.t1_org_name, t1.t1_org_adr, t1.t1_org_tel, t1.t1_start, t1.t1_end, ") 
+			         .append("t1.t1_status, t1.t1_crt_date, t1.t1_crt_usr_login, t1.t1_upd_date, t1.t1_upd_usr_login, ")
+			         .append("t1.t1_dep_code, t1.t1_org_status, t1.t1_usr_status, t1.t1_dep_status, t1.t1_iogv_bind_type  ")
+			  .append("from( ")
+			  .append("select AU_FULL.ID_SRV t1_id, AU_FULL.login t1_login, AU_FULL.CERTIFICATE t1_cert, t2.CL_USR_CODE t1_usr_code, ")
+			   .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_fio, ")
+			    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.PHONE, CL_USR_FULL.PHONE ) t1_tel, ")
+			    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.E_MAIL, CL_USR_FULL.EMAIL) t1_email, ")
+			    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.POSITION, CL_USR_FULL.POSITION)t1_pos, ")
+			    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.DEPARTMENT, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.FULL_)) t1_dep_name, ")
+			    .append("t1.CL_ORG_CODE t1_org_code, CL_ORG_FULL.FULL_ t1_org_name, ")
+			    .append("CL_ORG_FULL.PREFIX || decode(CL_ORG_FULL.HOUSE, null, null, ','  ||CL_ORG_FULL.HOUSE  ) t1_org_adr, ")
+			    .append("CL_ORG_FULL.PHONE t1_org_tel, ")
+			    .append("to_char(AU_FULL.START_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_start, ")
+			    .append("to_char(AU_FULL.END_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_end, ")
+			    .append("AU_FULL.STATUS t1_status, ")
+			    .append("AU_FULL.CREATED t1_crt_date, ")
+			    .append("USR_CRT.LOGIN t1_crt_usr_login, ")
+			    .append("to_char(AU_FULL.MODIFIED, 'DD.MM.YY HH24:MI:SS') t1_upd_date, ")
+			    .append("USR_UPD.LOGIN t1_upd_usr_login, ")
+			    .append("decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.sign_object)) t1_dep_code, ")
+			    .append("CL_ORG_FULL.STATUS t1_org_status,  CL_usr_FULL.STATUS t1_usr_status, ")
+			     .append("decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.STATUS)) t1_dep_status, ") 
+			     .append("AU_FULL.UP_BINDING t1_iogv_bind_type ")
+			  .append("from ")
+			  .append("(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE ")
+			  .append("from ISP_BSS_T cl_org, ")
+			  .append("AC_USERS_KNL_T au ")
+			  .append("where AU.UP_SIGN = CL_ORG.SIGN_OBJECT ")
+			  .append("group by CL_ORG.SIGN_OBJECT) t1, ")
+			  .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
+			  .append("from ISP_BSS_T cl_usr, ")
+			  .append("AC_USERS_KNL_T au ")
+			  .append("where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT ")
+			  .append("group by CL_usr.SIGN_OBJECT) t2, ")
+			  .append("(select max(CL_dep.ID_SRV) CL_DEP_ID,  CL_DEP.SIGN_OBJECT  CL_DEP_CODE ")
+			  .append("from ISP_BSS_T cl_dep, ")
+			  .append("AC_USERS_KNL_T au ")
+			  .append("where substr(au.UP_SIGN_USER,1,5)||'000'  =cl_dep.SIGN_OBJECT(+) ")
+			  .append("group by CL_DEP.SIGN_OBJECT) t3, ")
+			  .append("ISP_BSS_T cl_org_full, ")
+			  .append("ISP_BSS_T cl_usr_full, ")
+			  .append("ISP_BSS_T cl_dep_full, ")
+			  .append("AC_USERS_KNL_T au_full, ")
+			  .append("AC_USERS_KNL_T usr_crt, ")
+			  .append("AC_USERS_KNL_T usr_upd ")
+			  .append("where cl_org_full.ID_SRV= CL_ORG_ID ")
+			  .append("and cl_usr_full.ID_SRV(+)=CL_USR_ID ")
+			  .append("and cl_DEP_full.ID_SRV(+)=CL_DEP_ID ")
+			  .append("and au_full.UP_SIGN = CL_ORG_CODE ")
+			  .append("and au_full.UP_SIGN_USER  =  CL_USR_CODE(+) ")
+			  .append("and substr(au_full.UP_SIGN_USER,1,5)||'000'  =  CL_DEP_CODE(+) ")
+			  .append("and au_full.CREATOR=USR_CRT.ID_SRV ")
+			  .append("and au_full.MODIFICATOR=USR_UPD.ID_SRV(+) ")
 					//!!!
-					"and AU_FULL.STATUS !=3 "+
-					")t1 "+getWhereAndClause()+" "+
-					                      //(st!=null ? " where "+st :" ")+
-                      (orderQueryUsr!=null ? orderQueryUsr+", t1_fio " : " order by t1_fio "))
+					  .append("and AU_FULL.STATUS !=3 ")
+					  .append(")t1 ")
+					  .append(getWhereAndClause())
+					  .append(" ")
+					  //+(st!=null ? " where "+st :" ")+
+                      .append(orderQueryUsr!=null ? orderQueryUsr+", t1_fio " : " order by t1_fio ")
+                      .toString())
               .setFirstResult(firstRow)
               .setMaxResults(numberOfRows)
               .getResultList();
@@ -391,61 +394,63 @@ import org.slf4j.LoggerFactory;
 				 log.info("UserList:count:01");				 
                  
                  auditCount = ((java.math.BigDecimal)entityManager.createNativeQuery(
-						        "select count(*) "+ 
-								 "from( "+
-								 "select AU_FULL.ID_SRV t1_id, AU_FULL.login t1_login, AU_FULL.CERTIFICATE t1_cert, t2.CL_USR_CODE t1_usr_code, "+
-								  "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_fio, "+  
-								   "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.PHONE, CL_USR_FULL.PHONE ) t1_tel, "+   
-								   "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.E_MAIL, CL_USR_FULL.EMAIL) t1_email, "+  
-								   "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.POSITION, CL_USR_FULL.POSITION)t1_pos, "+  
-								   "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.DEPARTMENT, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.FULL_)) t1_dep_name, "+ 
-								   "t1.CL_ORG_CODE t1_org_code, CL_ORG_FULL.FULL_ t1_org_name, "+
-								   "CL_ORG_FULL.PREFIX || decode(CL_ORG_FULL.HOUSE, null, null, ','  ||CL_ORG_FULL.HOUSE  ) t1_org_adr, "+
-								   "CL_ORG_FULL.PHONE t1_org_tel, "+
-								   "to_char(AU_FULL.START_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_start, "+ 
-								   "to_char(AU_FULL.END_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_end, "+  
-								   "AU_FULL.STATUS t1_status, "+  
-								   "AU_FULL.CREATED t1_crt_date, "+ 
-								   "USR_CRT.LOGIN t1_crt_usr_login, "+ 
-								   "to_char(AU_FULL.MODIFIED, 'DD.MM.YY HH24:MI:SS') t1_upd_date, "+ 
-								   "USR_UPD.LOGIN t1_upd_usr_login, "+ 
-								   "decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.sign_object)) t1_dep_code, "+ 
-								   "CL_ORG_FULL.STATUS t1_org_status,  CL_usr_FULL.STATUS t1_usr_status, "+ 
-								    "decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.STATUS)) t1_dep_status, " +
-								    "AU_FULL.UP_BINDING t1_iogv_bind_type "+      
-								 "from "+
-								 "(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE "+
-								 "from ISP_BSS_T cl_org, "+
-								 "AC_USERS_KNL_T au "+
-								 "where AU.UP_SIGN = CL_ORG.SIGN_OBJECT "+
-								 "group by CL_ORG.SIGN_OBJECT) t1, "+
-								 "(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "+
-								 "from ISP_BSS_T cl_usr, "+
-								 "AC_USERS_KNL_T au "+
-								 "where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT "+
-								 "group by CL_usr.SIGN_OBJECT) t2, "+
-								 "(select max(CL_dep.ID_SRV) CL_DEP_ID,  CL_DEP.SIGN_OBJECT  CL_DEP_CODE "+
-								 "from ISP_BSS_T cl_dep, "+
-								 "AC_USERS_KNL_T au "+
-								 "where substr(au.UP_SIGN_USER,1,5)||'000'  =cl_dep.SIGN_OBJECT(+) "+
-								 "group by CL_DEP.SIGN_OBJECT) t3, "+
-								 "ISP_BSS_T cl_org_full, "+
-								 "ISP_BSS_T cl_usr_full, "+
-								 "ISP_BSS_T cl_dep_full, "+
-								 "AC_USERS_KNL_T au_full, "+
-								 "AC_USERS_KNL_T usr_crt, "+  
-								 "AC_USERS_KNL_T usr_upd "+
-								 "where cl_org_full.ID_SRV= CL_ORG_ID "+
-								 "and cl_usr_full.ID_SRV(+)=CL_USR_ID "+
-								 "and cl_DEP_full.ID_SRV(+)=CL_DEP_ID "+
-								 "and au_full.UP_SIGN = CL_ORG_CODE "+
-								 "and au_full.UP_SIGN_USER  =  CL_USR_CODE(+) "+
-								 "and substr(au_full.UP_SIGN_USER,1,5)||'000'  =  CL_DEP_CODE(+) "+
-								 "and au_full.CREATOR=USR_CRT.ID_SRV "+ 
-								 "and au_full.MODIFICATOR=USR_UPD.ID_SRV(+) "+ 
+					        (new StringBuilder("select count(*) "))
+							   .append("from( ")
+							   .append("select AU_FULL.ID_SRV t1_id, AU_FULL.login t1_login, AU_FULL.CERTIFICATE t1_cert, t2.CL_USR_CODE t1_usr_code, ")
+							    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_fio, ")
+							     .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.PHONE, CL_USR_FULL.PHONE ) t1_tel, ")
+							     .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.E_MAIL, CL_USR_FULL.EMAIL) t1_email, ")
+							     .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.POSITION, CL_USR_FULL.POSITION)t1_pos, ")
+							     .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.DEPARTMENT, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.FULL_)) t1_dep_name, ")
+							     .append("t1.CL_ORG_CODE t1_org_code, CL_ORG_FULL.FULL_ t1_org_name, ")
+							     .append("CL_ORG_FULL.PREFIX || decode(CL_ORG_FULL.HOUSE, null, null, ','  ||CL_ORG_FULL.HOUSE  ) t1_org_adr, ")
+							     .append("CL_ORG_FULL.PHONE t1_org_tel, ")
+							     .append("to_char(AU_FULL.START_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_start, ")
+							     .append("to_char(AU_FULL.END_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_end, ")
+							     .append("AU_FULL.STATUS t1_status, ")
+							     .append("AU_FULL.CREATED t1_crt_date, ")
+							     .append("USR_CRT.LOGIN t1_crt_usr_login, ")
+							     .append("to_char(AU_FULL.MODIFIED, 'DD.MM.YY HH24:MI:SS') t1_upd_date, ")
+							     .append("USR_UPD.LOGIN t1_upd_usr_login, ")
+							     .append("decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.sign_object)) t1_dep_code, ")
+							     .append("CL_ORG_FULL.STATUS t1_org_status,  CL_usr_FULL.STATUS t1_usr_status, ")
+							      .append("decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.STATUS)) t1_dep_status, ") 
+							      .append("AU_FULL.UP_BINDING t1_iogv_bind_type ")
+							   .append("from ")
+							   .append("(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE ")
+							   .append("from ISP_BSS_T cl_org, ")
+							   .append("AC_USERS_KNL_T au ")
+							   .append("where AU.UP_SIGN = CL_ORG.SIGN_OBJECT ")
+							   .append("group by CL_ORG.SIGN_OBJECT) t1, ")
+							   .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
+							   .append("from ISP_BSS_T cl_usr, ")
+							   .append("AC_USERS_KNL_T au ")
+							   .append("where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT ")
+							   .append("group by CL_usr.SIGN_OBJECT) t2, ")
+							   .append("(select max(CL_dep.ID_SRV) CL_DEP_ID,  CL_DEP.SIGN_OBJECT  CL_DEP_CODE ")
+							   .append("from ISP_BSS_T cl_dep, ")
+							   .append("AC_USERS_KNL_T au ")
+							   .append("where substr(au.UP_SIGN_USER,1,5)||'000'  =cl_dep.SIGN_OBJECT(+) ")
+							   .append("group by CL_DEP.SIGN_OBJECT) t3, ")
+							   .append("ISP_BSS_T cl_org_full, ")
+							   .append("ISP_BSS_T cl_usr_full, ")
+							   .append("ISP_BSS_T cl_dep_full, ")
+							   .append("AC_USERS_KNL_T au_full, ")
+							   .append("AC_USERS_KNL_T usr_crt, ")
+							   .append("AC_USERS_KNL_T usr_upd ")
+							   .append("where cl_org_full.ID_SRV= CL_ORG_ID ")
+							   .append("and cl_usr_full.ID_SRV(+)=CL_USR_ID ")
+							   .append("and cl_DEP_full.ID_SRV(+)=CL_DEP_ID ")
+							   .append("and au_full.UP_SIGN = CL_ORG_CODE ")
+							   .append("and au_full.UP_SIGN_USER  =  CL_USR_CODE(+) ")
+							   .append("and substr(au_full.UP_SIGN_USER,1,5)||'000'  =  CL_DEP_CODE(+) ")
+							   .append("and au_full.CREATOR=USR_CRT.ID_SRV ")
+							   .append("and au_full.MODIFICATOR=USR_UPD.ID_SRV(+) ")
 								 //!!!
-								 "and AU_FULL.STATUS !=3 "+
-								 ")t1 "+getWhereAndClause())   //(st!=null ? " where "+st :" "))
+								   .append("and AU_FULL.STATUS !=3 ")
+								   .append(")t1 ")
+								 .append(getWhereAndClause())	//(st!=null ? " where "+st :" "))							 
+								 .toString())   
                .getSingleResult()).longValue();
                
                  // 17.02.15: AB: MANTIS-4954
@@ -495,9 +500,9 @@ import org.slf4j.LoggerFactory;
 			
     	 
 	     List<AcRole> rlist = entityManager.createQuery(
-	    			"select ar from AcRole ar, AcLinkUserToRoleToRaion alur " +
-	    	 		"where alur.acRole = ar and alur.pk.acUser = :acUser " +
-	    	 		"and ar.acApplication= :acApplication ")
+	    			"select ar from AcRole ar, AcLinkUserToRoleToRaion alur " 
+	    	 		+ "where alur.acRole = ar and alur.pk.acUser = :acUser " 
+	    	 		+ "and ar.acApplication= :acApplication ")
 	    	 		 .setParameter("acUser", Long.valueOf(usrId))
 	    	 		 .setParameter("acApplication", appCode)
 	    	 		 .getResultList();
@@ -658,11 +663,12 @@ import org.slf4j.LoggerFactory;
 		   Long idApp = Long.valueOf(idSess);
 		
 		   entityManager.createNativeQuery(
- 	     		   "insert into JOURN_APP_USER_BSS_T ( SURNAME_USER, NAME_USER, PATRONYMIC_USER, " +
- 	     		                             "SIGN_USER, POSITION_USER, EMAIL_USER, PHONE_USER, " +
- 	     		                             "CERTIFICATE_USER, NAME_DEPARTAMENT, NAME_ORG, SIGN_ORG, " +
- 	     		                             "UP_USER, SECRET, COMMENT_APP, ID_SRV ) " +
- 	     		   " values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ")
+ 	     		   (new StringBuilder("insert into JOURN_APP_USER_BSS_T ( SURNAME_USER, NAME_USER, PATRONYMIC_USER, "))
+                     .append("SIGN_USER, POSITION_USER, EMAIL_USER, PHONE_USER, ") 
+                     .append("CERTIFICATE_USER, NAME_DEPARTAMENT, NAME_ORG, SIGN_ORG, ") 
+                     .append("UP_USER, SECRET, COMMENT_APP, ID_SRV ) ") 
+						.append(" values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ")
+						.toString())
  	     		    .setParameter(1, usrBeanCrt.getSurname())
          	 		.setParameter(2, usrBeanCrt.getName1())
          	 		.setParameter(3, usrBeanCrt.getName2())
@@ -691,8 +697,8 @@ import org.slf4j.LoggerFactory;
 				
 			  for(Long idRole :guuExistList) {
 				 entityManager.createNativeQuery(
-		 	     		   "insert into ROLES_APP_USER_BSS_T (ID_SRV, UP_APP_USER, UP_ROLE ) " +
-		 	     		   " values (ROLES_APP_USER_SEQ.nextval, ?, ?) ")
+		 	     		   "insert into ROLES_APP_USER_BSS_T (ID_SRV, UP_APP_USER, UP_ROLE ) " 
+		 	     		   + " values (ROLES_APP_USER_SEQ.nextval, ?, ?) ")
 		 	     		    .setParameter(1, idApp)
 		         	 		.setParameter(2, idRole)
 		         	 	   .executeUpdate();
@@ -896,12 +902,13 @@ import org.slf4j.LoggerFactory;
 		   String secret = TIDEncodePLBase64.getSecret();
 		   
 		   entityManager.createNativeQuery(
-				   "insert into JOURN_APP_USER_MODIFY_BSS_T (ID_SRV, " +
-		 	     		   "SURNAME_USER, NAME_USER, PATRONYMIC_USER, " +
-	     		               "SIGN_USER, POSITION_USER, EMAIL_USER, PHONE_USER, " +
-	     		               "CERTIFICATE_USER, NAME_DEPARTAMENT, " +
-		 	     		   "UP_USER_APP, UP_USER, SECRET, COMMENT_APP ) " +
-		 	     		   " values ( JOURN_APP_USER_MODIFY_SEQ.nextval, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ")
+				   (new StringBuilder("insert into JOURN_APP_USER_MODIFY_BSS_T (ID_SRV, "))
+	     		     .append("SURNAME_USER, NAME_USER, PATRONYMIC_USER, ") 
+		                 .append("SIGN_USER, POSITION_USER, EMAIL_USER, PHONE_USER, ") 
+		                 .append("CERTIFICATE_USER, NAME_DEPARTAMENT, ") 
+	     		     .append("UP_USER_APP, UP_USER, SECRET, COMMENT_APP ) ") 
+	     		     .append(" values ( JOURN_APP_USER_MODIFY_SEQ.nextval, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ")
+	     		     .toString())
 		 	     		  
 		 	     		   .setParameter(1, usrBean.getSurname())
 		 	     		    .setParameter(2, usrBean.getName1())
@@ -991,9 +998,9 @@ import org.slf4j.LoggerFactory;
 		   String secret = TIDEncodePLBase64.getSecret();
 		   
 		   entityManager.createNativeQuery(
-	     		   "insert into JOURN_APP_USER_ACCMODIFY_BSS_T (ID_SRV, CERTIFICATE_USER, LOGIN_USER, PASS_USER, " +
-	     		                             "UP_USER, UP_USER_APP, SECRET, COMMENT_APP ) " +
-	     		   " values ( JOURN_APP_USER_ACCMODIFY_SEQ.nextval, ?, ?, ?, ?, ?, ?, ? ) ")
+	     		   "insert into JOURN_APP_USER_ACCMODIFY_BSS_T (ID_SRV, CERTIFICATE_USER, LOGIN_USER, PASS_USER, " 
+	     		                             + "UP_USER, UP_USER_APP, SECRET, COMMENT_APP ) " 
+	     		   + " values ( JOURN_APP_USER_ACCMODIFY_SEQ.nextval, ?, ?, ?, ?, ?, ?, ? ) ")
 	     		.setParameter(1, usrBean.getCertificate())
        	 		.setParameter(2, usrBean.getLogin())
        	 		.setParameter(3, usrBean.getPassword())
@@ -1062,9 +1069,9 @@ import org.slf4j.LoggerFactory;
 		   String secret = TIDEncodePLBase64.getSecret();
 		   
 		   entityManager.createNativeQuery(
-	     		   "insert into JOURN_APP_BLOCK_BSS_T (ID_SRV, BLOCK_REASON, " +
-	     		                             "UP_USER, UP_USER_APP, SECRET ) " +
-	     		   " values (  JOURN_APP_BLOCK_SEQ.nextval, ?, ?, ?, ? ) ")
+	     		   "insert into JOURN_APP_BLOCK_BSS_T (ID_SRV, BLOCK_REASON, " 
+	     		                             + "UP_USER, UP_USER_APP, SECRET ) " 
+	     		   + " values (  JOURN_APP_BLOCK_SEQ.nextval, ?, ?, ?, ? ) ")
 	     		.setParameter(1, commentApp)
       	 		.setParameter(2, usrBean.getModificator())
       	 		.setParameter(3, usrBean.getIdUser())
@@ -1096,63 +1103,64 @@ import org.slf4j.LoggerFactory;
          
            
            lo=entityManager.createNativeQuery(
-        		   "select t1.t1_id, t1.t1_login, t1.t1_cert, t1.t1_usr_code, t1.t1_fio, t1.t1_tel, t1.t1_email,t1.t1_pos, t1.t1_dep_name, "+
-        				   "t1.t1_org_code, t1.t1_org_name, t1.t1_org_adr, t1.t1_org_tel, t1.t1_start, t1.t1_end, t1.t1_status, "+
-        				    "t1.t1_crt_date, t1.t1_crt_usr_login, t1.t1_upd_date, t1.t1_upd_usr_login, "+
-        				    "t1.t1_dep_code, t1.t1_org_status, t1.t1_usr_status, t1.t1_dep_status, t1.t1_iogv_bind_type  "+ 
-        				   "from( "+
-        				   "select AU_FULL.ID_SRV t1_id, AU_FULL.login t1_login, AU_FULL.CERTIFICATE t1_cert, t2.CL_USR_CODE t1_usr_code, "+
-        				    "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_fio, "+  
-        				     "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.PHONE, CL_USR_FULL.PHONE ) t1_tel, "+   
-        				     "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.E_MAIL, CL_USR_FULL.EMAIL) t1_email, "+  
-        				     "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.POSITION, CL_USR_FULL.POSITION)t1_pos, "+  
-        				     "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.DEPARTMENT, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.FULL_)) t1_dep_name, "+ 
-        				     "t1.CL_ORG_CODE t1_org_code, CL_ORG_FULL.FULL_ t1_org_name, "+
-        				     "CL_ORG_FULL.PREFIX || decode(CL_ORG_FULL.HOUSE, null, null, ','  ||CL_ORG_FULL.HOUSE  ) t1_org_adr, "+
-        				     "CL_ORG_FULL.PHONE t1_org_tel, "+
-        				     "to_char(AU_FULL.START_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_start, "+ 
-        				     "to_char(AU_FULL.END_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_end, "+  
-        				     "AU_FULL.STATUS t1_status, "+  
-        				     "AU_FULL.CREATED t1_crt_date, "+ 
-        				     "USR_CRT.LOGIN t1_crt_usr_login, "+ 
-        				     "to_char(AU_FULL.MODIFIED, 'DD.MM.YY HH24:MI:SS') t1_upd_date, "+ 
-        				     "USR_UPD.LOGIN t1_upd_usr_login, "+ 
-        				     "decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.sign_object)) t1_dep_code, "+ 
-        				     "CL_ORG_FULL.STATUS t1_org_status,  CL_usr_FULL.STATUS t1_usr_status, "+ 
-        				      "decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.STATUS)) t1_dep_status, " +
-        				      "AU_FULL.UP_BINDING t1_iogv_bind_type "+      
-        				   "from "+
-        				   "(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE "+
-        				   "from ISP_BSS_T cl_org, "+
-        				   "AC_USERS_KNL_T au "+
-        				   "where AU.UP_SIGN = CL_ORG.SIGN_OBJECT "+
-        				   "group by CL_ORG.SIGN_OBJECT) t1, "+
-        				   "(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "+
-        				   "from ISP_BSS_T cl_usr, "+
-        				   "AC_USERS_KNL_T au "+
-        				   "where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT "+
-        				   "group by CL_usr.SIGN_OBJECT) t2, "+
-        				   "(select max(CL_dep.ID_SRV) CL_DEP_ID,  CL_DEP.SIGN_OBJECT  CL_DEP_CODE "+
-        				   "from ISP_BSS_T cl_dep, "+
-        				   "AC_USERS_KNL_T au "+
-        				   "where substr(au.UP_SIGN_USER,1,5)||'000'  =cl_dep.SIGN_OBJECT(+) "+
-        				   "group by CL_DEP.SIGN_OBJECT) t3, "+
-        				   "ISP_BSS_T cl_org_full, "+
-        				   "ISP_BSS_T cl_usr_full, "+
-        				   "ISP_BSS_T cl_dep_full, "+
-        				   "AC_USERS_KNL_T au_full, "+
-        				   "AC_USERS_KNL_T usr_crt, "+  
-        				   "AC_USERS_KNL_T usr_upd "+
-        				   "where cl_org_full.ID_SRV= CL_ORG_ID "+
-        				   "and cl_usr_full.ID_SRV(+)=CL_USR_ID "+
-        				   "and cl_DEP_full.ID_SRV(+)=CL_DEP_ID "+
-        				   "and au_full.UP_SIGN = CL_ORG_CODE "+
-        				   "and au_full.UP_SIGN_USER  =  CL_USR_CODE(+) "+
-        				   "and substr(au_full.UP_SIGN_USER,1,5)||'000'  =  CL_DEP_CODE(+) "+
-        				   "and au_full.CREATOR=USR_CRT.ID_SRV "+ 
-        				   "and au_full.MODIFICATOR=USR_UPD.ID_SRV(+) " +
-        				   "and au_full.ID_SRV=? "+ 
-        				   ")t1 ")
+        		   (new StringBuilder("select t1.t1_id, t1.t1_login, t1.t1_cert, t1.t1_usr_code, t1.t1_fio, t1.t1_tel, t1.t1_email,t1.t1_pos, t1.t1_dep_name, "))
+				     .append("t1.t1_org_code, t1.t1_org_name, t1.t1_org_adr, t1.t1_org_tel, t1.t1_start, t1.t1_end, t1.t1_status, ")
+				      .append("t1.t1_crt_date, t1.t1_crt_usr_login, t1.t1_upd_date, t1.t1_upd_usr_login, ")
+				      .append("t1.t1_dep_code, t1.t1_org_status, t1.t1_usr_status, t1.t1_dep_status, t1.t1_iogv_bind_type  ")
+				     .append("from( ")
+				     .append("select AU_FULL.ID_SRV t1_id, AU_FULL.login t1_login, AU_FULL.CERTIFICATE t1_cert, t2.CL_USR_CODE t1_usr_code, ")
+				      .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_fio, ")
+				       .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.PHONE, CL_USR_FULL.PHONE ) t1_tel, ")
+				       .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.E_MAIL, CL_USR_FULL.EMAIL) t1_email, ")
+				       .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.POSITION, CL_USR_FULL.POSITION)t1_pos, ")
+				       .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.DEPARTMENT, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.FULL_)) t1_dep_name, ")
+				       .append("t1.CL_ORG_CODE t1_org_code, CL_ORG_FULL.FULL_ t1_org_name, ")
+				       .append("CL_ORG_FULL.PREFIX || decode(CL_ORG_FULL.HOUSE, null, null, ','  ||CL_ORG_FULL.HOUSE  ) t1_org_adr, ")
+				       .append("CL_ORG_FULL.PHONE t1_org_tel, ")
+				       .append("to_char(AU_FULL.START_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_start, ")
+				       .append("to_char(AU_FULL.END_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_end, ")
+				       .append("AU_FULL.STATUS t1_status, ")
+				       .append("AU_FULL.CREATED t1_crt_date, ")
+				       .append("USR_CRT.LOGIN t1_crt_usr_login, ")
+				       .append("to_char(AU_FULL.MODIFIED, 'DD.MM.YY HH24:MI:SS') t1_upd_date, ")
+				       .append("USR_UPD.LOGIN t1_upd_usr_login, ")
+				       .append("decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.sign_object)) t1_dep_code, ")
+				       .append("CL_ORG_FULL.STATUS t1_org_status,  CL_usr_FULL.STATUS t1_usr_status, ")
+				        .append("decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.STATUS)) t1_dep_status, ") 
+				        .append("AU_FULL.UP_BINDING t1_iogv_bind_type ")
+				     .append("from ")
+				     .append("(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE ")
+				     .append("from ISP_BSS_T cl_org, ")
+				     .append("AC_USERS_KNL_T au ")
+				     .append("where AU.UP_SIGN = CL_ORG.SIGN_OBJECT ")
+				     .append("group by CL_ORG.SIGN_OBJECT) t1, ")
+				     .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
+				     .append("from ISP_BSS_T cl_usr, ")
+				     .append("AC_USERS_KNL_T au ")
+				     .append("where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT ")
+				     .append("group by CL_usr.SIGN_OBJECT) t2, ")
+				     .append("(select max(CL_dep.ID_SRV) CL_DEP_ID,  CL_DEP.SIGN_OBJECT  CL_DEP_CODE ")
+				     .append("from ISP_BSS_T cl_dep, ")
+				     .append("AC_USERS_KNL_T au ")
+				     .append("where substr(au.UP_SIGN_USER,1,5)||'000'  =cl_dep.SIGN_OBJECT(+) ")
+				     .append("group by CL_DEP.SIGN_OBJECT) t3, ")
+				     .append("ISP_BSS_T cl_org_full, ")
+				     .append("ISP_BSS_T cl_usr_full, ")
+				     .append("ISP_BSS_T cl_dep_full, ")
+				     .append("AC_USERS_KNL_T au_full, ")
+				     .append("AC_USERS_KNL_T usr_crt, ")
+				     .append("AC_USERS_KNL_T usr_upd ")
+				     .append("where cl_org_full.ID_SRV= CL_ORG_ID ")
+				     .append("and cl_usr_full.ID_SRV(+)=CL_USR_ID ")
+				     .append("and cl_DEP_full.ID_SRV(+)=CL_DEP_ID ")
+				     .append("and au_full.UP_SIGN = CL_ORG_CODE ")
+				     .append("and au_full.UP_SIGN_USER  =  CL_USR_CODE(+) ")
+				     .append("and substr(au_full.UP_SIGN_USER,1,5)||'000'  =  CL_DEP_CODE(+) ")
+				     .append("and au_full.CREATOR=USR_CRT.ID_SRV ")
+				     .append("and au_full.MODIFICATOR=USR_UPD.ID_SRV(+) ") 
+				     .append("and au_full.ID_SRV=? ")
+				     .append(")t1 ")
+		   .toString())
          .setParameter(1, idUser)
          .getResultList();
            
@@ -1258,9 +1266,9 @@ import org.slf4j.LoggerFactory;
 			                	guuExistList.remove(au);
 			                	
 			                	entityManager.createQuery(
-			                		"delete from AcLinkUserToRoleToRaion lgu " +
-			                		"where lgu.pk.acUser = :acUser " +
-			                		"and lgu.pk.acRole = :acRole ")
+			                		"delete from AcLinkUserToRoleToRaion lgu " 
+			                		+ "where lgu.pk.acUser = :acUser " 
+			                		+ "and lgu.pk.acRole = :acRole ")
 			                	.setParameter("acUser", Long.valueOf(sessionId))
 			                	.setParameter("acRole", ((AcRole)rol).getIdRol())
 			                	.executeUpdate();
@@ -1422,9 +1430,9 @@ import org.slf4j.LoggerFactory;
  			                	guuExistList.remove(au);
  			                	
  			                	entityManager.createQuery(
- 			                		"delete from LinkGroupUsersUsersKnlT lgu " +
- 			                		"where lgu.pk.acUser = :acUser " +
- 			                		"and lgu.pk.groupUser = :groupUser ")
+ 			                		"delete from LinkGroupUsersUsersKnlT lgu " 
+ 			                		+ "where lgu.pk.acUser = :acUser " 
+ 			                		+ "and lgu.pk.groupUser = :groupUser ")
  			                	.setParameter("acUser", Long.valueOf(sessionId))
  			                	.setParameter("groupUser", ((GroupUsersKnlT)group).getIdSrv())
  			                	.executeUpdate();
@@ -1522,9 +1530,9 @@ import org.slf4j.LoggerFactory;
 			                	guuExistList.remove(au);
 			                	
 			                	entityManager.createQuery(
-			                		"delete from LinkAdminUserSys lgu " +
-			                		"where lgu.pk.upUser = :upUser " +
-			                		"and lgu.pk.upSys = :upSys ")
+			                		"delete from LinkAdminUserSys lgu " 
+			                		+ "where lgu.pk.upUser = :upUser " 
+			                		+ "and lgu.pk.upSys = :upSys ")
 			                	.setParameter("upUser", Long.valueOf(sessionId))
 			                	.setParameter("upSys", ((AcApplication)is).getIdArm())
 			                	.executeUpdate();
@@ -1590,13 +1598,14 @@ import org.slf4j.LoggerFactory;
 		  //имеющиеся у пользователя разрешения
 		  
 		   List<String> listExistPerm = entityManager.createNativeQuery(
-					  "select DOM.PAGE_CODE||':'|| PERM.ID_SRV code  " + 
-					  "from LINK_ADMIN_USER_DOM_PRM udp,  " + 
-					  "AC_APP_DOMAINS_BSS_T dom,  " + 
-					  "AC_PERMISSIONS_LIST_BSS_T perm  " + 
-					  "where DOM.ID_SRV=UDP.UP_DOM  " + 
-					  "and PERM.ID_SRV=UDP.UP_PRM  " + 
-					  "and UDP.UP_USER = :idUser")
+					  (new StringBuilder("select DOM.PAGE_CODE||':'|| PERM.ID_SRV code  "))
+					    .append("from LINK_ADMIN_USER_DOM_PRM udp,  ") 
+					    .append("AC_APP_DOMAINS_BSS_T dom,  ") 
+					    .append("AC_PERMISSIONS_LIST_BSS_T perm  ") 
+					    .append("where DOM.ID_SRV=UDP.UP_DOM  ") 
+					    .append("and PERM.ID_SRV=UDP.UP_PRM  ") 
+					    .append("and UDP.UP_USER = :idUser")
+					  .toString())
 		           .setParameter("idUser", Long.valueOf(sessionId))
 		           .getResultList();
 		          
@@ -1616,19 +1625,19 @@ import org.slf4j.LoggerFactory;
 				  //надо add
 				   
 				   entityManager.createNativeQuery(
-						     "insert into LINK_ADMIN_USER_DOM_PRM ( " +
-						     "UP_USER, UP_DOM, UP_PRM, CREATOR,  created) "+
-		                     "values(:idUser, " +
-						     "(select id_dom from (  SELECT N.ID_SRV id_dom, LEVEL lev " + 
-						     "      FROM AC_APP_DOMAINS_BSS_T n " + 
-						     "     WHERE N.IS_VISIBLE = 1 AND N.PAGE_CODE = :codeDom " + 
-						     "CONNECT BY PRIOR N.ID_SRV = N.UP " + 
-						     "START WITH N.UP = (SELECT N2.ID_SRV " + 
-						     "                     FROM AC_APP_DOMAINS_BSS_T n2 " + 
-						     "                    WHERE N2.UP_IS = :idArm AND N2.UP = 1))" +
-						     " where lev=2 ), "+
-		                  
-		                     ":idPerm, :creator, sysdate) ")
+						     (new StringBuilder("insert into LINK_ADMIN_USER_DOM_PRM ( "))
+						       .append("UP_USER, UP_DOM, UP_PRM, CREATOR,  created) ")
+		                       .append("values(:idUser, ") 
+						       .append("(select id_dom from (  SELECT N.ID_SRV id_dom, LEVEL lev ") 
+						       .append("      FROM AC_APP_DOMAINS_BSS_T n ") 
+						       .append("     WHERE N.IS_VISIBLE = 1 AND N.PAGE_CODE = :codeDom ") 
+						       .append("CONNECT BY PRIOR N.ID_SRV = N.UP ") 
+						       .append("START WITH N.UP = (SELECT N2.ID_SRV ") 
+						       .append("                     FROM AC_APP_DOMAINS_BSS_T n2 ") 
+						       .append("                    WHERE N2.UP_IS = :idArm AND N2.UP = 1))") 
+						       .append(" where lev=2 ), ")
+		                       .append(":idPerm, :creator, sysdate) ")
+						     .toString())
 			         .setParameter("idUser", Long.valueOf(sessionId))
 		             .setParameter("codeDom", me.getKey().split(":")[0])
 		             .setParameter("idArm", linksMap2.getAppCode())
@@ -1645,19 +1654,19 @@ import org.slf4j.LoggerFactory;
 						  //надо delete
 						  
 					   entityManager.createNativeQuery(
-							     "DELETE from LINK_ADMIN_USER_DOM_PRM " +
-							     "where " +
-							     "UP_USER =:idUser and UP_DOM = " +
-							     "(select id_dom from (  SELECT N.ID_SRV id_dom, LEVEL lev " + 
-							     "      FROM AC_APP_DOMAINS_BSS_T n " + 
-							     "     WHERE N.IS_VISIBLE = 1 AND N.PAGE_CODE = :codeDom " + 
-							     "CONNECT BY PRIOR N.ID_SRV = N.UP " + 
-							     "START WITH N.UP = (SELECT N2.ID_SRV " + 
-							     "                     FROM AC_APP_DOMAINS_BSS_T n2 " + 
-							     "                    WHERE N2.UP_IS = :idArm AND N2.UP = 1)) "+
-							     " where lev=2 ) "+
-							 
-			                     "and UP_PRM = :idPerm ")
+							     (new StringBuilder("DELETE from LINK_ADMIN_USER_DOM_PRM "))
+							       .append("where ") 
+							       .append("UP_USER =:idUser and UP_DOM = ") 
+							       .append("(select id_dom from (  SELECT N.ID_SRV id_dom, LEVEL lev ") 
+							       .append("      FROM AC_APP_DOMAINS_BSS_T n ") 
+							       .append("     WHERE N.IS_VISIBLE = 1 AND N.PAGE_CODE = :codeDom ") 
+							       .append("CONNECT BY PRIOR N.ID_SRV = N.UP ") 
+							       .append("START WITH N.UP = (SELECT N2.ID_SRV ") 
+							       .append("                     FROM AC_APP_DOMAINS_BSS_T n2 ") 
+							       .append("                    WHERE N2.UP_IS = :idArm AND N2.UP = 1)) ")
+							       .append(" where lev=2 ) ")
+			                       .append("and UP_PRM = :idPerm ")
+							     .toString())
 				         .setParameter("idUser", Long.valueOf(sessionId))
 			             .setParameter("codeDom", me.getKey().split(":")[0])
 			             .setParameter("idArm", linksMap2.getAppCode())
@@ -1698,18 +1707,18 @@ import org.slf4j.LoggerFactory;
  	     	   //становили чекбокс
  	     		  
  	     		entityManager.createNativeQuery(
- 	     				"update AC_USERS_KNL_T t1 " +
- 	     				"set t1.IS_ACC_ORG_MANAGER = 1 " +
- 	     				"where t1.ID_SRV = :idUser")
+ 	     				"update AC_USERS_KNL_T t1 " 
+ 	     				+ "set t1.IS_ACC_ORG_MANAGER = 1 " 
+ 	     				+ "where t1.ID_SRV = :idUser")
  	     		 .setParameter("idUser", Long.valueOf(sessionId))
 	             .executeUpdate();
 			   
 			   }else{
 				   //сняли чекбокс
 				   entityManager.createNativeQuery(
-	 	     				"update AC_USERS_KNL_T t1 " +
-	 	     				"set t1.IS_ACC_ORG_MANAGER = 0 " +
-	 	     				"where t1.ID_SRV = :idUser")
+	 	     				"update AC_USERS_KNL_T t1 " 
+	 	     				+ "set t1.IS_ACC_ORG_MANAGER = 0 " 
+	 	     				+ "where t1.ID_SRV = :idUser")
 	 	     		 .setParameter("idUser", Long.valueOf(sessionId))
 		             .executeUpdate();
 
@@ -1757,13 +1766,14 @@ import org.slf4j.LoggerFactory;
 		   //имеющиеся у пользователя разрешения
 			  
 		   List<String> listExistPerm = entityManager.createNativeQuery(
-					  "select DOM.PAGE_CODE||':'|| PERM.ID_SRV code  " + 
-					  "from LINK_ADMIN_USER_DOM_PRM udp,  " + 
-					  "AC_APP_DOMAINS_BSS_T dom,  " + 
-					  "AC_PERMISSIONS_LIST_BSS_T perm  " + 
-					  "where DOM.ID_SRV=UDP.UP_DOM  " + 
-					  "and PERM.ID_SRV=UDP.UP_PRM  " + 
-					  "and UDP.UP_USER = :idUser")
+					  (new StringBuilder("select DOM.PAGE_CODE||':'|| PERM.ID_SRV code  "))
+					    .append("from LINK_ADMIN_USER_DOM_PRM udp,  ") 
+					    .append("AC_APP_DOMAINS_BSS_T dom,  ") 
+					    .append("AC_PERMISSIONS_LIST_BSS_T perm  ") 
+					    .append("where DOM.ID_SRV=UDP.UP_DOM  ") 
+					    .append("and PERM.ID_SRV=UDP.UP_PRM  ") 
+					    .append("and UDP.UP_USER = :idUser")
+					  .toString())
 		           .setParameter("idUser", Long.valueOf(sessionId))
 		           .getResultList();
 		   
@@ -2012,10 +2022,11 @@ import org.slf4j.LoggerFactory;
 	    	if(listUsrArmForView==null && sessionId!=null){
 	      	
 	    		lo=entityManager.createNativeQuery(
-	    				"select APP.ID_SRV app_id, APP.FULL_ app_name, ROL.FULL_ role_name "+
-                        "from AC_IS_BSS_T app, AC_ROLES_BSS_T rol, AC_USERS_LINK_KNL_T url "+
-                        "where ROL.UP_IS=APP.ID_SRV and URL.UP_ROLES=ROL.ID_SRV and URL.UP_USERS=? "+
-                        "order by  APP.FULL_, APP.ID_SRV, ROL.FULL_")
+	    				(new StringBuilder("select APP.ID_SRV app_id, APP.FULL_ app_name, ROL.FULL_ role_name "))
+                        .append("from AC_IS_BSS_T app, AC_ROLES_BSS_T rol, AC_USERS_LINK_KNL_T url ")
+                        .append("where ROL.UP_IS=APP.ID_SRV and URL.UP_ROLES=ROL.ID_SRV and URL.UP_USERS=? ")
+                        .append("order by  APP.FULL_, APP.ID_SRV, ROL.FULL_")
+	    				.toString())
 	    				 .setParameter(1, Long.valueOf(sessionId))
 	    				.getResultList();
 
@@ -2083,12 +2094,15 @@ import org.slf4j.LoggerFactory;
 				 log.info("AppUsrManager:getListUsrArmForViewRolesApp:03:"+guuExistList);
 				 
 	    		loApp=entityManager.createNativeQuery(
-	    			"select arm.ID_SRV app_id, arm.FULL_ app_name, ROL.FULL_ role_name " + 
-	    			" from AC_IS_BSS_T arm, AC_ROLES_BSS_T rol " + 
-	    			" where ROL.UP_IS=arm.ID_SRV  "+
-	    			" and ROL.ID_SRV in ("+idsRolesLine+") " + 
-	    			" group by arm.FULL_, arm.ID_SRV, ROL.FULL_ " + 
-	    			" order by arm.FULL_, arm.ID_SRV, ROL.FULL_ ")
+		    			(new StringBuilder("select arm.ID_SRV app_id, arm.FULL_ app_name, ROL.FULL_ role_name "))
+		    			  .append(" from AC_IS_BSS_T arm, AC_ROLES_BSS_T rol ") 
+		    			  .append(" where ROL.UP_IS=arm.ID_SRV  ")
+		    			  .append(" and ROL.ID_SRV in (")
+		    			  .append(idsRolesLine)
+		    			  .append(") ") 
+		    			  .append(" group by arm.FULL_, arm.ID_SRV, ROL.FULL_ ") 
+		    			  .append(" order by arm.FULL_, arm.ID_SRV, ROL.FULL_ ")
+	    				.toString())
 	    				.getResultList();
 
 	    		 listUsrArmForView = new ArrayList<AcApplication>();
@@ -2146,13 +2160,14 @@ import org.slf4j.LoggerFactory;
 	    	if(listUsrGroupForView==null && sessionId!=null){
 	      	
 	    		lo=entityManager.createNativeQuery(
-	    				"select GR.ID_SRV gr_id, GR.FULL_ gr_name, APP.ID_SRV app_id, APP.FULL_ app_name, ROL.FULL_ role_name "+
-                        "from GROUP_USERS_KNL_T gr, LINK_GROUP_USERS_USERS_KNL_T uul, "+
-                        "LINK_GROUP_USERS_ROLES_KNL_T lur, AC_ROLES_BSS_T rol, AC_IS_BSS_T app "+
-                        "where UUL.UP_GROUP_USERS=GR.ID_SRV and UUL.UP_USERS=? "+
-                        "and LUR.UP_GROUP_USERS=GR.ID_SRV and ROL.ID_SRV=LUR.UP_ROLES "+
-                        "and APP.ID_SRV=ROL.UP_IS "+
-                        "order by GR.FULL_, GR.ID_SRV, APP.FULL_, APP.ID_SRV, ROL.FULL_ ")
+	    				(new StringBuilder("select GR.ID_SRV gr_id, GR.FULL_ gr_name, APP.ID_SRV app_id, APP.FULL_ app_name, ROL.FULL_ role_name "))
+                        .append("from GROUP_USERS_KNL_T gr, LINK_GROUP_USERS_USERS_KNL_T uul, ")
+                        .append("LINK_GROUP_USERS_ROLES_KNL_T lur, AC_ROLES_BSS_T rol, AC_IS_BSS_T app ")
+                        .append("where UUL.UP_GROUP_USERS=GR.ID_SRV and UUL.UP_USERS=? ")
+                        .append("and LUR.UP_GROUP_USERS=GR.ID_SRV and ROL.ID_SRV=LUR.UP_ROLES ")
+                        .append("and APP.ID_SRV=ROL.UP_IS ")
+                        .append("order by GR.FULL_, GR.ID_SRV, APP.FULL_, APP.ID_SRV, ROL.FULL_ ")
+	    				.toString())
 	    				.setParameter(1, Long.valueOf(sessionId))
 	    				.getResultList();
 	    		
@@ -2245,8 +2260,8 @@ import org.slf4j.LoggerFactory;
 		   
 		   this.roleList = entityManager.createQuery(
 				   "select o from AcRole o where o.acApplication= :idArm " +
-					(stUm!=null ? " and "+stUm :" ")+
-				   "order by o.roleTitle ")
+					(stUm!=null ? " and "+stUm :" ")
+				   + "order by o.roleTitle ")
 				   .setParameter("idArm", Long.valueOf(idArm))
                    .getResultList();
 		   
@@ -2284,8 +2299,8 @@ import org.slf4j.LoggerFactory;
 			   return this.roleList;
 		   }
 		   this.roleList = entityManager.createQuery(
-				   "select o from AcRole o where o.acApplication= :idArm " +					
-				   "order by o.roleTitle ")
+				   "select o from AcRole o where o.acApplication= :idArm " 
+				   + "order by o.roleTitle ")
 				   .setParameter("idArm", Long.valueOf(idArm))
                    .getResultList();
 		   
@@ -2373,17 +2388,18 @@ import org.slf4j.LoggerFactory;
 			   //static jpa_to_oracle
 			   
 			   List<Object[]> list= entityManager.createNativeQuery(
-					   "select to_char(GR.ID_SRV) idSrv, GR.FULL_ full " + 
-					   "from GROUP_USERS_KNL_T gr " + 
-					   "where GR.ID_SRV  not in (SELECT GR.ID_SRV gr_id " + 
-					   "  FROM GROUP_USERS_KNL_T gr, " + 
-					   "       LINK_GROUP_USERS_ROLES_KNL_T lgru, " + 
-					   "       AC_ROLES_BSS_T rl " + 
-					   " WHERE GR.ID_SRV = LGRU.UP_GROUP_USERS  " + 
-					   " AND LGRU.UP_ROLES = RL.ID_SRV " + 
-					   " and RL.UP_IS not in (:idsArm) " + 
-					   "group by GR.ID_SRV) "+
-					  (stOracle!=null ? " and "+stOracle :" "))
+					   (new StringBuilder("select to_char(GR.ID_SRV) idSrv, GR.FULL_ full "))
+					     .append("from GROUP_USERS_KNL_T gr ") 
+					     .append("where GR.ID_SRV  not in (SELECT GR.ID_SRV gr_id ") 
+					     .append("  FROM GROUP_USERS_KNL_T gr, ") 
+					     .append("       LINK_GROUP_USERS_ROLES_KNL_T lgru, ") 
+					     .append("       AC_ROLES_BSS_T rl ") 
+					     .append(" WHERE GR.ID_SRV = LGRU.UP_GROUP_USERS  ") 
+					     .append(" AND LGRU.UP_ROLES = RL.ID_SRV ") 
+					     .append(" and RL.UP_IS not in (:idsArm) ") 
+					     .append("group by GR.ID_SRV) ")
+					     .append(stOracle!=null ? " and "+stOracle :" ")
+					     .toString())
 					   .setParameter("idsArm", au.getAllowedSys())
 					   .getResultList();
 					 
@@ -2404,8 +2420,8 @@ import org.slf4j.LoggerFactory;
 		   }else{
 			   this.groupList = entityManager.createQuery(
 					   "select o from GroupUsersKnlT o " +
-						(st!=null ? " where "+st :" ")+
-					   " order by o.full ")
+						(st!=null ? " where "+st :" ")
+					   + " order by o.full ")
 					   .getResultList();
 	   		}
 		   
@@ -2415,8 +2431,8 @@ import org.slf4j.LoggerFactory;
 		  if(this.groupList!=null){
 		   
 		  List<GroupUsersKnlT> listUsrGroup=entityManager.createQuery(
-		    		 "select o from GroupUsersKnlT o JOIN o.linkGroupUsersUsersKnlTs o1 " +
-		    		 "where o1.pk.acUser = :acUser ")
+		    		 "select o from GroupUsersKnlT o JOIN o.linkGroupUsersUsersKnlTs o1 " 
+		    		 + "where o1.pk.acUser = :acUser ")
 					 .setParameter("acUser", Long.valueOf(sessionId))
 		      		 .getResultList();
 		   
@@ -2483,16 +2499,16 @@ import org.slf4j.LoggerFactory;
 		   Long appCode = ((LinksMap)Component.getInstance("linksMap",ScopeType.APPLICATION)).getAppCode();
 			
 		   this.ISList = entityManager.createQuery(
-  				   "select o from AcApplication o " +
-  				   "where o.idArm!="+appCode +" "+
-  					(st!=null ? " and "+st :" ")+
-  				   " order by o.name ")
+  				   "select o from AcApplication o " 
+  				   + "where o.idArm!="+appCode +" "+
+  					(st!=null ? " and "+st :" ")
+  				   + " order by o.name ")
   				   .getResultList();
    		 
 		 	
 	   		  List<AcApplication> listUserSys=entityManager.createQuery(
-			    		 "select o from AcApplication o JOIN o.linkAdminUserSys o1 " +
-			    		 "where o1.pk.upUser = :upUser ")
+			    		 "select o from AcApplication o JOIN o.linkAdminUserSys o1 " 
+			    		 + "where o1.pk.upUser = :upUser ")
 						 .setParameter("upUser", Long.valueOf(sessionId))
 			      		 .getResultList();
 	   		  
@@ -2544,15 +2560,15 @@ import org.slf4j.LoggerFactory;
 				        .get("sessionId");
 			   
 			   List<AcApplication> listUserSys=entityManager.createQuery(
-			    		 "select o from AcApplication o JOIN o.linkAdminUserSys o1 " +
-			    		 "where o1.pk.upUser = :upUser ")
+			    		 "select o from AcApplication o JOIN o.linkAdminUserSys o1 " 
+			    		 + "where o1.pk.upUser = :upUser ")
 						 .setParameter("upUser", Long.valueOf(sessionId))
 			      		 .getResultList();
 			   
 			   String isManager = (String) entityManager.createNativeQuery(
-			    		 "select to_char(t1.IS_ACC_ORG_MANAGER) " +
-			    		 "from AC_USERS_KNL_T t1 " +
-			    		 "where t1.ID_SRV = :idUser ")
+			    		 "select to_char(t1.IS_ACC_ORG_MANAGER) " 
+			    		 + "from AC_USERS_KNL_T t1 " 
+			    		 + "where t1.ID_SRV = :idUser ")
 						 .setParameter("idUser", Long.valueOf(sessionId))
 						 .getSingleResult();
 						 
@@ -2631,8 +2647,8 @@ import org.slf4j.LoggerFactory;
 		if(loginUm!=null){
 		  try{
 			  entityManager.createQuery(
-					     "select au from AcUser au " +
-			 		     "where au.login = :login")
+					     "select au from AcUser au " 
+			 		     + "where au.login = :login")
 			 		     .setParameter("login", loginUm)
 			 		     .getSingleResult();
 			  addLoginExist=true;
@@ -2656,9 +2672,9 @@ import org.slf4j.LoggerFactory;
 			  certNum = certNum.replaceAll(" ", "").toUpperCase();
 			  
 			  entityManager.createNativeQuery(
-			      "select 1 from dual "+
-			      "where exists( select 1 from  AC_USERS_KNL_T au where upper(AU.CERTIFICATE) = upper(:certNum)) "+
-			      "or  exists( select 1 from  AC_USERS_CERT_BSS_T  user_cert  where upper(USER_CERT.CERT_NUM) = upper(:certNum) ) ") 
+			      "select 1 from dual "
+			      + "where exists( select 1 from  AC_USERS_KNL_T au where upper(AU.CERTIFICATE) = upper(:certNum)) "
+			      + "or  exists( select 1 from  AC_USERS_CERT_BSS_T  user_cert  where upper(USER_CERT.CERT_NUM) = upper(:certNum) ) ") 
 			  .setParameter("certNum", certNum)   
 			  .getSingleResult();
 			  
@@ -2681,9 +2697,9 @@ import org.slf4j.LoggerFactory;
 		if(login!=null&&!login.trim().equals("")){
 		  try{
 			   entityManager .createQuery(
-					       "select au from AcUser au " +
-			 		       "where au.login = :login "+
-					       "and au.idUser != :idUser ")
+					       "select au from AcUser au " 
+			 		       + "where au.login = :login "
+					       + "and au.idUser != :idUser ")
 			 		     .setParameter("login", login)
 			 		     .setParameter("idUser", idUser) 
 			 		     .getSingleResult();
@@ -2711,9 +2727,9 @@ import org.slf4j.LoggerFactory;
 			  certNum = certNum.replaceAll(" ", "").toUpperCase();
 			  
 			  entityManager.createNativeQuery(
-			      "select 1 from dual "+
-			      "where exists( select 1 from  AC_USERS_KNL_T au where upper(AU.CERTIFICATE) = upper(:certNum) and au.ID_SRV!= :idUser ) "+
-			      "or  exists( select 1 from  AC_USERS_CERT_BSS_T  user_cert  where upper(USER_CERT.CERT_NUM) = upper(:certNum) and USER_CERT.UP_USER!= :idUser ) ") 
+			      "select 1 from dual "
+			      + "where exists( select 1 from  AC_USERS_KNL_T au where upper(AU.CERTIFICATE) = upper(:certNum) and au.ID_SRV!= :idUser ) "
+			      + "or  exists( select 1 from  AC_USERS_CERT_BSS_T  user_cert  where upper(USER_CERT.CERT_NUM) = upper(:certNum) and USER_CERT.UP_USER!= :idUser ) ") 
 			  .setParameter("certNum", certNum) 
 			  .setParameter("idUser", idUser) 
 			  .getSingleResult();
@@ -2837,26 +2853,29 @@ import org.slf4j.LoggerFactory;
 	     //алгоритм установления disabled на привязкке сертификата к пользователю:
 	  
 	     
-	     List<Object[]> applicant_list  = (List<Object[]>) entityManager.createNativeQuery(
-			      
-	    		 "select UC.ID_SRV, UC.ORG_NAME, UC.USER_FIO, UC.USER_POSITION, UC.USER_EMAIL,  " + 
-	    		 "                 UC.CERT_NUM, UC.CERT_DATE, " + 
-	    		 "                case  decode( USER_CERT.CERT_NUM, null, 0, 1) " + 
-	    		 "                    WHEN 0 THEN   case  decode( AU.CERTIFICATE, null, 0, 1) " + 
-	    		 "                                             WHEN 1 THEN  decode(AU.ID_SRV, ?, 0, 1) " + 
-	    		 "                                              ELSE 0 " + 
-	    		 "                                           end " + 
-	    		 "                    ELSE 1 " + 
-	    		 "                end cert_used" + 
-	    		 "                 from UC_CERT_REESTR uc, " + 
-	    		 "                 AC_USERS_KNL_T au, " + 
-	    		 "                 AC_USERS_CERT_BSS_T user_cert  " + 
-	    		 "                 where lower(UC.USER_FIO) like  lower('"+searchStrUm+"') " + 
-	    		 "                 and AU.CERTIFICATE(+)=UC.CERT_NUM " + 
-	    		 "                 and USER_CERT.CERT_NUM(+)=UC.CERT_NUM "+
-	    		 (this.searchOrg!=null&&!"".equals(this.searchOrg.trim()) ? "and lower(UC.ORG_NAME) like  lower('%"+this.searchOrg+"%')" : "")+
-                 (this.searchDep!=null&&!"".equals(this.searchDep.trim()) ? "and lower(UC.USER_POSITION) like  lower('%"+this.searchDep+"%')" : "")+
-                 "order by UC.USER_FIO ")
+	     List<Object[]> applicant_list  = (List<Object[]>) entityManager.createNativeQuery(			      
+	    		 (new StringBuilder("select UC.ID_SRV, UC.ORG_NAME, UC.USER_FIO, UC.USER_POSITION, UC.USER_EMAIL,  "))
+	    		   .append("                 UC.CERT_NUM, UC.CERT_DATE, ") 
+	    		   .append("                case  decode( USER_CERT.CERT_NUM, null, 0, 1) ") 
+	    		   .append("                    WHEN 0 THEN   case  decode( AU.CERTIFICATE, null, 0, 1) ") 
+	    		   .append("                                             WHEN 1 THEN  decode(AU.ID_SRV, ?, 0, 1) ") 
+	    		   .append("                                              ELSE 0 ") 
+	    		   .append("                                           end ") 
+	    		   .append("                    ELSE 1 ") 
+	    		   .append("                end cert_used") 
+	    		   .append("                 from UC_CERT_REESTR uc, ") 
+	    		   .append("                 AC_USERS_KNL_T au, ") 
+	    		   .append("                 AC_USERS_CERT_BSS_T user_cert  ") 
+	    		   .append("                 where lower(UC.USER_FIO) like  lower('")
+	    		   .append(searchStrUm)
+	    		   .append("') ") 
+	    		   .append("                 and AU.CERTIFICATE(+)=UC.CERT_NUM ") 
+	    		   .append("                 and USER_CERT.CERT_NUM(+)=UC.CERT_NUM ")
+	    		   .append(this.searchOrg!=null&&!"".equals(this.searchOrg.trim()) ? "and lower(UC.ORG_NAME) like  lower('%"+this.searchOrg+"%')" : "")
+	    		   .append(this.searchDep!=null&&!"".equals(this.searchDep.trim()) ? "and lower(UC.USER_POSITION) like  lower('%"+this.searchDep+"%')" : "")
+                   .append("order by UC.USER_FIO ")
+                   .toString()
+                  )
 	    		 .setParameter(1, Long.valueOf(sessionIdUm))
                  .setMaxResults(100)
 	    		.getResultList();
@@ -2914,10 +2933,12 @@ import org.slf4j.LoggerFactory;
 		     
 		   List<Object[]> user_cert_list  = (List<Object[]>) entityManager.createNativeQuery(
 				      
-	                "select AUC.ID_SRV, auc.ORG_NAME, auc.USER_FIO, auc.DEP_NAME, " + 
-	                "AUC.CERT_NUM, AUC.CERT_DATE " + 
-	                "from AC_USERS_CERT_BSS_T auc " +
-	                "where AUC.UP_USER = ? ")
+	                (new StringBuilder("select AUC.ID_SRV, auc.ORG_NAME, auc.USER_FIO, auc.DEP_NAME, "))
+	                  .append("AUC.CERT_NUM, AUC.CERT_DATE ") 
+	                  .append("from AC_USERS_CERT_BSS_T auc ") 
+	                  .append("where AUC.UP_USER = ? ")
+				      
+	                .toString())
 	                .setParameter(1, Long.valueOf(sessionId))
 		    		.setMaxResults(100)
 		    		.getResultList();
@@ -3127,8 +3148,8 @@ import org.slf4j.LoggerFactory;
 		    	}else{ 
 		       
 		               entityManager.createNativeQuery(
-							    "delete from AC_USERS_CERT_BSS_T auc " + 
-							    "where AUC.ID_SRV = ? ")
+							    "delete from AC_USERS_CERT_BSS_T auc " 
+							    + "where AUC.ID_SRV = ? ")
 				                .setParameter(1, Long.valueOf(idSrvUserCert))
 		                        .executeUpdate();
 				       
@@ -3294,10 +3315,11 @@ import org.slf4j.LoggerFactory;
 		   String secret = TIDEncodePLBase64.getSecret();
 		   
 		   entityManager.createNativeQuery(
-				   "insert into JOURN_APP_USER_CERTADD_BSS_T (ID_SRV, " +
-		 	     		   "CERT_VALUE,  MODE_EXEC, " +
-		 	     		   "UP_USER_APP, UP_USER, SECRET, COMMENT_APP ) " +
-		 	     		   " values ( JOURN_APP_USER_CERTADD_SEQ.nextval, ?, ?, ?, ?, ?, ? ) ")
+				   (new StringBuilder("insert into JOURN_APP_USER_CERTADD_BSS_T (ID_SRV, "))
+	     		     .append("CERT_VALUE,  MODE_EXEC, ") 
+	     		     .append("UP_USER_APP, UP_USER, SECRET, COMMENT_APP ) ") 
+	     		     .append(" values ( JOURN_APP_USER_CERTADD_SEQ.nextval, ?, ?, ?, ?, ?, ? ) ")
+		   .toString())
 		 	     		  
 		 	     		    .setParameter(1, certByteX)
 		 	     		    .setParameter(2, modeExec)
@@ -3335,8 +3357,8 @@ import org.slf4j.LoggerFactory;
  	        
  	  	     
  	       this.ISSelectListForView=entityManager.createQuery(
-		    		 "select o from AcApplication o JOIN o.linkAdminUserSys o1 " +
-		    		 "where o1.pk.upUser = :upUser ")
+		    		 "select o from AcApplication o JOIN o.linkAdminUserSys o1 " 
+		    		 + "where o1.pk.upUser = :upUser ")
 					 .setParameter("upUser", Long.valueOf(sessionId))
 		      		 .getResultList();
 
@@ -3602,9 +3624,9 @@ public Boolean getAccOrgManager() {
 				        .get("sessionId");
 			   
 			    String isManager = (String) entityManager.createNativeQuery(
-			    		 "select to_char(t1.IS_ACC_ORG_MANAGER) " +
-			    		 "from AC_USERS_KNL_T t1 " +
-			    		 "where t1.ID_SRV = :idUser ")
+			    		 "select to_char(t1.IS_ACC_ORG_MANAGER) " 
+			    		 + "from AC_USERS_KNL_T t1 " 
+			    		 + "where t1.ID_SRV = :idUser ")
 						 .setParameter("idUser", Long.valueOf(sessionId))
 						 .getSingleResult();
 						 

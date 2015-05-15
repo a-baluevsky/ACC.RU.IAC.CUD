@@ -52,9 +52,9 @@ import org.jboss.seam.log.Log;
 			 log.info("ConfLoadDataSettingsManager:getCLDSBeanView:01");
 			 try {
 						 List<String> los = entityManager.createNativeQuery(
-			              "select ST.VALUE_PARAM "+
-	                      "from SETTINGS_KNL_T st "+
-	                      "where ST.SIGN_OBJECT=? ")
+			              "select ST.VALUE_PARAM "
+	                      + "from SETTINGS_KNL_T st "
+	                      + "where ST.SIGN_OBJECT=? ")
 	                      .setParameter(1, param_code)
 	                      .getResultList();
 		    	  
@@ -97,9 +97,9 @@ import org.jboss.seam.log.Log;
 			   
 			  try {
 					  entityManager.createNativeQuery(
-			              "update SETTINGS_KNL_T st " +
-			              "set ST.VALUE_PARAM=? "+
-	                      "where ST.SIGN_OBJECT=? ")
+			              "update SETTINGS_KNL_T st " 
+			              + "set ST.VALUE_PARAM=? "
+	                      + "where ST.SIGN_OBJECT=? ")
 	                      .setParameter(1, beanSettingsASys.getParamActualData())
 	                      .setParameter(2, param_code)
 	                      .executeUpdate();

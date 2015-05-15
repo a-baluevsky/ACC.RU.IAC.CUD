@@ -390,8 +390,8 @@ public class JasperReportService implements Serializable {
     
     public static byte[] downloadReportFileAsync(String requestId, String exportId, String SavedCookie) throws IOException {
     	if(requestId!=null && exportId!=null) {
-	    	String sUrl=urlConcat(csReportSvrRt,"/rest_v2/reportExecutions/"+requestId+
-	        		"/exports/"+exportId+"/outputResource?"+csReportCredStr);
+	    	String sUrl=urlConcat(csReportSvrRt,"/rest_v2/reportExecutions/"+requestId
+	        		+ "/exports/"+exportId+"/outputResource?"+csReportCredStr);
 	    	LOG("downloadReportFileAsync: sUrl:", sUrl);    	
 	        HttpClient httpClient2 = new DefaultHttpClient();
 	        HttpResponse response3 = httpClient2.execute(RestoreCookieGet(sUrl, SavedCookie));

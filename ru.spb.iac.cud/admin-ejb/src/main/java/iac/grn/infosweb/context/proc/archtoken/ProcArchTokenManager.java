@@ -20,6 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
+import javaw.io.Closeable;
+
 import javax.faces.context.FacesContext;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -383,16 +385,10 @@ import org.jboss.seam.log.Log;
 		  }catch (Exception eTkn) {
 				log.error("confLogContrManager:procRun:error:"+eTkn);
 		  }finally{
-			 try {
-				if(os!=null){
-					 os.close();
+				String[] errMsg = new String[]{"confLogContrManager:procRun:ReportDownloadItem:finally"};
+				if(!Closeable.Close(errMsg, os, fi)) {
+					log.error(errMsg);
 				}
-				if(fi!=null) { 
-					fi.close();
-				}				
-			 } catch (Exception eTkn) {
-				log.error("confLogContrManager:procRun:os:error:"+eTkn);
-			 }
 		 }
 	}
 	

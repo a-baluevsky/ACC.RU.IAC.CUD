@@ -187,8 +187,8 @@ import iac.grn.serviceitems.BaseTableItem;
                 AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
 	    		 
  	    		if(au.getAllowedSys()!=null){
- 	    			 auditList = new ArrayList<BaseItem>( entityManager.createQuery("select o from AcRole o "+
- 	    					"where o.acApplication in (:idsArm) "+
+ 	    			 auditList = new ArrayList<BaseItem>( entityManager.createQuery("select o from AcRole o "
+ 	    					+ "where o.acApplication in (:idsArm) "+
  	    					(st!=null ? " and "+st :"")+
  	    				    (orderQueryRol!=null ? orderQueryRol+", o.idRol " : " order by o.idRol "))
  	                           .setFirstResult(firstRow)
@@ -233,16 +233,16 @@ import iac.grn.serviceitems.BaseTableItem;
 	    		 
   	    		 if(au.getAllowedSys()!=null){
 					 auditCount = (Long)entityManager.createQuery(
-							 "select count(ar) " +
-					         "from AcRole ar " +
-					         "where ar.acApplication in (:idsArm) "+
+							 "select count(ar) " 
+					         + "from AcRole ar " 
+					         + "where ar.acApplication in (:idsArm) "+
 					         (st!=null ? " and "+st :""))
 					        .setParameter("idsArm", au.getAllowedSys())
 			                .getSingleResult();
   	    		 }else{
   	    			auditCount = (Long)entityManager.createQuery(
-							 "select count(ar) " +
-					         "from AcRole ar " +
+							 "select count(ar) " 
+					         + "from AcRole ar " +
 					         (st!=null ? " where "+st :""))
 			                .getSingleResult();
   	    		 }
@@ -525,9 +525,9 @@ import iac.grn.serviceitems.BaseTableItem;
  					log.info("rolManager:updUgroupUserAlf:05");
  					 
  					oldLinkList.remove(lguu);
- 					entityManager.createQuery("DELETE FROM AcLinkUserToRoleToRaion gu " +
- 							                  "WHERE gu.pk.acRole=:acRole " +
- 							                  "and gu.pk.acUser=:acUser ")
+ 					entityManager.createQuery("DELETE FROM AcLinkUserToRoleToRaion gu " 
+ 							                  + "WHERE gu.pk.acRole=:acRole " 
+ 							                  + "and gu.pk.acUser=:acUser ")
  					    .setParameter("acRole", Long.valueOf(sessionId))
  					    .setParameter("acUser", user.getBaseId())
  					    .executeUpdate();
@@ -608,14 +608,15 @@ import iac.grn.serviceitems.BaseTableItem;
 		  if(sessionId!=null){
 
 			  List<Object[]> lo=entityManager.createNativeQuery(
-	  			      "select  t1.cnt usr_cnt, t2.cnt gusr_cnt "+
-                      "from " +
-                      "(select count(*) cnt "+
-                      "from AC_USERS_LINK_KNL_T usl "+
-                      "where USL.UP_ROLES=? ) t1, "+
-                      "(select count(*) cnt "+
-                      "from LINK_GROUP_USERS_ROLES_KNL_T gusl "+
-                      "where GUSL.UP_ROLES=? ) t2 ")
+	  			      (new StringBuilder("select  t1.cnt usr_cnt, t2.cnt gusr_cnt "))
+                      .append("from ") 
+                      .append("(select count(*) cnt ")
+                      .append("from AC_USERS_LINK_KNL_T usl ")
+                      .append("where USL.UP_ROLES=? ) t1, ")
+                      .append("(select count(*) cnt ")
+                      .append("from LINK_GROUP_USERS_ROLES_KNL_T gusl ")
+                      .append("where GUSL.UP_ROLES=? ) t2 ")
+	  			      .toString())
 	  				.setParameter(1, Long.valueOf(sessionId))
 	  				.setParameter(2, Long.valueOf(sessionId))
 	  				.getResultList();
@@ -685,11 +686,11 @@ import iac.grn.serviceitems.BaseTableItem;
 	    		//1)при ajax смене АРМ(pidArm!=null)
 	    		//2)при нажатии Сохранить (pidArm!=null)
 	    		listRolRes=new ArrayList<AcAppPage>(
-	    				entityManager.createQuery("select o from AcAppPage o where " +
-	    				"o.idResCollection is empty and "+
-	    				"o.visible=1 and "+
-	    		    	"o.acApplication = :idArm and " +
-	    				"o.idParent2 !=1 and o.pageCode is not null ")
+	    				entityManager.createQuery("select o from AcAppPage o where " 
+	    				+ "o.idResCollection is empty and "
+	    				+ "o.visible=1 and "
+	    		    	+ "o.acApplication = :idArm and " 
+	    				+ "o.idParent2 !=1 and o.pageCode is not null ")
 	    				.setParameter("idArm", (pidArm!=null ? Long.valueOf(pidArm) : rolBeanCrt.getAcApplication()))
 	    				.getResultList());
 	   		   for(AcAppPage aap:listRolRes){
@@ -757,11 +758,11 @@ import iac.grn.serviceitems.BaseTableItem;
 	    		//3)при нажатии Сохранить (pidArm!=null)
 		    	
 	    		listRolResEdit=new ArrayList<AcAppPage>(
-	    				entityManager.createQuery("select o from AcAppPage o where " +
-	    				"o.idResCollection is empty and " +
-	    				"o.visible=1 and "+
-	    				"o.acApplication = :idArm and " +
-	    				"o.idParent2 !=1 and o.pageCode is not null ")
+	    				entityManager.createQuery("select o from AcAppPage o where " 
+	    				+ "o.idResCollection is empty and " 
+	    				+ "o.visible=1 and "
+	    				+ "o.acApplication = :idArm and " 
+	    				+ "o.idParent2 !=1 and o.pageCode is not null ")
 	    				.setParameter("idArm",(pidArm!=null ? Long.valueOf(pidArm) : rolBean.getAcApplication()))
 	    				.getResultList()
 	    				);
@@ -879,26 +880,27 @@ import iac.grn.serviceitems.BaseTableItem;
  	        
  	            
  	       lo=entityManager.createNativeQuery(
-		    	   "select t1.t1_id, t1.t1_login, t1.t1_fio "+
-                   "from (select AU_FULL.ID_SRV t1_id, AU_FULL.LOGIN t1_login, "+  
-                  "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO) t1_fio "+
-                     "from "+ 
-                     "AC_USERS_KNL_T AU_full, "+ 
-                     "AC_USERS_LINK_KNL_T uul, "+ 
-                     "ISP_BSS_T CL_USR_FULL, "+
-                     "(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "+
-                         "from ISP_BSS_T cl_usr, "+ 
-                         "AC_USERS_KNL_T au "+ 
-                        "where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT "+ 
-                        "group by CL_usr.SIGN_OBJECT) t2 "+   
-                     "where  AU_FULL.UP_SIGN_USER=t2.CL_USR_CODE(+) "+ 
-                     "and CL_USR_FULL.ID_SRV(+)=t2.CL_USR_ID "+
-                     "and UUL.UP_USERS= AU_FULL.ID_SRV "+ 
-                     "and UUL.UP_ROLES=? "+
+		    	   (new StringBuilder("select t1.t1_id, t1.t1_login, t1.t1_fio "))
+                   .append("from (select AU_FULL.ID_SRV t1_id, AU_FULL.LOGIN t1_login, ")
+                  .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO) t1_fio ")
+                     .append("from ")
+                     .append("AC_USERS_KNL_T AU_full, ")
+                     .append("AC_USERS_LINK_KNL_T uul, ")
+                     .append("ISP_BSS_T CL_USR_FULL, ")
+                     .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
+                         .append("from ISP_BSS_T cl_usr, ")
+                         .append("AC_USERS_KNL_T au ")
+                        .append("where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT ")
+                        .append("group by CL_usr.SIGN_OBJECT) t2 ")
+                     .append("where  AU_FULL.UP_SIGN_USER=t2.CL_USR_CODE(+) ")
+                     .append("and CL_USR_FULL.ID_SRV(+)=t2.CL_USR_ID ")
+                     .append("and UUL.UP_USERS= AU_FULL.ID_SRV ")
+                     .append("and UUL.UP_ROLES=? ")		    	   
                      //!!!
-					 "and AU_FULL.STATUS !=3 "+
-                     "order by t1_fio "+ 
-                     ") t1 ")
+					   .append("and AU_FULL.STATUS !=3 ")
+                       .append("order by t1_fio ")
+                       .append(") t1 ")
+                     .toString())
 		      		.setParameter(1, Long.valueOf(sessionId))
 				 .getResultList();
  	    	    
@@ -974,8 +976,8 @@ import iac.grn.serviceitems.BaseTableItem;
 	    		if(cau.getAllowedSys()!=null){
 	    			listArm=new ArrayList<AcApplication>(
 	    					entityManager.createQuery(
-	    					"select o from AcApplication o "+
-	    				    "where o.idArm in (:idsArm) " +
+	    					"select o from AcApplication o "
+	    				    + "where o.idArm in (:idsArm) " +
 	    				    (query!=null?" and "+query:" ")+" order by o.name ")
 	       				    .setParameter("idsArm", cau.getAllowedSys())
 	    					.getResultList()
@@ -1017,8 +1019,8 @@ import iac.grn.serviceitems.BaseTableItem;
 	    		if(cau.getAllowedSys()!=null){
 	    			listArmUgroup=new ArrayList<AcApplication>(
 	    					entityManager.createQuery(
-	    					      query+
-	    					      " and o.idArm in (:idsArm) order by o.name" )
+	    					      query
+	    					      + " and o.idArm in (:idsArm) order by o.name" )
 	    					      .setParameter("idsArm", cau.getAllowedSys())
                                   .getResultList()
                             );
@@ -1082,23 +1084,26 @@ import iac.grn.serviceitems.BaseTableItem;
  		   
  		   
    		lo=entityManager.createNativeQuery(
-  		    		"select t1.t1_id, t1.t1_login, t1.t1_fio "+
-                   "from ( "+
-                   "select  AU_FULL.ID_SRV t1_id, AU_FULL.LOGIN t1_login, "+           
-                   "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO) t1_fio "+ 
-                   "from  AC_USERS_KNL_T AU_FULL, "+ 
-                   "ISP_BSS_T cl_usr_full, "+
-                   "(select max(CL_usr.ID_SRV) CL_USR_ID, CL_USR.SIGN_OBJECT CL_USR_CODE "+
-                   "from ISP_BSS_T cl_usr, "+ 
-                   "AC_USERS_KNL_T au "+ 
-                   "where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT "+ 
-                   "group by CL_usr.SIGN_OBJECT) t2 "+ 
-                   "where  AU_FULL.UP_SIGN_USER=t2.CL_USR_CODE(+) "+ 
-                   "and CL_USR_FULL.ID_SRV(+)=t2.CL_USR_ID "+
-                   "and AU_FULL.STATUS!=2 "+ 
-                   ") t1 " +
-                   "where REGEXP_LIKE(UPPER(t1_fio), '^["+alfDiap+"]') "+
-                   "order by t1_fio ")
+		    		(new StringBuilder("select t1.t1_id, t1.t1_login, t1.t1_fio "))
+                    .append("from ( ")
+                    .append("select  AU_FULL.ID_SRV t1_id, AU_FULL.LOGIN t1_login, ")
+                    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO) t1_fio ")
+                    .append("from  AC_USERS_KNL_T AU_FULL, ")
+                    .append("ISP_BSS_T cl_usr_full, ")
+                    .append("(select max(CL_usr.ID_SRV) CL_USR_ID, CL_USR.SIGN_OBJECT CL_USR_CODE ")
+                    .append("from ISP_BSS_T cl_usr, ")
+                    .append("AC_USERS_KNL_T au ")
+                    .append("where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT ")
+                    .append("group by CL_usr.SIGN_OBJECT) t2 ")
+                    .append("where  AU_FULL.UP_SIGN_USER=t2.CL_USR_CODE(+) ")
+                    .append("and CL_USR_FULL.ID_SRV(+)=t2.CL_USR_ID ")
+                    .append("and AU_FULL.STATUS!=2 ")
+                    .append(") t1 ") 
+                    .append("where REGEXP_LIKE(UPPER(t1_fio), '^[")
+ 		    		.append(alfDiap)
+	    		    .append("]') ")
+	                .append("order by t1_fio ")
+ 		    		.toString())
   		    	 .getResultList();
   	    	 
    		
@@ -1119,9 +1124,9 @@ import iac.grn.serviceitems.BaseTableItem;
   	    if(!"UpdFact".equals(remoteAudit)){
  		   
   	    	     List<Long> listUsr=entityManager.createQuery(
-  	 		    		 "select o.idUser from AcUser o,  AcLinkUserToRoleToRaion o1 " +
-  	 		    		 "where o1.pk.acUser = o.idUser " +
-  	 		    		 "and o1.pk.acRole = :acRole ")
+  	 		    		 "select o.idUser from AcUser o,  AcLinkUserToRoleToRaion o1 " 
+  	 		    		 + "where o1.pk.acUser = o.idUser " 
+  	 		    		 + "and o1.pk.acRole = :acRole ")
   	 					 .setParameter("acRole", Long.valueOf(sessionId))
   	 		      		 .getResultList();
   	 		 
@@ -1154,9 +1159,9 @@ import iac.grn.serviceitems.BaseTableItem;
 	    List<Object> lo=null;	    
 		try{			
 			lo=entityManager.createNativeQuery(
-		  			"select rl.sign_object "+
-	                "from AC_ROLES_BSS_T rl "+
-	                "where rl.up_IS=? ")
+		  			"select rl.sign_object "
+	                + "from AC_ROLES_BSS_T rl "
+	                + "where rl.up_IS=? ")
 				.setParameter(1, idArm)
 				.getResultList();	  	
 	 	   StringBuffer sbfResult=new StringBuffer();
@@ -1181,10 +1186,11 @@ import iac.grn.serviceitems.BaseTableItem;
 		if(roleCode!=null){
 		  try{
 			  List<Object> lo=entityManager.createNativeQuery(
-	  			      "select rl.sign_object "+
-                      "from AC_ROLES_BSS_T rl "+
-                      "where rl.up_IS=? "+
-                      "and RL.SIGN_OBJECT=? ")
+	  			      (new StringBuilder("select rl.sign_object "))
+                      .append("from AC_ROLES_BSS_T rl ")
+                      .append("where rl.up_IS=? ")
+                      .append("and RL.SIGN_OBJECT=? ")
+	  			      .toString())
 	  				.setParameter(1, idArm)
 	  				.setParameter(2, roleCode)
 	  				.getResultList();
@@ -1211,11 +1217,12 @@ import iac.grn.serviceitems.BaseTableItem;
 		if(roleCode!=null){
 		  try{
 			  List<Object> lo=entityManager.createNativeQuery(
-			  			        "select rl.sign_object "+
-                                "from AC_ROLES_BSS_T rl "+
-                                "where rl.up_IS=? "+
-                                "and RL.SIGN_OBJECT=? "+
-                                "and RL.ID_SRV !=? ")
+	  			        (new StringBuilder("select rl.sign_object "))
+                        .append("from AC_ROLES_BSS_T rl ")
+                        .append("where rl.up_IS=? ")
+                        .append("and RL.SIGN_OBJECT=? ")
+                        .append("and RL.ID_SRV !=? ")
+	  			        .toString())
 			  				.setParameter(1, idArm)
 			  				.setParameter(2, roleCode)
 			  				.setParameter(3, idRole)

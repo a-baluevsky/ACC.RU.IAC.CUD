@@ -148,8 +148,8 @@ import org.jboss.seam.log.Log;
 			 } else if("count".equals(type)){
 				 log.info("ClOrgList:count:01");
 				 auditCount = (Long)entityManager.createQuery(
-						 "select count(o) " +
-						   "from IspBssT o  ")
+						 "select count(o) " 
+						   + "from IspBssT o  ")
 		                .getSingleResult();
 				 
                log.info("ClOrg:invokeLocal:count:02:"+auditCount);
@@ -359,11 +359,11 @@ import org.jboss.seam.log.Log;
 	    		
 	    		listOrg=entityManager.createQuery(
 	    				"select o from IspBssT o where o.status='A' " +
-	    				//"and o.signObject like '%00000' " +
-	    				"and o.signObject like '%000' " +
-	    				"and ( 1 = :orgAccFlag  or o.signObject = :orgCode) " +
-	    				"and upper(o.full) like upper(:pref) " +
-	    				"order by o.full ")
+	    				//"and o.signObject like '%00000' " 
+	    				+ "and o.signObject like '%000' " 
+	    				+ "and ( 1 = :orgAccFlag  or o.signObject = :orgCode) " 
+	    				+ "and upper(o.full) like upper(:pref) " 
+	    				+ "order by o.full ")
 	    				.setParameter("pref", "%"+pref+"%")
 	    				.setParameter("orgAccFlag", cau.getIsAccOrgManagerValue() ? -1 : 1)
 	    				.setParameter("orgCode", cau.getUpSign()!=null? cau.getUpSign():"")
@@ -391,12 +391,13 @@ import org.jboss.seam.log.Log;
 	    		AcUser  cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
 	    		
 	    		listOrg=new ArrayList<IspBssT>(entityManager.createQuery(
-	    				"select o from IspBssT o where o.status='A' " +
-	    				"and o.signObject like '%00000' " +
-	    				"and ( 1 = :orgAccFlag  or o.signObject = :orgCode) " +
-	    			//	"and o.full like '"+pref+"%' " +
-	    				"and upper(o.full) like upper(:pref) " +
-	    				"order by o.full ")
+	    				(new StringBuilder("select o from IspBssT o where o.status='A' "))
+	    				  .append("and o.signObject like '%00000' ") 
+	    				  .append("and ( 1 = :orgAccFlag  or o.signObject = :orgCode) ")	    				
+	    			//	"and o.full like '"+pref+"%' " 
+	    				  .append("and upper(o.full) like upper(:pref) ") 
+	    				  .append("order by o.full ")	    				
+	    				.toString())
 	    				.setParameter("pref", pref+"%")
 	    				.setParameter("orgAccFlag", cau.getIsAccOrgManagerValue() ? -1 : 1)
 	    				.setParameter("orgCode", cau.getUpSign()!=null? cau.getUpSign():"")
@@ -492,8 +493,8 @@ import org.jboss.seam.log.Log;
 		     log.info("forViewAutocomplete:signObject:"+signObject);
 		     if(signObject!=null){
 		    	 IspBssT ao = (IspBssT)entityManager.createQuery(
-		    				"select o from IspBssT o where o.status='A' " +
-		    				"and o.signObject = :signObject ")
+		    				"select o from IspBssT o where o.status='A' " 
+		    				+ "and o.signObject = :signObject ")
 		    		    	.setParameter("signObject", signObject)
 		    		    	.getSingleResult();
 		    	
@@ -510,8 +511,8 @@ import org.jboss.seam.log.Log;
 		     log.info("forViewAutocomplete:signObject:"+signObject);
 		     if(signObject!=null){
 		    	 IspBssT ao = (IspBssT)entityManager.createQuery(
-		    				"select o from IspBssT o where o.status='A' " +
-		    				"and o.signObject = :signObject ")
+		    				"select o from IspBssT o where o.status='A' " 
+		    				+ "and o.signObject = :signObject ")
 		    		    	.setParameter("signObject", signObject)
 		    		    	.getSingleResult();
 		    		 

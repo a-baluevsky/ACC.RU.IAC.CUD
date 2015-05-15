@@ -157,9 +157,9 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
        
        try{
     	  List<AcUsersKnlT>  app_user_list = entityManager
-    			  .createQuery("select t1 from AcUsersKnlT t1 " +
-    			  		       "where t1.login = :login " +
-    			  		       "and t1.password = :password ")
+    			  .createQuery("select t1 from AcUsersKnlT t1 " 
+    			  		       + "where t1.login = :login " 
+    			  		       + "and t1.password = :password ")
     			  		       .setParameter("login", login)
     			  		       .setParameter("password", password)
     			  .getResultList();
@@ -568,8 +568,8 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
 		        
 		        
 		        //external passive auth
-		        String samlDestination = logout.getDestination().toString()+
-		        		                 "?logoutBackUrl="+URLEncoder.encode(logoutBackUrl, "utf-8");
+		        String samlDestination = logout.getDestination().toString()
+		        		                 + "?logoutBackUrl="+URLEncoder.encode(logoutBackUrl, "utf-8");
 		        
 		        logout.setDestination(URI.create(samlDestination));		        
 		        
@@ -638,10 +638,10 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
 		    	   throw new IllegalArgumentException("passwordEncryptBase64, secretKeyBase64, ivBase64 can't be null!");
 		   }
 		       
-	      	result="?"+login_key+"="+URLEncoder.encode(login, "UTF-8")+
-	        	   "&"+password_encrypt_key+"="+URLEncoder.encode(passwordEncryptBase64, "UTF-8")+
-	        	   "&"+secret_key_key+"="+URLEncoder.encode(secretKeyBase64, "UTF-8")+
-	        	   "&"+initialization_vector_key+"="+URLEncoder.encode(ivBase64, "UTF-8");
+	      	result="?"+login_key+"="+URLEncoder.encode(login, "UTF-8")
+	        	   + "&"+password_encrypt_key+"="+URLEncoder.encode(passwordEncryptBase64, "UTF-8")
+	        	   + "&"+secret_key_key+"="+URLEncoder.encode(secretKeyBase64, "UTF-8")
+	        	   + "&"+initialization_vector_key+"="+URLEncoder.encode(ivBase64, "UTF-8");
 	        		
 	   }catch(Exception e){
 			LOGGER.error("getSAMLDestination:error:"+e);

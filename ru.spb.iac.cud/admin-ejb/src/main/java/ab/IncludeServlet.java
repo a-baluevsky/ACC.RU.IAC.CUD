@@ -1,7 +1,10 @@
 package ab;
 
+import javaw.io.Closeable;
+
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,6 +17,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.log.Log;
 
@@ -21,8 +25,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 
+import javaw.util.ArrayList;
+
+
 public class IncludeServlet extends HttpServlet {
-   @Logger   private Log log;
+   @Logger private static Log log;
    
    private String sPathLastCache=null;
     static   Random rnd = new Random((new Date()).getSeconds()*(new Date()).getHours());
@@ -50,21 +57,41 @@ public class IncludeServlet extends HttpServlet {
                 targetLocation.mkdir();
             }
             File[] files = sourceLocation.listFiles();
+            if(files!=null)
             for(File file:files)
                copyFile(file.getAbsolutePath(), targetLocation+"/"+file.getName());
         }
     }
-    public static void copyFile(String fileSrc , String fileDst) throws IOException {
-        FileInputStream in = new FileInputStream(fileSrc);
-        FileOutputStream out = new FileOutputStream(fileDst);
-        // Copy the bits from input stream to output stream
-        byte[] buf = new byte[1024];
-        int len;
-        while ((len = in.read(buf)) > 0) {
-            out.write(buf, 0, len);
-        }
-        in.close();
-        out.close();       
+
+    
+    public static void copyFile(String fileSrc , String fileDst) {
+
+        FileInputStream in = null;
+        FileOutputStream out = null;
+		try {
+			in = new FileInputStream(fileSrc);
+			out = new FileOutputStream(fileDst);
+	        // Copy the bits from input stream to output stream
+	        byte[] buf = new byte[1024];
+	        int len;
+	        while ((len = in.read(buf)) > 0) {
+	            out.write(buf, 0, len);
+	        }
+	        in.close();
+	        out.close(); 			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			String[] errMsg = new String[]{"copyFile error:"};
+			if(!Closeable.Close(errMsg, in, out)) {
+				log.info(errMsg);
+			}
+		}
+      
     }
        
    // Returns:
@@ -110,6 +137,7 @@ public class IncludeServlet extends HttpServlet {
          //out.write("ServletPath: "+ServletPath+"<br/>");
          //out.write("searching index file @: "+sSrchPath+"<br/>");
          File[] files = (new File(sSrchPath)).listFiles();
+         	if(files!=null)
             for(File file:files) {
                String sFn = file.getName();
                //out.write("probing file: "+sFn+"<br/>");

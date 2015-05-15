@@ -141,8 +141,8 @@ import java.util.Set;
 				 
 				 log.info("PermList:count:01");
 				 auditCount = (Long)entityManager.createQuery(
-						 "select count(o) " +
-				         "from AcPermissionsList o ")
+						 "select count(o) " 
+				         + "from AcPermissionsList o ")
 		                .getSingleResult();
 				 
                log.info("Perm:invokeLocal:count:02:"+auditCount);

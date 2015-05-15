@@ -158,8 +158,8 @@ import org.jboss.seam.log.Log;
 			 } else if("count".equals(type)){
 				 log.info("UgroupList:count:01");
 				 auditCount = (Long)entityManager.createQuery(
-						 "select count(o) " +
-				         "from GroupUsersKnlT o ")
+						 "select count(o) " 
+				         + "from GroupUsersKnlT o ")
 		                .getSingleResult();
 				 
                log.info("Ugroup:invokeLocal:count:02:"+auditCount);
@@ -215,15 +215,16 @@ import org.jboss.seam.log.Log;
    		   
    			//список ИС в группе, которых нет в привязке к пользователю  
 		    List<Object> list= entityManager.createNativeQuery(
-                        "SELECT RL.UP_IS " + 
-                        "  FROM GROUP_USERS_KNL_T gr, " + 
-                        "       LINK_GROUP_USERS_ROLES_KNL_T lgru, " + 
-                        "       AC_ROLES_BSS_T rl " + 
-                        " WHERE GR.ID_SRV = LGRU.UP_GROUP_USERS  " + 
-                        " AND LGRU.UP_ROLES = RL.ID_SRV " + 
-                        " and GR.ID_SRV = :idGr " + 
-                        " and RL.UP_IS not in (:idsArm) " + 
-                        "group by RL.UP_IS")
+                    (new StringBuilder("SELECT RL.UP_IS "))
+                    .append("  FROM GROUP_USERS_KNL_T gr, ") 
+                    .append("       LINK_GROUP_USERS_ROLES_KNL_T lgru, ") 
+                    .append("       AC_ROLES_BSS_T rl ") 
+                    .append(" WHERE GR.ID_SRV = LGRU.UP_GROUP_USERS  ") 
+                    .append(" AND LGRU.UP_ROLES = RL.ID_SRV ") 
+                    .append(" and GR.ID_SRV = :idGr ") 
+                    .append(" and RL.UP_IS not in (:idsArm) ") 
+                    .append("group by RL.UP_IS")
+                  .toString())
                       .setParameter("idGr", idGr)
                       .setParameter("idsArm", au.getAllowedSys())
                       .getResultList();
@@ -424,9 +425,9 @@ import org.jboss.seam.log.Log;
 			                	guuExistList.remove(au);
 			                	
 			                	entityManager.createQuery(
-			                		"delete from LinkGroupUsersRolesKnlT lgu " +
-			                		"where lgu.pk.groupUser = :groupUser " +
-			                		"and lgu.pk.acRole = :acRole ")
+			                		"delete from LinkGroupUsersRolesKnlT lgu " 
+			                		+ "where lgu.pk.groupUser = :groupUser " 
+			                		+ "and lgu.pk.acRole = :acRole ")
 			                	.setParameter("groupUser", Long.valueOf(sessionId))
 			                	.setParameter("acRole", ((AcRole)rol).getIdRol())
 			                	.executeUpdate();
@@ -546,22 +547,23 @@ import org.jboss.seam.log.Log;
     	if(this.usrList==null){
     	
     		lo=entityManager.createNativeQuery(
-   		    		"select t1.t1_id, t1.t1_login, t1.t1_fio "+
-                    "from ( "+
-                    "select  AU_FULL.ID_SRV t1_id, AU_FULL.LOGIN t1_login, "+           
-                    "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO) t1_fio "+ 
-                    "from  AC_USERS_KNL_T AU_FULL, "+ 
-                    "ISP_BSS_T cl_usr_full, "+
-                    "(select max(CL_usr.ID_SRV) CL_USR_ID, CL_USR.SIGN_OBJECT CL_USR_CODE "+
-                    "from ISP_BSS_T cl_usr, "+ 
-                    "AC_USERS_KNL_T au "+ 
-                    "where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT "+ 
-                    "group by CL_usr.SIGN_OBJECT) t2 "+ 
-                    "where  AU_FULL.UP_SIGN_USER=t2.CL_USR_CODE(+) "+ 
-                    "and CL_USR_FULL.ID_SRV(+)=t2.CL_USR_ID "+
-                    "and AU_FULL.STATUS!=2 "+ 
-                    ") t1 " +
-                    "order by t1_fio ")
+   		    		(new StringBuilder("select t1.t1_id, t1.t1_login, t1.t1_fio "))
+                    .append("from ( ")
+                    .append("select  AU_FULL.ID_SRV t1_id, AU_FULL.LOGIN t1_login, ")
+                    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO) t1_fio ")
+                    .append("from  AC_USERS_KNL_T AU_FULL, ")
+                    .append("ISP_BSS_T cl_usr_full, ")
+                    .append("(select max(CL_usr.ID_SRV) CL_USR_ID, CL_USR.SIGN_OBJECT CL_USR_CODE ")
+                    .append("from ISP_BSS_T cl_usr, ")
+                    .append("AC_USERS_KNL_T au ")
+                    .append("where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT ")
+                    .append("group by CL_usr.SIGN_OBJECT) t2 ")
+                    .append("where  AU_FULL.UP_SIGN_USER=t2.CL_USR_CODE(+) ")
+                    .append("and CL_USR_FULL.ID_SRV(+)=t2.CL_USR_ID ")
+                    .append("and AU_FULL.STATUS!=2 ")
+                    .append(") t1 ") 
+                    .append("order by t1_fio ")
+ 		    		.toString())
    		    	 .getResultList();
    	          
    	       this.usrList=new ArrayList<AcUser>();
@@ -611,8 +613,8 @@ import org.jboss.seam.log.Log;
 	        
 	        if(!"UpdFact".equals(remoteAudit)){
 		      this.usrSelectEditList=new ArrayList<String>(entityManager.createQuery(
-		    		"select o.pk.acUser from LinkGroupUsersUsersKnlT o " +
-		      		"where o.pk.groupUser = :sessionId ")
+		    		"select o.pk.acUser from LinkGroupUsersUsersKnlT o " 
+		      		+ "where o.pk.groupUser = :sessionId ")
 		      		.setParameter("sessionId", Long.valueOf(sessionId))
 				 .getResultList());
 	    	}
@@ -650,26 +652,27 @@ import org.jboss.seam.log.Log;
   	       
   	        
   	       loUgr=entityManager.createNativeQuery(
- 		    		"select t1.t1_id, t1.t1_login, t1.t1_fio "+
-                    "from (select AU_FULL.ID_SRV t1_id, AU_FULL.LOGIN t1_login, "+  
-                   "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO) t1_fio "+
-                      "from "+ 
-                      "AC_USERS_KNL_T AU_full, "+ 
-                      "LINK_GROUP_USERS_USERS_KNL_T uul, "+ 
-                      "ISP_BSS_T CL_USR_FULL, "+
-                      "(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "+ 
-                          "from ISP_BSS_T cl_usr, "+ 
-                          "AC_USERS_KNL_T au "+ 
-                         "where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT "+ 
-                         "group by CL_usr.SIGN_OBJECT) t2 "+   
-                      "where  AU_FULL.UP_SIGN_USER=t2.CL_USR_CODE(+) "+ 
-                      "and CL_USR_FULL.ID_SRV(+)=t2.CL_USR_ID "+
-                      "and UUL.UP_USERS= AU_FULL.ID_SRV "+ 
-                      "and UUL.UP_GROUP_USERS=? "+ 
+		    		(new StringBuilder("select t1.t1_id, t1.t1_login, t1.t1_fio "))
+                    .append("from (select AU_FULL.ID_SRV t1_id, AU_FULL.LOGIN t1_login, ")
+                   .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO) t1_fio ")
+                      .append("from ")
+                      .append("AC_USERS_KNL_T AU_full, ")
+                      .append("LINK_GROUP_USERS_USERS_KNL_T uul, ")
+                      .append("ISP_BSS_T CL_USR_FULL, ")
+                      .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
+                          .append("from ISP_BSS_T cl_usr, ")
+                          .append("AC_USERS_KNL_T au ")
+                         .append("where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT ")
+                         .append("group by CL_usr.SIGN_OBJECT) t2 ")
+                      .append("where  AU_FULL.UP_SIGN_USER=t2.CL_USR_CODE(+) ")
+                      .append("and CL_USR_FULL.ID_SRV(+)=t2.CL_USR_ID ")
+                      .append("and UUL.UP_USERS= AU_FULL.ID_SRV ")
+                      .append("and UUL.UP_GROUP_USERS=? ")
                      //!!!
-					 "and AU_FULL.STATUS !=3 "+
-                      "order by t1_fio "+ 
-                      ") t1")
+					    .append("and AU_FULL.STATUS !=3 ")
+                        .append("order by t1_fio ")
+                        .append(") t1")
+                      .toString())
  		      		.setParameter(1, Long.valueOf(sessionId))
  				 .getResultList();
   	    		         
@@ -741,15 +744,15 @@ import org.jboss.seam.log.Log;
  		   this.roleList = new ArrayList<BaseItem> ( 
  				   entityManager.createQuery(
  				   "select o from AcRole o where o.acApplication= :idArm " +
- 					(st!=null ? " and "+st :" ")+
- 				   "order by o.roleTitle ")
+ 					(st!=null ? " and "+st :" ")
+ 				   + "order by o.roleTitle ")
  				   .setParameter("idArm", Long.valueOf(idArm))
                     .getResultList()
                   ); 		   
  		   List<AcRole> listUsrRol=entityManager.createQuery(
-		    		 "select o from AcRole o,  LinkGroupUsersRolesKnlT o1 " +
-		    		 "where o1.pk.acRole = o.idRol " +
-		    		 "and o1.pk.groupUser = :groupUser ")
+		    		 "select o from AcRole o,  LinkGroupUsersRolesKnlT o1 " 
+		    		 + "where o1.pk.acRole = o.idRol " 
+		    		 + "and o1.pk.groupUser = :groupUser ")
 					 .setParameter("groupUser", Long.valueOf(sessionId))
 		      		 .getResultList();
  		   
@@ -795,11 +798,12 @@ import org.jboss.seam.log.Log;
 	    	if(listGroupArmForView==null && sessionId!=null){
 	      	
 	    		lo=entityManager.createNativeQuery(
-	    				"select  APP.ID_SRV app_id, APP.FULL_ app_name, ROL.FULL_ role_name "+
-                        "from LINK_GROUP_USERS_ROLES_KNL_T lur, AC_ROLES_BSS_T rol, AC_IS_BSS_T app "+
-                        "where  LUR.UP_GROUP_USERS=? and ROL.ID_SRV=LUR.UP_ROLES "+
-                        "and APP.ID_SRV=ROL.UP_IS "+
-                        "order by  APP.FULL_, APP.ID_SRV, ROL.FULL_ ")
+	    				(new StringBuilder("select  APP.ID_SRV app_id, APP.FULL_ app_name, ROL.FULL_ role_name "))
+                        .append("from LINK_GROUP_USERS_ROLES_KNL_T lur, AC_ROLES_BSS_T rol, AC_IS_BSS_T app ")
+                        .append("where  LUR.UP_GROUP_USERS=? and ROL.ID_SRV=LUR.UP_ROLES ")
+                        .append("and APP.ID_SRV=ROL.UP_IS ")
+                        .append("order by  APP.FULL_, APP.ID_SRV, ROL.FULL_ ")
+	    				.toString())
 	    				.setParameter(1, Long.valueOf(sessionId))
 	    				.getResultList();
 	    		

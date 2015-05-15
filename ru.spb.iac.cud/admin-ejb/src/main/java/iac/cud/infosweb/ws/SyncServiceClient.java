@@ -84,29 +84,29 @@ import ru.spb.iac.cud.services.sync.SyncServices;
 		   functions.add(func);
 		   
 		   func = new Function();
-		   func.setCode(ResourcesMap.USER.getCode()+
-		   ":"+ActionsMap.UPDATE.getCode());
+		   func.setCode(ResourcesMap.USER.getCode()
+		   + ":"+ActionsMap.UPDATE.getCode());
 		   func.setName("Редактирование пользователя");
 		   func.setDescription("Редактирование пользователя");
 		   functions.add(func);
 		   
 		   func = new Function();
-		   func.setCode(ResourcesMap.USER.getCode()+
-		   ":"+ActionsMap.UPDATE_ROLE.getCode());
+		   func.setCode(ResourcesMap.USER.getCode()
+		   + ":"+ActionsMap.UPDATE_ROLE.getCode());
 		   func.setName("Редактирование ролей пользователя");
 		   func.setDescription("Редактирование ролей пользователя");
 		   functions.add(func);
 		   
 		   func = new Function();
-		   func.setCode(ResourcesMap.USER.getCode()+
-		   ":"+ActionsMap.UPDATE_GROUP.getCode());
+		   func.setCode(ResourcesMap.USER.getCode()
+		   + ":"+ActionsMap.UPDATE_GROUP.getCode());
 		   func.setName("Редактирование групп пользователя");
 		   func.setDescription("Редактирование групп пользователя");
 		   functions.add(func);
 		   
 		   func = new Function();
-		   func.setCode(ResourcesMap.USER.getCode()+
-		   ":"+ActionsMap.DELETE.getCode());
+		   func.setCode(ResourcesMap.USER.getCode()
+		   + ":"+ActionsMap.DELETE.getCode());
 		   func.setName("Удаление пользователя");
 		   func.setDescription("Удаление пользователя"); 
 		   functions.add(func);
@@ -120,15 +120,15 @@ import ru.spb.iac.cud.services.sync.SyncServices;
 		   functions.add(func);
 		   
 		   func = new Function();
-		   func.setCode(ResourcesMap.ROLE.getCode()+
-		   ":"+ActionsMap.UPDATE.getCode());
+		   func.setCode(ResourcesMap.ROLE.getCode()
+		   + ":"+ActionsMap.UPDATE.getCode());
 		   func.setName("Редактирование роли");
 		   func.setDescription("Редактирование роли"); 
 		   functions.add(func);
 		   
 		   func = new Function();
-		   func.setCode(ResourcesMap.ROLE.getCode()+
-		   ":"+ActionsMap.DELETE.getCode()); 
+		   func.setCode(ResourcesMap.ROLE.getCode()
+		   + ":"+ActionsMap.DELETE.getCode()); 
 		   func.setName("Удаление роли");
 		   func.setDescription("Удаление роли");
 		   functions.add(func);

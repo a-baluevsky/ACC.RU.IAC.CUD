@@ -173,8 +173,8 @@ import javaw.util.SerializableList;
 			 } else if("count".equals(type)){
 				 log.info("CLUserList:count:01");
 				 auditCount = (Long)entityManager.createQuery(
-						 "select count(o) " +
-				         "from IspTempBssT o  ")
+						 "select count(o) " 
+				         + "from IspTempBssT o  ")
 		                .getSingleResult();
 				 
                log.info("invokeLocal:count:02:"+auditCount);
@@ -283,8 +283,8 @@ import javaw.util.SerializableList;
 	       int seancact = Integer.parseInt(idSess);
 		   
 		   entityManager.createNativeQuery(
-				   "INSERT INTO JOURN_ISP_LOAD (ID_SRV, LOAD_START, CREATED, CREATOR) "+
-		   		   "VALUES ("+seancact+", sysdate, sysdate, "+au.getIdUser()+" ) ")
+				   "INSERT INTO JOURN_ISP_LOAD (ID_SRV, LOAD_START, CREATED, CREATOR) "
+		   		   + "VALUES ("+seancact+", sysdate, sysdate, "+au.getIdUser()+" ) ")
 			.executeUpdate();
 		  
 		
@@ -434,11 +434,13 @@ import javaw.util.SerializableList;
 			  //1 - успех
 			  //0 или null- не успех
 			  String clVerTemp = (String) entityManager.createNativeQuery(
-				   "select to_char(max(JIL.CLASSIF_VERSION)) cl_ver "+
-                   "from JOURN_ISP_LOAD jil, "+
-                //   "ISP_TEST_BSS_T it "+
-                   "ISP_BSS_T it "+
-                   "where JIL.ID_SRV=IT.UP_ISP_LOAD  ")
+					   (new StringBuilder("select to_char(max(JIL.CLASSIF_VERSION)) cl_ver "))
+	                     .append("from JOURN_ISP_LOAD jil, ")
+					   
+                //   "ISP_TEST_BSS_T it "
+	                     .append("ISP_BSS_T it ")
+	                     .append("where JIL.ID_SRV=IT.UP_ISP_LOAD  ")
+                   .toString())
 		   		.getSingleResult();
 			
 			  if(clVerTemp!=null&&!clVerTemp.trim().isEmpty()){
@@ -493,9 +495,9 @@ import javaw.util.SerializableList;
          try{
 			  
         	 ao = entityManager.createQuery(
-				   "select t from JournIspLoad t "+
-		   		   "where t.idSrv = "+
-		   		   "(select max(t1.idSrv) from JournIspLoad t1 ) ", 
+				   "select t from JournIspLoad t "
+		   		   + "where t.idSrv = "
+		   		   + "(select max(t1.idSrv) from JournIspLoad t1 ) ", 
 		   		JournIspLoad.class)
 		   		.getSingleResult();
 			  
@@ -539,11 +541,12 @@ import javaw.util.SerializableList;
    			  //1 - успех
    			  //0 или null- не успех
         		String clVerTemp = (String) entityManager.createNativeQuery(
-   				   "select to_char(max(JIL.CLASSIF_VERSION)) cl_ver "+
-                      "from JOURN_ISP_LOAD jil, "+
-                    //  "ISP_TEST_BSS_T it "+
-                      "ISP_BSS_T it "+
-                      "where JIL.ID_SRV=IT.UP_ISP_LOAD  ")
+        				   (new StringBuilder("select to_char(max(JIL.CLASSIF_VERSION)) cl_ver "))
+                           .append("from JOURN_ISP_LOAD jil, ")      				   
+                    //  "ISP_TEST_BSS_T it "
+                           .append("ISP_BSS_T it ")
+                           .append("where JIL.ID_SRV=IT.UP_ISP_LOAD  ")
+                      .toString())
    		   		.getSingleResult();
    			  
    			 if(clVerTemp!=null&&!clVerTemp.trim().isEmpty()){
@@ -559,10 +562,11 @@ import javaw.util.SerializableList;
  			  //1 - успех
  			  //0 или null- не успех
  			  String clVerTemp = (String) entityManager.createNativeQuery(
- 				   "select to_char(max(JIL.CLASSIF_VERSION)) cl_ver "+
-                    "from JOURN_ISP_LOAD jil, "+
-                    "ISP_TEMP_BSS_T it "+
-                    "where JIL.ID_SRV=IT.UP_ISP_LOAD  ")
+ 	 				   (new StringBuilder("select to_char(max(JIL.CLASSIF_VERSION)) cl_ver "))
+                       .append("from JOURN_ISP_LOAD jil, ")
+                       .append("ISP_TEMP_BSS_T it ")
+                       .append("where JIL.ID_SRV=IT.UP_ISP_LOAD  ")
+  				   .toString())
  		   		.getSingleResult();
  			 
  			  if(clVerTemp!=null&&!clVerTemp.trim().isEmpty()){
@@ -708,11 +712,11 @@ import javaw.util.SerializableList;
 	    	if(listUsrAutocomplete==null){
 	    		log.info("Usr:autocomplete:02");
 	    		listUsrAutocomplete=entityManager.createQuery(
-	    				"select o from IspBssT o where o.status='A' and o.signObject not like '%000' " +
-	    				"and upper(o.fio) like upper(:pref) " +
-	    				//"and substr(o.signObject,1,3) = :codeOrg " +
-	    				"and o.signObject like :codeOrg " +
-	    				"order by o.fio ")
+	    				"select o from IspBssT o where o.status='A' and o.signObject not like '%000' " 
+	    				+ "and upper(o.fio) like upper(:pref) " +
+	    				//"and substr(o.signObject,1,3) = :codeOrg " 
+	    				+ "and o.signObject like :codeOrg " 
+	    				+ "order by o.fio ")
 	    				.setParameter("pref", pref+"%")
 	    				//.setParameter("codeOrg", codeOrg)
 	    				.setParameter("codeOrg", codeOrg+"%")
@@ -745,11 +749,12 @@ import javaw.util.SerializableList;
 	    	if(listUsrAutocomplete==null){
 	    		log.info("Usr:autocomplete:02");
 	    		listUsrAutocomplete=new ArrayList<IspBssT>(entityManager.createQuery(
-	    				"select o from IspBssT o where o.status='A' and o.signObject not like '%000' " +
-	    			//	"and o.full like '"+pref+"%' " +
-	    				"and upper(o.fio) like upper(:pref) " +
-	    				"and substr(o.signObject,1,3) = :codeOrg " +
-	    				"order by o.fio ")
+	    				(new StringBuilder("select o from IspBssT o where o.status='A' and o.signObject not like '%000' "))
+	    				  .append("and upper(o.fio) like upper(:pref) ")	    				
+	    			//	"and o.full like '"+pref+"%' " 
+	    				  .append("and substr(o.signObject,1,3) = :codeOrg ") 
+	    				  .append("order by o.fio ")	    				
+	    				.toString())
 	    				.setParameter("pref", pref+"%")
 	    				.setParameter("codeOrg", codeOrg)
 	    				.getResultList());
@@ -773,16 +778,16 @@ import javaw.util.SerializableList;
 		     log.info("forViewAutocomplete:signObject:"+signObjectClUsr);
 		     if(signObjectClUsr!=null){
 		    	 IspBssT ao = (IspBssT)entityManager.createQuery(
-		    				"select o from IspBssT o where o.status='A' " +
-		    				"and o.signObject = :signObject ")
+		    				"select o from IspBssT o where o.status='A' " 
+		    				+ "and o.signObject = :signObject ")
 		    		    	.setParameter("signObject", signObjectClUsr)
 		    		    	.getSingleResult();
 		    	 
 		    	   try{
 		    		 
 		    	     IspBssT ao_dep = (IspBssT)entityManager.createQuery(
-		    				  "select o from IspBssT o where o.status='A' " +
-		    				  "and o.signObject = :signObject ")
+		    				  "select o from IspBssT o where o.status='A' " 
+		    				  + "and o.signObject = :signObject ")
 		    		    	  .setParameter("signObject", signObjectClUsr.substring(0, 5)+"000")
 		    		    	  .getSingleResult();
 		    	    
@@ -810,16 +815,16 @@ import javaw.util.SerializableList;
 		     log.info("forViewAutocomplete:signObject:"+signObjectClUsr);
 		     if(signObjectClUsr!=null){
 		    	 IspBssT ao = (IspBssT)entityManager.createQuery(
-		    				"select o from IspBssT o where o.status='A' " +
-		    				"and o.signObject = :signObject ")
+		    				"select o from IspBssT o where o.status='A' " 
+		    				+ "and o.signObject = :signObject ")
 		    		    	.setParameter("signObject", signObjectClUsr)
 		    		    	.getSingleResult();
 		    	 
 		    	   try{
 		    		 
 		    	     IspBssT ao_dep = (IspBssT)entityManager.createQuery(
-		    				  "select o from IspBssT o where o.status='A' " +
-		    				  "and o.signObject = :signObject ")
+		    				  "select o from IspBssT o where o.status='A' " 
+		    				  + "and o.signObject = :signObject ")
 		    		    	  .setParameter("signObject", signObjectClUsr.substring(0, 5)+"000")
 		    		    	  .getSingleResult();
 		    	    

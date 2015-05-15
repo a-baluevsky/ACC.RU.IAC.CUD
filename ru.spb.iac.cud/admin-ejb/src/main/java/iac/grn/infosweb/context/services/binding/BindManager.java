@@ -243,72 +243,74 @@ import javax.persistence.NoResultException;
               
       
 					 lo=entityManager.createNativeQuery(
-					"select t1.t1_id, t1.t1_login, t1.t1_cert, t1.t1_usr_code, t1.t1_fio, " +
-					       "t1.t1_tel, t1.t1_email,t1.t1_pos, t1.t1_dep_name, t1.t1_org_code, " +
-					       "t1.t1_org_name, t1.t1_org_adr, t1.t1_org_tel, t1.t1_start, t1.t1_end, " +
-					       "t1.t1_status, t1.t1_crt_date, t1.t1_crt_usr_login, t1.t1_upd_date, t1.t1_upd_usr_login, "+
-					       "t1.t1_dep_code, t1.t1_org_status, t1.t1_usr_status, t1.t1_dep_status, t1.t1_iogv_bind_type, " +
-					       "t1_bin_flag "+ 
-					"from( "+
-					"select AU_FULL.ID_SRV t1_id, AU_FULL.login t1_login, AU_FULL.CERTIFICATE t1_cert, t2.CL_USR_CODE t1_usr_code, "+
-					 "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_fio, "+  
-					  "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.PHONE, CL_USR_FULL.PHONE ) t1_tel, "+   
-					  "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.E_MAIL, CL_USR_FULL.EMAIL) t1_email, "+  
-					  "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.POSITION, CL_USR_FULL.POSITION)t1_pos, "+  
-					  "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.DEPARTMENT, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.FULL_)) t1_dep_name, "+ 
-					  "t1.CL_ORG_CODE t1_org_code, CL_ORG_FULL.FULL_ t1_org_name, "+
-					  "CL_ORG_FULL.PREFIX || decode(CL_ORG_FULL.HOUSE, null, null, ','  ||CL_ORG_FULL.HOUSE  ) t1_org_adr, "+
-					  "CL_ORG_FULL.PHONE t1_org_tel, "+
-					  "to_char(AU_FULL.START_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_start, "+ 
-					  "to_char(AU_FULL.END_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_end, "+  
-					  "AU_FULL.STATUS t1_status, "+  
-					  "AU_FULL.CREATED t1_crt_date, "+ 
-					  "USR_CRT.LOGIN t1_crt_usr_login, "+ 
-					  "to_char(AU_FULL.MODIFIED, 'DD.MM.YY HH24:MI:SS') t1_upd_date, "+ 
-					  "USR_UPD.LOGIN t1_upd_usr_login, "+ 
-					  "decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.sign_object)) t1_dep_code, "+ 
-					  "CL_ORG_FULL.STATUS t1_org_status,  CL_usr_FULL.STATUS t1_usr_status, "+ 
-					   "decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.STATUS)) t1_dep_status, " +
-					   "AU_FULL.UP_BINDING t1_iogv_bind_type, decode (t4.BIN_UP_USERS, null, 0, 1 ) t1_bin_flag "+      
-					"from "+
-					"(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE "+
-					"from ISP_BSS_T cl_org, "+
-					"AC_USERS_KNL_T au "+
-					"where AU.UP_SIGN = CL_ORG.SIGN_OBJECT "+
-					"group by CL_ORG.SIGN_OBJECT) t1, "+
-					"(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "+
-					"from ISP_BSS_T cl_usr, "+
-					"AC_USERS_KNL_T au "+
-					"where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT "+
-					"group by CL_usr.SIGN_OBJECT) t2, "+
-					"(select max(CL_dep.ID_SRV) CL_DEP_ID,  CL_DEP.SIGN_OBJECT  CL_DEP_CODE "+
-					"from ISP_BSS_T cl_dep, "+
-					"AC_USERS_KNL_T au "+
-					"where substr(au.UP_SIGN_USER,1,5)||'000'  =cl_dep.SIGN_OBJECT(+) "+
-					"group by CL_DEP.SIGN_OBJECT) t3, "+
-					"ISP_BSS_T cl_org_full, "+
-					"ISP_BSS_T cl_usr_full, "+
-					"ISP_BSS_T cl_dep_full, "+
-					"AC_USERS_KNL_T au_full, "+
-					"AC_USERS_KNL_T usr_crt, "+  
-					"AC_USERS_KNL_T usr_upd, " +
-					"(select BIN.UP_USERS BIN_UP_USERS " + 
-					"from BINDING_AUTO_LINK_BSS_T bin " + 
-					"group by BIN.UP_USERS) t4 "+
-					"where cl_org_full.ID_SRV= CL_ORG_ID "+
-					"and cl_usr_full.ID_SRV(+)=CL_USR_ID "+
-					"and cl_DEP_full.ID_SRV(+)=CL_DEP_ID "+
-					"and au_full.UP_SIGN = CL_ORG_CODE "+
-					"and au_full.UP_SIGN_USER  =  CL_USR_CODE(+) "+
-					"and substr(au_full.UP_SIGN_USER,1,5)||'000'  =  CL_DEP_CODE(+) "+
-					"and au_full.CREATOR=USR_CRT.ID_SRV "+ 
-					"and au_full.MODIFICATOR=USR_UPD.ID_SRV(+) " +
-					"and AU_FULL.ID_SRV=t4.BIN_UP_USERS(+) "+ 
+								(new StringBuilder("select t1.t1_id, t1.t1_login, t1.t1_cert, t1.t1_usr_code, t1.t1_fio, "))
+						         .append("t1.t1_tel, t1.t1_email,t1.t1_pos, t1.t1_dep_name, t1.t1_org_code, ") 
+						         .append("t1.t1_org_name, t1.t1_org_adr, t1.t1_org_tel, t1.t1_start, t1.t1_end, ") 
+						         .append("t1.t1_status, t1.t1_crt_date, t1.t1_crt_usr_login, t1.t1_upd_date, t1.t1_upd_usr_login, ")
+						         .append("t1.t1_dep_code, t1.t1_org_status, t1.t1_usr_status, t1.t1_dep_status, t1.t1_iogv_bind_type, ") 
+						         .append("t1_bin_flag ")
+						  .append("from( ")
+						  .append("select AU_FULL.ID_SRV t1_id, AU_FULL.login t1_login, AU_FULL.CERTIFICATE t1_cert, t2.CL_USR_CODE t1_usr_code, ")
+						   .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_fio, ")
+						    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.PHONE, CL_USR_FULL.PHONE ) t1_tel, ")
+						    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.E_MAIL, CL_USR_FULL.EMAIL) t1_email, ")
+						    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.POSITION, CL_USR_FULL.POSITION)t1_pos, ")
+						    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.DEPARTMENT, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.FULL_)) t1_dep_name, ")
+						    .append("t1.CL_ORG_CODE t1_org_code, CL_ORG_FULL.FULL_ t1_org_name, ")
+						    .append("CL_ORG_FULL.PREFIX || decode(CL_ORG_FULL.HOUSE, null, null, ','  ||CL_ORG_FULL.HOUSE  ) t1_org_adr, ")
+						    .append("CL_ORG_FULL.PHONE t1_org_tel, ")
+						    .append("to_char(AU_FULL.START_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_start, ")
+						    .append("to_char(AU_FULL.END_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_end, ")
+						    .append("AU_FULL.STATUS t1_status, ")
+						    .append("AU_FULL.CREATED t1_crt_date, ")
+						    .append("USR_CRT.LOGIN t1_crt_usr_login, ")
+						    .append("to_char(AU_FULL.MODIFIED, 'DD.MM.YY HH24:MI:SS') t1_upd_date, ")
+						    .append("USR_UPD.LOGIN t1_upd_usr_login, ")
+						    .append("decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.sign_object)) t1_dep_code, ")
+						    .append("CL_ORG_FULL.STATUS t1_org_status,  CL_usr_FULL.STATUS t1_usr_status, ")
+						     .append("decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.STATUS)) t1_dep_status, ") 
+						     .append("AU_FULL.UP_BINDING t1_iogv_bind_type, decode (t4.BIN_UP_USERS, null, 0, 1 ) t1_bin_flag ")
+						  .append("from ")
+						  .append("(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE ")
+						  .append("from ISP_BSS_T cl_org, ")
+						  .append("AC_USERS_KNL_T au ")
+						  .append("where AU.UP_SIGN = CL_ORG.SIGN_OBJECT ")
+						  .append("group by CL_ORG.SIGN_OBJECT) t1, ")
+						  .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
+						  .append("from ISP_BSS_T cl_usr, ")
+						  .append("AC_USERS_KNL_T au ")
+						  .append("where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT ")
+						  .append("group by CL_usr.SIGN_OBJECT) t2, ")
+						  .append("(select max(CL_dep.ID_SRV) CL_DEP_ID,  CL_DEP.SIGN_OBJECT  CL_DEP_CODE ")
+						  .append("from ISP_BSS_T cl_dep, ")
+						  .append("AC_USERS_KNL_T au ")
+						  .append("where substr(au.UP_SIGN_USER,1,5)||'000'  =cl_dep.SIGN_OBJECT(+) ")
+						  .append("group by CL_DEP.SIGN_OBJECT) t3, ")
+						  .append("ISP_BSS_T cl_org_full, ")
+						  .append("ISP_BSS_T cl_usr_full, ")
+						  .append("ISP_BSS_T cl_dep_full, ")
+						  .append("AC_USERS_KNL_T au_full, ")
+						  .append("AC_USERS_KNL_T usr_crt, ")
+						  .append("AC_USERS_KNL_T usr_upd, ") 
+						  .append("(select BIN.UP_USERS BIN_UP_USERS ") 
+						  .append("from BINDING_AUTO_LINK_BSS_T bin ") 
+						  .append("group by BIN.UP_USERS) t4 ")
+						  .append("where cl_org_full.ID_SRV= CL_ORG_ID ")
+						  .append("and cl_usr_full.ID_SRV(+)=CL_USR_ID ")
+						  .append("and cl_DEP_full.ID_SRV(+)=CL_DEP_ID ")
+						  .append("and au_full.UP_SIGN = CL_ORG_CODE ")
+						  .append("and au_full.UP_SIGN_USER  =  CL_USR_CODE(+) ")
+						  .append("and substr(au_full.UP_SIGN_USER,1,5)||'000'  =  CL_DEP_CODE(+) ")
+						  .append("and au_full.CREATOR=USR_CRT.ID_SRV ")
+						  .append("and au_full.MODIFICATOR=USR_UPD.ID_SRV(+) ") 
+						  .append("and AU_FULL.ID_SRV=t4.BIN_UP_USERS(+) ")
+						
 					//!!!
-					"and AU_FULL.STATUS !=3 "+
-					")t1 "+
-              (st!=null ? " where "+st :" where t1_usr_code is null ")+
-                      (orderQuery!=null ? orderQuery+", t1_fio " : " order by t1_fio "))
+					  .append("and AU_FULL.STATUS !=3 ")
+					  .append(")t1 ")
+					  .append(st!=null ? " where "+st :" where t1_usr_code is null ")
+					  .append(orderQuery!=null ? orderQuery+", t1_fio " : " order by t1_fio ")
+                      .toString())
               .setFirstResult(firstRow)
               .setMaxResults(numberOfRows)
               .getResultList();
@@ -382,39 +384,42 @@ import javax.persistence.NoResultException;
              
                      
              lo=entityManager.createNativeQuery( 
-             		"select BIN.UP_USERS t1_id, null t1_login, null t1_cert,  CL_USR_FULL.SIGN_OBJECT t1_usr_code, CL_USR_FULL.FIO t1_fio, " + 
-             		" CL_USR_FULL.PHONE t1_tel, CL_USR_FULL.EMAIL t1_email,  CL_USR_FULL.POSITION t1_pos, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.FULL_) t1_dep_name, CL_ORG_FULL.SIGN_OBJECT t1_org_code, " + 
-             		"CL_ORG_FULL.FULL_ t1_org_name,  CL_ORG_FULL.PREFIX || decode(CL_ORG_FULL.HOUSE, null, null, ','  ||CL_ORG_FULL.HOUSE  ) t1_org_adr,  CL_ORG_FULL.PHONE t1_org_tel, null t1_start, null t1_end, " + 
-             		"null t1_status, null t1_crt_date, null t1_crt_usr_login, null t1_upd_date, null t1_upd_usr_login, " + 
-             		" CL_DEP_FULL.SIGN_OBJECT t1_dep_code,  CL_ORG_FULL.STATUS t1_org_status, CL_USR_FULL.STATUS t1_usr_status, CL_DEP_FULL.STATUS t1_dep_status, null t1_iogv_bind_type " + 
-             		" " + 
-             		" " + 
-             		" from BINDING_AUTO_LINK_BSS_T bin, " + 
-             		"   (select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE  " + 
-             		"   from ISP_BSS_T cl_org " + 
-             		"   group by CL_ORG.SIGN_OBJECT) t1,  " + 
-             		"    (select max(CL_dep.ID_SRV) CL_DEP_ID,  CL_DEP.SIGN_OBJECT  CL_DEP_CODE  " + 
-             		"    from ISP_BSS_T cl_dep " + 
-             		"    group by CL_DEP.SIGN_OBJECT) t2,  " + 
-             		"   (select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE  " + 
-             		"    from ISP_BSS_T cl_usr " + 
-             		"    group by CL_usr.SIGN_OBJECT) t3,  " + 
-             		" " + 
-             		"     " + 
-             		"      ISP_BSS_T cl_org_full, " + 
-             		"      ISP_BSS_T cl_dep_full, " + 
-             		"      ISP_BSS_T cl_usr_full " + 
-             		"       " + 
-             		" where BIN.UP_USERS in ("+user_ids+") " + 
-             		"  " + 
-             		"  and substr(BIN.UP_ISP_SIGN_USER,1,3)||'00000'=t1.CL_ORG_CODE(+) " + 
-             		"  and CL_ORG_FULL.ID_SRV(+)=t1.CL_ORG_ID " + 
-             		"   " + 
-             		"  and substr(BIN.UP_ISP_SIGN_USER,1,5)||'000'=t2.CL_dep_CODE(+) " + 
-             		"  and CL_dep_FULL.ID_SRV(+)=t2.CL_dep_ID " + 
-             		"   " + 
-             		"  and BIN.UP_ISP_SIGN_USER=t3.CL_usr_CODE(+) " + 
-             		"  and CL_usr_FULL.ID_SRV(+)=t3.CL_usr_ID")
+              		(new StringBuilder("select BIN.UP_USERS t1_id, null t1_login, null t1_cert,  CL_USR_FULL.SIGN_OBJECT t1_usr_code, CL_USR_FULL.FIO t1_fio, "))
+           		  .append(" CL_USR_FULL.PHONE t1_tel, CL_USR_FULL.EMAIL t1_email,  CL_USR_FULL.POSITION t1_pos, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.FULL_) t1_dep_name, CL_ORG_FULL.SIGN_OBJECT t1_org_code, ") 
+           		  .append("CL_ORG_FULL.FULL_ t1_org_name,  CL_ORG_FULL.PREFIX || decode(CL_ORG_FULL.HOUSE, null, null, ','  ||CL_ORG_FULL.HOUSE  ) t1_org_adr,  CL_ORG_FULL.PHONE t1_org_tel, null t1_start, null t1_end, ") 
+           		  .append("null t1_status, null t1_crt_date, null t1_crt_usr_login, null t1_upd_date, null t1_upd_usr_login, ") 
+           		  .append(" CL_DEP_FULL.SIGN_OBJECT t1_dep_code,  CL_ORG_FULL.STATUS t1_org_status, CL_USR_FULL.STATUS t1_usr_status, CL_DEP_FULL.STATUS t1_dep_status, null t1_iogv_bind_type ") 
+           		  .append(" ") 
+           		  .append(" ") 
+           		  .append(" from BINDING_AUTO_LINK_BSS_T bin, ") 
+           		  .append("   (select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE  ") 
+           		  .append("   from ISP_BSS_T cl_org ") 
+           		  .append("   group by CL_ORG.SIGN_OBJECT) t1,  ") 
+           		  .append("    (select max(CL_dep.ID_SRV) CL_DEP_ID,  CL_DEP.SIGN_OBJECT  CL_DEP_CODE  ") 
+           		  .append("    from ISP_BSS_T cl_dep ") 
+           		  .append("    group by CL_DEP.SIGN_OBJECT) t2,  ") 
+           		  .append("   (select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE  ") 
+           		  .append("    from ISP_BSS_T cl_usr ") 
+           		  .append("    group by CL_usr.SIGN_OBJECT) t3,  ") 
+           		  .append(" ") 
+           		  .append("     ") 
+           		  .append("      ISP_BSS_T cl_org_full, ") 
+           		  .append("      ISP_BSS_T cl_dep_full, ") 
+           		  .append("      ISP_BSS_T cl_usr_full ") 
+           		  .append("       ") 
+           		  .append(" where BIN.UP_USERS in (")
+           			.append(user_ids)
+         			  .append(") ") 
+             		  .append("  ") 
+             		  .append("  and substr(BIN.UP_ISP_SIGN_USER,1,3)||'00000'=t1.CL_ORG_CODE(+) ") 
+             		  .append("  and CL_ORG_FULL.ID_SRV(+)=t1.CL_ORG_ID ") 
+             		  .append("   ") 
+             		  .append("  and substr(BIN.UP_ISP_SIGN_USER,1,5)||'000'=t2.CL_dep_CODE(+) ") 
+             		  .append("  and CL_dep_FULL.ID_SRV(+)=t2.CL_dep_ID ") 
+             		  .append("   ") 
+             		  .append("  and BIN.UP_ISP_SIGN_USER=t3.CL_usr_CODE(+) ") 
+             		  .append("  and CL_usr_FULL.ID_SRV(+)=t3.CL_usr_ID")
+            		 .toString())
             		 .getResultList(); 
              
              for(Object[] objectArray :lo){
@@ -497,66 +502,67 @@ import javax.persistence.NoResultException;
 				 
 				
 				 auditCount = ((java.math.BigDecimal)entityManager.createNativeQuery(
-						 "select count(*) "+ 
-								 "from( "+
-								 "select AU_FULL.ID_SRV t1_id, AU_FULL.login t1_login, AU_FULL.CERTIFICATE t1_cert, t2.CL_USR_CODE t1_usr_code, "+
-								  "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_fio, "+  
-								   "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.PHONE, CL_USR_FULL.PHONE ) t1_tel, "+   
-								   "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.E_MAIL, CL_USR_FULL.EMAIL) t1_email, "+  
-								   "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.POSITION, CL_USR_FULL.POSITION)t1_pos, "+  
-								   "decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.DEPARTMENT, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.FULL_)) t1_dep_name, "+ 
-								   "t1.CL_ORG_CODE t1_org_code, CL_ORG_FULL.FULL_ t1_org_name, "+
-								   "CL_ORG_FULL.PREFIX || decode(CL_ORG_FULL.HOUSE, null, null, ','  ||CL_ORG_FULL.HOUSE  ) t1_org_adr, "+
-								   "CL_ORG_FULL.PHONE t1_org_tel, "+
-								   "to_char(AU_FULL.START_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_start, "+ 
-								   "to_char(AU_FULL.END_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_end, "+  
-								   "AU_FULL.STATUS t1_status, "+  
-								   "AU_FULL.CREATED t1_crt_date, "+ 
-								   "USR_CRT.LOGIN t1_crt_usr_login, "+ 
-								   "to_char(AU_FULL.MODIFIED, 'DD.MM.YY HH24:MI:SS') t1_upd_date, "+ 
-								   "USR_UPD.LOGIN t1_upd_usr_login, "+ 
-								   "decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.sign_object)) t1_dep_code, "+ 
-								   "CL_ORG_FULL.STATUS t1_org_status,  CL_usr_FULL.STATUS t1_usr_status, "+ 
-								    "decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.STATUS)) t1_dep_status, " +
-								    "AU_FULL.UP_BINDING t1_iogv_bind_type, decode (t4.BIN_UP_USERS, null, 0, 1 ) t1_bin_flag  "+       
-								 "from "+
-								 "(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE "+
-								 "from ISP_BSS_T cl_org, "+
-								 "AC_USERS_KNL_T au "+
-								 "where AU.UP_SIGN = CL_ORG.SIGN_OBJECT "+
-								 "group by CL_ORG.SIGN_OBJECT) t1, "+
-								 "(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "+
-								 "from ISP_BSS_T cl_usr, "+
-								 "AC_USERS_KNL_T au "+
-								 "where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT "+
-								 "group by CL_usr.SIGN_OBJECT) t2, "+
-								 "(select max(CL_dep.ID_SRV) CL_DEP_ID,  CL_DEP.SIGN_OBJECT  CL_DEP_CODE "+
-								 "from ISP_BSS_T cl_dep, "+
-								 "AC_USERS_KNL_T au "+
-								 "where substr(au.UP_SIGN_USER,1,5)||'000'  =cl_dep.SIGN_OBJECT(+) "+
-								 "group by CL_DEP.SIGN_OBJECT) t3, "+
-								 "ISP_BSS_T cl_org_full, "+
-								 "ISP_BSS_T cl_usr_full, "+
-								 "ISP_BSS_T cl_dep_full, "+
-								 "AC_USERS_KNL_T au_full, "+
-								 "AC_USERS_KNL_T usr_crt, "+  
-								 "AC_USERS_KNL_T usr_upd, "+
-								 "(select BIN.UP_USERS BIN_UP_USERS " + 
-								 "from BINDING_AUTO_LINK_BSS_T bin " + 
-								 "group by BIN.UP_USERS) t4 "+
-								 "where cl_org_full.ID_SRV= CL_ORG_ID "+
-								 "and cl_usr_full.ID_SRV(+)=CL_USR_ID "+
-								 "and cl_DEP_full.ID_SRV(+)=CL_DEP_ID "+
-								 "and au_full.UP_SIGN = CL_ORG_CODE "+
-								 "and au_full.UP_SIGN_USER  =  CL_USR_CODE(+) "+
-								 "and substr(au_full.UP_SIGN_USER,1,5)||'000'  =  CL_DEP_CODE(+) "+
-								 "and au_full.CREATOR=USR_CRT.ID_SRV "+ 
-								 "and au_full.MODIFICATOR=USR_UPD.ID_SRV(+) " +
-								 "and AU_FULL.ID_SRV=t4.BIN_UP_USERS(+) "+ 
+						 (new StringBuilder("select count(*) "))
+						   .append("from( ")
+						   .append("select AU_FULL.ID_SRV t1_id, AU_FULL.login t1_login, AU_FULL.CERTIFICATE t1_cert, t2.CL_USR_CODE t1_usr_code, ")
+						    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_fio, ")
+						     .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.PHONE, CL_USR_FULL.PHONE ) t1_tel, ")
+						     .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.E_MAIL, CL_USR_FULL.EMAIL) t1_email, ")
+						     .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.POSITION, CL_USR_FULL.POSITION)t1_pos, ")
+						     .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.DEPARTMENT, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.FULL_)) t1_dep_name, ")
+						     .append("t1.CL_ORG_CODE t1_org_code, CL_ORG_FULL.FULL_ t1_org_name, ")
+						     .append("CL_ORG_FULL.PREFIX || decode(CL_ORG_FULL.HOUSE, null, null, ','  ||CL_ORG_FULL.HOUSE  ) t1_org_adr, ")
+						     .append("CL_ORG_FULL.PHONE t1_org_tel, ")
+						     .append("to_char(AU_FULL.START_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_start, ")
+						     .append("to_char(AU_FULL.END_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_end, ")
+						     .append("AU_FULL.STATUS t1_status, ")
+						     .append("AU_FULL.CREATED t1_crt_date, ")
+						     .append("USR_CRT.LOGIN t1_crt_usr_login, ")
+						     .append("to_char(AU_FULL.MODIFIED, 'DD.MM.YY HH24:MI:SS') t1_upd_date, ")
+						     .append("USR_UPD.LOGIN t1_upd_usr_login, ")
+						     .append("decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.sign_object)) t1_dep_code, ")
+						     .append("CL_ORG_FULL.STATUS t1_org_status,  CL_usr_FULL.STATUS t1_usr_status, ")
+						      .append("decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.STATUS)) t1_dep_status, ") 
+						      .append("AU_FULL.UP_BINDING t1_iogv_bind_type, decode (t4.BIN_UP_USERS, null, 0, 1 ) t1_bin_flag  ")
+						   .append("from ")
+						   .append("(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE ")
+						   .append("from ISP_BSS_T cl_org, ")
+						   .append("AC_USERS_KNL_T au ")
+						   .append("where AU.UP_SIGN = CL_ORG.SIGN_OBJECT ")
+						   .append("group by CL_ORG.SIGN_OBJECT) t1, ")
+						   .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
+						   .append("from ISP_BSS_T cl_usr, ")
+						   .append("AC_USERS_KNL_T au ")
+						   .append("where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT ")
+						   .append("group by CL_usr.SIGN_OBJECT) t2, ")
+						   .append("(select max(CL_dep.ID_SRV) CL_DEP_ID,  CL_DEP.SIGN_OBJECT  CL_DEP_CODE ")
+						   .append("from ISP_BSS_T cl_dep, ")
+						   .append("AC_USERS_KNL_T au ")
+						   .append("where substr(au.UP_SIGN_USER,1,5)||'000'  =cl_dep.SIGN_OBJECT(+) ")
+						   .append("group by CL_DEP.SIGN_OBJECT) t3, ")
+						   .append("ISP_BSS_T cl_org_full, ")
+						   .append("ISP_BSS_T cl_usr_full, ")
+						   .append("ISP_BSS_T cl_dep_full, ")
+						   .append("AC_USERS_KNL_T au_full, ")
+						   .append("AC_USERS_KNL_T usr_crt, ")
+						   .append("AC_USERS_KNL_T usr_upd, ")
+						   .append("(select BIN.UP_USERS BIN_UP_USERS ") 
+						   .append("from BINDING_AUTO_LINK_BSS_T bin ") 
+						   .append("group by BIN.UP_USERS) t4 ")
+						   .append("where cl_org_full.ID_SRV= CL_ORG_ID ")
+						   .append("and cl_usr_full.ID_SRV(+)=CL_USR_ID ")
+						   .append("and cl_DEP_full.ID_SRV(+)=CL_DEP_ID ")
+						   .append("and au_full.UP_SIGN = CL_ORG_CODE ")
+						   .append("and au_full.UP_SIGN_USER  =  CL_USR_CODE(+) ")
+						   .append("and substr(au_full.UP_SIGN_USER,1,5)||'000'  =  CL_DEP_CODE(+) ")
+						   .append("and au_full.CREATOR=USR_CRT.ID_SRV ")
+						   .append("and au_full.MODIFICATOR=USR_UPD.ID_SRV(+) ") 
+						   .append("and AU_FULL.ID_SRV=t4.BIN_UP_USERS(+) ")
 								 //!!!
-								 "and AU_FULL.STATUS !=3 "+
-								 ")t1 "+
-		         (st!=null ? " where "+st :" where t1_usr_code is null "))
+						   .append("and AU_FULL.STATUS !=3 ")
+						   .append(")t1 ")
+						   .append(st!=null ? " where "+st :" where t1_usr_code is null ")
+						   .toString())
                .getSingleResult()).longValue();
                  
                  
@@ -958,8 +964,8 @@ import javax.persistence.NoResultException;
 			  //!!! обязательно сначала лог, а потом изменение пользователя
 			  //для сохранения aum.getUpSignUser
 				 entityManager.createNativeQuery(
-				          "insert into BINDING_LOG_T(ID_SRV, UP_USERS, UP_ISP_SIGN_USER, UP_BINDING, CREATOR, CREATED) " +
-		      	 		  "values(BINDING_LOG_SEQ.nextval, ?, ?, ?, ?, sysdate) ")
+				          "insert into BINDING_LOG_T(ID_SRV, UP_USERS, UP_ISP_SIGN_USER, UP_BINDING, CREATOR, CREATED) " 
+		      	 		  + "values(BINDING_LOG_SEQ.nextval, ?, ?, ?, ?, sysdate) ")
 			              .setParameter(1, Long.valueOf(sessionIdCrack))
 			              .setParameter(2, aum.getUpSignUser())
 			              .setParameter(3, 0L)
@@ -1048,8 +1054,8 @@ import javax.persistence.NoResultException;
 					// !!!НЕТ - В историю идут текущие (заменяемые) данные
 					// !!!ДА - В историю идут новые  данные
 				    entityManager.createNativeQuery(
-					          "insert into BINDING_LOG_T(ID_SRV, UP_USERS, UP_ISP_SIGN_USER, UP_BINDING, CREATOR, CREATED) " +
-			       	 		  "values(BINDING_LOG_SEQ.nextval, ?, ?, ?, ?, sysdate) ")
+					          "insert into BINDING_LOG_T(ID_SRV, UP_USERS, UP_ISP_SIGN_USER, UP_BINDING, CREATOR, CREATED) " 
+			       	 		  + "values(BINDING_LOG_SEQ.nextval, ?, ?, ?, ?, sysdate) ")
 				              .setParameter(1, Long.valueOf(sessionIdCrack))
 				             // /.setParam/eter(2, /aum.getUpSignUser())
 				           // /.setParameter(2, cu/rrSignObject)
@@ -1060,9 +1066,9 @@ import javax.persistence.NoResultException;
 						      .executeUpdate();
 				       
 				     entityManager.createNativeQuery(
-				    		        "update AC_USERS_KNL_T au " +
-							        "set au.UP_SIGN_USER=?, au.UP_BINDING=? "+
-					                "where au.ID_SRV=? ")
+				    		        "update AC_USERS_KNL_T au " 
+							        + "set au.UP_SIGN_USER=?, au.UP_BINDING=? "
+					                + "where au.ID_SRV=? ")
 					              .setParameter(1, preLastCode)
 					              .setParameter(2, 4L)
 					             // ./setParameter(2, new Lon/g(preLastBindType))
@@ -1165,35 +1171,38 @@ import javax.persistence.NoResultException;
 	     
 	     SerializableList<Object[]> applicant_list  = (SerializableList<Object[]>) entityManager.createNativeQuery(
 					      
-             	 "select t1.t1_id, t1.t1_login, t1.t1_cert, t1.t1_usr_code, t1.t1_fio, t1.t1_tel, t1.t1_email,t1.t1_pos, t1.t1_dep_name, "+ 
-	    		 "t1.t1_org_code, t1.t1_org_name, t1.t1_org_adr, t1.t1_org_tel, t1.t1_start, t1.t1_end, t1.t1_status, "+ 
-	    		 "t1.t1_crt_date, t1.t1_crt_usr_login, t1.t1_upd_date, t1.t1_upd_usr_login, "+ 
-	    		 "t1.t1_dep_code, t1.t1_org_status, t1.t1_usr_status, t1.t1_dep_status, t1.t1_iogv_bind_type "+ 
-	    		 "from( "+
-	    		 "select USR.ID_SRV t1_id, null t1_login, USR.SIGN_OBJECT t1_usr_code, null t1_cert, USR.FIO t1_fio, "+
-	    		 "USR.POSITION t1_pos, USR.PHONE t1_tel, USR.EMAIL t1_email,DEP.FULL_ t1_dep_name, ORG.SIGN_OBJECT t1_org_code, "+ 
-	    		 "ORG.FULL_ t1_org_name, ORG.PREFIX || decode(ORG.HOUSE, null, null, ','  ||ORG.HOUSE  ) t1_org_adr, ORG.PHONE t1_org_tel, "+
-	    		 "null t1_start, null t1_end, "+
-	    		 "null t1_status,null t1_crt_date, null t1_crt_usr_login, "+
-	    		 "null t1_upd_date, "+
-	    		 "null t1_upd_usr_login, DEP.SIGN_OBJECT t1_dep_code, ORG.STATUS t1_org_status, USR.SIGN_OBJECT t1_usr_status, DEP.STATUS t1_dep_status, " +
-	    		 "null t1_iogv_bind_type "+
-	    		 "from ISP_BSS_T usr, ISP_BSS_T org, ISP_BSS_T dep, "+
-	    		 "(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE "+ 
-	    		 "from ISP_BSS_T cl_org "+
-	    		 "group by CL_ORG.SIGN_OBJECT)  org_narrow, "+
-	    		 "(select max(CL_dep.ID_SRV) CL_dep_ID,  CL_dep.SIGN_OBJECT  CL_dep_CODE "+ 
-	    		 "from ISP_BSS_T cl_dep "+
-	    		 "group by CL_dep.SIGN_OBJECT)  dep_narrow "+
-	    		 "where lower(usr.FIO) like  lower('"+search_str+"') "+
-	    		 "and usr.STATUS='A' "+
-	    		 "and substr(USR.SIGN_OBJECT ,1,3)||'00000'  = org_narrow.CL_ORG_CODE(+) "+
-	    		 "and ORG.ID_SRV(+)=org_narrow.CL_ORG_ID "+
-	    		 "and substr(USR.SIGN_OBJECT ,1,5)||'000'  = dep_narrow.CL_dep_CODE(+) "+
-	    		 "and dep.ID_SRV(+)=dep_narrow.CL_dep_ID " +
-	    		 "and (ORG.SIGN_OBJECT = :org_code or 1= :not_org_code_flag) " +
-	    		 "order by t1_fio "+
-	    		 ") t1 ")
+             	 (new StringBuilder("select t1.t1_id, t1.t1_login, t1.t1_cert, t1.t1_usr_code, t1.t1_fio, t1.t1_tel, t1.t1_email,t1.t1_pos, t1.t1_dep_name, "))
+	    		   .append("t1.t1_org_code, t1.t1_org_name, t1.t1_org_adr, t1.t1_org_tel, t1.t1_start, t1.t1_end, t1.t1_status, ")
+	    		   .append("t1.t1_crt_date, t1.t1_crt_usr_login, t1.t1_upd_date, t1.t1_upd_usr_login, ")
+	    		   .append("t1.t1_dep_code, t1.t1_org_status, t1.t1_usr_status, t1.t1_dep_status, t1.t1_iogv_bind_type ")
+	    		   .append("from( ")
+	    		   .append("select USR.ID_SRV t1_id, null t1_login, USR.SIGN_OBJECT t1_usr_code, null t1_cert, USR.FIO t1_fio, ")
+	    		   .append("USR.POSITION t1_pos, USR.PHONE t1_tel, USR.EMAIL t1_email,DEP.FULL_ t1_dep_name, ORG.SIGN_OBJECT t1_org_code, ")
+	    		   .append("ORG.FULL_ t1_org_name, ORG.PREFIX || decode(ORG.HOUSE, null, null, ','  ||ORG.HOUSE  ) t1_org_adr, ORG.PHONE t1_org_tel, ")
+	    		   .append("null t1_start, null t1_end, ")
+	    		   .append("null t1_status,null t1_crt_date, null t1_crt_usr_login, ")
+	    		   .append("null t1_upd_date, ")
+	    		   .append("null t1_upd_usr_login, DEP.SIGN_OBJECT t1_dep_code, ORG.STATUS t1_org_status, USR.SIGN_OBJECT t1_usr_status, DEP.STATUS t1_dep_status, ") 
+	    		   .append("null t1_iogv_bind_type ")
+	    		   .append("from ISP_BSS_T usr, ISP_BSS_T org, ISP_BSS_T dep, ")
+	    		   .append("(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE ")
+	    		   .append("from ISP_BSS_T cl_org ")
+	    		   .append("group by CL_ORG.SIGN_OBJECT)  org_narrow, ")
+	    		   .append("(select max(CL_dep.ID_SRV) CL_dep_ID,  CL_dep.SIGN_OBJECT  CL_dep_CODE ")
+	    		   .append("from ISP_BSS_T cl_dep ")
+	    		   .append("group by CL_dep.SIGN_OBJECT)  dep_narrow ")
+	    		   .append("where lower(usr.FIO) like  lower('")
+	    		   .append(search_str)
+	    		   .append("') ")
+	    		   .append("and usr.STATUS='A' ")
+	    		   .append("and substr(USR.SIGN_OBJECT ,1,3)||'00000'  = org_narrow.CL_ORG_CODE(+) ")
+	    		   .append("and ORG.ID_SRV(+)=org_narrow.CL_ORG_ID ")
+	    		   .append("and substr(USR.SIGN_OBJECT ,1,5)||'000'  = dep_narrow.CL_dep_CODE(+) ")
+	    		   .append("and dep.ID_SRV(+)=dep_narrow.CL_dep_ID ") 
+	    		   .append("and (ORG.SIGN_OBJECT = :org_code or 1= :not_org_code_flag) ") 
+	    		   .append("order by t1_fio ")
+	    		   .append(") t1 ")
+	    		   .toString())
 	    		.setParameter("org_code", au.getOrgCode()) 
 	    		.setParameter("not_org_code_flag", this.searchOrgExact!=null&&this.searchOrgExact.booleanValue()==true?0:1) 
 	 			.setMaxResults(100)
@@ -1281,8 +1290,8 @@ import javax.persistence.NoResultException;
 	       
 	       
 			       entityManager.createNativeQuery(
-		  		            "insert into BINDING_LOG_T(ID_SRV, UP_USERS, UP_ISP_SIGN_USER, UP_BINDING, CREATOR, CREATED) " +
-		         	 		"values(BINDING_LOG_SEQ.nextval, ?, ?, ?, ?, sysdate) ")
+		  		            "insert into BINDING_LOG_T(ID_SRV, UP_USERS, UP_ISP_SIGN_USER, UP_BINDING, CREATOR, CREATED) " 
+		         	 		+ "values(BINDING_LOG_SEQ.nextval, ?, ?, ?, ?, sysdate) ")
 			              .setParameter(1, Long.valueOf(sessionIdCrack))
 			              .setParameter(2, signObject)
 			              .setParameter(3, 2L)
@@ -1290,9 +1299,9 @@ import javax.persistence.NoResultException;
 					      .executeUpdate();
 			       
 			       entityManager.createNativeQuery(
-			    		        "update AC_USERS_KNL_T au " +
-						        "set au.UP_SIGN_USER=?, au.UP_BINDING=? "+
-				                "where au.ID_SRV=? ")
+			    		        "update AC_USERS_KNL_T au " 
+						        + "set au.UP_SIGN_USER=?, au.UP_BINDING=? "
+				                + "where au.ID_SRV=? ")
 				              .setParameter(1, signObject)
 				              .setParameter(2, 2L)
 				              .setParameter(3, Long.valueOf(sessionIdCrack))
@@ -1302,8 +1311,8 @@ import javax.persistence.NoResultException;
 			      // надо ещё подумать об этом действии
 			       
 			       entityM/anager.cre/ateNativeQuery(
-		   		           "del/ete /from BINDING_AUTO_LINK_BSS_T tt/  "+
-			               "whe/re tt.UP_USERS=? ")
+		   		           "del/ete /from BINDING_AUTO_LINK_BSS_T tt/  "
+			               + "whe/re tt.UP_USERS=? ")
 			              .setP/ar/ameter(1, new Long/(sessionId_crack))
 					      .execu/teUpdate();*/
 		    
@@ -1322,10 +1331,11 @@ import javax.persistence.NoResultException;
 		   String secret = TIDEncodePLBase64.getSecret();
 		   
 		   entityManager.createNativeQuery(
-				   "insert into JOURN_APP_USER_MODIFY_BSS_T (ID_SRV, "+
-	     		               "SIGN_USER, " +
-			 	     		   "UP_USER_APP, UP_USER, SECRET ) " +
-			 	     		   "values ( JOURN_APP_USER_MODIFY_SEQ.nextval, ?, ?, ?, ? ) ")
+				   (new StringBuilder("insert into JOURN_APP_USER_MODIFY_BSS_T (ID_SRV, "))
+	                 .append("SIGN_USER, ") 
+	     		     .append("UP_USER_APP, UP_USER, SECRET ) ") 
+	     		     .append("values ( JOURN_APP_USER_MODIFY_SEQ.nextval, ?, ?, ?, ? ) ")
+	   .toString())
 			 	     		    .setParameter(1, userIOGV)
 			 	     		    .setParameter(2, userApp)
 			 	     		    .setParameter(3, userCreator)
@@ -1348,12 +1358,13 @@ import javax.persistence.NoResultException;
 		   String secret = TIDEncodePLBase64.getSecret();
 		   
 		   entityManager.createNativeQuery(
-				   "insert into JOURN_APP_USER_MODIFY_BSS_T (ID_SRV, "+
-	     		               "SIGN_USER, " +
-	     		               "SURNAME_USER, NAME_USER, PATRONYMIC_USER, " +
-	     		               "POSITION_USER, EMAIL_USER, PHONE_USER, NAME_DEPARTAMENT, " +
-			 	     		   "UP_USER_APP, UP_USER, SECRET ) " +
-			 	     		   "values ( JOURN_APP_USER_MODIFY_SEQ.nextval, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ")
+				   (new StringBuilder("insert into JOURN_APP_USER_MODIFY_BSS_T (ID_SRV, "))
+	                 .append("SIGN_USER, ") 
+	                 .append("SURNAME_USER, NAME_USER, PATRONYMIC_USER, ") 
+	                 .append("POSITION_USER, EMAIL_USER, PHONE_USER, NAME_DEPARTAMENT, ") 
+	     		     .append("UP_USER_APP, UP_USER, SECRET ) ") 
+	     		     .append("values ( JOURN_APP_USER_MODIFY_SEQ.nextval, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ")
+	     		     .toString())
 			 	     		    .setParameter(1, userIOGV)
 			 	     		    .setParameter(2, usrBean.getSurname())
 			 	     		    .setParameter(3, usrBean.getName1())
@@ -1419,8 +1430,8 @@ import javax.persistence.NoResultException;
 				       // !!! НЕТ - В историю идут текущие (заменяемые) данные
 				       // !!! ДА - в историю идут сразу новые данные
 				       entityManager.createNativeQuery(
-			  		            "insert into BINDING_LOG_T(ID_SRV, UP_USERS, UP_ISP_SIGN_USER, UP_BINDING, CREATOR, CREATED) " +
-			         	 		"values(BINDING_LOG_SEQ.nextval, ?, ?, ?, ?, sysdate) ")
+			  		            "insert into BINDING_LOG_T(ID_SRV, UP_USERS, UP_ISP_SIGN_USER, UP_BINDING, CREATOR, CREATED) " 
+			         	 		+ "values(BINDING_LOG_SEQ.nextval, ?, ?, ?, ?, sysdate) ")
 				              .setParameter(1, Long.valueOf(sessionIdCrack))
 				            //  ./setParameter(2, currSig/nObject)
 				              .setParameter(2,signObject)
@@ -1430,9 +1441,9 @@ import javax.persistence.NoResultException;
 						      .executeUpdate();
 				       
 				       entityManager.createNativeQuery(
-				    		        "update AC_USERS_KNL_T au " +
-							        "set au.UP_SIGN_USER=?, au.UP_BINDING=? "+
-					                "where au.ID_SRV=? ")
+				    		        "update AC_USERS_KNL_T au " 
+							        + "set au.UP_SIGN_USER=?, au.UP_BINDING=? "
+					                + "where au.ID_SRV=? ")
 					              .setParameter(1, signObject)
 					              .setParameter(2, 3L)
 					              .setParameter(3, Long.valueOf(sessionIdCrack))
@@ -1475,17 +1486,17 @@ import javax.persistence.NoResultException;
 		       }else{
 			   
 				   entityManager.createNativeQuery(
-		    		        "update AC_USERS_KNL_T au " +
-					        "set au.UP_SIGN_USER=? "+
-			                "where au.ID_SRV=? ")
+		    		        "update AC_USERS_KNL_T au " 
+					        + "set au.UP_SIGN_USER=? "
+			                + "where au.ID_SRV=? ")
 			              .setParameter(1, clUsrBean.getSignObject())
 			              .setParameter(2, Long.valueOf(sessionIdCrack))
 					      .executeUpdate();
 				   
 				   // !!! ДА - в историю идут сразу новые данные
 			       entityManager.createNativeQuery(
-		  		            "insert into BINDING_LOG_T(ID_SRV, UP_USERS, UP_ISP_SIGN_USER, UP_BINDING, CREATOR, CREATED) " +
-		         	 		"values(BINDING_LOG_SEQ.nextval, ?, ?, ?, ?, sysdate) ")
+		  		            "insert into BINDING_LOG_T(ID_SRV, UP_USERS, UP_ISP_SIGN_USER, UP_BINDING, CREATOR, CREATED) " 
+		         	 		+ "values(BINDING_LOG_SEQ.nextval, ?, ?, ?, ?, sysdate) ")
 			              .setParameter(1, Long.valueOf(sessionIdCrack))
 			            //  ./setParameter(2, /currSignObject)
 			              .setParameter(2, clUsrBean.getSignObject())
@@ -1659,27 +1670,28 @@ import javax.persistence.NoResultException;
 	    try {
 	    	if(historyBindingList==null){
 	    		 bindings  = entityManager.createNativeQuery(
-					    "select  BL.UP_ISP_SIGN_USER user_code, BL.ID_SRV, BL.UP_BINDING, " +
-					    "CL_USR_FULL.FIO, CL_USR_FULL.POSITION, " +
-					    "decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.FULL_) t1_dep_name, " +
-					    "CL_USR_FULL.STATUS, " +
-					    "BL.CREATED "+
-                       "from BINDING_LOG_T bl, "+
-                        "ISP_BSS_T cl_usr_full, " +
-                        "ISP_BSS_T cl_dep_full, "+
-                       "(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE "+ 
-                       "from ISP_BSS_T cl_usr "+
-                        "group by CL_usr.SIGN_OBJECT) t1, " +
-                        "(select max(CL_dep.ID_SRV) CL_dep_ID,  CL_dep.SIGN_OBJECT  CL_dep_CODE "+
-                       "from ISP_BSS_T cl_dep "+
-                        "group by CL_dep.SIGN_OBJECT) t2 "+  
-                       "where BL.UP_USERS=? "+ 
-                        "and BL.UP_BINDING in (1, 2, 3, 4) "+
-                        "and BL.UP_ISP_SIGN_USER=CL_USR_CODE "+
-                        "and CL_USR_FULL.ID_SRV=CL_USR_ID " +
-                        "and substr(BL.UP_ISP_SIGN_USER,1,5)||'000'=CL_dep_CODE(+) "+
-                        "and CL_dep_FULL.ID_SRV=CL_dep_ID "+
-                        "order by BL.ID_SRV desc ")
+						    (new StringBuilder("select  BL.UP_ISP_SIGN_USER user_code, BL.ID_SRV, BL.UP_BINDING, "))
+						      .append("CL_USR_FULL.FIO, CL_USR_FULL.POSITION, ") 
+						      .append("decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.FULL_) t1_dep_name, ") 
+						      .append("CL_USR_FULL.STATUS, ") 
+						      .append("BL.CREATED ")
+	                         .append("from BINDING_LOG_T bl, ")
+	                          .append("ISP_BSS_T cl_usr_full, ") 
+	                          .append("ISP_BSS_T cl_dep_full, ")
+	                         .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
+	                         .append("from ISP_BSS_T cl_usr ")
+	                          .append("group by CL_usr.SIGN_OBJECT) t1, ") 
+	                          .append("(select max(CL_dep.ID_SRV) CL_dep_ID,  CL_dep.SIGN_OBJECT  CL_dep_CODE ")
+	                         .append("from ISP_BSS_T cl_dep ")
+	                          .append("group by CL_dep.SIGN_OBJECT) t2 ")
+	                         .append("where BL.UP_USERS=? ")
+	                          .append("and BL.UP_BINDING in (1, 2, 3, 4) ")
+	                          .append("and BL.UP_ISP_SIGN_USER=CL_USR_CODE ")
+	                          .append("and CL_USR_FULL.ID_SRV=CL_USR_ID ") 
+	                          .append("and substr(BL.UP_ISP_SIGN_USER,1,5)||'000'=CL_dep_CODE(+) ")
+	                          .append("and CL_dep_FULL.ID_SRV=CL_dep_ID ")
+	                          .append("order by BL.ID_SRV desc ")
+						    .toString())
 				    	.setParameter(1, Long.valueOf(sessionId)) 
 				    	.getResultList();
 	    		 
@@ -1837,15 +1849,16 @@ import javax.persistence.NoResultException;
 			   }else{
 				   
 				   count  = ((java.math.BigDecimal) entityManager.createNativeQuery(
-							"select count(*) from ( " + 
-							"select BIN.UP_USERS " + 
-							"from BINDING_AUTO_LINK_BSS_T bin " + 
-							"where BIN.TYPE_BINDING=2 " + 
-							"group by BIN.UP_USERS ) ")
+							(new StringBuilder("select count(*) from ( "))
+							  .append("select BIN.UP_USERS ") 
+							  .append("from BINDING_AUTO_LINK_BSS_T bin ") 
+							  .append("where BIN.TYPE_BINDING=2 ") 
+							  .append("group by BIN.UP_USERS ) ")
+							.toString())
 							.getSingleResult()).longValue();
 				   
-				   runResultMessage="Процесс поиска соответствий не активных записей завершен<br/>" +
-				   		"Найдено пользователей: "+count;
+				   runResultMessage="Процесс поиска соответствий не активных записей завершен<br/>" 
+				   		+ "Найдено пользователей: "+count;
 			   }
 			   
 		   }else{   //bindingUnBind
@@ -1857,15 +1870,16 @@ import javax.persistence.NoResultException;
 			   }else{
 				   
 				   count  = ((java.math.BigDecimal) entityManager.createNativeQuery(
-							"select count(*) from ( " + 
-							"select BIN.UP_USERS " + 
-							"from BINDING_AUTO_LINK_BSS_T bin " + 
-							"where BIN.TYPE_BINDING=1 " + 
-							"group by BIN.UP_USERS ) ")
+							(new StringBuilder("select count(*) from ( "))
+							  .append("select BIN.UP_USERS ") 
+							  .append("from BINDING_AUTO_LINK_BSS_T bin ") 
+							  .append("where BIN.TYPE_BINDING=1 ") 
+							  .append("group by BIN.UP_USERS ) ")
+							.toString())
 							.getSingleResult()).longValue();
 				   
-				   runResultMessage="Процесс поиска соответствий не привязанных записей завершен<br/>" +
-						   "Найдено пользователей: "+count;
+				   runResultMessage="Процесс поиска соответствий не привязанных записей завершен<br/>" 
+						   + "Найдено пользователей: "+count;
 			   }
 			   
 		   }
@@ -1990,10 +2004,11 @@ import javax.persistence.NoResultException;
 	    	if(listBindArmForView==null && sessionId!=null){
 	      	
 	    		lo=entityManager.createNativeQuery(
-	    				"select APP.ID_SRV app_id, APP.FULL_ app_name, ROL.FULL_ role_name "+
-                        "from AC_IS_BSS_T app, AC_ROLES_BSS_T rol, AC_USERS_LINK_KNL_T url "+
-                        "where ROL.UP_IS=APP.ID_SRV and URL.UP_ROLES=ROL.ID_SRV and URL.UP_USERS=? "+
-                        "order by  APP.FULL_, APP.ID_SRV, ROL.FULL_")
+	    				(new StringBuilder("select APP.ID_SRV app_id, APP.FULL_ app_name, ROL.FULL_ role_name "))
+                        .append("from AC_IS_BSS_T app, AC_ROLES_BSS_T rol, AC_USERS_LINK_KNL_T url ")
+                        .append("where ROL.UP_IS=APP.ID_SRV and URL.UP_ROLES=ROL.ID_SRV and URL.UP_USERS=? ")
+                        .append("order by  APP.FULL_, APP.ID_SRV, ROL.FULL_")
+	    				.toString())
 	    				 .setParameter(1, Long.valueOf(sessionId))
 	    				.getResultList();
 
@@ -2048,13 +2063,14 @@ import javax.persistence.NoResultException;
 	    	if(listBindGroupForView==null && sessionId!=null){
 	      	
 	    		lo=entityManager.createNativeQuery(
-	    				"select GR.ID_SRV gr_id, GR.FULL_ gr_name, APP.ID_SRV app_id, APP.FULL_ app_name, ROL.FULL_ role_name "+
-                        "from GROUP_USERS_KNL_T gr, LINK_GROUP_USERS_USERS_KNL_T uul, "+
-                        "LINK_GROUP_USERS_ROLES_KNL_T lur, AC_ROLES_BSS_T rol, AC_IS_BSS_T app "+
-                        "where UUL.UP_GROUP_USERS=GR.ID_SRV and UUL.UP_USERS=? "+
-                        "and LUR.UP_GROUP_USERS=GR.ID_SRV and ROL.ID_SRV=LUR.UP_ROLES "+
-                        "and APP.ID_SRV=ROL.UP_IS "+
-                        "order by GR.FULL_, GR.ID_SRV, APP.FULL_, APP.ID_SRV, ROL.FULL_ ")
+	    				(new StringBuilder("select GR.ID_SRV gr_id, GR.FULL_ gr_name, APP.ID_SRV app_id, APP.FULL_ app_name, ROL.FULL_ role_name "))
+                        .append("from GROUP_USERS_KNL_T gr, LINK_GROUP_USERS_USERS_KNL_T uul, ")
+                        .append("LINK_GROUP_USERS_ROLES_KNL_T lur, AC_ROLES_BSS_T rol, AC_IS_BSS_T app ")
+                        .append("where UUL.UP_GROUP_USERS=GR.ID_SRV and UUL.UP_USERS=? ")
+                        .append("and LUR.UP_GROUP_USERS=GR.ID_SRV and ROL.ID_SRV=LUR.UP_ROLES ")
+                        .append("and APP.ID_SRV=ROL.UP_IS ")
+                        .append("order by GR.FULL_, GR.ID_SRV, APP.FULL_, APP.ID_SRV, ROL.FULL_ ")
+	    				.toString())
 	    				.setParameter(1, Long.valueOf(sessionId))
 	    				.getResultList();
 	    		
@@ -2203,8 +2219,8 @@ import javax.persistence.NoResultException;
 		log.info("BindManager:loginExist:login="+login);
 		if(login!=null){
 		  try{
-			 entityManager.createQuery("select au from AcUser au " +
-			 		                               "where au.login = :login")
+			 entityManager.createQuery("select au from AcUser au " 
+			 		                               + "where au.login = :login")
 			 		     .setParameter("login", login)
 			 		     .getSingleResult();
 			  addLoginExist=true;

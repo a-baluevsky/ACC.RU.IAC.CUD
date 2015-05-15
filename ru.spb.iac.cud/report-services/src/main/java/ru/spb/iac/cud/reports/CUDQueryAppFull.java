@@ -3,7 +3,9 @@ package ru.spb.iac.cud.reports;
 import iac.cud.infosweb.dataitems.ReportDownloadItem;
 
 import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
+
+import javaw.io.Closeable;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -98,19 +100,6 @@ import ru.spb.iac.cud.core.util.Configuration;
 		}
 	}
 	
-	private void closeSafe(String contextMsg, Closeable f) {
-		if(f!=null)
-			try {
-				f.close();
-			} catch (IOException e) {
-				LOGGER.error(contextMsg, e);
-			}
-	}
-	private void closeSafe(String contextMsg, Closeable f1, Closeable f2) {
-		closeSafe(contextMsg, f1);
-		closeSafe(contextMsg, f2);
-	}
-	
 	public ReportDownloadItem download_report(String reportType)
 			throws Exception {
 
@@ -158,7 +147,10 @@ import ru.spb.iac.cud.core.util.Configuration;
 			LOGGER.error("download_report:error:", e);
 			throw e;
 		} finally {
-			closeSafe("ReportDownloadItem:finally", baos, is);
+			String[] errMsg = new String[]{"close failed"};
+			if(!Closeable.Close(errMsg, baos, is)) {
+				LOGGER.error("ReportDownloadItem:finally", errMsg);
+			}
 		}
 
 		return result;

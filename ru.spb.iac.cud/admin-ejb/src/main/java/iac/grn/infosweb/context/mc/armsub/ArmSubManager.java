@@ -187,8 +187,8 @@ import iac.grn.serviceitems.BaseTableItem;
 				 
 				 
 				 auditCount = (Long)entityManager.createQuery(
-						 "select count(o) " +  
-				         "from AcSubsystemCertBssT o "+
+						 "select count(o) " 
+				         + "from AcSubsystemCertBssT o "+
 				         (st!=null ? " where "+st :""))
 		                .getSingleResult();
 				 
@@ -248,11 +248,13 @@ import iac.grn.serviceitems.BaseTableItem;
    			//список ИС в группе, которых нет в привязке к пользователю  
 		    List<Object> list= entityManager.createNativeQuery(
 		    		
-			    		"SELECT SUB.UP_IS " + 
-			    		"    FROM AC_SUBSYSTEM_CERT_BSS_T sub " + 
-			    		"   WHERE   sub.ID_SRV = :idSub " + 
-			    		"         AND  SUB.UP_IS NOT IN (:idsArm) " + 
-			    		"GROUP BY SUB.UP_IS")
+		    		(new StringBuilder("SELECT SUB.UP_IS "))
+		    		  .append("    FROM AC_SUBSYSTEM_CERT_BSS_T sub ") 
+		    		  .append("   WHERE   sub.ID_SRV = :idSub ") 
+		    		  .append("         AND  SUB.UP_IS NOT IN (:idsArm) ") 
+		    		  .append("GROUP BY SUB.UP_IS")
+	    		
+		    		.toString())
                       .setParameter("idSub", idSub)
                       .setParameter("idsArm", au.getAllowedSys())
                       .getResultList();
@@ -399,9 +401,9 @@ import iac.grn.serviceitems.BaseTableItem;
 		   
 		   Transaction.instance().enlist(entityManager);
 		   
-		   entityManager.createNativeQuery("update AC_SUBSYSTEM_CERT_BSS_T t1 " + 
-		   		                           "set T1.CERT_DATE=? " + 
-		   		                           "where t1.ID_SRV=? ")
+		   entityManager.createNativeQuery("update AC_SUBSYSTEM_CERT_BSS_T t1 " 
+		   		                           + "set T1.CERT_DATE=? " 
+		   		                           + "where t1.ID_SRV=? ")
 		   .setParameter(1, x509Cert)
 		   .setParameter(2, id_sys)
 		   .executeUpdate();  
@@ -429,9 +431,9 @@ import iac.grn.serviceitems.BaseTableItem;
  			   return;
  		   }
  			   
- 		   entityManager.createNativeQuery("update AC_SUBSYSTEM_CERT_BSS_T t1 " + 
- 		   		                           "set T1.CERT_DATE=null " + 
- 		   		                           "where t1.ID_SRV=? ")
+ 		   entityManager.createNativeQuery("update AC_SUBSYSTEM_CERT_BSS_T t1 " 
+ 		   		                           + "set T1.CERT_DATE=null " 
+ 		   		                           + "where t1.ID_SRV=? ")
  		   .setParameter(1, Long.valueOf(sessionIdArmSub))
  		   .executeUpdate();  
  			 
@@ -512,9 +514,9 @@ import iac.grn.serviceitems.BaseTableItem;
  	     if(sessionIdArmSub!=null){
  	    	 
  	    	String certDataX = (String) entityManager.createNativeQuery(
- 	    			 "select to_char(T1.CERT_DATE) " + 
- 	    	 		 "from AC_SUBSYSTEM_CERT_BSS_T t1 " + 
- 	    	 		 "where T1.ID_SRV=? ")
+ 	    			 "select to_char(T1.CERT_DATE) " 
+ 	    	 		 + "from AC_SUBSYSTEM_CERT_BSS_T t1 " 
+ 	    	 		 + "where T1.ID_SRV=? ")
                  .setParameter(1, Long.valueOf(sessionIdArmSub))
                  .getSingleResult();
  	    	
@@ -648,10 +650,11 @@ import iac.grn.serviceitems.BaseTableItem;
 		  try{
 			  //в подсистемах
 			  List<Object> loArmSub=entityManager.createNativeQuery(
-					  "select 1 "+
-                      "from AC_SUBSYSTEM_CERT_BSS_T ass "+
-                      "where ASS.UP_IS = ? "+
-                      "and ASS.SUBSYSTEM_CODE = ? ")
+					  (new StringBuilder("select 1 "))
+                      .append("from AC_SUBSYSTEM_CERT_BSS_T ass ")
+                      .append("where ASS.UP_IS = ? ")
+                      .append("and ASS.SUBSYSTEM_CODE = ? ")
+					  .toString())
 	  				.setParameter(1, idArm)
 	  				.setParameter(2, armSubCode)
 	  				.getResultList();
@@ -663,9 +666,9 @@ import iac.grn.serviceitems.BaseTableItem;
 	          
 	          //в системах
 	          loArmSub=entityManager.createNativeQuery(
-					  "select 1 "+
-                      "from AC_IS_BSS_T ass "+
-                      "where ASS.SIGN_OBJECT = ? ")
+					  "select 1 "
+                      + "from AC_IS_BSS_T ass "
+                      + "where ASS.SIGN_OBJECT = ? ")
 	  				.setParameter(1, armSubCode)
 	  				.getResultList();
 	  
@@ -692,11 +695,12 @@ import iac.grn.serviceitems.BaseTableItem;
 		  try{
 			//в подсистемах
 			  List<Object> lo=entityManager.createNativeQuery(
-					          "select 1 "+
-		                      "from AC_SUBSYSTEM_CERT_BSS_T ass "+
-		                      "where ASS.UP_IS = ? "+
-		                      "and ASS.SUBSYSTEM_CODE = ? " +
-		                      "and ASS.ID_SRV!= ? ")
+			          (new StringBuilder("select 1 "))
+                      .append("from AC_SUBSYSTEM_CERT_BSS_T ass ")
+                      .append("where ASS.UP_IS = ? ")
+                      .append("and ASS.SUBSYSTEM_CODE = ? ") 
+                      .append("and ASS.ID_SRV!= ? ")
+			          .toString())
 			  				.setParameter(1, idArm)
 			  				.setParameter(2, armSubCode)
 			  				.setParameter(3, idArmSub)
@@ -709,9 +713,9 @@ import iac.grn.serviceitems.BaseTableItem;
 			  
 			  //в системах
 	          lo=entityManager.createNativeQuery(
-					  "select 1 "+
-                      "from AC_IS_BSS_T ass "+
-                      "where ASS.SIGN_OBJECT = ? ")
+					  "select 1 "
+                      + "from AC_IS_BSS_T ass "
+                      + "where ASS.SIGN_OBJECT = ? ")
 	  				.setParameter(1, armSubCode)
 	  				.getResultList();
 	  

@@ -225,8 +225,8 @@ import org.slf4j.LoggerFactory;
 				    pw.print("<tr>");
 				    pw.print("<td colspan=\"2\" align=\"right\" >");
 				     
-				    pw.print("<a href=\""+request.getContextPath()+"/services/access_cert.jsp"+
-			    		   "\" />Войти по сертификату</a>");
+				    pw.print("<a href=\""+request.getContextPath()+"/services/access_cert.jsp"
+			    		   + "\" />Войти по сертификату</a>");
 				    
 				    pw.print("</td>");
 			        pw.print("</tr>");
