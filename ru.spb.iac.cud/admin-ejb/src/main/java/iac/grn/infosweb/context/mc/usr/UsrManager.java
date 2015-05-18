@@ -2818,13 +2818,13 @@ import org.slf4j.LoggerFactory;
 	    	 searchStrUm=fam+" "+name+" "+otch+"%";
 	     }else if("".equals(fam)&&!"".equals(name)&&!"".equals(otch)){
 	    	 searchStrUm="% "+name+" "+otch+"%";
-	     }else if(!"".equals(fam)&&name.equals("")&&!"".equals(otch)){
+	     }else if(!"".equals(fam)&&"".equals(name)&&!"".equals(otch)){
 	    	 searchStrUm=fam+" % "+otch+"%";
 	     }else if(!"".equals(fam)&&!"".equals(name)&&"".equals(otch)){
 	    	 searchStrUm=fam+" "+name+" %";
-	     }else if("".equals(fam)&&name.equals("")&&!"".equals(otch)){
+	     }else if("".equals(fam)&&"".equals(name)&&!"".equals(otch)){
 	    	 searchStrUm="% "+otch+"%";
-	     }else if(!"".equals(fam)&&name.equals("")&&"".equals(otch)){
+	     }else if(!"".equals(fam)&&"".equals(name)&&"".equals(otch)){
 	    	 searchStrUm=fam+" %";
 	     }else if("".equals(fam)&&!"".equals(name)&&"".equals(otch)){
 	    	 searchStrUm="% "+name+" %";

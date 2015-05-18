@@ -17,11 +17,15 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
+import javaw.lang.Strings;
 import javaw.util.ArrayList;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javaw.util.SerializableList;
 
 import javax.faces.context.FacesContext;
@@ -471,9 +475,11 @@ import org.jboss.seam.transaction.Transaction;
 		   
 		   Transaction.instance().enlist(entityManager);
 		   
-		   entityManager.createNativeQuery("update AC_IS_BSS_T t1 " 
-		   		                           + "set T1.CERT_DATE=? " 
-		   		                           + "where t1.ID_SRV=? ")
+		   entityManager.createNativeQuery(
+				   (new StringBuilder("update AC_IS_BSS_T t1 "))
+                      .append("set T1.CERT_DATE=? ") 
+                      .append("where t1.ID_SRV=? ")
+                      .toString())
 		   .setParameter(1, x509CertArm)
 		   .setParameter(2, id_sys)
 		   .executeUpdate();  
@@ -501,13 +507,16 @@ import org.jboss.seam.transaction.Transaction;
   			        .get("sessionId");
   		   log.info("armManager:removeCert:sessionId:"+sessionIdArm);
   		
-  		   if(sessionIdArm==null||sessionIdArm.trim().equals("")){
+  		   
+  		   if(Strings.isNullOrEmptyTrim(sessionIdArm)){
   			   return;
   		   }
   			   
-  		   entityManager.createNativeQuery("update AC_IS_BSS_T t1 " 
-  		   		                           + "set T1.CERT_DATE=null " 
-  		   		                           + "where t1.ID_SRV=? ")
+  		   entityManager.createNativeQuery(
+  				   (new StringBuilder("update AC_IS_BSS_T t1 "))
+                        .append("set T1.CERT_DATE=null ") 
+                        .append("where t1.ID_SRV=? ")
+                        .toString())
   		   .setParameter(1, Long.valueOf(sessionIdArm))
   		   .executeUpdate();  
   			 
@@ -623,10 +632,13 @@ import org.jboss.seam.transaction.Transaction;
 			   }
 		      }else{
 		    	  
-		    	  dellMessage="У ИС есть привязка к заявке на создание системы " 
-		    	  		      + "<br/>№ "+lo.get(0)[0].toString()
-		    	  		      + " от "+df.format((Date)lo.get(0)[1])
-		    			      + ".<br/>Удаление невозможно! ";
+		    	  dellMessage=(new StringBuilder("У ИС есть привязка к заявке на создание системы "))
+	    	  		        .append("<br/>№ ")
+	    	  		        .append(lo.get(0)[0].toString())
+	    	  		        .append(" от ")
+	    	  		        .append(df.format((Date)lo.get(0)[1]))
+	    			        .append(".<br/>Удаление невозможно! ")
+	    			        .toString();
 		    	  delNot=1;
 		      }
 			 

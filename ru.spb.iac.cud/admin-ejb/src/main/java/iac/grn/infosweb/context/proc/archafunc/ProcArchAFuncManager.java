@@ -398,7 +398,7 @@ import org.jboss.seam.log.Log;
 		   
 		   procAAFBean= new ProcAAFItem();
 		   
-		  if(type.equals("procCrt")){
+		  if("procCrt".equals(type)){
 		  
 		    procAAFBean.setStatus("active");
 		  }else if ("procDel".equals(type)){ 

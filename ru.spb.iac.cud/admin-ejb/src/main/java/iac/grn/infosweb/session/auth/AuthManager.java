@@ -145,7 +145,7 @@ import org.jboss.seam.annotations.In;
 				 
 				 
 			}
-			if (!idRai_curr.equals("")) {
+			if (!"".equals(idRai_curr)) {
 				result.put(pageCode_prev, new ArrayList[] { raiList, permList });
 			}
 			

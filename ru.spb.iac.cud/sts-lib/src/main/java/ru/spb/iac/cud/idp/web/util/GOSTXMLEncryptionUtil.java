@@ -5,9 +5,12 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.HashMap;
 
+import javaw.lang.Strings;
+
 import javax.crypto.SecretKey;
 import javax.xml.namespace.QName;
 
+import org.apache.openejb.jee.sun.JavaWebStartAccess;
 import org.apache.xml.security.encryption.EncryptedData;
 import org.apache.xml.security.encryption.EncryptedKey;
 import org.apache.xml.security.encryption.XMLCipher;
@@ -184,8 +187,8 @@ import ru.spb.iac.crypto.export.Crypto15Init;
 			throw LOGGER.nullArgumentError("document");
 		}
 		String wrappingElementPrefix = wrappingElementQName.getPrefix();
-		
-		if (wrappingElementPrefix == null || wrappingElementPrefix.equals("")) {
+
+		if (Strings.isNullOrEmpty(wrappingElementPrefix)) {
 			throw LOGGER.wrongTypeError("Wrapping element prefix invalid");
 		}
 
@@ -227,7 +230,7 @@ import ru.spb.iac.crypto.export.Crypto15Init;
 				wrappingElementQName.getNamespaceURI(), wrappingElementName);
 
 		
-		//if (wrappingElementPrefix.equals(""))	{
+		//if ("".equals(wrappingElementPrefix))	{
 		//	wrappingElementName = wrappingElementQName.getLocalPart();
 		//}
 		wrappingElement.setAttributeNS(XMLNS, "xmlns:" + wrappingElementPrefix,
@@ -398,7 +401,7 @@ import ru.spb.iac.crypto.export.Crypto15Init;
 			throws ProcessingException, ConfigurationException {
 		String wrappingElementPrefix = wrappingElementQName.getPrefix();
 		
-		if (wrappingElementPrefix == null || wrappingElementPrefix.equals("")) {
+		if (Strings.isNullOrEmpty(wrappingElementPrefix)) {
 			throw LOGGER.wrongTypeError("Wrapping element prefix invalid");
 		}
 

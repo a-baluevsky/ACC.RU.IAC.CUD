@@ -462,18 +462,18 @@ import org.jboss.seam.log.Log;
 		   
 		   procBUBBean= new ProcBUBItem();
 		   
-		  if(typeBub.equals("procCrt")){
+		  if("procCrt".equals(typeBub)){
 		    this.procBUBBean.setPeriod(this.period);
 		    this.procBUBBean.setStartDate(this.startDate);
 		 
 		    procBUBBean.setStatus("active");
-		  }else if (typeBub.equals("procDel")){ 
+		  }else if ("procDel".equals(typeBub)){ 
 			  procBUBBean.setStatus("passive");
-		  }else if (typeBub.equals("procPause")){
+		  }else if ("procPause".equals(typeBub)){
 			this.procBUBBean.setPeriod(this.period);
 			this.procBUBBean.setStartDate(this.startDate);
 			procBUBBean.setStatus("pause");
-		  }else if (typeBub.equals("procRun")){
+		  }else if ("procRun".equals(typeBub)){
 			this.procBUBBean.setPeriod(this.period);
 			this.procBUBBean.setStartDate(this.startDate);
 			procBUBBean.setStatus("active");

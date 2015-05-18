@@ -1415,7 +1415,7 @@ import ru.spb.iac.cud.items.Role;
 						      // закомментировано, т.к. для систем код систем берётся idIS
 							  /* if(re/source.getCode()==nul/l||reso/urce.getCode().trim().equals("")){
 								   throw/ new GeneralFa/ilure("Отсутствует код ресурса!");
-							   }els/e */if(resource.getName()==null||resource.getName().trim().equals("")){
+							   }els/e */if(resource.getName()==null||"".equals(resource.getName().trim())){
 								   throw new GeneralFailure("Отсутствует название ресурса!");
 							   }
 								 
@@ -1478,9 +1478,9 @@ import ru.spb.iac.cud.items.Role;
 			    	   
 						 for(Resource resource :resources){
 							 
-						   if(resource.getCode()==null||resource.getCode().trim().equals("")){
+						   if(resource.getCode()==null||"".equals(resource.getCode().trim())){
 							   throw new GeneralFailure("Отсутствует код ресурса!");
-						   }else if(resource.getName()==null||resource.getName().trim().equals("")){
+						   }else if(resource.getName()==null||"".equals(resource.getName().trim())){
 							   throw new GeneralFailure("Отсутствует название ресурса!");
 						   }
 							 

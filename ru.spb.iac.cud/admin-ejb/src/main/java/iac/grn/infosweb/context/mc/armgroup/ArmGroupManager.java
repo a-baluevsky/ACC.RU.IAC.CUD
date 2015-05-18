@@ -578,7 +578,7 @@ import ru.spb.iac.cud.core.util.CUDConstants;
  			        .get("sessionId");
  		   log.info("armGroupManager:removeCert:sessionId:"+sessionId);
  		
- 		   if(sessionId==null||sessionId.trim().equals("")){
+ 		   if(Strings.isNullOrEmptyTrim(sessionId)){
  			   return;
  		   }
  			   

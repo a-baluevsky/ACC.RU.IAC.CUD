@@ -188,7 +188,7 @@ import javax.faces.context.FacesContext;
 			String link=(String)lm.get(pCode);
 			if(link==null)
 				return (String)lm.get(notFound);
-			if(pCode.equals("_errorPerm_")){
+			if("_errorPerm_".equals(pCode)){
 				 String actSect = FacesContext.getCurrentInstance().getExternalContext()
 				        .getRequestParameterMap()
 				        .get("actSect");

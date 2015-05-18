@@ -319,7 +319,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	    	   !"OpenDelFact".equals(remoteAudit)&&
 	   	       !"onSelColFact".equals(remoteAudit)&&
 	   	       !"refreshPdFact".equals(remoteAudit)&&
-	   	       !remoteAudit.equals("OpenCommentFact")
+	   	       !"OpenCommentFact".equals(remoteAudit)
 	   	    ){
 	    		log.info("BaseManager:evaluteForList!!!");
 	   		    evaluteForList=true;
@@ -368,7 +368,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 			    	if(sessionId!=null && remoteAudit!=null &&
 			    	   ("rowSelectFact".equals(remoteAudit)||	
 			    	    "UpdFact".equals(remoteAudit)||
-			    	    remoteAudit.equals("CommentFact"))){
+			    	    "CommentFact".equals(remoteAudit))){
 			    	      log.info("BaseManager:evaluteForBean!!!");
 			   		      evaluteForBean=true;
 			    	}

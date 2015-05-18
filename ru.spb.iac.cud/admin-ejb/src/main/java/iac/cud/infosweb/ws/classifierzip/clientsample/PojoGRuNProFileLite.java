@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.util.Date;
 import java.util.HashMap; 
 import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.transaction.UserTransaction;
 
@@ -211,7 +212,7 @@ import org.slf4j.LoggerFactory;
 
 		try {
 
-			if (ftype.equals("1")) {
+			if ("1".equals(ftype)) {
 				hm = hm_act;
 				buf_rec_file = buf_rec1_file;
 			}
@@ -324,7 +325,7 @@ import org.slf4j.LoggerFactory;
 
 		try {
 			ftype = s;
-			if (ftype.equals("1")) {
+			if ("1".equals(ftype)) {
 				buf_rec_file = buf_rec1_file;
 				hm = hm_act;
 				}
@@ -389,19 +390,19 @@ import org.slf4j.LoggerFactory;
 		
 				if (i <= hm.size()) {
 
-					String[] sconfrec = ((String[]) hm.get(Integer.toString(i)));
+					String[] sconfrec = (String[]) hm.get(Integer.toString(i));
 
 					if (i == 1) {
 						sbn.append(sconfrec[1]);
 						sbv.append("'"
-								+ ((pss.toLowerCase()).equals("null") ? ""
+								+ ("null".equalsIgnoreCase(pss) ? ""
 										: pss.trim().replaceAll("'", "''"))
 								+ "'");
 
 					} else {
 						sbn.append(", " + sconfrec[1]);
 						sbv.append(", '"
-								+ ((pss.toLowerCase()).equals("null") ? ""
+								+ ("null".equalsIgnoreCase(pss) ? ""
 										: pss.trim().replaceAll("'", "''"))
 								+ "'");
 					}
@@ -411,9 +412,14 @@ import org.slf4j.LoggerFactory;
 					i++;
 			}
 
-			query = "INSERT /*+ APPEND */ into ISP_TEMP_BSS_T (" + sbn
-					+ ", UP_ISP_LOAD ) values ( " + sbv + ", " + this.seancact
-					+ " ) ";
+			query = (new StringBuilder("INSERT /*+ APPEND */ into ISP_TEMP_BSS_T ("))
+						.append(sbn)
+						.append(", UP_ISP_LOAD ) values ( ") 
+						.append(sbv) 
+						.append(", ") 
+						.append( this.seancact)
+						.append(" ) ")
+					  .toString();
 
 		
 			this.em.createNativeQuery(query).executeUpdate();

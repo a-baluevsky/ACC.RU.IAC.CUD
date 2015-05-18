@@ -194,7 +194,7 @@ import ru.spb.iac.crypto.export.Crypto15Init;
 		}
 		String wrappingElementPrefix = wrappingElementQName.getPrefix();
 		
-		if (wrappingElementPrefix == null || wrappingElementPrefix.equals("")) {
+		if (Strings.isNullOrEmpty(wrappingElementPrefix)) {
 			throw LOGGER.wrongTypeError("Wrapping element prefix invalid");
 		}
 
@@ -403,7 +403,7 @@ import ru.spb.iac.crypto.export.Crypto15Init;
 			throws ProcessingException, ConfigurationException {
 		String wrappingElementPrefix = wrappingElementQName.getPrefix();
 	
-		if (wrappingElementPrefix == null || wrappingElementPrefix.equals("")) {
+		if (Strings.isNullOrEmpty(wrappingElementPrefix)) {
 			throw LOGGER.wrongTypeError("Wrapping element prefix invalid");
 		}
 

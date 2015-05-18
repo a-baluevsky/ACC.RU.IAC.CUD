@@ -127,19 +127,19 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 		LOGGER.debug("FileUploadServlet:doWork:01:" + type_sys);
 
-		if (type_sys.equals("system")) {
+		if ("system".equals(type_sys)) {
 			ArmManager sm = (ArmManager) Component.getInstance("armManager",
 					ScopeType.EVENT);
 			sm.saveArmCertificate(file_byte, id_sys);
-		} else if (type_sys.equals("subsystem")) {
+		} else if ("subsystem".equals(type_sys)) {
 			ArmSubManager sm = (ArmSubManager) Component.getInstance(
 					"armSubManager", ScopeType.EVENT);
 			sm.saveArmSubCertificate(file_byte, id_sys);
-		} else if (type_sys.equals("groupsystem")) {
+		} else if ("groupsystem".equals(type_sys)) {
 			ArmGroupManager sm = (ArmGroupManager) Component.getInstance(
 					"armGroupManager", ScopeType.EVENT);
 			sm.saveArmGroupCertificate(file_byte, id_sys);
-		} else if (type_sys.equals("user")) {
+		} else if ("user".equals(type_sys)) {
 			UsrManager um = (UsrManager) Component.getInstance("usrManager",
 					ScopeType.EVENT);
 			boolean result = um.saveUserCertificate(file_byte, id_sys);

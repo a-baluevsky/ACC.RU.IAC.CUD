@@ -18,16 +18,20 @@ import iac.cud.infosweb.remote.frontage.IRemoteFrontageLocal;
 import iac.grn.infosweb.session.audit.actions.ActionsMap;
 import iac.grn.infosweb.session.audit.actions.ResourcesMap;
 import iac.grn.infosweb.session.audit.export.AuditExportData;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.jboss.seam.Component;
 
+import javaw.lang.Strings;
+
 import javax.faces.context.FacesContext;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
+
 import iac.grn.serviceitems.BaseTableItem;
 
 import javax.servlet.http.HttpServletResponse;
@@ -307,7 +311,7 @@ import javax.servlet.http.HttpServletResponse;
                  
                log.info("ASys:invokeLocal:count:02:"+auditCount);
            	 } 
-			 else if(type.equals("listReport")){
+			 else if("listReport".equals(type)){
 				 log.info("invokeLocal:listReport:01");
                  
 				 auditReportList = entityManager.createQuery(
@@ -377,9 +381,7 @@ import javax.servlet.http.HttpServletResponse;
 		log.info("JournManager:forViewWord:01");
 		try{
 		 
-			if(fileNameSys==null || fileNameSys.equals("")){
-				fileNameSys="invoke_services";
-			}
+			fileNameSys = Strings.defaultForNullOrEmpty(fileNameSys,"invoke_services");
 			
 		  HttpServletResponse response = (HttpServletResponse)
 				  FacesContext.getCurrentInstance().getExternalContext().getResponse();

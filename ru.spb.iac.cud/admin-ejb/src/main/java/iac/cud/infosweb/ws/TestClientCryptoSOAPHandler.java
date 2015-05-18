@@ -182,7 +182,7 @@ import org.w3c.dom.NodeList;
     	 for (int i = 0; i<securityNodeChilds.getLength(); i++) {
     		 
     		 
-    		 if(securityNodeChilds.item(i).getLocalName()!=null&&securityNodeChilds.item(i).getLocalName().equals("Signature")){
+    		 if("Signature".equals(securityNodeChilds.item(i).getLocalName())){
     			 signatureNode1 = securityNodeChilds.item(i);
     		 }
     	 }

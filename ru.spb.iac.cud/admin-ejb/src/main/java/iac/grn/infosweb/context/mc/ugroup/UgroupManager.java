@@ -521,9 +521,7 @@ import org.jboss.seam.log.Log;
 		log.info("JournManager:forViewWord:01");
 		try{
 		 
-			if(fileNameUgr==null || fileNameUgr.equals("")){
-				fileNameUgr="invoke_services";
-			}
+			fileNameUgr = Strings.defaultForNullOrEmpty(fileNameUgr,"invoke_services");
 			
 		  HttpServletResponse response = (HttpServletResponse)
 				  FacesContext.getCurrentInstance().getExternalContext().getResponse();

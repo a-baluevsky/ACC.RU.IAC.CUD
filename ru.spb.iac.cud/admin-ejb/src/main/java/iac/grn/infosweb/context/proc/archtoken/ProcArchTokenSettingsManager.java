@@ -41,7 +41,7 @@ import org.jboss.seam.log.Log;
 			        .get("remoteAudit");
 		    log.info("confLoadDataManager:init:remoteAudit:"+remoteAuditArchToken);
 	
-		     if(remoteAuditArchToken!=null /*&& !remoteAudit.equals("procSetting")*/){ 
+		     if(remoteAuditArchToken!=null /*&& !"procSetting".equals(remoteAudit)*/){ 
 		    	 //при сохранении настроек
 		    	 //procArchTokenSettingsBean устанавливать не нужно
 			     //он автоматически продолжается в EventContext

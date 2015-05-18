@@ -313,11 +313,11 @@ import ru.spb.iac.cud.sts.util.CUDWSTrustUtil;
 						String elementName = (keyElement).getLocalName();
 						// if the specified key is a X509 certificate we must
 						// insert it into a X509Data element.
-						if (elementName.equals("X509Certificate")) {
+						if ("X509Certificate".equals(elementName)) {
 							X509DataType data = new X509DataType();
 							data.add(value);
 							value = data;
-						} else if (elementName.equals("KeyValue")) {
+						} else if ("KeyValue".equals(elementName)) {
 							KeyValueType keyValue = null;
 							Element child = DocumentUtil
 									.getChildElement(

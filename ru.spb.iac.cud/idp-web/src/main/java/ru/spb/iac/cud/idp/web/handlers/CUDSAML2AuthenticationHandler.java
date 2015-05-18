@@ -469,9 +469,9 @@ import static org.picketlink.common.util.StringUtil.*;
                 boolean isIdpUsesPostBinding = getSPConfiguration().isIdpUsesPostBinding();
 
                 if (bindingType != null) {
-                    if (bindingType.equals("POST") || isIdpUsesPostBinding) {
+                    if ("POST".equals(bindingType) || isIdpUsesPostBinding) {
                         authn.setProtocolBinding(URI.create(JBossSAMLURIConstants.SAML_HTTP_POST_BINDING.get()));
-                    } else if (bindingType.equals("REDIRECT")) {
+                    } else if ("REDIRECT".equals(bindingType)) {
                         authn.setProtocolBinding(URI.create(JBossSAMLURIConstants.SAML_HTTP_REDIRECT_BINDING.get()));
                     } else {
                         throw logger.samlInvalidProtocolBinding();

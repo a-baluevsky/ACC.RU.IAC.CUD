@@ -105,7 +105,7 @@ import ru.spb.iac.cud.items.AuthMode;
 				 LOGGER.debug("service:06");
 				 
 				 if(backUrl!=null){
-					if(pswitch==null||!pswitch.equals("false")){ 
+					if(pswitch==null||!"false".equals(pswitch)){ 
 		  	          repeatLoginUrl = request.getContextPath()+"/AccessServicesWebLogin?success=false&backUrl="+backUrl;
 					}else{
 					  repeatLoginUrl = request.getContextPath()+"/AccessServicesWebLogin?switch=false&success=false&backUrl="+backUrl;	

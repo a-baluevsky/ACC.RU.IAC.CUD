@@ -17,11 +17,15 @@ import iac.grn.serviceitems.BaseTableItem;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
+import javaw.lang.Strings;
 import javaw.util.ArrayList;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javaw.util.SerializableList;
 import javaw.util.SerializableMap;
 
@@ -236,11 +240,11 @@ import org.jboss.seam.log.Log;
 	              for (SerializableMap.Entry<String, String> me : setFilterAFunc) {  
 	            	  String sKey=me.getKey();
 	              //у нас act_dat_value переведена в строку уже в запросе	            	  
-	   		      if(sKey.equals("arm_id")){ 
+	   		      if("arm_id".equals(sKey)){ 
 	   		    	 putWhereCondition("arm_id", "=", me.getValue());      	        		  
-  	        	  } else if(sKey.equals("act_dat_value")) {
+  	        	  } else if("act_dat_value".equals(sKey)) {
   	        		  putWhereCondition(Date.class, "act_dat", ">=", me.getValue());
-  	        	  } else if(sKey.equals("act_dat_value2")) {
+  	        	  } else if("act_dat_value2".equals(sKey)) {
   	        		  putWhereCondition(Date.class, "act_dat", "<=", me.getValue());
   	        	  } else{ //делаем фильтр на начало текста
 	            	 putWhereCondition(sKey, "like", me.getValue());
@@ -295,7 +299,7 @@ import org.jboss.seam.log.Log;
                 	 m_QueryStats[2] = auditCount;
                  }    			 
                  log.info("AFunc:invokeLocal:count:02:"+auditCount);
-           	 }  else if(type.equals("listReport")){
+           	 }  else if("listReport".equals(type)){
 				 log.info("AFunc:invokeLocal:listReport:01");
                  
 				 auditReportList = new ArrayList<BaseItem>(entityManager.createQuery(
@@ -310,7 +314,7 @@ import org.jboss.seam.log.Log;
 					 
 	             log.info("invokeLocal:listReport:02:size:"+auditReportList.size());
 				 
-			 }else if(type.equals("listReportCube")){
+			 }else if("listReportCube".equals(type)){
 				 log.info("invokeLocal:listReportCube:01");
                  
 				 this.auditReportCubeList=new ArrayList<AuditFuncItem>();
@@ -401,16 +405,13 @@ import org.jboss.seam.log.Log;
      
     public void forViewWord(String fileName){
 		log.info("JournManager:forViewWord:01");
-		try{
-		 
-			if(fileName==null || fileName.equals("")){
-				fileName="user_actions";
-			}
+		try{		 
+			  String sFileName=Strings.defaultForNullOrEmpty(fileName,"user_actions");
 			
-		  HttpServletResponse response = (HttpServletResponse)
-				  FacesContext.getCurrentInstance().getExternalContext().getResponse();
-		  response.setHeader("Content-disposition", "attachment; filename="+fileName+".doc");
-	      response.setContentType("application/msword");
+			  HttpServletResponse response = (HttpServletResponse)
+					  FacesContext.getCurrentInstance().getExternalContext().getResponse();
+			  response.setHeader("Content-disposition", "attachment; filename="+sFileName+".doc");
+		      response.setContentType("application/msword");
 
 		}catch(Exception e){
 			log.error("auditReportsManager:forViewWord:error:"+e);

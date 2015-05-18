@@ -41,7 +41,7 @@ import org.jboss.seam.log.Log;
 			        .get("remoteAudit");
 		    log.info("procBindUnBindSettingsManager:init:remoteAudit:"+remoteAuditBindUnBind);
 	
-		     if(remoteAuditBindUnBind!=null /*&& !remoteAudit.equals("procSetting")*/){ 
+		     if(remoteAuditBindUnBind!=null /*&& !"procSetting".equals(remoteAudit)*/){ 
 		    	 //при сохранении настроек
 		    	 //procArchAFuncSettingsBean устанавливать не нужно
 			     //он автоматически продолжается в EventContext

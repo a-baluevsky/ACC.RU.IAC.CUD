@@ -461,18 +461,18 @@ import org.jboss.seam.log.Log;
 		   
 		   procBNABean= new ProcBNAItem();
 		   
-		  if(typeBna.equals("procCrt")){
+		  if("procCrt".equals(typeBna)){
 		    this.procBNABean.setPeriod(this.period);
 		    this.procBNABean.setStartDate(this.startDate);
 		 
 		    procBNABean.setStatus("active");
-		  }else if (typeBna.equals("procDel")){ 
+		  }else if ("procDel".equals(typeBna)){ 
 			  procBNABean.setStatus("passive");
-		  }else if (typeBna.equals("procPause")){
+		  }else if ("procPause".equals(typeBna)){
 			this.procBNABean.setPeriod(this.period);
 			this.procBNABean.setStartDate(this.startDate);
 			procBNABean.setStatus("pause");
-		  }else if (typeBna.equals("procRun")){
+		  }else if ("procRun".equals(typeBna)){
 			this.procBNABean.setPeriod(this.period);
 			this.procBNABean.setStartDate(this.startDate);
 			procBNABean.setStatus("active");

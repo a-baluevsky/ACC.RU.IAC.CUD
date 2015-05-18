@@ -5,6 +5,8 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.HashMap;
 
+import javaw.lang.Strings;
+
 import javax.crypto.SecretKey;
 import javax.xml.namespace.QName;
 
@@ -194,7 +196,8 @@ import ru.spb.iac.crypto.export.Crypto15Init;
 		}
 		String wrappingElementPrefix = wrappingElementQName.getPrefix();
 		
-		if (wrappingElementPrefix == null || wrappingElementPrefix.equals("")) {
+		
+		if (javaw.lang.Strings.isNullOrEmpty(wrappingElementPrefix)) {
 			throw LOGGER.wrongTypeError("Wrapping element prefix invalid");
 		}
 
@@ -404,7 +407,7 @@ import ru.spb.iac.crypto.export.Crypto15Init;
 			throws ProcessingException, ConfigurationException {
 		String wrappingElementPrefix = wrappingElementQName.getPrefix();
 		
-		if (wrappingElementPrefix == null || wrappingElementPrefix.equals("")) {
+		if (Strings.isNullOrEmpty(wrappingElementPrefix)) {
 			throw LOGGER.wrongTypeError("Wrapping element prefix invalid");
 		}
 

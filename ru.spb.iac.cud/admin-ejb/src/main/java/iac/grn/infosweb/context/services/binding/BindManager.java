@@ -1805,7 +1805,7 @@ import javax.persistence.NoResultException;
 					.get("typeFilter");
 	   log.info("BindManager:resetBinFlag:typeFilter:"+typeFilter);
 		
-	   if(typeFilter!=null && typeFilter.equals("rezim")) {
+	   if("rezim".equals(typeFilter)) {
 	   
 	      BindStateHolder bindStateHolder = (BindStateHolder)
 				  Component.getInstance("bindStateHolder",ScopeType.SESSION);
@@ -2136,7 +2136,7 @@ import javax.persistence.NoResultException;
 				   .setParameter("idArm", Long.valueOf(idArm))
                    .getResultList());
 		 
-		   if(remoteAudit!=null&&remoteAudit.equals("armSelectFact")){
+		   if("armSelectFact".equals(remoteAudit)){
 		   
 		     List<AcRole> listBindRol=entityManager.createQuery("select o from AcRole o JOIN o.acLinkUserToRoleToRaions o1 where o1.pk.acUser = :acUser ")
 					 .setParameter("acUser", Long.valueOf(sessionId))
@@ -2370,7 +2370,7 @@ import javax.persistence.NoResultException;
 	    	    	
 	   	       !"selRecAllFact".equals(remoteAuditBind)&&
 	   	       !"clRecAllFact".equals(remoteAuditBind)&&
-	   	      // !remote/Audit.equals("clSelOneFact")&&
+	   	      // !remote/"clSelOneFact".equals(Audit)&&
 	   	       !"onSelColSaveFact".equals(remoteAuditBind)){
 	    		log.info("bindManager:evaluteForListFooter!!!");
 	   		    evaluteForListFooter=true;

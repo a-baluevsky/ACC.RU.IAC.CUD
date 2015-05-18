@@ -217,7 +217,7 @@ import iac.grn.serviceitems.BaseTableItem;
 			if(modelType==null){
 		    	return ;
 		    }
-			if(modelType.equals("armSubDataModel")){
+			if("armSubDataModel".equals(modelType)){
 				
 			}  
 		
@@ -427,7 +427,7 @@ import iac.grn.serviceitems.BaseTableItem;
  			        .get("sessionId");
  		   log.info("armSubManager:removeCert:sessionId:"+sessionIdArmSub);
  		
- 		   if(sessionIdArmSub==null||sessionIdArmSub.trim().equals("")){
+ 		   if(Strings.isNullOrEmptyTrim(sessionIdArmSub)){
  			   return;
  		   }
  			   

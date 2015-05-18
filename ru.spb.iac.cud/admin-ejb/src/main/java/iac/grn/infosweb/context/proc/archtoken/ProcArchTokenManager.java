@@ -410,14 +410,14 @@ import org.jboss.seam.log.Log;
 			   
 			   procATBean= new ProcATItem();
 			   
-			  if(type.equals("procCrt")){
+			  if("procCrt".equals(type)){
 			  
 			    procATBean.setStatus("active");
-			  }else if (type.equals("procDel")){ 
+			  }else if ("procDel".equals(type)){ 
 				  procATBean.setStatus("passive");
-			  }else if (type.equals("procPause")){
+			  }else if ("procPause".equals(type)){
 				procATBean.setStatus("pause");
-			  }else if (type.equals("procRun")){
+			  }else if ("procRun".equals(type)){
 				procATBean.setStatus("active");
 			  }
 				  
