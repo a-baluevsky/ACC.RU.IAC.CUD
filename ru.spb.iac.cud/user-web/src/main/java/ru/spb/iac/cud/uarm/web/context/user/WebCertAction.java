@@ -430,9 +430,9 @@ private static String dec_to_hex(BigInteger bi) {
 	 return result;
 }
 
-public String root_sn() throws IOException {
-	if(root_sn==null) {
-	  FileInputStream fi = null;	
+private static String getRoot_sn() throws IOException {
+	  FileInputStream fi = null;
+	  String newRoot_sn = null;
 	  try {
 		if(keyStore==null) {
 		  keyStore = KeyStore.getInstance("CertStore", "JCP");
@@ -440,14 +440,20 @@ public String root_sn() throws IOException {
 		  keyStore.load(fi, "Access_Control".toCharArray());
 		}
 		X509Certificate tr = (X509Certificate)keyStore.getCertificate(alias_root);
-		root_sn = dec_to_hex(tr.getSerialNumber());  
+		newRoot_sn = dec_to_hex(tr.getSerialNumber());  
 	  } catch(Exception e){
-		  LOGGER.error("WebCertAction:root_sn:error:"+e);
+		  LOGGER.error("WebCertAction:getRoot_sn:error:"+e);
 	  }	finally {
 		if(fi!=null) { 
 			fi.close();
 		}				
 	  }
+	  return newRoot_sn;
+}
+
+public String root_sn() throws IOException {	
+	if(root_sn==null) {
+		root_sn=getRoot_sn();
 	}
 	return root_sn;
 }

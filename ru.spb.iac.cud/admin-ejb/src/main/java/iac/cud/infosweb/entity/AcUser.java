@@ -210,18 +210,18 @@ import org.jboss.seam.annotations.Role;
 	}
 
 	public Date getModified() {
-		return this.modified;
+		return this.modified==null ? null: (Date)this.modified.clone();
 	}
 	public void setModified(Date modified) {
-		this.modified = modified;
+		this.modified = (modified==null)?null:(Date)modified.clone();
 	}
 
 	
 	public Date getCreated() {
-		return this.created;
+		return this.created==null ? null: (Date)this.created.clone();
 	}
 	public void setCreated(Date created) {
-		this.created = created;
+		this.created = (created==null)?null:(Date)created.clone();
 	}
 	
 	
@@ -324,17 +324,17 @@ import org.jboss.seam.annotations.Role;
 	}
 	
 	public Date getStart() {
-		return this.start;
+		return this.start==null ? null: (Date)this.start.clone();
 	}
 	public void setStart(Date start) {
-		this.start = start;
+		this.start = (start==null)?null:(Date)start.clone();
 	}
 	
 	public Date getFinish() {
-		return this.finish;
+		return this.finish==null ? null: (Date)this.finish.clone();
 	}
 	public void setFinish(Date finish) {
-		this.finish = finish;
+		this.finish = (finish==null)?null:(Date)finish.clone();
 	}
 	
 	public String getOrgName() {

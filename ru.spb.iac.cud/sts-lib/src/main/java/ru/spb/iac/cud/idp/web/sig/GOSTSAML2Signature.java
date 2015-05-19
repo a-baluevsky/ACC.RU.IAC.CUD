@@ -168,7 +168,6 @@ import ru.spb.iac.cud.idp.web.util.GOSTXMLSignatureUtil;
      */
     public Document sign(Document doc, String referenceID, KeyPair keyPair) throws ParserConfigurationException,
             GeneralSecurityException, MarshalException, XMLSignatureException {
-        String referenceURI = "#" + referenceID;
 
         configureIdAttribute(doc);
 
@@ -178,7 +177,7 @@ import ru.spb.iac.cud.idp.web.util.GOSTXMLSignatureUtil;
             dto.setKeyPair(keyPair);
             dto.setDigestMethod(digestMethod);
             dto.setSignatureMethod(signatureMethod);
-            dto.setReferenceURI(referenceURI);
+            dto.setReferenceURI("#" + referenceID);
             dto.setNextSibling(sibling);
 
             if(x509Certificate != null){
@@ -187,7 +186,7 @@ import ru.spb.iac.cud.idp.web.util.GOSTXMLSignatureUtil;
 
              return GOSTXMLSignatureUtil.sign(dto);
         }
-        return  GOSTXMLSignatureUtil.sign(doc, keyPair, digestMethod, signatureMethod, referenceURI);
+        return  GOSTXMLSignatureUtil.sign(doc, keyPair, digestMethod, signatureMethod, "#" + referenceID);
 
     }
 

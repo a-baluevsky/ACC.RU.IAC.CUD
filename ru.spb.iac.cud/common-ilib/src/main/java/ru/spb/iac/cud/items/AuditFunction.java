@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlType;
 	}
 
 	public void setDateFunction(Date dateFunction) {
-		this.dateFunction = dateFunction;
+		this.dateFunction = (dateFunction==null)?null:(Date)dateFunction.clone();
 	}
 
 	public String getDetailsFunction() {

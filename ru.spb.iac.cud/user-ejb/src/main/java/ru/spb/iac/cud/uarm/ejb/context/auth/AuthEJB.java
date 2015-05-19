@@ -303,9 +303,9 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
  		   
  		  LOGGER.debug("authenticator:cudAuthOBO:02:"+tokenID);
  		   
- 		   STSServiceClient soboc = new STSServiceClient();
+
  		   
- 		   this.assertionOBO = soboc.sign_verify_soap_transform_2sign(tokenID);
+ 		   this.assertionOBO = STSServiceClient.sign_verify_soap_transform_2sign(tokenID);
 
  		  LOGGER.debug("authenticator:cudAuthOBO:03");
  		   
@@ -875,7 +875,7 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
 			
 			 Provider xmlDSigProvider = new ru.CryptoPro.JCPxml.dsig.internal.dom.XMLDSigRI();
 		   	  
-	    	 XMLSignatureFactory fac = XMLSignatureFactory.getInstance("DOM", xmlDSigProvider);
+
 	        	
 	    	 LOGGER.debug("test1:01_1");
 	    	 
@@ -904,7 +904,7 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
 	     
 	         DOMValidateContext valContext1 = new DOMValidateContext(publicKey, signatureNode1);
 	       
-	    	 javax.xml.crypto.dsig.XMLSignature signature1 = fac.unmarshalXMLSignature(valContext1);
+	    	 javax.xml.crypto.dsig.XMLSignature signature1 = XMLSignatureFactory.getInstance("DOM", xmlDSigProvider).unmarshalXMLSignature(valContext1);
 	         
 	    	  boolean result1 = signature1.validate(valContext1);
 	    			 

@@ -84,35 +84,35 @@ import java.util.Date;
 	}
 
 	public Date getCreated() {
-		return this.created;
+		return this.created==null ? null: (Date)this.created.clone();
 	}
 
 	public void setCreated(Date created) {
-		this.created = created;
+		this.created = (created==null)?null:(Date)created.clone();
 	}
 
 	public Date getDateAction() {
-		return this.dateAction;
+		return this.dateAction==null ? null: (Date)this.dateAction.clone();
 	}
 
 	public void setDateAction(Date dateAction) {
-		this.dateAction = dateAction;
+		this.dateAction = (dateAction==null)?null:(Date)dateAction.clone();
 	}
 
 	public Date getDateEventSrv() {
-		return this.dateEventSrv;
+		return this.dateEventSrv==null ? null: (Date)this.dateEventSrv.clone();
 	}
 
 	public void setDateEventSrv(Date dateEventSrv) {
-		this.dateEventSrv = dateEventSrv;
+		this.dateEventSrv = (dateEventSrv==null)?null:(Date)dateEventSrv.clone();
 	}
 
 	public Date getModified() {
-		return this.modified;
+		return this.modified==null ? null: (Date)this.modified.clone();
 	}
 
 	public void setModified(Date modified) {
-		this.modified = modified;
+		this.modified = (modified==null)?null:(Date)modified.clone();
 	}
 
 	public ActionsBssT getActionsBssT() {

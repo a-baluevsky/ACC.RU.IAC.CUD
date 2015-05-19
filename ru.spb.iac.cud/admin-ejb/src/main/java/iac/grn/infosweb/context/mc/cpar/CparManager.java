@@ -111,25 +111,20 @@ import iac.grn.serviceitems.BaseTableItem;
 	public void invokeLocal(String type, int firstRow, int numberOfRows,
 	           String sessionId) {
 		try{
-			 String orderQueryCPar=null;
+			 
 			 log.info("CParManager:invokeLocal");
 			 
 			 if("list".equals(type)){
-				 log.info("CPar:invokeLocal:list:01");
-				 
+				 log.info("CPar:invokeLocal:list:01");				 
 				 CparStateHolder orgStateHolder = (CparStateHolder)
 						  Component.getInstance("cparStateHolder",ScopeType.SESSION);
 				 Set<Map.Entry<String, String>> set = orgStateHolder.getSortOrders().entrySet();
+				 StringBuilder sbOrderQueryCPar = new StringBuilder();
                  for (Map.Entry<String, String> me : set) {
-      		        
-      		       if(orderQueryCPar==null){
-      		    	 orderQueryCPar="order by "+me.getKey()+" "+me.getValue();
-      		       }else{
-      		    	 orderQueryCPar=orderQueryCPar+", "+me.getKey()+" "+me.getValue();  
-      		       }
+                	 sbOrderQueryCPar.append(", ").append(me.getKey()).append(" ").append(me.getValue());
       		     }
+                 String orderQueryCPar=(sbOrderQueryCPar.length()>0)?"order by "+sbOrderQueryCPar.substring(1):"";                 
                  log.info("invokeLocal:list:orderQueryCPar:"+orderQueryCPar);
-                 
 				 if(orderQueryCPar.contains("o1.full")){
                 	 auditList = new ArrayList<BaseItem>(entityManager.createQuery(
                          	"select o from SettingsKnlT o LEFT JOIN o.servicesBssT o1 "+		 
@@ -138,7 +133,7 @@ import iac.grn.serviceitems.BaseTableItem;
                                             .setMaxResults(numberOfRows)
                                             .getResultList());
                  }else{
-				  auditList = new ArrayList<BaseItem>(entityManager.createQuery("select o from SettingsKnlT o "+(orderQueryCPar!=null ? orderQueryCPar : ""))
+				  auditList = new ArrayList<BaseItem>(entityManager.createQuery("select o from SettingsKnlT o "+orderQueryCPar)
 	                       .setFirstResult(firstRow)
 	                       .setMaxResults(numberOfRows)
 	                       .getResultList());

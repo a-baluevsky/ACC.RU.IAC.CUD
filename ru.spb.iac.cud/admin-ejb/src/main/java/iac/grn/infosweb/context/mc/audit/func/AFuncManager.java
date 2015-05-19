@@ -510,10 +510,10 @@ public void clearDate(){
    }
    
 public Date getClearDate1(){
-	   return this.clearDate1;
+	   return this.clearDate1==null ? null: (Date)this.clearDate1.clone();
 }
 public void setClearDate1(Date clearDate1){
-	   this.clearDate1=clearDate1;
+	   this.clearDate1=(clearDate1==null)?null:(Date)clearDate1.clone();
 }
 
    public String getDellMessage() {
@@ -526,10 +526,10 @@ public void setClearDate1(Date clearDate1){
   
   
    public Date getClearDate2(){
-	   return this.clearDate2;
+	   return this.clearDate2==null ? null: (Date)this.clearDate2.clone();
    }
    public void setClearDate2(Date clearDate2){
-	   this.clearDate2=clearDate2;
+	   this.clearDate2=(clearDate2==null)?null:(Date)clearDate2.clone();
    }
 
 public Long getArchiveParamValue() {

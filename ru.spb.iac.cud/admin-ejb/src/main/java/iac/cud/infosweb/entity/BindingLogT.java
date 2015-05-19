@@ -65,11 +65,11 @@ import java.util.Date;
 	}
 
 	public Date getCreated() {
-		return this.created;
+		return this.created==null ? null: (Date)this.created.clone();
 	}
 
 	public void setCreated(Date created) {
-		this.created = created;
+		this.created = (created==null)?null:(Date)created.clone();
 	}
 
 	public Long getCreator() {
@@ -81,11 +81,11 @@ import java.util.Date;
 	}
 
 	public Date getDateEventSrv() {
-		return this.dateEventSrv;
+		return this.dateEventSrv==null ? null: (Date)this.dateEventSrv.clone();
 	}
 
 	public void setDateEventSrv(Date dateEventSrv) {
-		this.dateEventSrv = dateEventSrv;
+		this.dateEventSrv = (dateEventSrv==null)?null:(Date)dateEventSrv.clone();
 	}
 
 	public Long getNotUpIspSignUser() {

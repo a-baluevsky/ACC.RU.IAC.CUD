@@ -1249,19 +1249,17 @@ public abstract class CUDAbstractIDPValve extends ValveBase {
 
 			if (handlers != null) {
 				Handlers cfgHandlers = getConfiguration().getHandlers();
-				try {
-					if (cfgHandlers.isLocking()) {
-						chainLock.lock();
-					}
-					for (SAML2Handler handler : handlers) {
-						handler.handleRequestType(saml2HandlerRequest,
-								saml2HandlerResponse);
-						willSendRequest = saml2HandlerResponse.getSendRequest();
-					}
-				} finally {
-					if (cfgHandlers!=null && cfgHandlers.isLocking()) {
+				if (cfgHandlers!=null && cfgHandlers.isLocking()) {
+					chainLock.lock();
+					try {
+						for (SAML2Handler handler : handlers) {
+							handler.handleRequestType(saml2HandlerRequest,
+									saml2HandlerResponse);
+							willSendRequest = saml2HandlerResponse.getSendRequest();
+						}
+					} finally {
 						chainLock.unlock();
-					}
+					}					
 				}
 			}
 

@@ -74,11 +74,11 @@ import java.util.Date;
 	
 
 	public Date getCreated() {
-		return this.created;
+		return this.created==null ? null: (Date)this.created.clone();
 	}
 
 	public void setCreated(Date created) {
-		this.created = created;
+		this.created = (created==null)?null:(Date)created.clone();
 	}
 
 	public String getClassifVersion() {
@@ -99,11 +99,11 @@ import java.util.Date;
 	}
 
 	public Date getLoadFinish() {
-		return this.loadFinish;
+		return this.loadFinish==null ? null: (Date)this.loadFinish.clone();
 	}
 
 	public void setLoadFinish(Date loadFinish) {
-		this.loadFinish = loadFinish;
+		this.loadFinish = (loadFinish==null)?null:(Date)loadFinish.clone();
 	}
 
 	public Long getCreator() {
@@ -122,11 +122,11 @@ import java.util.Date;
 	}
 
 	public Date getLoadStart() {
-		return this.loadStart;
+		return this.loadStart==null ? null: (Date)this.loadStart.clone();
 	}
 
 	public void setLoadStart(Date loadStart) {
-		this.loadStart = loadStart;
+		this.loadStart = (loadStart==null)?null:(Date)loadStart.clone();
 	}
 
 	

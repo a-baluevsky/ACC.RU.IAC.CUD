@@ -53,10 +53,10 @@ import org.jboss.seam.log.Log;
 	private ProcAAFInfoItem procAAFInfoBean;
 	
 	public Date getStartDate(){
-		return this.startDate;
+		return this.startDate==null ? null: (Date)this.startDate.clone();
 	}
 	public void setStartDate(Date startDate){
-		this.startDate=startDate;
+		this.startDate=(startDate==null)?null:(Date)startDate.clone();
 	}
 	
 	public Long getPeriod(){

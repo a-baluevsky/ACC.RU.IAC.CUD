@@ -10,6 +10,7 @@ import iac.grn.infosweb.session.audit.export.AuditExportData;
 import iac.grn.serviceitems.ProcAASInfoItem;
 import iac.grn.serviceitems.ProcAASItem;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -51,10 +52,10 @@ import org.jboss.seam.log.Log;
 	private ProcAASInfoItem procAASInfoBean;
 	
 	public Date getStartDate(){
-		return this.startDate;
+		return this.startDate==null ? null: (Date)this.startDate.clone();
 	}
 	public void setStartDate(Date startDate){
-		this.startDate=startDate;
+		this.startDate=(startDate==null)?null:(Date)startDate.clone();
 	}
 	
 	public Long getPeriod(){
@@ -381,16 +382,9 @@ import org.jboss.seam.log.Log;
 		  }catch (Exception eSys) {
 				log.error("confLogContrManager:procRun:error:"+eSys);
 		  }finally{
-			 try {
-				if(os!=null){
-					 os.close();
-				}
-				if(fi!=null) { 
-					fi.close();
-				}				
-			 } catch (Exception eSys) {
-				log.error("confLogContrManager:procRun:os:error:"+eSys);
-			 }
+				 String[] aMsg = new String[]{"confLogContrManager:procRun:finally:"};
+				 if(!javaw.io.Closeable.Close(aMsg, os, fi))
+					 log.error(aMsg[0]);
 		 }
 	}
 	

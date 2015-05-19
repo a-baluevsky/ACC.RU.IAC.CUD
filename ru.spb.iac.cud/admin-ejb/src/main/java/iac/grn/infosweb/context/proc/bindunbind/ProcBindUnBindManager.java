@@ -56,15 +56,15 @@ import org.jboss.seam.log.Log;
 	public Long getPeriod(){
 		return this.period;
 	}
-	public void setPeriod(Long period){
+	public synchronized void setPeriod(Long period){
 		this.period=period;
 	}
 
 	
-	public Date getStartDate(){
+	public synchronized Date getStartDate(){
 		return this.startDate;
 	}
-	public void setStartDate(Date startDate){
+	public synchronized void setStartDate(Date startDate){
 		this.startDate=startDate;
 	}
 	

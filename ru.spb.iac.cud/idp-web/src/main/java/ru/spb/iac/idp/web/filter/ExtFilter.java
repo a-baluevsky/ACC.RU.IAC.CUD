@@ -1535,18 +1535,16 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 
 		// Cache the authentication principal in the session
 		Session session = request.getSessionInternal(false);
-
-		LOGGER.debug("register:01_1:" + session.getId());
-		LOGGER.debug("register:01_2:" + session.getAuthType());
-		LOGGER.debug("register:01_3:" + session.getSession().getId());
-		LOGGER.debug("register:01_4:" + (session.getPrincipal() == null));
-
-		if (session.getPrincipal() != null) {
-			LOGGER.debug("register:01_4+:" + session.getPrincipal().getName());
-		}
-
 		
 		if (session != null) {
+			LOGGER.debug("register:01_1:" + session.getId());
+			LOGGER.debug("register:01_2:" + session.getAuthType());
+			LOGGER.debug("register:01_3:" + session.getSession().getId());
+			LOGGER.debug("register:01_4:" + (session.getPrincipal() == null));
+	
+			if (session.getPrincipal() != null) {
+				LOGGER.debug("register:01_4+:" + session.getPrincipal().getName());
+			}			
 
 			LOGGER.debug("register:02");
 

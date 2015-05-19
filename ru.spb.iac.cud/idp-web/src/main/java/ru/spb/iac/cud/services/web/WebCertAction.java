@@ -29,6 +29,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javaw.io.Closeable;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -386,31 +388,32 @@ private static String alias_root = "σφροαγσο«ροαθΰφ».crt";
 		return result;
 	}
 
-	private static void initKeyStore(FileInputStream fi) 
+	private static void initKeyStore() 
 			throws KeyStoreException, NoSuchProviderException, NoSuchAlgorithmException, 
 			CertificateException, IOException {
-				if(keyStore==null) {
-					keyStore = KeyStore.getInstance("CertStore", "JCP");
-	
-					fi = new FileInputStream(cert_store_url);
-					keyStore.load(fi, "Access_Control".toCharArray());
-				}		
+		FileInputStream fi = null;
+		try {			
+			if(keyStore==null) {
+				keyStore = KeyStore.getInstance("CertStore", "JCP");
+				fi = new FileInputStream(cert_store_url);
+				keyStore.load(fi, "Access_Control".toCharArray());
+			}
+		} finally {
+			String[] aMsg = new String[]{"initKeyStore:finally"};
+			if(!Closeable.Close(aMsg, fi))
+				LOGGER.error(aMsg[0]);
+		}
 	}
 	
 	public String root_sn() throws IOException {
 		if (root_sn == null) {
-			FileInputStream fi = null; 
 			try {
-				initKeyStore(fi);				
+				initKeyStore();				
 				X509Certificate tr = (X509Certificate) keyStore
 						.getCertificate(alias_root);
 				root_sn = dec_to_hex(tr.getSerialNumber());
 			} catch (Exception e) {
 				LOGGER.error("root_sn:error:", e);
-			} finally{
-				if(fi!=null) { 
-					fi.close();
-				}				
 			}
 		}
 

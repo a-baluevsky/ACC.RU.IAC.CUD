@@ -82,7 +82,7 @@ import javax.xml.bind.annotation.XmlType;
      *     byte[]
      */
     public void setFileContent(byte[] value) {
-        this.fileContent = value;
+        this.fileContent = (value==null)?null:(byte[])value.clone();
     }
 
 }

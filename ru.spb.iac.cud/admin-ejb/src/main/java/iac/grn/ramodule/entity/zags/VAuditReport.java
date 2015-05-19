@@ -187,11 +187,11 @@ import java.util.Date;
 	}
 
 	public Date getExtendedTimestamp() {
-		return this.extendedTimestamp;
+		return this.extendedTimestamp==null ? null: (Date)this.extendedTimestamp.clone();
 	}
 
 	public void setExtendedTimestamp(Date extendedTimestamp) {
-		this.extendedTimestamp = extendedTimestamp;
+		this.extendedTimestamp = (extendedTimestamp==null)?null:(Date)extendedTimestamp.clone();
 	}
 
 	public String getGlobalUid() {
@@ -387,11 +387,11 @@ import java.util.Date;
 	}
 
 	public byte[] getTransactionid() {
-		return this.transactionid;
+		return this.transactionid==null ? null: (byte[])this.transactionid.clone();
 	}
 
 	public void setTransactionid(byte[] transactionid) {
-		this.transactionid = transactionid;
+		this.transactionid = (transactionid==null)?null:(byte[])transactionid.clone();
 	}
 	/*
 	private String getRawObjId(Object o) {

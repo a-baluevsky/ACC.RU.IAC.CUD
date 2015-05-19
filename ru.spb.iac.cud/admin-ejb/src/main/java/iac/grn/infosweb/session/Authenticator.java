@@ -897,10 +897,7 @@ import ru.spb.iac.crypto.export.Crypto15Init;
 					  if(auth_type_x509.equals(arrTokenID[2])){
 						  
 						  this.resultAuthOBO = 1;
-						  
-						  STSServiceClient soboc = new STSServiceClient();
-						   
-					      this.assertionOBO = soboc.sign_verify_soap_transform_2sign(base64TokenID);
+					      this.assertionOBO = STSServiceClient.sign_verify_soap_transform_2sign(base64TokenID);
 
 					      LOGGER.debug("authenticator:cudAuthOBO:04");
 					      

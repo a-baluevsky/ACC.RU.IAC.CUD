@@ -596,18 +596,17 @@ import org.slf4j.LoggerFactory;
 
 	public void delClassifFiles() {
 
-		LOGGER.debug("delClassifFiles:01:" + file1.getAbsolutePath());
 		try {
 			if (file1 != null) {
+				LOGGER.debug("delClassifFiles:01:" + file1.getAbsolutePath());
 				File parent_dir = file1.getParentFile();
 
-				LOGGER.debug("delClassifFiles:02:" + parent_dir.getName());
-
 				if (parent_dir != null && parent_dir.isDirectory()) {
-
-					LOGGER.debug("delClassifFiles:03");
+					LOGGER.debug("delClassifFiles:02:" + parent_dir.getName());
+					
 					File[] files = parent_dir.listFiles();
 					if(files != null) {
+						LOGGER.debug("delClassifFiles:03");
 						for (File file_in_dir : files) {
 							LOGGER.debug("delClassifFiles:04:"
 									+ file_in_dir.getName());	

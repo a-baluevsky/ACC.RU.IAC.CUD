@@ -27,15 +27,15 @@ import java.util.Date;
 	}
 
 	public Date getCurrdate() {
-		return this.currdate;
+		return this.currdate==null?null:(Date)this.currdate.clone();
 	}
 
 	public void setCurrdate(Date currdate) {
-		this.currdate = currdate;
+		this.currdate = (currdate==null)?null:(Date)currdate.clone();
 	}
 
 	public String getIpAddress() {
-		return this.ipAddress;
+		return new String(this.ipAddress);
 	}
 
 	public void setIpAddress(String ipAddress) {

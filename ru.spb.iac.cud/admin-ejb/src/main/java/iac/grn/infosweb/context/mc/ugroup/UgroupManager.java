@@ -216,9 +216,9 @@ import org.jboss.seam.log.Log;
    			//список ИС в группе, которых нет в привязке к пользователю  
 		    List<Object> list= entityManager.createNativeQuery(
                     (new StringBuilder("SELECT RL.UP_IS "))
-                    .append("  FROM GROUP_USERS_KNL_T gr, ") 
-                    .append("       LINK_GROUP_USERS_ROLES_KNL_T lgru, ") 
-                    .append("       AC_ROLES_BSS_T rl ") 
+                    .append(" FROM GROUP_USERS_KNL_T gr, ") 
+                    .append(" LINK_GROUP_USERS_ROLES_KNL_T lgru, ") 
+                    .append(" AC_ROLES_BSS_T rl ") 
                     .append(" WHERE GR.ID_SRV = LGRU.UP_GROUP_USERS  ") 
                     .append(" AND LGRU.UP_ROLES = RL.ID_SRV ") 
                     .append(" and GR.ID_SRV = :idGr ") 

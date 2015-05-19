@@ -37,11 +37,11 @@ import javax.xml.bind.annotation.XmlType;
 	}
 
 	public Date getDate() {
-		return this.date;
+		return this.date==null ? null: (Date)this.date.clone();
 	}
 
 	public void setDate(Date date) {
-		this.date = date;
+		this.date = (date==null)?null:(Date)date.clone();
 	}
 
 	public String getSecret() {

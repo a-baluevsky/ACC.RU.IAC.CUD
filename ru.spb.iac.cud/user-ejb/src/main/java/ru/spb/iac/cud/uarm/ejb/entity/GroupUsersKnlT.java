@@ -72,11 +72,11 @@ import javaw.util.SerializableList;
 	}
 
 	public Date getCreated() {
-		return this.created;
+		return this.created==null ? null: (Date)this.created.clone();
 	}
 
 	public void setCreated(Date created) {
-		this.created = created;
+		this.created = (created==null)?null:(Date)created.clone();
 	}
 
 	public Long getCreator() {
@@ -112,11 +112,11 @@ import javaw.util.SerializableList;
 	}
 
 	public Date getModified() {
-		return this.modified;
+		return this.modified==null ? null: (Date)this.modified.clone();
 	}
 
 	public void setModified(Date modified) {
-		this.modified = modified;
+		this.modified = (modified==null)?null:(Date)modified.clone();
 	}
 
 	public SerializableList<LinkGroupUsersRolesKnlT> getLinkGroupUsersRolesKnlTs() {

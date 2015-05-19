@@ -48,10 +48,10 @@ import org.jboss.seam.log.Log;
    private SerializableList<ReportsBssT> reportsList;   
    private Date reportDate1, reportDate2;
    public Date    getReportDate1()                {   return reportDate1;                           }
-   public void    setReportDate1(Date reportDate1)    {   this.reportDate1 = reportDate1;                  }
+   public void    setReportDate1(Date reportDate1)    {   this.reportDate1 = (reportDate1==null)?null:(Date)reportDate1.clone();                  }
 
    public Date    getReportDate2()                {   return reportDate2;                           }
-   public void    setReportDate2(Date reportDate2)    {   this.reportDate2 = reportDate2;                  }
+   public void    setReportDate2(Date reportDate2)    {   this.reportDate2 = (reportDate2==null)?null:(Date)reportDate2.clone();                  }
    
    private JasperReportService getFreshReporter(String reportId) {      
       JasperReportService reporter=getReporter(reportId);

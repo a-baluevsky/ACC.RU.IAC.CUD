@@ -66,11 +66,11 @@ import java.util.Date;
 	}
 
 	public byte[] getCertValue() {
-		return this.certValue;
+		return this.certValue==null ? null: (byte[])this.certValue.clone();
 	}
 
 	public void setCertValue(byte[] certValue) {
-		this.certValue = certValue;
+		this.certValue = (certValue==null)?null:(byte[])certValue.clone();
 	}
 
 	public String getComment() {
@@ -100,10 +100,10 @@ import java.util.Date;
 	}
 
 	public Date getCreated() {
-		return this.created;
+		return this.created==null ? null: (Date)this.created.clone();
 	}
 	public void setCreated(Date created) {
-		this.created = created;
+		this.created = (created==null)?null:(Date)created.clone();
 	}
 	
 	public String getRejectReason() {

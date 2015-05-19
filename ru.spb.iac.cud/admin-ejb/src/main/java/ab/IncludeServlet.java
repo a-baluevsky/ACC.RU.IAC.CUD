@@ -80,11 +80,9 @@ public class IncludeServlet extends HttpServlet {
 	        in.close();
 	        out.close(); 			
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("copyFile", e.toString());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("copyFile", e.toString());
 		} finally {
 			String[] errMsg = new String[]{"copyFile error:"};
 			if(!Closeable.Close(errMsg, in, out)) {

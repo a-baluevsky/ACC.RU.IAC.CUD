@@ -52,17 +52,17 @@ import org.jboss.seam.log.Log;
 	
 	private ProcBNAInfoItem procBNAInfoBean;
 	
-	public Date getStartDate(){
+	public synchronized Date getStartDate(){
 		return this.startDate;
 	}
-	public void setStartDate(Date startDate){
+	public synchronized void setStartDate(Date startDate){
 		this.startDate=startDate;
 	}
 	
-	public Long getPeriod(){
+	public synchronized Long getPeriod(){
 		return this.period;
 	}
-	public void setPeriod(Long period){
+	 public synchronized void setPeriod(Long period){
 		this.period=period;
 	}
 	

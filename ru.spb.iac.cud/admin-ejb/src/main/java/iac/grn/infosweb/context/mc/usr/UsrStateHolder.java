@@ -49,26 +49,27 @@ import org.jboss.seam.log.Log;
     	   log.info("clearFilters:01");
     	   if(columnFilterValues!=null){
            		for(Iterator<Map.Entry<String, String>> it = columnFilterValues.entrySet().iterator(); 
-           			it.hasNext(); )
-    			{   
+           			it.hasNext(); ) {   
     			      Map.Entry<String, String> me =  it.next();
     			      Object oCurValue=me.getValue();    			      
     			      if(oCurValue==null) {    			    	  
     			    	  it.remove();
     			      } else {    			    	  
 	    			      String sCurTxt=null;	    			      
-	    			      if(oCurValue instanceof String) { // trivial case
+	    			      if(oCurValue instanceof String) { 
+	    			    	  // trivial case
 	    			    	  sCurTxt = (String)oCurValue;
-	    			      } else { // try to format known types
+	    			      } else { 
+	    			    	  // try to format known types
 	    			    	  StringBuffer sbCurTxt=new StringBuffer();
 	    			    	  if(fmtDate(oCurValue, sbCurTxt)) {
 	    			    		  me.setValue(sbCurTxt.toString());
-		    			      } else { // last resort: just toString!
+		    			      } else { 
+		    			    	  // last resort: just toString!
 		    			    	  sCurTxt = oCurValue.toString();
 		    			      }
 	    			      }
-	    			      
-	    				  if(sCurTxt.isEmpty()||"#-1#".equals(sCurTxt)){
+	    				  if(sCurTxt!=null && (sCurTxt.isEmpty()||"#-1#".equals(sCurTxt))){
 	    	     			  log.info("Ahtung!!!");
 	    	     			  it.remove();
 	    	     		  }	    			      

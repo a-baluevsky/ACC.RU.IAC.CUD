@@ -249,9 +249,9 @@ import iac.grn.serviceitems.BaseTableItem;
 		    List<Object> list= entityManager.createNativeQuery(
 		    		
 		    		(new StringBuilder("SELECT SUB.UP_IS "))
-		    		  .append("    FROM AC_SUBSYSTEM_CERT_BSS_T sub ") 
-		    		  .append("   WHERE   sub.ID_SRV = :idSub ") 
-		    		  .append("         AND  SUB.UP_IS NOT IN (:idsArm) ") 
+		    		  .append("  FROM AC_SUBSYSTEM_CERT_BSS_T sub ") 
+		    		  .append(" WHERE   sub.ID_SRV = :idSub ") 
+		    		  .append(" AND  SUB.UP_IS NOT IN (:idsArm) ") 
 		    		  .append("GROUP BY SUB.UP_IS")
 	    		
 		    		.toString())

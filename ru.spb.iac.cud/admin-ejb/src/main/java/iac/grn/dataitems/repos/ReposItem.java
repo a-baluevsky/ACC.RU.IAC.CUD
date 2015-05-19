@@ -46,11 +46,11 @@ import iac.cud.infosweb.dataitems.BaseItem;
 		this.annotation=annotation;
 		this.keywords=keywords; 
 		this.number=number;
-		this.dateConfirm=dateConfirm;
+		this.dateConfirm=(dateConfirm==null)?null:(Date)dateConfirm.clone();
 		this.organConfirm=organConfirm;
 		this.status=status;
-		this.datePlace=datePlace;
-		this.datePublic=datePublic;
+		this.datePlace=(datePlace==null)?null:(Date)datePlace.clone();
+		this.datePublic=(datePublic==null)?null:(Date)datePublic.clone();
 		this.importance=importance;
 		this.storingPlace=storingPlace;
 	}
@@ -88,10 +88,10 @@ import iac.cud.infosweb.dataitems.BaseItem;
 	}
     
     public Date getDateConfirm() {
-		return this.dateConfirm;
+		return this.dateConfirm==null ? null: (Date)this.dateConfirm.clone();
 	}
     public void setDateConfirm(Date dateConfirm) {
-		this.dateConfirm = dateConfirm;
+		this.dateConfirm = (dateConfirm==null)?null:(Date)dateConfirm.clone();
 	}
     
     public String getOrganConfirm() {
@@ -116,17 +116,17 @@ import iac.cud.infosweb.dataitems.BaseItem;
 	}
     
     public Date getDatePlace() {
-		return this.datePlace;
+		return this.datePlace==null ? null: (Date)this.datePlace.clone();
 	}
     public void setDatePlace(Date datePlace) {
-		this.datePlace = datePlace;
+		this.datePlace = (datePlace==null)?null:(Date)datePlace.clone();
 	}
     
     public Date getDatePublic() {
-		return this.datePublic;
+		return this.datePublic==null ? null: (Date)this.datePublic.clone();
 	}
     public void setDatePublic(Date datePublic) {
-		this.datePublic = datePublic;
+		this.datePublic = (datePublic==null)?null:(Date)datePublic.clone();
 	}
     
     public String getImportance() {

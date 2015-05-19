@@ -253,10 +253,10 @@ import ru.spb.iac.cud.core.util.CUDConstants;
    			//список ИС в группе, которых нет в привязке к пользователю  
 		    List<Object> list= entityManager.createNativeQuery(
                     (new StringBuilder("SELECT LGS.UP_SYSTEMS "))
-                    .append("   FROM GROUP_SYSTEMS_KNL_T gr, LINK_GROUP_SYS_SYS_KNL_T lgs ") 
-                    .append("   WHERE     GR.ID_SRV = LGS.UP_GROUP_SYSTEMS ") 
-                    .append("         AND GR.ID_SRV = :idGr ") 
-                    .append("         AND LGS.UP_SYSTEMS NOT IN (:idsArm) ") 
+                    .append(" FROM GROUP_SYSTEMS_KNL_T gr, LINK_GROUP_SYS_SYS_KNL_T lgs ") 
+                    .append(" WHERE     GR.ID_SRV = LGS.UP_GROUP_SYSTEMS ") 
+                    .append(" AND GR.ID_SRV = :idGr ") 
+                    .append(" AND LGS.UP_SYSTEMS NOT IN (:idsArm) ") 
                     .append("GROUP BY LGS.UP_SYSTEMS ")
                     .toString())
                       .setParameter("idGr", idGr)

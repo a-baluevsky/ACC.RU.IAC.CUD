@@ -10,11 +10,11 @@ import java.io.Serializable;
 	private int flagExec;
 
 	public byte[] getContent() {
-		return content;
+		return (content==null)?null: content.clone();
 	}
 
 	public void setContent(byte[] content) {
-		this.content = content;
+		this.content = (content==null)?null: content.clone();
 	}
 
 	public int getFlagExec() {

@@ -13,10 +13,10 @@ import java.util.Date;
     private Long confPeriod;
 	
 	public Date getExecDate(){
-		return this.execDate;
+		return this.execDate==null ? null: (Date)this.execDate.clone();
 	}
 	public void setExecDate(Date execDate){
-		this.execDate=execDate;
+		this.execDate=(execDate==null)?null:(Date)execDate.clone();
 	}
 	
 	public String getExecHit(){
@@ -27,10 +27,10 @@ import java.util.Date;
 	}
 	
 	public Date getConfDate(){
-		return this.confDate;
+		return this.confDate==null ? null: (Date)this.confDate.clone();
 	}
 	public void setConfDate(Date confDate){
-		this.confDate=confDate;
+		this.confDate=(confDate==null)?null:(Date)confDate.clone();
 	}
 	
 	public Long getConfPeriod(){

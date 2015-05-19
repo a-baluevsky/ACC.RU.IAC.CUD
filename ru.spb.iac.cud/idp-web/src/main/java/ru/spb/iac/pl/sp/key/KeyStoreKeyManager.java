@@ -69,8 +69,8 @@ import ru.spb.iac.cud.context.ContextIDPUtilManager;
 			 
 
 			if(this.privateKey==null){
-				this.privateKey=(PrivateKey) this.ks.getKey(this.signingAlias,
-						this.signingKeyPass);
+				this.privateKey=(PrivateKey) this.ks.getKey(signingAlias,
+						signingKeyPass);
 			}
 			return this.privateKey;
 
@@ -108,7 +108,7 @@ import ru.spb.iac.cud.context.ContextIDPUtilManager;
 				 
 				 
 
-				Certificate cert = this.ks.getCertificate(this.signingAlias);
+				Certificate cert = this.ks.getCertificate(signingAlias);
 
 				this.publicKey = cert.getPublicKey();
 
@@ -191,6 +191,13 @@ import ru.spb.iac.cud.context.ContextIDPUtilManager;
 			throw LOGGER.keyStoreNullStore();
 		}
 	}
+	
+	private static void setSigningAlias(String newValue) {
+		signingAlias = newValue;
+	}
+	private static void setSigningKeyPass(char[] newValue) {
+		signingKeyPass = newValue;
+	}
 
 	public void setAuthProperties(List<AuthPropertyType> authList)
 			throws TrustKeyConfigurationException, TrustKeyProcessingException {
@@ -201,13 +208,13 @@ import ru.spb.iac.cud.context.ContextIDPUtilManager;
 		this.keyStoreURL = ((String) this.authPropsMap.get("KeyStoreURL"));
 		this.keyStorePass = ((String) this.authPropsMap.get("KeyStorePass"));
 
-		this.signingAlias = ((String) this.authPropsMap.get("SigningKeyAlias"));
+		setSigningAlias((String) this.authPropsMap.get("SigningKeyAlias"));
 
 		String keypass = (String) this.authPropsMap.get("SigningKeyPass");
 		if ((keypass == null) || (keypass.length() == 0)) {
 			throw LOGGER.keyStoreNullSigningKeyPass();
 		}
-		this.signingKeyPass = keypass.toCharArray();
+		setSigningKeyPass(keypass.toCharArray());
 	}
 
 	public void setValidatingAlias(List<KeyValueType> aliases)
