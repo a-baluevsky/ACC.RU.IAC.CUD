@@ -1,5 +1,6 @@
 package ru.spb.iac.cud.util;
 
+import java.nio.charset.Charset;
 import java.util.Random;
 
 import org.apache.xml.security.utils.Base64;
@@ -25,7 +26,7 @@ import org.apache.xml.security.utils.Base64;
 		
 		key += Long.toString(System.currentTimeMillis());
 
-		String result = Base64.encode(key.getBytes());
+		String result = Base64.encode(key.getBytes(Charset.forName("UTF-8")));
 	
 		return result;
 	}

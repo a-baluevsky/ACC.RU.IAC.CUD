@@ -1,6 +1,7 @@
 package ru.spb.iac.cud.core.util;
 
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
@@ -15,7 +16,7 @@ import javax.crypto.spec.PBEKeySpec;
 			throws NoSuchAlgorithmException, InvalidKeySpecException {
 		int iterations = 1000;
 		char[] chars = password.toCharArray();
-		byte[] salt = getSalt().getBytes();
+		byte[] salt = getSalt().getBytes(Charset.forName("UTF-8"));
 
 		PBEKeySpec spec = new PBEKeySpec(chars, salt, iterations, 64 * 8);
 		SecretKeyFactory skf = SecretKeyFactory

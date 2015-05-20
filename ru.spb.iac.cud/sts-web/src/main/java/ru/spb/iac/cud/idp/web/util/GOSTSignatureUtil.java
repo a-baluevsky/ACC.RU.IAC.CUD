@@ -1,5 +1,6 @@
 package ru.spb.iac.cud.idp.web.util;
 
+import java.nio.charset.Charset;
 import java.io.OutputStream;
 import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
@@ -80,7 +81,7 @@ import org.xml.sax.SAXException;
 		Signature sig = Signature.getInstance("GOST3411withGOST3410EL");
 
 		sig.initSign(signingKey);
-		sig.update(stringToBeSigned.getBytes());
+		sig.update(stringToBeSigned.getBytes(Charset.forName("UTF-8")));
 		return sig.sign();
 	}
 

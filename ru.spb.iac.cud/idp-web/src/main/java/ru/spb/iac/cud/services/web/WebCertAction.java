@@ -1,5 +1,6 @@
 package ru.spb.iac.cud.services.web;
 
+import java.nio.charset.Charset;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -201,7 +202,7 @@ private static String alias_root = "σφροαγσο«ροαθΰφ».crt";
 
 			final Decoder decoder = new Decoder();
 			final byte[] enc = decoder.decodeBuffer(new ByteArrayInputStream(
-					message.getBytes()));
+					message.getBytes(Charset.forName("UTF-8"))));
 
 			LOGGER.debug("validate:04");
 
@@ -273,7 +274,7 @@ private static String alias_root = "σφροαγσο«ροαθΰφ».crt";
 
 						  }
 
-						  final boolean checkResult = verifyOnCertIDP(cert, info, "12345".getBytes(), eContTypeOID);
+						  final boolean checkResult = verifyOnCertIDP(cert, info, "12345".getBytes(Charset.forName("UTF-8")), eContTypeOID);
 
 						  if (checkResult){
 

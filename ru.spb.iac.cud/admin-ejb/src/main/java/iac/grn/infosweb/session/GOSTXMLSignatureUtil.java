@@ -2,6 +2,7 @@ package iac.grn.infosweb.session;
 
 import java.io.ByteArrayInputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.security.GeneralSecurityException;
 import java.security.Key;
 import java.security.KeyException;
@@ -536,7 +537,7 @@ private static final PicketLinkLogger LOGGER = PicketLinkLoggerFactory.getLogger
 
         try {
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
-            ByteArrayInputStream bais = new ByteArrayInputStream(derFormattedString.getBytes());
+            ByteArrayInputStream bais = new ByteArrayInputStream(derFormattedString.getBytes(Charset.forName("UTF-8")));
 
             while (bais.available() > 0) {
                 cert = (X509Certificate) cf.generateCertificate(bais);

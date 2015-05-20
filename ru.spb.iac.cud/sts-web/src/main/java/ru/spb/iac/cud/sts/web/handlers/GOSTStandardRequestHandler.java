@@ -1,5 +1,6 @@
 package ru.spb.iac.cud.sts.web.handlers;
 
+import java.nio.charset.Charset;
 import java.net.URI;
 import java.security.KeyPair;
 import java.security.Principal;
@@ -257,13 +258,13 @@ import ru.spb.iac.cud.sts.util.CUDWSTrustUtil;
 			BinarySecretType serverBinarySecret = new BinarySecretType();
 			serverBinarySecret.setType(WSTrustConstants.BS_TYPE_NONCE);
 			serverBinarySecret.setValue(Base64.encodeBytes(serverSecret)
-					.getBytes());
+					.getBytes(Charset.forName("UTF-8")));
 
 			byte[] clientSecret = null;
 			EntropyType clientEntropy = request.getEntropy();
 			if (clientEntropy != null) {
 				clientSecret = Base64.decode(new String(WSTrustUtil
-						.getBinarySecret(clientEntropy)));
+						.getBinarySecret(clientEntropy), Charset.forName("UTF-8")));
 				serverEntropy = new EntropyType();
 				serverEntropy.addAny(serverBinarySecret);
 			}

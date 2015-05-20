@@ -1,5 +1,6 @@
 package ru.spb.iac.cud.uarm.web.context.user;
 
+import java.nio.charset.Charset;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -212,7 +213,7 @@ private X509Certificate validate(String message){
 	
 	final Decoder decoder = new Decoder();
     final byte[] enc =
-            decoder.decodeBuffer(new ByteArrayInputStream(message.getBytes()));
+            decoder.decodeBuffer(new ByteArrayInputStream(message.getBytes(Charset.forName("UTF-8"))));
   
   LOGGER.debug("main:04");
   if(enc!=null){
@@ -291,7 +292,7 @@ public X509Certificate CMSVerify(byte[] buffer, Certificate[] certs, byte[] data
 
 				   }
 
-				   final boolean checkResult = verifyOnCert(cert, info, "12345".getBytes(), eContTypeOID);
+				   final boolean checkResult = verifyOnCert(cert, info, "12345".getBytes(Charset.forName("UTF-8")), eContTypeOID);
 
 				   if (checkResult){
 

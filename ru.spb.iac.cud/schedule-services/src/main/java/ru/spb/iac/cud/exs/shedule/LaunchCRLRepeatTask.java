@@ -1,5 +1,6 @@
 package ru.spb.iac.cud.exs.shedule;
 
+import java.nio.charset.Charset;
 import java.io.BufferedInputStream;
 
 import javaw.io.Closeable;
@@ -303,7 +304,7 @@ import ru.spb.iac.cud.exs.config.Configuration;
 			String result = calcMD5Checksum(digest);
 			LOGGER.debug("getMD5Checksum:1:" + result);
 
-			md.update(file.getName().getBytes(), 0, file.getName().length());
+			md.update(file.getName().getBytes(Charset.forName("UTF-8")), 0, file.getName().length());
 
 			digest = md.digest();
 			result = calcMD5Checksum(digest);

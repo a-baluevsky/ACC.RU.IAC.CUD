@@ -3,6 +3,7 @@ package iac.cud.infosweb.ws;
 import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.security.KeyFactory;
 import java.security.KeyStore;
 import java.security.PrivateKey;
@@ -333,7 +334,7 @@ import org.w3c.dom.NodeList;
 				Certificate cert_hok = cert;
 
 				byte[] value = Base64.encodeBytes(cert_hok.getEncoded())
-						.getBytes();
+						.getBytes(Charset.forName("UTF-8"));
 
 				UseKeyType useKeyType = new UseKeyType();
 

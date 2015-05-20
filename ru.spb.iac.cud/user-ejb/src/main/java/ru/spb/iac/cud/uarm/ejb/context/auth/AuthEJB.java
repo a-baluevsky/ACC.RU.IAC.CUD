@@ -277,7 +277,7 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
 
 
   	 
-  	 String samlRequest=Base64.encodeBytes(new String(responseBytes).getBytes("UTF-8"), Base64.DONT_BREAK_LINES);
+  	 String samlRequest=Base64.encodeBytes(responseBytes, Base64.DONT_BREAK_LINES);
   	 
   	 
  	 //"http://10.128.66.140:8080/cudidp/";
@@ -453,7 +453,7 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
 		      
 		 byte[] responseBytesLogout = DocumentUtil.getDocumentAsString(samlDocument).getBytes("UTF-8");
 
-		 String samlRequest=Base64.encodeBytes(new String(responseBytesLogout).getBytes("UTF-8"), Base64.DONT_BREAK_LINES);
+		 String samlRequest=Base64.encodeBytes(responseBytesLogout, Base64.DONT_BREAK_LINES);
 		 
 		 
 	   

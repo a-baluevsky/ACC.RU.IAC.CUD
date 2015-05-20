@@ -8,7 +8,9 @@ import org.picketlink.identity.xmlsec.w3.xmldsig.SignatureType;
 import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBException;
+
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -79,7 +81,7 @@ import java.security.cert.X509Certificate;
 		Signature sig = Signature.getInstance("GOST3411withGOST3410EL");
 
 		sig.initSign(signingKey);
-		sig.update(stringToBeSigned.getBytes());
+		sig.update(stringToBeSigned.getBytes(Charset.forName("UTF-8")));
 		return sig.sign();
 	}
 

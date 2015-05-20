@@ -1,5 +1,5 @@
 package ru.spb.iac.cud.idp.web.util;
-
+import java.nio.charset.Charset;
 import java.io.ByteArrayInputStream;
 import java.io.OutputStream;
 import java.security.GeneralSecurityException;
@@ -624,7 +624,7 @@ import org.xml.sax.SAXException;
 		try {
 			CertificateFactory cf = CertificateFactory.getInstance("X.509");
 			ByteArrayInputStream bais = new ByteArrayInputStream(
-					derFormattedString.getBytes());
+					derFormattedString.getBytes(Charset.forName("UTF-8")));
 
 			while (bais.available() > 0) {
 				cert = (X509Certificate) cf.generateCertificate(bais);

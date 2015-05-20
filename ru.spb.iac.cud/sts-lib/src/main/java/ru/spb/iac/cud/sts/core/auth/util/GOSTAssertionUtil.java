@@ -31,8 +31,10 @@ import org.w3c.dom.Node;
 import ru.spb.iac.cud.idp.web.sig.GOSTSAML2Signature;
 
 import javax.xml.datatype.XMLGregorianCalendar;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.nio.charset.Charset;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +65,7 @@ import java.util.Set;
 		SAMLAssertionWriter writer = new SAMLAssertionWriter(
 				StaxUtil.getXMLStreamWriter(baos));
 		writer.write(assertion);
-		return new String(baos.toByteArray());
+		return new String(baos.toByteArray(), Charset.forName("UTF-8"));
 	}
 
 	/**

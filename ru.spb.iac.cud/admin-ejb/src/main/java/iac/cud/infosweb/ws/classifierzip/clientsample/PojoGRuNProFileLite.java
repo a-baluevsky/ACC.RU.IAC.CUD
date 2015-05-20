@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.sql.PreparedStatement;
 import java.util.Date;
 import java.util.HashMap; 
@@ -433,7 +434,7 @@ import org.slf4j.LoggerFactory;
 	
 	public void phase_fixed(File file) throws Exception {
 
-		FileReader fr = null;
+		InputStreamReader fr = null;
 		LineNumberReader lineNumberReader = null;
 		String fileName;
 		int file_rec_count;
@@ -441,7 +442,7 @@ import org.slf4j.LoggerFactory;
 		try {
 			fileName = file.getName();
 
-			fr = new FileReader(file);
+			fr = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
 			lineNumberReader = new LineNumberReader(fr);
 			lineNumberReader.skip(Long.MAX_VALUE);
 			file_rec_count = lineNumberReader.getLineNumber();
@@ -483,7 +484,7 @@ import org.slf4j.LoggerFactory;
 
 	public void saveCount(File file1, File file2,
 			HashMap<String, String> paramMap) throws Exception {
-		FileReader fr = null;
+		InputStreamReader fr = null;
 		LineNumberReader lineNumberReader = null;
 		int lines = -1;
 
@@ -496,7 +497,7 @@ import org.slf4j.LoggerFactory;
 			}
 
 			try {
-				fr = new FileReader(file1);
+				fr = new InputStreamReader(new FileInputStream(file1), Charset.forName("UTF-8"));
 				lineNumberReader = new LineNumberReader(fr);
 				lineNumberReader.skip(Long.MAX_VALUE);
 				lines = lineNumberReader.getLineNumber();

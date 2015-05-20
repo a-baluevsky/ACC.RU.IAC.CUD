@@ -1,5 +1,6 @@
 package ru.spb.iac.cud.sign;
 
+import java.nio.charset.Charset;
 import org.picketlink.common.PicketLinkLogger;
 import org.picketlink.common.PicketLinkLoggerFactory;
 import org.picketlink.common.constants.JBossSAMLConstants;
@@ -48,7 +49,7 @@ import java.security.cert.X509Certificate;
 		Signature sig = Signature.getInstance("GOST3411withGOST3410EL");
 
 		sig.initSign(signingKey);
-		sig.update(stringToBeSigned.getBytes());
+		sig.update(stringToBeSigned.getBytes(Charset.forName("UTF-8")));
 		return sig.sign();
 	}
 

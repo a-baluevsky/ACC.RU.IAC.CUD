@@ -1,5 +1,6 @@
 package iac.grn.infosweb.context.mc.usr;
 
+import java.nio.charset.Charset;
 import java.util.Random;
 
 import org.picketlink.common.util.Base64;
@@ -18,7 +19,7 @@ import org.picketlink.common.util.Base64;
       
 	       key += Long.toString(System.currentTimeMillis());
 	       
-	       String result =  Base64.encodeBytes(key.getBytes());
+	       String result =  Base64.encodeBytes(key.getBytes(Charset.forName("UTF-8")));
 	         
 	       return result;
 	   }
@@ -35,7 +36,7 @@ import org.picketlink.common.util.Base64;
        
 	       key += Long.toString(System.currentTimeMillis());
 	       
-	       String result =  Base64.encodeBytes(key.getBytes());
+	       String result =  Base64.encodeBytes(key.getBytes(Charset.forName("UTF-8")));
 	       
 	       return result;
 	   }

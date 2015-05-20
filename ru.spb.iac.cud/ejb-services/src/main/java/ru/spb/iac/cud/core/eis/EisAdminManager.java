@@ -2,17 +2,23 @@ package ru.spb.iac.cud.core.eis;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+
 import java.util.ArrayList;
+
 import ru.spb.iac.cud.exceptions.GeneralFailure;
+
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -410,7 +416,7 @@ import org.slf4j.LoggerFactory;
 				CertificateFactory certFactory = CertificateFactory
 						.getInstance("X.509");
 				InputStream in = new ByteArrayInputStream(
-						derFormattedString.getBytes());
+						derFormattedString.getBytes(Charset.forName("UTF-8")));
 				cert_obj = (X509Certificate) certFactory
 						.generateCertificate(in);
 				// cert_obj создаём только для проверки переданного текста - что
