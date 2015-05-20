@@ -194,8 +194,6 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
      	 HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
       	
      	 
-     	 //"http://10.128.66.140:8080/cudidp/";
-     	 String destination = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/cudidp/loginEncrypt";
      
      	 String assertionConsumerServiceURL = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/public.xhtml";
      	 
@@ -205,7 +203,7 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
   	  
      	Document samlDocument = get_saml_assertion_from_xml(assertionConsumerServiceURL,typeAuth, privateKey, publicKey);
      	 
-      Node nextSibling = getNextSiblingOfIssuer(samlDocument);
+      
   	 
    	 
   	 
@@ -248,7 +246,7 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
   			
   				
   			
-  	  	    javax.xml.crypto.dsig.XMLSignature sig = fac.newXMLSignature(si, ki);
+  	  	    
   //!!!
   	  	  
   	  	  configureIdAttribute(samlDocument);
@@ -258,7 +256,8 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
   	  	    //nextSibling - перед ним будет вставлена подпись
   	  	    //nextSibling для <saml:Issuer> - это <samlp:NameIDPolicy>
   	  	    //и Signature будет между <saml:Issuer> и <samlp:NameIDPolicy>
-  			DOMSignContext signContext = new DOMSignContext(privateKey, samlDocument.getDocumentElement(), nextSibling); 
+  			DOMSignContext signContext = new DOMSignContext(privateKey, samlDocument.getDocumentElement(),
+  					getNextSiblingOfIssuer(samlDocument)); 
   			
   			signContext.putNamespacePrefix(XMLSignature.XMLNS, "dsig");
   			
@@ -268,8 +267,7 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
   		// вместо этого используется configureIdAttribute(samlDocument);	
   		
   		
-  			    
-  	    sig.sign(signContext);
+  			fac.newXMLSignature(si, ki).sign(signContext);
   	
   	 
   	  
@@ -277,12 +275,17 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
   	      
   	 byte[] responseBytes = DocumentUtil.getDocumentAsString(samlDocument).getBytes("UTF-8");
 
+
+  	 
   	 String samlRequest=Base64.encodeBytes(new String(responseBytes).getBytes("UTF-8"), Base64.DONT_BREAK_LINES);
   	 
   	 
-     
+ 	 //"http://10.128.66.140:8080/cudidp/";
+ 	 //String destination = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/cudidp/loginEncrypt";     
      	 
-  	 sendPost(samlRequest, destination, response);
+  	 sendPost(samlRequest, /*destination*/
+  			request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/cudidp/loginEncrypt",
+  			response);
   	 
   	 
   	 
@@ -383,7 +386,7 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
 	   	
 	   	LOGGER.debug("authenticator:cudLogout:04:"+DocumentUtil.asString(samlDocument));
 	   	
-	    Node nextSibling = getNextSiblingOfIssuer(samlDocument);
+	    //Node nextSibling = getNextSiblingOfIssuer(samlDocument);
 		 
  	    Provider xmlDSigProvider = new ru.CryptoPro.JCPxml.dsig.internal.dom.XMLDSigRI();
 		  
@@ -423,7 +426,6 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
 				KeyInfo ki = kif.newKeyInfo(Collections.singletonList(kv));
 				
 				
-		  	    javax.xml.crypto.dsig.XMLSignature sig = facLogout.newXMLSignature(si, ki);
 	//!!!
 		  	  
 		  	  configureIdAttribute(samlDocument);
@@ -433,7 +435,7 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
 		  	    //nextSibling - перед ним будет вставлена подпись
 		  	    //nextSibling для <saml:Issuer> - это <samlp:NameIDPolicy>
 		  	    //и Signature будет между <saml:Issuer> и <samlp:NameIDPolicy>
-				DOMSignContext signContext = new DOMSignContext(privateKey, samlDocument.getDocumentElement(), nextSibling); 
+				DOMSignContext signContext = new DOMSignContext(privateKey, samlDocument.getDocumentElement(), getNextSiblingOfIssuer(samlDocument)); 
 				
 				signContext.putNamespacePrefix(XMLSignature.XMLNS, "dsig");
 				
@@ -443,7 +445,7 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
 			// вместо этого используется configureIdAttribute(samlDocument);	
 			
 				    
-		    sig.sign(signContext);
+				facLogout.newXMLSignature(si, ki).sign(signContext);
 		
 		    LOGGER.debug("authenticator:cudLogout:05:"+DocumentUtil.asString(samlDocument));
 		  
@@ -834,7 +836,7 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
 		    updateCertKeys(signingAlias, signingKeyPass);
 		    
 			Document  samlDocument;
-			AssertionType ass;
+			AssertionType ass = null;
 			
 			if(this.assertionOBO==null) {
 				//обычная аутентификация
@@ -873,10 +875,6 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
 			
 			//проверка сигнатуры
 			
-			 Provider xmlDSigProvider = new ru.CryptoPro.JCPxml.dsig.internal.dom.XMLDSigRI();
-		   	  
-
-	        	
 	    	 LOGGER.debug("test1:01_1");
 	    	 
 	    	 configureIdAttribute(samlDocument);
@@ -904,7 +902,8 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
 	     
 	         DOMValidateContext valContext1 = new DOMValidateContext(publicKey, signatureNode1);
 	       
-	    	 javax.xml.crypto.dsig.XMLSignature signature1 = XMLSignatureFactory.getInstance("DOM", xmlDSigProvider).unmarshalXMLSignature(valContext1);
+	    	 javax.xml.crypto.dsig.XMLSignature signature1 = XMLSignatureFactory.getInstance("DOM", 
+	    			 new ru.CryptoPro.JCPxml.dsig.internal.dom.XMLDSigRI()).unmarshalXMLSignature(valContext1);
 	         
 	    	  boolean result1 = signature1.validate(valContext1);
 	    			 

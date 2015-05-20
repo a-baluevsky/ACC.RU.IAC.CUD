@@ -482,9 +482,7 @@ import ru.spb.iac.cud.util.CommonUtil;
 									                 .append(" and (ais.SIGN_OBJECT  = :idIS ") 
 									                 .append(" or ais_group.SIGN_OBJECT = :idIS ") 
 									                 .append(" or -1 = :onlyISUsers )  ")
-									 .append(uidsLine != null ? "and to_char(au_full.ID_SRV) in ("
-											+ uidsLine + ") "
-											: " ")
+									 .append("and to_char(au_full.ID_SRV) in (" + uidsLine + ") ")
 											.append(filterSt != null ? filterSt : " ")
 									  .append("   ORDER BY t_core_id) t_core ") 
 									     .append(" GROUP BY t_core_id ") 
@@ -619,9 +617,7 @@ import ru.spb.iac.cud.util.CommonUtil;
 							  .append(" and SYSGROUP.GROUP_CODE = :idIS ")
 							  .append(" or -1 = :onlyISUsers   ")
 							  .append(" ) ")		
-							  .append(uidsLine != null ? "and to_char(au_full.ID_SRV) in ("
-										+ uidsLine + ") "
-										: " ")
+							  .append("and to_char(au_full.ID_SRV) in (" + uidsLine + ") ")
 							  .append(filterSt != null ? filterSt : " ")						  
 								  .append(" order by t_core_id  ")
 								  .append(" )t_core   ")
@@ -1151,9 +1147,7 @@ import ru.spb.iac.cud.util.CommonUtil;
 									  .append("and SYS.ID_SRV(+)=ROL.UP_IS ")
 									  .append(" ")
 									  .append("and( SYS.SIGN_OBJECT = :idIS or -1 = :onlyISUsers ) ")
-									  .append(uidsLine != null ? "and GR.SIGN_OBJECT in ("
-													+ uidsLine + ") "
-													: " ")
+									  .append("and GR.SIGN_OBJECT in (" + uidsLine + ") ")
 									  .append(rolesLine != null ? "and ( ROL.SIGN_OBJECT in ("
 													+ rolesLine
 													+ ") and SYS.SIGN_OBJECT = :idIS ) "
@@ -1190,7 +1184,7 @@ import ru.spb.iac.cud.util.CommonUtil;
 									  .append("and( SYS.SIGN_OBJECT = :idIS or -1 = :onlyISUsers ) ")
 									  .append("and guu.UP_GROUP_USERS = GR.ID_SRV ")
 									  .append("and guu.UP_USERS = :idUser ")
-									  .append(uidsLine != null ? "and GR.SIGN_OBJECT in ("+ uidsLine + ") ": " ") 
+									  .append("and GR.SIGN_OBJECT in ("+ uidsLine + ") ") 
 									  .append("group by GR.ID_SRV ")
 									  .append(") ")
 									  .append("where gr_id=gr_full.ID_SRV ")
@@ -1252,8 +1246,7 @@ import ru.spb.iac.cud.util.CommonUtil;
 											: -1)
 							.setFirstResult(
 									start != null ? start.intValue() : 0)
-							.setMaxResults(
-									count != null ? count.intValue() : 1000000)
+							.setMaxResults(count.intValue())
 							.getResultList();
 
 				} else {
@@ -1540,11 +1533,7 @@ import ru.spb.iac.cud.util.CommonUtil;
 						  .append(" AND SYS.ID_SRV(+) = ROL.UP_IS ")
 						  .append(" AND res.up_is = SYS.ID_SRV ")
 						  .append(" AND (SYS.SIGN_OBJECT = :idIS OR -1 = :onlyISUsers) ")
-				
-								.append (uidsLine != null ? "   and res.SIGN_OBJECT in ("
-										+ uidsLine + ") "
-										: "")
-										
+								.append ("   and res.SIGN_OBJECT in (" + uidsLine + ") ")
 								.append(rolesLine != null ? "    and (ROL.SIGN_OBJECT in ("
 										+ rolesLine
 										+ ") and SYS.SIGN_OBJECT = :idIS ) "
@@ -1681,11 +1670,7 @@ import ru.spb.iac.cud.util.CommonUtil;
 								  .append("and SYSGROUP.GROUP_CODE = :idIS ")
 								  .append("or -1 = :onlyISUsers  ")
 								  .append(" ) ")
-
-						
-								.append
-									(uidsLine != null ? "and GR.SIGN_OBJECT in ("
-											+ uidsLine + ") " : " ")
+								.append("and GR.SIGN_OBJECT in (" + uidsLine + ") ")
 								.append
 									(rolesLine != null ? "and ( ROL.SIGN_OBJECT in ("
 											+ rolesLine

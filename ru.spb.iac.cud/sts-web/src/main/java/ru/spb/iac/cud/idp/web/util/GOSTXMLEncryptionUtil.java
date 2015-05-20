@@ -5,6 +5,8 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.HashMap;
 
+import javaw.lang.Strings;
+
 import javax.crypto.SecretKey;
 import javax.xml.namespace.QName;
 
