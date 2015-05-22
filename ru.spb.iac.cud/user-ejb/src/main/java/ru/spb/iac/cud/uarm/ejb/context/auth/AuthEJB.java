@@ -1013,7 +1013,7 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
 		  
 		  AcUsersKnlT.UserItem currentUser = null;
 		  AcUsersKnlT userDataItem = new AcUsersKnlT();
-		  currentUser= userDataItem.new UserItem();
+		  currentUser= new AcUsersKnlT.UserItem();
 		  
 		  currentUser.setFio(fio);
 		  currentUser.setOrgName(org);

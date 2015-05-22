@@ -136,7 +136,7 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppOrgManagerBssT;
          		 
          		 AcUsersKnlT userDataItem = new AcUsersKnlT();
          		 
-         	     ui= userDataItem.new UserItem(
+         	     ui= new AcUsersKnlT.UserItem(
          			  objectArray[0]!=null?Long.valueOf(objectArray[0].toString()):null,
          			  objectArray[1]!=null?objectArray[1].toString():"",
          			  objectArray[2]!=null?objectArray[2].toString():"",

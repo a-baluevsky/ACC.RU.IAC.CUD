@@ -338,7 +338,7 @@ import ru.spb.iac.cud.idp.web.util.GOSTXMLSignatureUtil;
 	 */
 	private void configureIdAttribute(Document document) {
 		// Establish the IDness of the ID attribute.
-		document.getDocumentElement().setAttribute(ID_ATTRIBUTE_NAME, true);
+		document.getDocumentElement().setAttribute(ID_ATTRIBUTE_NAME, "true");
 
 		NodeList nodes = document.getElementsByTagNameNS(
 				JBossSAMLURIConstants.ASSERTION_NSURI.get(),
@@ -347,7 +347,7 @@ import ru.spb.iac.cud.idp.web.util.GOSTXMLSignatureUtil;
 		for (int i = 0; i < nodes.getLength(); i++) {
 			Node n = nodes.item(i);
 			if (n instanceof Element) {
-				((Element) n).setAttribute(ID_ATTRIBUTE_NAME, true);
+				((Element) n).setAttribute(ID_ATTRIBUTE_NAME, "true");
 			}
 		}
 	}
