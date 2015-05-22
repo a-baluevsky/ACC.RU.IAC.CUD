@@ -3282,7 +3282,7 @@ import org.slf4j.LoggerFactory;
 				    
 				}
 	    	   
-	    	   userCert.setUpUserRaw((Long) id_user.clone());
+	    	   userCert.setUpUserRaw(Long.valueOf(id_user));
 	    	   
 	    	   userCert.setCreator(getCurrentUser().getBaseId());
 	    	   userCert.setCreated(new Date());
