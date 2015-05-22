@@ -337,8 +337,8 @@ import ru.spb.iac.cud.idp.web.util.GOSTXMLSignatureUtil;
 	 *            SAML document to have its ID attribute configured.
 	 */
 	private void configureIdAttribute(Document document) {
-		// Estabilish the IDness of the ID attribute.
-		document.getDocumentElement().setIdAttribute(ID_ATTRIBUTE_NAME, true);
+		// Establish the IDness of the ID attribute.
+		document.getDocumentElement().setAttribute(ID_ATTRIBUTE_NAME, true);
 
 		NodeList nodes = document.getElementsByTagNameNS(
 				JBossSAMLURIConstants.ASSERTION_NSURI.get(),
@@ -347,7 +347,7 @@ import ru.spb.iac.cud.idp.web.util.GOSTXMLSignatureUtil;
 		for (int i = 0; i < nodes.getLength(); i++) {
 			Node n = nodes.item(i);
 			if (n instanceof Element) {
-				((Element) n).setIdAttribute(ID_ATTRIBUTE_NAME, true);
+				((Element) n).setAttribute(ID_ATTRIBUTE_NAME, true);
 			}
 		}
 	}
