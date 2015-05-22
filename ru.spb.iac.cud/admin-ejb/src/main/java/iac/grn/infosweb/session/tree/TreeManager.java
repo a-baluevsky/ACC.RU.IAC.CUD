@@ -22,7 +22,7 @@ import javax.persistence.EntityManager;
 	 @Logger private Log log;
 	
 	 @In 
-	 EntityManager entityManager;
+	 transient EntityManager entityManager;
 	
 	   /**
 	     * Менеджер сущностей, обеспечивающий взаимодействие с БД

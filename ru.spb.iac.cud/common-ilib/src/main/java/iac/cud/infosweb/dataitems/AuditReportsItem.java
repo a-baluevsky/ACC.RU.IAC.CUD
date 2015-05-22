@@ -35,7 +35,7 @@ import java.util.Date;
 	}
 
 	public String getIpAddress() {
-		return new String(this.ipAddress);
+		return this.ipAddress;
 	}
 
 	public void setIpAddress(String ipAddress) {

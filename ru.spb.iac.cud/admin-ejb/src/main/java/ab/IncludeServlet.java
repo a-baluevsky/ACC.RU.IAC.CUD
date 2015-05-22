@@ -52,14 +52,12 @@ public class IncludeServlet extends HttpServlet {
       }
    }
     public static void copyFiles(File sourceLocation , File targetLocation)   throws IOException {
-        if (sourceLocation.isDirectory()) {
-            if (!targetLocation.exists()) {
-                targetLocation.mkdir();
-            }
-            File[] files = sourceLocation.listFiles();
-            if(files!=null)
-            for(File file:files)
-               copyFile(file.getAbsolutePath(), targetLocation+"/"+file.getName());
+        if (sourceLocation.isDirectory() 
+        		&& (targetLocation.mkdir() || targetLocation.exists())) {        	
+	        File[] files = sourceLocation.listFiles();
+	        if(files!=null)
+	        for(File file:files)
+	           copyFile(file.getAbsolutePath(), targetLocation+"/"+file.getName());
         }
     }
 

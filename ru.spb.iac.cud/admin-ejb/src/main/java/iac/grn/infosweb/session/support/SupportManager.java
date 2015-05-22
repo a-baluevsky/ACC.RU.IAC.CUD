@@ -26,7 +26,7 @@ import org.jboss.seam.transaction.Transaction;
 	@Logger private Log log;
 	
 	@In 
-	EntityManager entityManager;
+	transient EntityManager entityManager;
 	
 	public void sendMail(String helpFio, String helpPost, String helpMail, String helpText,  String helpTel){
 		log.info("supportManager:sendMail:01");

@@ -116,7 +116,7 @@ public class JasperReportService implements Serializable {
 	 */
 	private static final long serialVersionUID = -2607225014972440102L;
 	protected static DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-	protected static DocumentBuilder docBuilder;	
+	static DocumentBuilder docBuilder;	
 	protected static DocumentBuilder getDocBuilder() throws ParserConfigurationException {		
 		if(docBuilder==null) docBuilder = docFactory.newDocumentBuilder();
 		return docBuilder;

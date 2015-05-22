@@ -48,7 +48,7 @@ import org.jboss.seam.log.Log;
 	@Logger private static transient Log log;
 	
 	 @In 
-	 EntityManager entityManager;
+	 transient EntityManager entityManager;
 	 
 	private int connectError=0;
 	private Boolean evaluteForList;

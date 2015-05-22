@@ -16,7 +16,7 @@ import org.jboss.seam.annotations.In;
  public class AuthManager implements AuthManagerLocal, AuthManagerRemote {
 
 	@In
-	EntityManager entityManager;
+	transient EntityManager entityManager;
 
 	
 	public AuthManager() {

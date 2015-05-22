@@ -72,10 +72,15 @@ import javax.persistence.NoResultException;
 @Name("bindManager")
  public class BindManager implements java.io.Serializable {
 	
-	 @Logger private Log log;
+	 /**
+	 * 
+	 */
+	private static final long serialVersionUID = 3140180937398943875L;
+
+	@Logger private Log log;
 	
 	 @In 
-	 EntityManager entityManager;
+	 transient EntityManager entityManager;
 	 
 	/**
      * Ёкспортируема€ сущности 
@@ -2170,7 +2175,7 @@ import javax.persistence.NoResultException;
 		  return this.fioArray;
 	}
 	public void setFioArray(String[] fioArray){
-		this.fioArray=fioArray;
+		this.fioArray=(fioArray==null)?null:(String[])fioArray.clone();
 	}
    
 	public Boolean getSearchOrgExact(){

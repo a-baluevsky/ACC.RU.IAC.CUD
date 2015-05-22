@@ -22,7 +22,7 @@ import org.jboss.seam.log.Log;
 	@Logger private Log log;
 	
 	@In 
-	EntityManager entityManager;
+	transient EntityManager entityManager;
 	
 	@In(create=true)
 	private Renderer renderer;

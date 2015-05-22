@@ -6,6 +6,7 @@ import iac.cud.infosweb.local.service.IHLocal;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.text.DateFormat;
@@ -27,11 +28,11 @@ import javax.transaction.UserTransaction;
 import javax.ejb.TransactionManagementType;
 
 import mypackage.Configuration;
-
 import iac.grn.infosweb.context.proc.TaskProcessor;
 
  
  
+
 import org.apache.log4j.Logger;
 
 @Stateless
@@ -160,13 +161,12 @@ import org.apache.log4j.Logger;
 				+ archiveParamValue);
 
 		try {
-			utx.begin();
-
 			File dirSys = new File(file_path);
-			if (!dirSys.exists()) {
-				dirSys.mkdirs();
+			if (!dirSys.mkdirs() && !dirSys.exists()) {
+				throw new IOException("process_start_content:Failed creating "+file_path);
 			}
-
+			
+			utx.begin();
 			if (archiveParamValue == null) {
 
 				List<String> losSys = em

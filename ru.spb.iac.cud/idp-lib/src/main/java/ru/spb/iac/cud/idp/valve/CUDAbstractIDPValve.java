@@ -310,7 +310,7 @@ public abstract class CUDAbstractIDPValve extends ValveBase {
 	 * @param ignoreAttributes
 	 */
 	public void setIgnoreAttributesGeneration(Boolean ignoreAttributes) {
-		if (ignoreAttributes == Boolean.TRUE) {
+		if (Boolean.TRUE.equals(ignoreAttributes)) {
 			this.attribManager = null;
 		}
 	}

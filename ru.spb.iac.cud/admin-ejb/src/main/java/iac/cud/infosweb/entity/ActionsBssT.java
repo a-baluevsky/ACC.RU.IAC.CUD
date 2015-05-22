@@ -5,7 +5,6 @@ import javax.persistence.*;
 
 import java.util.Date;
 import javaw.util.SerializableSet;
-import javaw.util.SerializableSet;
 
 
 /**

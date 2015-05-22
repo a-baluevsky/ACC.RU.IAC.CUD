@@ -36,7 +36,7 @@ import org.jboss.seam.log.Log;
 	 * Менеджер сущностей, обеспечивающий взаимодействие с БД
 	 */
 	@In
-	EntityManager entityManager;
+	transient EntityManager entityManager;
 
 	/**
 	 * Импортируемая сущности Используемых Ресурсов для навигации

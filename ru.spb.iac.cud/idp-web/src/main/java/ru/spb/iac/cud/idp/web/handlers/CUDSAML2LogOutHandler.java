@@ -129,7 +129,7 @@ import ru.spb.iac.cud.core.util.WebUtil;
         }
     }
 
-    private class IDPLogOutHandler {
+    private static class IDPLogOutHandler {
         public void generateSAMLRequest(SAML2HandlerRequest request, SAML2HandlerResponse response) throws ProcessingException {
         }
 

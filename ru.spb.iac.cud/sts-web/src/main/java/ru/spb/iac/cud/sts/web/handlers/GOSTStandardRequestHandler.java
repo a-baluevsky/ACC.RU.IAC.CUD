@@ -278,7 +278,7 @@ import ru.spb.iac.cud.sts.util.CUDWSTrustUtil;
 				try {
 					combinedSecret = Base64.encodeBytes(
 							WSTrustUtil.P_SHA1(clientSecret, serverSecret,
-									(int) keySize / 8)).getBytes();
+									(int) keySize / 8)).getBytes(Charset.forName("UTF-8"));
 				} catch (Exception e) {
 					throw LOGGER.wsTrustCombinedSecretKeyError(e);
 				}

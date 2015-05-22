@@ -597,7 +597,7 @@ import javaw.util.SerializableList;
 		this.userItem = userItem;
 	}
 	
-	 public class UserItem /*extends BaseItem*/ implements Serializable {
+	 public static class UserItem /*extends BaseItem*/ implements Serializable {
 		
 		private static final long serialVersionUID = 1L;
 		

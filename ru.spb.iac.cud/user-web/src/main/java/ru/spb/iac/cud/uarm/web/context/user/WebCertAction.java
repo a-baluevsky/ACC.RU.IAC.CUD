@@ -220,7 +220,7 @@ private X509Certificate validate(String message){
      
    }
   
-    return CMSVerify(enc,null, "12345".getBytes());
+    return CMSVerify(enc,null, "12345".getBytes(Charset.forName("UTF-8")));
 	}catch(Exception e){
 		LOGGER.error("decode:error:"+e);
 	}

@@ -69,7 +69,7 @@ import iac.grn.infosweb.session.audit.export.AuditExportData;
         * Менеджер сущностей, обеспечивающий взаимодействие с БД
         */
 	   @In 
-	   EntityManager entityManager;
+	   transient EntityManager entityManager;
    
 	   public String getDellMessage() {
 		      return dellMessage;

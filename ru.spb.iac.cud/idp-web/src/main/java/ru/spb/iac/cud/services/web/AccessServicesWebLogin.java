@@ -3,12 +3,13 @@ package ru.spb.iac.cud.services.web;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javaw.net.Net;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.jboss.as.web.security.SecurityContextAssociationValve;
 import org.picketlink.common.constants.GeneralConstants;
 import org.slf4j.Logger;
@@ -244,10 +245,18 @@ import org.slf4j.LoggerFactory;
 				pw.close();
 
 			} else { // новый режим - получаем от клиента логин/пароль
-				String process = request.getContextPath()
-						+ "/WebLoginAction?forceBack=true&backUrl=" + backUrl
-						+ "&login=" + login + "&password=" + password;
-				response.sendRedirect(process);
+				StringBuilder sbProcess = new StringBuilder(request.getContextPath());
+				
+				sbProcess.
+				append("/WebLoginAction?forceBack=true&backUrl=")
+					.append(Net.secureEncodeResponse(backUrl))
+				.append("&login=")
+					.append(Net.secureEncodeResponse(login))
+				.append("&password=")
+					.append(Net.secureEncodeResponse(password));
+				
+				response.sendRedirect(sbProcess.toString());
+			
 			}
 
 			
@@ -256,6 +265,7 @@ import org.slf4j.LoggerFactory;
 		}
 
 	}
+
 
 	
 

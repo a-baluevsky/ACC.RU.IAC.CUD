@@ -38,7 +38,7 @@ import ru.spb.iac.cud.items.AuditFunction;
 				.getLogger(AuditExportManager.class);
 	 
 	 @In 
-	 EntityManager entityManager;
+	 transient EntityManager entityManager;
 	
 	 @In
 	 LinksMap linksMap;

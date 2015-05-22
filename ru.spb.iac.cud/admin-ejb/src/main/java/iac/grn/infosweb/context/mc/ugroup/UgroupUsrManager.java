@@ -43,7 +43,7 @@ import org.jboss.seam.log.Log;
 	@Logger private static transient Log log;
 	
 	@In 
-	EntityManager entityManager;
+	transient EntityManager entityManager;
 	
 	private Boolean evaluteForList;
 	private Boolean evaluteForListFooter;  

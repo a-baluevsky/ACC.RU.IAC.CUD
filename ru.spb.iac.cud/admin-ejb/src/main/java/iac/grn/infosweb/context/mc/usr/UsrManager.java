@@ -73,7 +73,7 @@ import org.slf4j.LoggerFactory;
 	 final static  org.slf4j.Logger logger = LoggerFactory.getLogger(UsrManager.class);
 	 
 	 @In 
-	 EntityManager entityManager;
+	 transient EntityManager entityManager;
 	 
 		
 		
@@ -3282,7 +3282,7 @@ import org.slf4j.LoggerFactory;
 				    
 				}
 	    	   
-	    	   userCert.setUpUserRaw(Long.valueOf(id_user));
+	    	   userCert.setUpUserRaw((Long) id_user.clone());
 	    	   
 	    	   userCert.setCreator(getCurrentUser().getBaseId());
 	    	   userCert.setCreated(new Date());
@@ -3437,7 +3437,7 @@ import org.slf4j.LoggerFactory;
 		  return this.fioArray;
 	}
 	public void setFioArray(String[] fioArray){
-		this.fioArray=fioArray;
+		this.fioArray=(fioArray==null)?new String[]{"", "", ""}:(String[])fioArray.clone();
 	}
 	
    public List<BaseItem> getApplicantList(){

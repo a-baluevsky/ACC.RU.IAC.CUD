@@ -24,7 +24,7 @@ import org.jboss.seam.log.Log;
 	@Logger private Log log;
 	
 	@In
-	EntityManager entityManager;
+	transient EntityManager entityManager;
 	 
 		
 	private static String param_code="to_archive_audit_func";

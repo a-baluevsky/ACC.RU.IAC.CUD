@@ -62,7 +62,7 @@ import java.util.Map;
 				.get(GeneralConstants.AUDIT_HELPER);
 		Boolean ignoreSignatures = (Boolean) requestOptions
 				.get(GeneralConstants.IGNORE_SIGNATURES);
-		if (ignoreSignatures == Boolean.TRUE) {
+		if (Boolean.TRUE.equals(ignoreSignatures)) {
 			return;
 		}
 

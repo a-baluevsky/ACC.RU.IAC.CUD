@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Set;
 
 import javaw.io.Closeable;
+import javaw.net.Net;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -115,7 +116,7 @@ private static String alias_root = "σφροαγσο«ροαθΰφ».crt";
 		String backUrl = null, forceBack = null;
 		String success = "false";
 		String signatureValue = null;
-		String repeatLoginUrl = null;
+		
 		int revokedCertificate = 0;
 
 		String loginUser = null;
@@ -173,17 +174,16 @@ private static String alias_root = "σφροαγσο«ροαθΰφ».crt";
 		} else {
 
 			if (forceBack == null) {// βρεγδΰ ηδερό
-
-				repeatLoginUrl = request.getContextPath()
-						+ "/services/access_cert.jsp?success=false"
-						+ (backUrl != null ? "&backUrl=" + backUrl : "")
-						+ (revokedCertificate == 1 ? "&revokedCertificate=1"
-								: "")
-						+ (request.getParameter("overauth") != null ? "&overauth"
-								: "");
-
-				response.sendRedirect(repeatLoginUrl);
-
+				StringBuilder sbRepeatLoginUrl = new StringBuilder(request.getContextPath());
+				sbRepeatLoginUrl.append("/services/access_cert.jsp?success=false");
+				Net.secureFormatWebParam(sbRepeatLoginUrl, "backUrl", backUrl);
+				if(revokedCertificate == 1) {
+					sbRepeatLoginUrl.append("&revokedCertificate=1");
+				}
+				if(request.getParameter("overauth") != null) {
+					sbRepeatLoginUrl.append("&overauth");
+				}
+				response.sendRedirect(sbRepeatLoginUrl.toString());
 			}
 		}
 	}
@@ -206,7 +206,7 @@ private static String alias_root = "σφροαγσο«ροαθΰφ».crt";
 
 			LOGGER.debug("validate:04");
 
-			return CMSVerify(enc, null, "12345".getBytes());
+			return CMSVerify(enc, null, "12345".getBytes(Charset.forName("UTF-8")));
 		} catch (Exception e) {
 			LOGGER.error("validate:error:", e);
 		}

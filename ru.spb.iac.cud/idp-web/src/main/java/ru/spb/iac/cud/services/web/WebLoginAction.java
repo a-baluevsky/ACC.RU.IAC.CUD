@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javaw.net.Net;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -48,7 +50,6 @@ import ru.spb.iac.cud.items.AuthMode;
 		String success = "false";
 		String login=null;
 		String password=null;
-		String repeatLoginUrl=null;
 		String pswitch = null;
 		 
 		String loginUser = null;
@@ -103,15 +104,16 @@ import ru.spb.iac.cud.items.AuthMode;
 			 if(forceBack==null){//здесь в режиме использования своей формы логин/пароль
 			 
 				 LOGGER.debug("service:06");
+				 String repeatLoginUrl=request.getContextPath();
 				 
 				 if(backUrl!=null){
 					if(pswitch==null||!"false".equals(pswitch)){ 
-		  	          repeatLoginUrl = request.getContextPath()+"/AccessServicesWebLogin?success=false&backUrl="+backUrl;
+		  	          repeatLoginUrl += "/AccessServicesWebLogin?success=false&backUrl="+Net.secureEncodeResponse(backUrl);
 					}else{
-					  repeatLoginUrl = request.getContextPath()+"/AccessServicesWebLogin?switch=false&success=false&backUrl="+backUrl;	
+					  repeatLoginUrl += "/AccessServicesWebLogin?switch=false&success=false&backUrl="+Net.secureEncodeResponse(backUrl);	
 					}
 				 }else{
-					repeatLoginUrl = request.getContextPath()+"/AccessServicesWebLogin?success=false";
+					repeatLoginUrl += "/AccessServicesWebLogin?success=false";
 				 }
 				 
 				common(response);

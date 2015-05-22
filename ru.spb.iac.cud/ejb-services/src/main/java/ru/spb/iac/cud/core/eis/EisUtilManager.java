@@ -1007,9 +1007,7 @@ import ru.spb.iac.cud.util.CommonUtil;
 							  .append("and SYS.ID_SRV(+)=ROL.UP_IS ")
 							  .append(" ")
 							  .append("and( SYS.SIGN_OBJECT = :idIS or -1 = :onlyISUsers ) ")
-							  .append(uidsLine != null ? "and GR.SIGN_OBJECT in ("
-											+ uidsLine + ") "
-											: " ")
+							  .append("and GR.SIGN_OBJECT in (" + uidsLine + ") ")
 							  .append(rolesLine != null ? "and (ROL.SIGN_OBJECT in ("
 											+ rolesLine
 											+ ") and SYS.SIGN_OBJECT = :idIS ) "
@@ -1051,7 +1049,7 @@ import ru.spb.iac.cud.util.CommonUtil;
 							  .append("and( SYS.SIGN_OBJECT = :idIS or -1 = :onlyISUsers ) ")
 							  .append("and guu.UP_GROUP_USERS = GR.ID_SRV ")
 							  .append("and guu.UP_USERS = :idUser ")
-							  .append(uidsLine != null ? "and GR.SIGN_OBJECT in ("+ uidsLine + ") ": " ")
+							  .append("and GR.SIGN_OBJECT in ("+ uidsLine + ") ")
 							  .append("group by GR.ID_SRV ")
 							  .append(") ")
 							  .append("where gr_id=gr_full.ID_SRV ")
@@ -1226,9 +1224,7 @@ import ru.spb.iac.cud.util.CommonUtil;
 									  .append("and SYSGROUP.GROUP_CODE = :idIS ")
 									  .append("or -1 = :onlyISUsers  ")
 									  .append(" ) ")							
-									  .append(uidsLine != null ? "and GR.SIGN_OBJECT in ("
-											+ uidsLine + ") "
-											: " ")
+									  .append("and GR.SIGN_OBJECT in (" + uidsLine + ") ")
 									  .append(rolesLine != null ? "and ( ROL.SIGN_OBJECT in ("
 											+ rolesLine
 											+ ") and LINKSYSGROUP.UP_SYSTEMS=SYS.ID_SRV ) "
@@ -1275,9 +1271,7 @@ import ru.spb.iac.cud.util.CommonUtil;
 									  .append("and SYSGROUP.GROUP_CODE = :idIS ")
 									  .append("or -1 = :onlyISUsers  ")
 									  .append(" ) ")
-									  .append(uidsLine != null ? "and GR.SIGN_OBJECT in ("
-												+ uidsLine + ") "
-												: " ")
+									  .append("and GR.SIGN_OBJECT in ("+ uidsLine + ") ")
 									  .append("group by GR.ID_SRV ")
 									  .append(") ")
 									  .append("where gr_id=gr_full.ID_SRV ")
@@ -1455,7 +1449,7 @@ import ru.spb.iac.cud.util.CommonUtil;
 			throws GeneralFailure {
 		
 		Integer count = (Count==null)?MAX_CONT_RES:Count;
-		Integer start = (Start==null)?0:Start;
+		Integer start = (Start==null)?Integer.valueOf(0):Start;
 		
 		LOGGER.debug("resources_data:01 start ="+start+", count ="+count);
 		if (MAX_CONT_RES < count || count < 0) {

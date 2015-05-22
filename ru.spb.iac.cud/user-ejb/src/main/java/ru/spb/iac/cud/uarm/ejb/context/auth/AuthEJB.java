@@ -234,15 +234,8 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
   	        
   	        referenceList.add(ref1);
   	        
-  	        SignedInfo si = fac.newSignedInfo( fac.newCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE,
-  					 								(C14NMethodParameterSpec) null),
-  					 						   fac.newSignatureMethod("http://www.w3.org/2001/04/xmldsig-more#gostr34102001-gostr3411", null),
-  					 						  referenceList);
-
+  	        
   			KeyInfoFactory kif = fac.getKeyInfoFactory();
-  			
-  			KeyValue kv = kif.newKeyValue(publicKey);
-  			KeyInfo ki = kif.newKeyInfo(Collections.singletonList(kv));
   			
   				
   			
@@ -267,7 +260,10 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
   		// вместо этого используется configureIdAttribute(samlDocument);	
   		
   		
-  			fac.newXMLSignature(si, ki).sign(signContext);
+  			fac.newXMLSignature(fac.newSignedInfo( fac.newCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE,
+						(C14NMethodParameterSpec) null),
+						   fac.newSignatureMethod("http://www.w3.org/2001/04/xmldsig-more#gostr34102001-gostr3411", null),
+						  referenceList), kif.newKeyInfo(Collections.singletonList(kif.newKeyValue(publicKey)))).sign(signContext);
   	
   	 
   	  
@@ -314,6 +310,7 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
  		   
  		   
  	   }catch(Exception e){
+ 		   LOGGER.error("authenticator:cudAuthOBO:catch:"+e.toString());
  		  
  	   }
  	   
@@ -415,15 +412,11 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
 		        
 		        referenceList.add(ref1);
 		        
-		        SignedInfo si = facLogout.newSignedInfo( facLogout.newCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE,
-						 								(C14NMethodParameterSpec) null),
-						 						   facLogout.newSignatureMethod("http://www.w3.org/2001/04/xmldsig-more#gostr34102001-gostr3411", null),
-						 						  referenceList);
+
 
 				KeyInfoFactory kif = facLogout.getKeyInfoFactory();
 				
-				KeyValue kv = kif.newKeyValue(publicKey);
-				KeyInfo ki = kif.newKeyInfo(Collections.singletonList(kv));
+				
 				
 				
 	//!!!
@@ -444,8 +437,11 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
 			
 			// вместо этого используется configureIdAttribute(samlDocument);	
 			
-				    
-				facLogout.newXMLSignature(si, ki).sign(signContext);
+				facLogout.newXMLSignature(
+						facLogout.newSignedInfo( facLogout.newCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE,
+						(C14NMethodParameterSpec) null),
+						   facLogout.newSignatureMethod("http://www.w3.org/2001/04/xmldsig-more#gostr34102001-gostr3411", null),
+						  referenceList), kif.newKeyInfo(Collections.singletonList(kif.newKeyValue(publicKey)))).sign(signContext);
 		
 		    LOGGER.debug("authenticator:cudLogout:05:"+DocumentUtil.asString(samlDocument));
 		  
@@ -836,7 +832,7 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
 		    updateCertKeys(signingAlias, signingKeyPass);
 		    
 			Document  samlDocument;
-			AssertionType ass = null;
+			AssertionType ass;
 			
 			if(this.assertionOBO==null) {
 				//обычная аутентификация

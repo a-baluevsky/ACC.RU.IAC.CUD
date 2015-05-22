@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
  public class GRuNProFileLite implements GRuNProFileLiteLocal {
 
 	@PersistenceContext(unitName = "InfoSCUD-web")
-	EntityManager entityManager;
+	transient EntityManager entityManager;
 
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(GRuNProFileLite.class);

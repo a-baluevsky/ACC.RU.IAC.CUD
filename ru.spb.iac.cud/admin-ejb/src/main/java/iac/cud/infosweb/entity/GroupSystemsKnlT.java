@@ -10,7 +10,6 @@ import org.jboss.seam.annotations.Role;
 
 import java.util.Date;
 import javaw.util.SerializableList;
-import javaw.util.SerializableList;
 
 /**
  * The persistent class for the GROUP_SYSTEMS_KNL_T database table.

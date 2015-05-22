@@ -6,6 +6,7 @@ import iac.cud.infosweb.local.service.IHLocal;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.text.DateFormat;
@@ -27,11 +28,11 @@ import javax.transaction.UserTransaction;
 import javax.ejb.TransactionManagementType;
 
 import mypackage.Configuration;
-
 import iac.grn.infosweb.context.proc.TaskProcessor;
 
  
  
+
 import org.apache.log4j.Logger;
 
 @Stateless
@@ -160,13 +161,11 @@ import org.apache.log4j.Logger;
 		log.info("IHArchiveAuditFunc:process_start_content:01");
 
 		try {
-			utx.begin();
-
 			File dirFunc = new File(file_path);
-			if (!dirFunc.exists()) {
-				dirFunc.mkdirs();
+			if (!dirFunc.mkdirs() && !dirFunc.exists()) {
+				throw new IOException("Couldn't create path: "+file_path);
 			}
-
+			utx.begin();
 			List<String> losFunc = em
 					.createNativeQuery(
 							(new StringBuilder("select ST.VALUE_PARAM "))

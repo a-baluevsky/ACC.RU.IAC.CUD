@@ -56,7 +56,7 @@ import org.jboss.seam.log.Log;
 		return this.startDate;
 	}
 	public synchronized void setStartDate(Date startDate){
-		this.startDate=startDate;
+		this.startDate=(startDate==null)?null:(Date)startDate.clone();
 	}
 	
 	public synchronized Long getPeriod(){

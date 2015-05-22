@@ -9,11 +9,14 @@ import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.nio.charset.Charset;
 import java.sql.PreparedStatement;
 import java.util.Date;
 import java.util.HashMap; 
 import java.util.List;
+
+import javaw.io.Closeable;
 
 import javax.persistence.EntityManager;
 import javax.transaction.UserTransaction;
@@ -444,13 +447,24 @@ import org.slf4j.LoggerFactory;
 
 			fr = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
 			lineNumberReader = new LineNumberReader(fr);
-			lineNumberReader.skip(Long.MAX_VALUE);
-			file_rec_count = lineNumberReader.getLineNumber();
+			long lSkipCnt = lineNumberReader.skip(Long.MAX_VALUE);
+			LOGGER.info("phase_fixed:skip to end by "+lSkipCnt); 
 
-			bd_execute("update JOURN_ISP_LOAD LL " + "set LL.FILE_NAME = '"
-					+ fileName + "', " + "LL.FILE_REC_COUNT = "
-					+ file_rec_count + ", " + "LL.CLASSIF_VERSION =  "
-					+ this.clVersion + " " + "where LL.ID_SRV=" + this.seancact);
+			file_rec_count = lineNumberReader.getLineNumber();
+			bd_execute(
+					(new StringBuilder("update JOURN_ISP_LOAD LL "))
+					  .append("set LL.FILE_NAME = '")
+					  .append(fileName)
+					  .append("', ") 
+					  .append("LL.FILE_REC_COUNT = ")
+					  .append(file_rec_count)
+					  .append(", ") 
+					  .append("LL.CLASSIF_VERSION =  ")
+					  .append(this.clVersion) 
+					  .append(" ") 
+					  .append("where LL.ID_SRV=") 
+					.append(this.seancact)
+					.toString());
 		} catch (Exception e) {
 			LOGGER.error("phase_fixed:error:", e);
 			throw e;
@@ -498,8 +512,9 @@ import org.slf4j.LoggerFactory;
 
 			try {
 				fr = new InputStreamReader(new FileInputStream(file1), Charset.forName("UTF-8"));
-				lineNumberReader = new LineNumberReader(fr);
-				lineNumberReader.skip(Long.MAX_VALUE);
+				lineNumberReader = new LineNumberReader(fr);				
+				long lSkipCnt = lineNumberReader.skip(Long.MAX_VALUE);
+				LOGGER.info("saveCount:skip to end by "+lSkipCnt);
 				lines = lineNumberReader.getLineNumber();
 
 				if (lines != 0) { // исключаем заголовок
@@ -515,7 +530,7 @@ import org.slf4j.LoggerFactory;
 
 			if (file2 != null) {
 				try {
-					fr = new FileReader(file2);
+					fr = new InputStreamReader(new FileInputStream(file2), Charset.forName("UTF-8"));
 					lineNumberReader = new LineNumberReader(fr);
 					lineNumberReader.skip(Long.MAX_VALUE);
 					lines = lineNumberReader.getLineNumber();
@@ -535,11 +550,9 @@ import org.slf4j.LoggerFactory;
 		} catch (Exception e) {
 			LOGGER.error("saveCount:error:", e);
 		} finally {
-			if (fr != null) {
-				fr.close();
-			}
-			if (lineNumberReader != null) {
-				lineNumberReader.close();
+			String[] msgErr = new String[]{"saveCount:finally"};
+			if(!Closeable.Close(msgErr, fr, lineNumberReader)) {
+				LOGGER.error(msgErr[0]);
 			}
 		}
 	}

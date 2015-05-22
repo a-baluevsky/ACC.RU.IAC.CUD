@@ -8,7 +8,6 @@ import java.util.List;
 
 import javaw.util.ArrayList;
 import javaw.util.SerializableList;
-import javaw.util.SerializableList;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
