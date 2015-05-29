@@ -1,5 +1,6 @@
 package iac.grn.infosweb.context.mc.ugroup;
 
+import java.util.List;
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.entity.AcApplication;
 import iac.cud.infosweb.entity.AcRole;
@@ -62,23 +63,23 @@ import org.jboss.seam.log.Log;
 		
 	private String dellMessage;
 	 
-	private SerializableList<BaseItem> auditList; 
+	private /*Serializable*/ List<BaseItem> auditList; 
 	
 	private Long auditCount;
 	
 	
-    private SerializableList<BaseItem> roleList;
+    private /*Serializable*/ List<BaseItem> roleList;
 	
-	private SerializableList<AcApplication> listGroupArmForView = null;
+	private /*Serializable*/ List<AcApplication> listGroupArmForView = null;
 
 		
-	private SerializableList<AcUser> usrList;
+	private /*Serializable*/ List<AcUser> usrList;
 	
-	private SerializableList<String> usrSelectList;
+	private /*Serializable*/ List<String> usrSelectList;
 	
-	private SerializableList<String> usrSelectEditList;
+	private /*Serializable*/ List<String> usrSelectEditList;
 	
-	private SerializableList<AcUser> usrSelectListForView;
+	private /*Serializable*/ List<AcUser> usrSelectListForView;
 	
 		
 	 

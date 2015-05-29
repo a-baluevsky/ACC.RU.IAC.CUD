@@ -16,8 +16,8 @@ import javaw.util.SerializableList;
 
      
        
-       public SerializableList <String> getAuditFieldListSelect() {
-    	   return this.auditFieldListSelect;
+       public SerializableList<String> getAuditFieldListSelect() {
+    	   return new ArrayList<String>(this.auditFieldListSelect);
        }
        public void setAuditFieldListSelect(SerializableList <String> auditFieldListSelect) {
     	   this.auditFieldListSelect=auditFieldListSelect;

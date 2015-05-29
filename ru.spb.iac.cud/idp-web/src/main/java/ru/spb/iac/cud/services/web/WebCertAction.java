@@ -3,7 +3,6 @@ package ru.spb.iac.cud.services.web;
 import java.nio.charset.Charset;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;

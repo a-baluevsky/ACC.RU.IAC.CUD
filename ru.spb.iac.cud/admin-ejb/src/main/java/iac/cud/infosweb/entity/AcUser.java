@@ -1,5 +1,6 @@
 package iac.cud.infosweb.entity;
 
+import java.util.List;
 import iac.cud.infosweb.dataitems.BaseItem;
 
 import java.io.Serializable;
@@ -106,34 +107,34 @@ import org.jboss.seam.annotations.Role;
 	private Long isAccOrgManager;
     
   	@OneToMany(mappedBy="acUser", cascade={CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
-	private SerializableList<AcLinkUserToRoleToRaion> acLinkUserToRoleToRaions;
+	private /*Serializable*/ List<AcLinkUserToRoleToRaion> acLinkUserToRoleToRaions;
 
 	
    //-1-1-
   	//для проверки наличия записей
   	//при наличии не удаляем
     @OneToMany(mappedBy="acUsersKnlT", fetch=FetchType.LAZY)
-  	private SerializableList<ServicesLogKnlT> servicesLogKnlTs;
+  	private /*Serializable*/ List<ServicesLogKnlT> servicesLogKnlTs;
    //-1-2-
     
     
     @OneToMany(mappedBy="acUsersKnlT", cascade={CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
-	private SerializableList<LinkGroupUsersUsersKnlT> linkGroupUsersUsersKnlTs;
+	private /*Serializable*/ List<LinkGroupUsersUsersKnlT> linkGroupUsersUsersKnlTs;
     
     @OneToMany(mappedBy="acUsersKnlT", cascade= CascadeType.REMOVE)
-	private SerializableList<BindingLogT> bindingLogTs;
+	private /*Serializable*/ List<BindingLogT> bindingLogTs;
     
     @OneToMany(mappedBy="acUsersKnlT", cascade= CascadeType.REMOVE)
-	private SerializableList<BindingAutoLinkBssT> bindingAutoLinkBssTs;
+	private /*Serializable*/ List<BindingAutoLinkBssT> bindingAutoLinkBssTs;
 
     
     @OneToMany(mappedBy="upUser", 
     		  fetch=FetchType.LAZY,
     		  cascade={ CascadeType.REMOVE})
-	private SerializableList<AcUsersCertBssT> acUsersCert;
+	private /*Serializable*/ List<AcUsersCertBssT> acUsersCert;
     
     @OneToMany(mappedBy="acUsersKnlT", cascade={CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
-	private SerializableList<LinkAdminUserSys> linkAdminUserSys;
+	private /*Serializable*/ List<LinkAdminUserSys> linkAdminUserSys;
     
     @ManyToOne
    	@JoinColumn(name="UP_MUNIC", insertable=false, updatable=false)
@@ -180,17 +181,17 @@ import org.jboss.seam.annotations.Role;
 	private String statusValue;
     
     @Transient
-   	private SerializableList<String> rolesInfoList;
+   	private /*Serializable*/ List<String> rolesInfoList;
     
     //при выводе списка пользователей разбитых по алфавиту в группе
     @Transient
 	private Boolean usrChecked=false;
     
     @Transient
-   	private SerializableList<Long> allowedSys;
+   	private /*Serializable*/ List<Long> allowedSys;
     
     @Transient
-   	private SerializableList<String> allowedReestr;
+   	private /*Serializable*/ List<String> allowedReestr;
     
     public AcUser() {
     }
@@ -294,7 +295,7 @@ import org.jboss.seam.annotations.Role;
 	}
 
 	public SerializableList<AcLinkUserToRoleToRaion> getAcLinkUserToRoleToRaions() {
-		return this.acLinkUserToRoleToRaions;
+		return new ArrayList<AcLinkUserToRoleToRaion>(this.acLinkUserToRoleToRaions);
 	}
 
 	public void setAcLinkUserToRoleToRaions(SerializableList<AcLinkUserToRoleToRaion> acLinkUserToRoleToRaions) {
@@ -375,7 +376,7 @@ import org.jboss.seam.annotations.Role;
 	}
 	
 	public SerializableList<LinkGroupUsersUsersKnlT> getLinkGroupUsersUsersKnlTs() {
-		return this.linkGroupUsersUsersKnlTs;
+		return new ArrayList<LinkGroupUsersUsersKnlT>(this.linkGroupUsersUsersKnlTs);
 	}
     public void setLinkGroupUsersUsersKnlTs(SerializableList<LinkGroupUsersUsersKnlT> linkGroupUsersUsersKnlTs) {
 		this.linkGroupUsersUsersKnlTs = linkGroupUsersUsersKnlTs;
@@ -436,7 +437,7 @@ import org.jboss.seam.annotations.Role;
 	}
 	
 	public SerializableList<String> getRolesInfoList() {
-		return this.rolesInfoList;
+		return new ArrayList<String>(this.rolesInfoList);
 	}
 
 	public void setRolesInfoList(List<String> rolesInfoList) {
@@ -491,42 +492,42 @@ import org.jboss.seam.annotations.Role;
 	}
 
 	public SerializableList<AcUsersCertBssT> getAcUsersCert() {
-		return acUsersCert;
+		return new ArrayList<AcUsersCertBssT>(acUsersCert);
 	}
 	public void setAcUsersCert(SerializableList<AcUsersCertBssT> acUsersCert) {
 		this.acUsersCert = acUsersCert;
 	}
 	
 	public SerializableList<BindingLogT> getBindingLogTs() {
-		return this.bindingLogTs;
+		return new ArrayList<BindingLogT>(this.bindingLogTs);
 	}
 	public void setBindingLogTs(SerializableList<BindingLogT> bindingLogTs) {
 		this.bindingLogTs = bindingLogTs;
 	}
 	
 	public SerializableList<BindingAutoLinkBssT> getBindingAutoLinkBssTs() {
-		return this.bindingAutoLinkBssTs;
+		return new ArrayList<BindingAutoLinkBssT>(this.bindingAutoLinkBssTs);
 	}
 	public void setBindingAutoLinkBssTs(SerializableList<BindingAutoLinkBssT> bindingAutoLinkBssTs) {
 		this.bindingAutoLinkBssTs = bindingAutoLinkBssTs;
 	}
 	
 	public SerializableList<ServicesLogKnlT> getServicesLogKnlTs() {
-		return this.servicesLogKnlTs;
+		return new ArrayList<ServicesLogKnlT>(this.servicesLogKnlTs);
 	}
 	public void setServicesLogKnlTs(SerializableList<ServicesLogKnlT> servicesLogKnlTs) {
 		this.servicesLogKnlTs = servicesLogKnlTs;
 	}
 
 	public SerializableList<LinkAdminUserSys> getLinkAdminUserSys() {
-		return this.linkAdminUserSys;
+		return new ArrayList<LinkAdminUserSys>(this.linkAdminUserSys);
 	}
 	public void setLinkAdminUserSys(SerializableList<LinkAdminUserSys> linkAdminUserSys) {
 		this.linkAdminUserSys = linkAdminUserSys;
 	}
 	
 	public SerializableList<Long> getAllowedSys() {
-		return allowedSys;
+		return new ArrayList<Long>(allowedSys);
 	}
 
 	public void setAllowedSys(List<Long> allowedSys) {

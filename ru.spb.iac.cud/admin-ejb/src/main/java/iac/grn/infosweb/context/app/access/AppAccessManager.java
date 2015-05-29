@@ -1,5 +1,6 @@
 package iac.grn.infosweb.context.app.access;
 
+import java.util.List;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import javaw.util.ArrayList;
@@ -33,7 +34,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	private String rejectReason;
 	private String commentText;
 	
-	private SerializableList<AcRole> listRolesAppForView = null;
+	private /*Serializable*/ List<AcRole> listRolesAppForView = null;
 	
 	public void invokeLocal(String type, int firstRow, int numberOfRows,
 	           String sessionId) {

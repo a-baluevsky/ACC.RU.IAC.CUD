@@ -1,6 +1,6 @@
 package iac.grn.infosweb.context.services.binding;
 
- 
+import java.util.List; 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -87,13 +87,13 @@ import javax.persistence.NoResultException;
      * для отображения
      */
 		
-	private SerializableList<BaseItem> auditList;
+	private /*Serializable*/ List<BaseItem> auditList;
 	
 	private Long auditCount;
 	
-	private SerializableList <BaseTableItem> auditItemsListSelect;
+	private /*Serializable*/ List<BaseTableItem> auditItemsListSelect;
 	
-	private SerializableList <BaseTableItem> auditItemsListContext;
+	private /*Serializable*/ List<BaseTableItem> auditItemsListContext;
 	
 	private int connectError=0;
 	private Boolean evaluteForList;
@@ -103,22 +103,22 @@ import javax.persistence.NoResultException;
 	  
 	private boolean addLoginExist=false;
 	
-	private SerializableList<AcApplication> listBindArm = null;
-	private SerializableList<AcApplication> listBindArmEdit = null;
-	private SerializableList<AcApplication> listBindArmForView = null;
+	private /*Serializable*/ List<AcApplication> listBindArm = null;
+	private /*Serializable*/ List<AcApplication> listBindArmEdit = null;
+	private /*Serializable*/ List<AcApplication> listBindArmForView = null;
 	
-	private SerializableList<BaseItem> historyBindingList = null;
+	private /*Serializable*/ List<BaseItem> historyBindingList = null;
 	
 	private Long historyBindingValue = null;
 	
-	private SerializableList<GroupUsersKnlT> listBindGroupForView = null;
+	private /*Serializable*/ List<GroupUsersKnlT> listBindGroupForView = null;
 	
 	private LinksMap linksMap = null;
 	private AcUser currentUser = null;
 	
-	private SerializableList<BaseItem> roleList;
+	private /*Serializable*/ List<BaseItem> roleList;
 	
-	private SerializableList<BaseItem> applicantList;
+	private /*Serializable*/ List<BaseItem> applicantList;
 	
 	private String dellMessage = null;
 	
@@ -177,7 +177,7 @@ import javax.persistence.NoResultException;
 				 }
 		      }
 		}
-		return this.auditList;
+		return new ArrayList<BaseItem>(auditList);
 	}
 	public void setAuditList(SerializableList<BaseItem> auditList){
 		this.auditList=auditList;
@@ -1740,7 +1740,7 @@ import javax.persistence.NoResultException;
 	    	 log.error("BindManager:getHistoryBindingList:ERROR:"+e);
 	         throw e;
 	     }
-	    return historyBindingList;
+	    return new ArrayList<BaseItem>(historyBindingList);
    }
    public void setHistoryBindingList(SerializableList<BaseItem> historyBindingList){
 	   this.historyBindingList=historyBindingList;
@@ -1922,7 +1922,7 @@ import javax.persistence.NoResultException;
 	    	 log.error("BindManager:getListBindArm:ERROR:"+e);
 	         throw e;
 	     }
-	    return listBindArm;
+	    return new ArrayList<AcApplication>(listBindArm);
    }
    public void setListBindArm(SerializableList<AcApplication> listBindArm){
 	   this.listBindArm=listBindArm;
@@ -1984,7 +1984,7 @@ import javax.persistence.NoResultException;
 	    	 log.error("BindManager:getListBindArmEdit:ERROR:"+e);
 	         throw e;
 	     }
-	    return listBindArmEdit;
+	    return new ArrayList<AcApplication>(listBindArmEdit);
    }
    
    public void setListBindArmEdit(SerializableList<AcApplication> listBindArmEdit){
@@ -2045,7 +2045,7 @@ import javax.persistence.NoResultException;
 	    	 log.error("BindManager:getListBindArmForView:ERROR:"+e);
 	         throw e;
 	     }
-	    return listBindArmForView;
+	    return new ArrayList<AcApplication>(listBindArmForView);
   }
   
    
@@ -2115,7 +2115,7 @@ import javax.persistence.NoResultException;
 	    	 log.error("BindManager:getListBindGroupForView:ERROR:"+e);
 	         throw e;
 	     }
-	    return listBindGroupForView;
+	    return new ArrayList<GroupUsersKnlT>(listBindGroupForView);
  }
    
    public SerializableList<BaseItem> getRoleList(){
@@ -2134,7 +2134,7 @@ import javax.persistence.NoResultException;
 		   log.error("BindManager:getRoleList:remoteAudit:"+remoteAudit);
 		   
 		   if(idArm==null||sessionId==null){
-			   return this.roleList;
+			   return new ArrayList<BaseItem>(this.roleList);
 		   }
 		   
 		   this.roleList = new ArrayList<BaseItem>(entityManager.createQuery("select o from AcRole o where o.acApplication= :idArm order by o.roleTitle ")
@@ -2154,7 +2154,7 @@ import javax.persistence.NoResultException;
 	         } 
 		  }
 	   }
-	   return this.roleList;
+	   return new ArrayList<BaseItem>(this.roleList);
    }
    
    public void setRoleList(SerializableList<BaseItem> roleList){
@@ -2163,7 +2163,7 @@ import javax.persistence.NoResultException;
    
    public SerializableList<BaseItem> getApplicantList(){
 	
-	   return this.applicantList;
+	   return new ArrayList<BaseItem>(this.applicantList);
    }
    
    public void setApplicantList(SerializableList<BaseItem> applicantList){
@@ -2207,17 +2207,17 @@ import javax.persistence.NoResultException;
 			   auditItemsListSelect.add(acBind.getAuditItemsMap().get("orgName"));
 			   auditItemsListSelect.add(acBind.getAuditItemsMap().get("statusValue"));
 		   }
-	       return this.auditItemsListSelect;
+	       return new ArrayList<BaseTableItem>(this.auditItemsListSelect);
    }
    
     
    public SerializableList <BaseTableItem> getAuditItemsListContext() {
 	   log.info("bindManager:getAuditItemsListContext");
 	   if(auditItemsListContext==null){
-		   BindContext acBind= new BindContext();		   
-		   auditItemsListContext= new ArrayList<BaseTableItem>(acBind.getAuditItemsCollection());
+		   BindContext acBind = new BindContext();		   
+		   auditItemsListContext= acBind.getAuditItemsCollection();
 	   }
-	   return this.auditItemsListContext;
+	   return new ArrayList<BaseTableItem>(this.auditItemsListContext);
    }
       
    private boolean loginExist(String login) throws Exception {

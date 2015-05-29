@@ -1,5 +1,6 @@
 package iac.grn.infosweb.context.app.user.certmodify;
 
+import java.util.List;
 import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
 import java.security.cert.CertificateFactory;
@@ -45,7 +46,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	private String rejectReason;
 	private String commentText;
 	
-	private SerializableList<HeaderTableItem> headerItemsListContextCREATE;
+	private /*Serializable*/ List<HeaderTableItem> headerItemsListContextCREATE;
 	
 	@Override
 	public void invokeLocal(String type, int firstRow, int numberOfRows,
@@ -907,7 +908,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 		   }
 
 	 	}
-	   return this.headerItemsListContextCREATE;
+	   return new ArrayList<HeaderTableItem>(this.headerItemsListContextCREATE);
 }
   private String decToHex(BigInteger bi) {
 		

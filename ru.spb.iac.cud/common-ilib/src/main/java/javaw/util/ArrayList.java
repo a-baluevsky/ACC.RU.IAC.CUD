@@ -25,5 +25,8 @@ public class ArrayList<K> extends java.util.ArrayList<K> implements Serializable
 	public ArrayList(List<K> list) {
 		super(list);
 	}
+	
+	
+	
 };
 

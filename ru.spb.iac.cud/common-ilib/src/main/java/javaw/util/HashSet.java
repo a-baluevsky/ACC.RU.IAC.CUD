@@ -1,6 +1,7 @@
 package javaw.util;
 
 import java.util.List;
+import java.util.Set;
 
 // Wrapper to deal with SONAR CWE-594 issue.
 // Use SerializableSet<K> in Serializable classes instead of just Set<K>.
@@ -20,6 +21,10 @@ public class HashSet<K> extends java.util.HashSet<K> implements SerializableSet<
 
 	public HashSet(List<K> list) {
 		super(list);
+	}
+
+	public HashSet(Set<K> set) {
+		super(set);
 	}
 
 	private static final long serialVersionUID = 1L;

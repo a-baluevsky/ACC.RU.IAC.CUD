@@ -1,5 +1,6 @@
 package iac.grn.infosweb.context.appmy.user.certmodify;
 
+import java.util.List;
 import iac.cud.infosweb.dataitems.AppUserCertModifyItem;
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.grn.infosweb.context.app.user.certmodify.AppUserCertModifyManager;
@@ -37,7 +38,7 @@ import org.jboss.seam.faces.FacesMessages;
 	private String rejectReason;
 	private String commentText;
 	
-	private SerializableList<HeaderTableItem> headerItemsListContextCREATE;
+	private /*Serializable*/ List<HeaderTableItem> headerItemsListContextCREATE;
 	
 	public void invokeLocal(String type, int firstRow, int numberOfRows,
 	           String sessionId) {
@@ -455,7 +456,7 @@ import org.jboss.seam.faces.FacesMessages;
 		   }
 
 	 	}
-	   return this.headerItemsListContextCREATE;
+	   return new ArrayList<HeaderTableItem>(this.headerItemsListContextCREATE);
 }
 
 }

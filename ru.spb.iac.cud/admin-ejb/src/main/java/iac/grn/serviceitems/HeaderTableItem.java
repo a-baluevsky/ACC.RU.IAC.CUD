@@ -1,5 +1,6 @@
 package iac.grn.serviceitems;
 
+import java.util.List;
 import javaw.util.ArrayList;
 import javaw.util.SerializableList;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 	private static final long serialVersionUID = 3030342166451950655L;
 	private String itemLabel;
 	private String itemField;
-	private SerializableList<BaseTableItem> items=new ArrayList<BaseTableItem>();
+	private /*Serializable*/ List<BaseTableItem> items=new ArrayList<BaseTableItem>();
 		
 	public HeaderTableItem(String itemLabel, String itemField){
 		this.itemLabel=itemLabel;

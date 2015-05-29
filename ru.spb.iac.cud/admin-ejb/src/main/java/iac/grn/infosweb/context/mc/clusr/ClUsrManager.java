@@ -1,5 +1,6 @@
 package iac.grn.infosweb.context.mc.clusr;
 
+import java.util.List;
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.dataitems.BaseParamItem;
 import iac.cud.infosweb.entity.AcLegalEntityType;
@@ -70,7 +71,7 @@ import javaw.util.SerializableList;
 	 
 	private String classifExistVersion = "Не установлена";
 	
-	private SerializableList<BaseItem> auditList; 
+	private /*Serializable*/ List<BaseItem> auditList; 
 	
 	private Long auditCount;
 	
@@ -83,11 +84,11 @@ import javaw.util.SerializableList;
 	private Boolean evaluteForListFooter;  
 	private Boolean evaluteForBean;
 	
-	private SerializableList<AcLegalEntityType> listLET = null;
+	private /*Serializable*/ List<AcLegalEntityType> listLET = null;
 	
-	private SerializableList<IspTempBssT> listOrg = null;
+	private /*Serializable*/ List<IspTempBssT> listOrg = null;
 	
-	private SerializableList<IspBssT> listUsrAutocomplete = null;
+	private /*Serializable*/ List<IspBssT> listUsrAutocomplete = null;
 	
 	private String loadMessage;
 	private int loadFlag =0;

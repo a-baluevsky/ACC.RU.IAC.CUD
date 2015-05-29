@@ -1,5 +1,7 @@
 package ru.spb.iac.cud.context;
 
+import java.lang.reflect.Method;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
@@ -46,8 +48,7 @@ import ru.spb.iac.cud.items.AuthMode;
 			String codeSys) throws GeneralFailure, InvalidCredentials,
 			RevokedCertificate {
 		LOGGER.debug("authenticate_cert_sn");
-		return aml.authenticate_cert_sn(sn, AuthMode.HTTP_REDIRECT_CERT, IPAddress,
-				codeSys);
+		return aml.authenticate_cert_sn(sn, AuthMode.HTTP_REDIRECT_CERT, IPAddress, codeSys);
 	}
 
 	public String authenticate_login(String login, String password,

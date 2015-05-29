@@ -1,5 +1,6 @@
 package iac.grn.infosweb.context.mc.ugroup;
 
+import java.util.List;
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.dataitems.UserItem;
 import iac.cud.infosweb.entity.AcUser;
@@ -51,7 +52,7 @@ import org.jboss.seam.log.Log;
 	
 	private SerializableList <BaseTableItem> auditItemsListSelect;
 	
-    private SerializableList<BaseItem> auditList; 
+    private /*Serializable*/ List<BaseItem> auditList; 
 	
 	private Long auditCount;
 	

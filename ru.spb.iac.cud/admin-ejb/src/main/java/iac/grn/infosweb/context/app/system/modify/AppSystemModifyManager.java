@@ -1,5 +1,6 @@
 package iac.grn.infosweb.context.app.system.modify;
 
+import java.util.List;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import javaw.util.ArrayList;
@@ -33,7 +34,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	private String rejectReason;
 	private String commentText;
 	
-	private SerializableList<HeaderTableItem> headerItemsListContextCREATE;
+	private /*Serializable*/ List<HeaderTableItem> headerItemsListContextCREATE;
 	
 	public void invokeLocal(String type, int firstRow, int numberOfRows,
 	           String sessionId) {
@@ -580,6 +581,6 @@ import iac.grn.serviceitems.HeaderTableItem;
 		   }
 
 	 	}
-	   return this.headerItemsListContextCREATE;
+	   return new ArrayList<HeaderTableItem>(this.headerItemsListContextCREATE);
 }
 }

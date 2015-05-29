@@ -1,8 +1,13 @@
 package ru.spb.iac.cud.uarm.ejb.entity;
 
 import java.io.Serializable;
+
 import javax.persistence.*;
+
+import java.util.List;
 import java.util.Date;
+
+import javaw.util.ArrayList;
 import javaw.util.SerializableList;
 
 
@@ -46,14 +51,14 @@ import javaw.util.SerializableList;
 
 	//bi-directional many-to-one association to AcUsersLinkKnlT
 	@OneToMany(mappedBy="acRolesBssT")
-	private SerializableList<AcUsersLinkKnlT> acUsersLinkKnlTs;
+	private /*Serializable*/ List<AcUsersLinkKnlT> acUsersLinkKnlTs;
 
 	//bi-directional many-to-one association to LinkGroupUsersRolesKnlT
 	@OneToMany(mappedBy="acRolesBssT")
-	private SerializableList<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs;
+	private /*Serializable*/ List<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs;
 
 	@OneToMany(mappedBy="acRolesBssT")
-	private SerializableList<RolesAppAccessBssT> rolesAppAccessBssTs;
+	private /*Serializable*/ List<RolesAppAccessBssT> rolesAppAccessBssTs;
 
 	@Transient
 	private Boolean checked;
@@ -134,7 +139,7 @@ import javaw.util.SerializableList;
 	}
 
 	public SerializableList<AcUsersLinkKnlT> getAcUsersLinkKnlTs() {
-		return this.acUsersLinkKnlTs;
+		return new ArrayList<AcUsersLinkKnlT>(this.acUsersLinkKnlTs);
 	}
 
 	public void setAcUsersLinkKnlTs(SerializableList<AcUsersLinkKnlT> acUsersLinkKnlTs) {
@@ -156,7 +161,7 @@ import javaw.util.SerializableList;
 	}
 
 	public SerializableList<LinkGroupUsersRolesKnlT> getLinkGroupUsersRolesKnlTs() {
-		return this.linkGroupUsersRolesKnlTs;
+		return new ArrayList<LinkGroupUsersRolesKnlT>(this.linkGroupUsersRolesKnlTs);
 	}
 
 	public void setLinkGroupUsersRolesKnlTs(SerializableList<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs) {
@@ -186,7 +191,7 @@ import javaw.util.SerializableList;
 	}
 
 	public SerializableList<RolesAppAccessBssT> getRolesAppAccessBssTs() {
-		return this.rolesAppAccessBssTs;
+		return new ArrayList<RolesAppAccessBssT>(this.rolesAppAccessBssTs);
 	}
 
 	public void setRolesAppAccessBssTs(SerializableList<RolesAppAccessBssT> rolesAppAccessBssTs) {

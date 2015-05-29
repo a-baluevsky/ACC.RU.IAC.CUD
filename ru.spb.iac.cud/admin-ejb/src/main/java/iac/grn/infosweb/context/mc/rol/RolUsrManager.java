@@ -1,5 +1,6 @@
 package iac.grn.infosweb.context.mc.rol;
 
+import java.util.List;
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.dataitems.UserItem;
 import iac.cud.infosweb.entity.AcLinkUserToRoleToRaion;
@@ -48,7 +49,7 @@ import org.jboss.seam.log.Log;
 	private Boolean evaluteForList;
 	private Boolean evaluteForListFooter;  
 	
-	private SerializableList<BaseItem> auditList; 
+	private /*Serializable*/ List<BaseItem> auditList; 
 	
 	private Long auditCount;
 	

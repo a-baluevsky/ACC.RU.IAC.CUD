@@ -3,12 +3,16 @@ package iac.cud.infosweb.entity;
 import iac.cud.infosweb.dataitems.BaseItem;
 
 import java.io.Serializable;
+
 import javax.persistence.*;
 
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Role;
 
 import java.util.Date;
+import java.util.List;
+
+import javaw.util.ArrayList;
 import javaw.util.SerializableList;
 
 /**
@@ -51,7 +55,7 @@ import javaw.util.SerializableList;
    private String description;
    
    @OneToMany(mappedBy="groupSystemsKnlT", cascade={CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
-   private SerializableList<LinkGroupSysSysKnlT> linkGroupSysSysKnlTs;
+   private /*Serializable*/ List<LinkGroupSysSysKnlT> linkGroupSysSysKnlTs;
 
    @Transient
    private Boolean isAllowedSys=true;
@@ -137,7 +141,7 @@ import javaw.util.SerializableList;
    }
    
    public SerializableList<LinkGroupSysSysKnlT> getLinkGroupSysSysKnlTs() {
-      return this.linkGroupSysSysKnlTs;
+      return new ArrayList<LinkGroupSysSysKnlT>(this.linkGroupSysSysKnlTs);
    }
 
    public void setLinkGroupSysSysKnlTs(SerializableList<LinkGroupSysSysKnlT> linkGroupSysSysKnlTs) {

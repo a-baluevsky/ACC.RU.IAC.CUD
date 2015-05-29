@@ -1,5 +1,6 @@
 package iac.cud.infosweb.entity;
 
+import java.util.List;
 import iac.cud.infosweb.dataitems.BaseItem;
 
 import java.io.Serializable;
@@ -53,13 +54,13 @@ import javaw.util.SerializableList;
     private Date modified;
         
     @OneToMany(mappedBy="groupUsersKnlT", cascade={CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
-    private SerializableList<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs;
+    private /*Serializable*/ List<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs;
 
     @OneToMany(mappedBy="groupUsersKnlT",  cascade={CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
-    private SerializableList<LinkGroupUsersUsersKnlT> linkGroupUsersUsersKnlTs;
+    private /*Serializable*/ List<LinkGroupUsersUsersKnlT> linkGroupUsersUsersKnlTs;
 
     @Transient
-    private SerializableList<AcApplication> armList;
+    private /*Serializable*/ List<AcApplication> armList;
     
     @Transient
     private Boolean usrChecked=false;
@@ -130,7 +131,7 @@ import javaw.util.SerializableList;
     }
     
     public SerializableList<LinkGroupUsersRolesKnlT> getLinkGroupUsersRolesKnlTs() {
-        return this.linkGroupUsersRolesKnlTs;
+        return new ArrayList<LinkGroupUsersRolesKnlT>(this.linkGroupUsersRolesKnlTs);
     }
 
     public void setLinkGroupUsersRolesKnlTs(SerializableList<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs) {
@@ -138,7 +139,7 @@ import javaw.util.SerializableList;
     }
     
     public SerializableList<LinkGroupUsersUsersKnlT> getLinkGroupUsersUsersKnlTs() {
-        return this.linkGroupUsersUsersKnlTs;
+        return new ArrayList<LinkGroupUsersUsersKnlT>(this.linkGroupUsersUsersKnlTs);
     }
 
     public void setLinkGroupUsersUsersKnlTs(SerializableList<LinkGroupUsersUsersKnlT> linkGroupUsersUsersKnlTs) {
@@ -146,7 +147,7 @@ import javaw.util.SerializableList;
     }
     
     public SerializableList<AcApplication> getArmList() {
-        return this.armList;
+        return new ArrayList<AcApplication>(this.armList);
     }
     public void setArmList(List<AcApplication> armList) {
         this.armList = new ArrayList<AcApplication>(armList);

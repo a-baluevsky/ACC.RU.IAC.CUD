@@ -1,5 +1,6 @@
 package iac.grn.infosweb.context.mc.arm;
 
+import java.util.List;
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.dataitems.SystemCertItem;
 import iac.cud.infosweb.entity.AcAppPage;
@@ -70,7 +71,7 @@ import org.jboss.seam.transaction.Transaction;
 		
 		
 		
-	private SerializableList<BaseItem> auditList; 
+	private /*Serializable*/ List<BaseItem> auditList; 
 	
 	private Long auditCount;
 	
@@ -85,11 +86,11 @@ import org.jboss.seam.transaction.Transaction;
 	private int delNot=0;
 
 	
-	private SerializableList<AcApplication> listArm = null;
+	private /*Serializable*/ List<AcApplication> listArm = null;
 	
 	private boolean armCodeExist=false;
 	
-	private SerializableList<AcUser> adminListForView;
+	private /*Serializable*/ List<AcUser> adminListForView;
 	
 	private String commentApp = null;
 	

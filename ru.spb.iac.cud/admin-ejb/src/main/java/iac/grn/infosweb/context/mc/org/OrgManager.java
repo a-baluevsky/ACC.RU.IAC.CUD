@@ -1,5 +1,6 @@
 package iac.grn.infosweb.context.mc.org;
 
+import java.util.List;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -53,16 +54,16 @@ import javaw.util.ArrayList;
 		
 	 private String dellMessage;
 	 
-	private SerializableList<BaseItem> auditList; 
+	private /*Serializable*/ List<BaseItem> auditList; 
 	
 	private Long auditCount;
 	
 	
 	private int connectError=0;
 	
-	private SerializableList<AcLegalEntityType> listLET = null;
+	private /*Serializable*/ List<AcLegalEntityType> listLET = null;
 	
-	private SerializableList<AcOrganization> listOrg = null;
+	private /*Serializable*/ List<AcOrganization> listOrg = null;
 	
 	private Boolean evaluteForList;
 	private Boolean evaluteForListFooter;  

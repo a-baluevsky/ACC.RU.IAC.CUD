@@ -1,5 +1,6 @@
 package iac.grn.infosweb.context.mc.cpar;
 
+import java.util.List;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -42,7 +43,7 @@ import iac.grn.serviceitems.BaseTableItem;
 			
 	private String dellMessage;
 	 
-	private SerializableList<BaseItem> auditList; 
+	private /*Serializable*/ List<BaseItem> auditList; 
 	
 	private Long auditCount;
 	

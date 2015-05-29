@@ -1,9 +1,15 @@
 package iac.cud.infosweb.entity;
 
 import java.io.Serializable;
+
 import javax.persistence.*;
 
+import org.hibernate.annotations.Type;
+
 import java.util.Date;
+import java.util.Set;
+
+import javaw.util.HashSet;
 import javaw.util.SerializableSet;
 
 
@@ -49,8 +55,8 @@ import javaw.util.SerializableSet;
 	private AcApplication acIsBssT2;
     
 	@OneToMany(mappedBy="actionsBssT")
-	private SerializableSet<ActionsLogKnlT> actionsLogKnlTs;
-
+    private /*Serializable*/ Set<ActionsLogKnlT> actionsLogKnlTs;	
+    
     public ActionsBssT() {
     }
 
@@ -134,7 +140,7 @@ import javaw.util.SerializableSet;
 	}
 	
 	public SerializableSet<ActionsLogKnlT> getActionsLogKnlTs() {
-		return this.actionsLogKnlTs;
+		return new HashSet<ActionsLogKnlT>(this.actionsLogKnlTs);
 	}
 
 	public void setActionsLogKnlTs(SerializableSet<ActionsLogKnlT> actionsLogKnlTs) {

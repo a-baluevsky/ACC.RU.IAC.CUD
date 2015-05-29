@@ -1,6 +1,6 @@
 package ru.spb.iac.cud.uarm.ejb.entity;
 
-
+import java.util.List;
 import java.io.Serializable;
 
 import javax.persistence.*;
@@ -43,13 +43,13 @@ import javaw.util.SerializableList;
 	private Date modified;
 
 	@OneToMany(mappedBy="groupUsersKnlT")
-	private SerializableList<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs;
+	private /*Serializable*/ List<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs;
 
 	@OneToMany(mappedBy="groupUsersKnlT")
-	private SerializableList<LinkGroupUsersUsersKnlT> linkGroupUsersUsersKnlTs;
+	private /*Serializable*/ List<LinkGroupUsersUsersKnlT> linkGroupUsersUsersKnlTs;
 
 	@OneToMany(mappedBy="groupUsersKnlT")
-	private SerializableList<GroupsAppAccessGrBssT> groupsAppAccessGrBssTs;
+	private /*Serializable*/ List<GroupsAppAccessGrBssT> groupsAppAccessGrBssTs;
 	
 	@Column(name="SIGN_OBJECT")
 	private String signObject;
@@ -58,7 +58,7 @@ import javaw.util.SerializableList;
 	private Boolean checked;
 	
 	@Transient
-	private SerializableList<AcIsBssT> armList;
+	private /*Serializable*/ List<AcIsBssT> armList;
 	
 	public GroupUsersKnlT() {
 	}
@@ -120,7 +120,7 @@ import javaw.util.SerializableList;
 	}
 
 	public SerializableList<LinkGroupUsersRolesKnlT> getLinkGroupUsersRolesKnlTs() {
-		return this.linkGroupUsersRolesKnlTs;
+		return new ArrayList<LinkGroupUsersRolesKnlT>(this.linkGroupUsersRolesKnlTs);
 	}
 
 	public void setLinkGroupUsersRolesKnlTs(SerializableList<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs) {
@@ -142,7 +142,7 @@ import javaw.util.SerializableList;
 	}
 
 	public SerializableList<LinkGroupUsersUsersKnlT> getLinkGroupUsersUsersKnlTs() {
-		return this.linkGroupUsersUsersKnlTs;
+		return new ArrayList<LinkGroupUsersUsersKnlT>(this.linkGroupUsersUsersKnlTs);
 	}
 
 	public void setLinkGroupUsersUsersKnlTs(SerializableList<LinkGroupUsersUsersKnlT> linkGroupUsersUsersKnlTs) {
@@ -164,7 +164,7 @@ import javaw.util.SerializableList;
 	}
 
 	public SerializableList<GroupsAppAccessGrBssT> getGroupsAppAccessGrBssTs() {
-		return groupsAppAccessGrBssTs;
+		return new ArrayList<GroupsAppAccessGrBssT>(groupsAppAccessGrBssTs);
 	}
 
 	public void setGroupsAppAccessGrBssTs(
@@ -189,7 +189,7 @@ import javaw.util.SerializableList;
 	}
 
 	public SerializableList<AcIsBssT> getArmList() {
-		return armList;
+		return new ArrayList<AcIsBssT>(armList);
 	}
 
 	public void setArmList(List<AcIsBssT> armList) {

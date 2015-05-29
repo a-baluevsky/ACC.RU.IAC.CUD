@@ -1,5 +1,8 @@
 package iac.grn.infosweb.context.mc.clorg;
 
+import java.util.List;
+import java.util.List;
+import java.util.List;
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.entity.AcLegalEntityType;
 import iac.cud.infosweb.entity.AcUser;
@@ -51,7 +54,7 @@ import org.jboss.seam.log.Log;
 	
 	private String dellMessage;
 	 
-	private SerializableList<BaseItem> auditList; 
+	private /*Serializable*/ List<BaseItem> auditList; 
 	
 	private Long auditCount;
 	
@@ -64,9 +67,9 @@ import org.jboss.seam.log.Log;
 	private Boolean evaluteForListFooter;  
 	private Boolean evaluteForBean;
 	
-	private SerializableList<AcLegalEntityType> listLET = null;
+	private /*Serializable*/ List<AcLegalEntityType> listLET = null;
 	
-	private SerializableList<IspBssT> listOrg = null;
+	private /*Serializable*/ List<IspBssT> listOrg = null;
 	
  	public List<BaseItem> getAuditList(int firstRow, int numberOfRows){
 	  String remoteAudit = FacesContext.getCurrentInstance().getExternalContext()

@@ -1,5 +1,6 @@
 package iac.grn.infosweb.context.mc.rol;
 
+import java.util.List;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -62,17 +63,17 @@ import iac.grn.serviceitems.BaseTableItem;
 	private SerializableList <BaseTableItem> auditItemsListContext;
 		
 		
-	private SerializableList<BaseItem> auditList; 
+	private /*Serializable*/ List<BaseItem> auditList; 
 	
 	private Long auditCount;
 	
 	
 	
-	private SerializableList<AcApplication> listRolArm = null;
-	private SerializableList<AcAppPage> listRolRes = null;
-	private SerializableList<AcAppPage> listRolResEdit = null;
-	private SerializableList<AcPermissionsList> listRolPerm = null;
-	private SerializableList<Long> checkboxPerm = null;
+	private /*Serializable*/ List<AcApplication> listRolArm = null;
+	private /*Serializable*/ List<AcAppPage> listRolRes = null;
+	private /*Serializable*/ List<AcAppPage> listRolResEdit = null;
+	private /*Serializable*/ List<AcPermissionsList> listRolPerm = null;
+	private /*Serializable*/ List<Long> checkboxPerm = null;
 	
 	private int connectError=0;
 	private Boolean evaluteForList;
@@ -80,14 +81,14 @@ import iac.grn.serviceitems.BaseTableItem;
 	private Boolean evaluteForBean;
 
 	
-	private SerializableList<AcApplication> listArm = null;
+	private /*Serializable*/ List<AcApplication> listArm = null;
 	
 	
-	private SerializableList<AcApplication> listArmUgroup = null;
+	private /*Serializable*/ List<AcApplication> listArmUgroup = null;
 	
-    private SerializableList<BaseItem> usrAlfList;
+    private /*Serializable*/ List<BaseItem> usrAlfList;
 	
-	private SerializableList<AcUser> usrSelectListForView;
+	private /*Serializable*/ List<AcUser> usrSelectListForView;
 	
 	
 	private boolean roleCodeExist=false;

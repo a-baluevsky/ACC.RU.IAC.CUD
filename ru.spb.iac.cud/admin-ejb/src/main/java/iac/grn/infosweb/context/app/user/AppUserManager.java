@@ -1,5 +1,7 @@
 package iac.grn.infosweb.context.app.user;
 
+import java.util.List;
+import java.util.List;
 import iac.cud.infosweb.dataitems.AppUserItem;
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.entity.AcApplication;
@@ -44,7 +46,7 @@ import org.jboss.seam.faces.FacesMessages;
 	private String rejectReason;
 	private String commentText;
 	
-	private SerializableList<AcApplication> listUsrArmForView = null;
+	private /*Serializable*/ List<AcApplication> listUsrArmForView = null;
 	
 	@Override
 	public void invokeLocal(String type, int firstRow, int numberOfRows,
@@ -763,6 +765,6 @@ import org.jboss.seam.faces.FacesMessages;
 	    	 log.error("AppUsrManager:getListUsrArmForView:ERROR:"+eApp);
 	         throw eApp;
 	     }
-	    return listUsrArmForView;
+	    return new ArrayList<AcApplication>(listUsrArmForView);
 }
 }

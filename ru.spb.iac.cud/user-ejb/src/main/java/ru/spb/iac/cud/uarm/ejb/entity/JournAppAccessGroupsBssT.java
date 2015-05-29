@@ -1,10 +1,13 @@
 package ru.spb.iac.cud.uarm.ejb.entity;
 
+import java.util.List;
 import java.io.Serializable;
 
 import javax.persistence.*;
 
 import java.util.Date;
+
+import javaw.util.ArrayList;
 import javaw.util.SerializableList;
 
 
@@ -51,7 +54,7 @@ import javaw.util.SerializableList;
 	private AcUsersKnlT acUsersKnlT1;
 
 	@OneToMany(mappedBy="journAppAccessGroupsBssT", cascade={CascadeType.PERSIST/*, CascadeType.REFRESH, CascadeType.REMOVE*/})
-	private SerializableList<GroupsAppAccessGrBssT> groupsAppAccessGrBssTs;
+	private /*Serializable*/ List<GroupsAppAccessGrBssT> groupsAppAccessGrBssTs;
 
 	@ManyToOne
 	@JoinColumn(name="UP_IS_APP", insertable=false, updatable=false)
@@ -134,7 +137,7 @@ import javaw.util.SerializableList;
 	}
 
 	public SerializableList<GroupsAppAccessGrBssT> getGroupsAppAccessGrBssTs() {
-		return this.groupsAppAccessGrBssTs;
+		return new ArrayList<GroupsAppAccessGrBssT>(this.groupsAppAccessGrBssTs);
 	}
 
 	public void setGroupsAppAccessGrBssTs(SerializableList<GroupsAppAccessGrBssT> groupsAppAccessGrBssTs) {

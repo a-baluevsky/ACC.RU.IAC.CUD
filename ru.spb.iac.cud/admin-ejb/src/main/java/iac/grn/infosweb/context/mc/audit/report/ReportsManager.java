@@ -1,5 +1,6 @@
 package iac.grn.infosweb.context.mc.audit.report;
 
+import java.util.List;
 import iac.grn.infosweb.context.mc.audit.report.JasperReportService;
 import iac.grn.infosweb.context.mc.audit.report.JasperReportService.REPORTSTATUS;
 import iac.cud.infosweb.entity.AcUser;
@@ -45,7 +46,7 @@ import org.jboss.seam.log.Log;
    
    @In transient EntityManager entityManager;
    
-   private SerializableList<ReportsBssT> reportsList;   
+   private /*Serializable*/ List<ReportsBssT> reportsList;   
    private Date reportDate1, reportDate2;
    public Date    getReportDate1()                {   return reportDate1;                           }
    public void    setReportDate1(Date reportDate1)    {   this.reportDate1 = (reportDate1==null)?null:(Date)reportDate1.clone();                  }
@@ -229,7 +230,7 @@ import org.jboss.seam.log.Log;
                  .createQuery("SELECT r FROM ReportsBssT r "+sFilter+" order by orderNum ")
                  .getResultList());
       }      
-      return this.reportsList;
+      return new ArrayList<ReportsBssT>(this.reportsList);
    }
 
    public void setReportsList(SerializableList<ReportsBssT> reportsList) {

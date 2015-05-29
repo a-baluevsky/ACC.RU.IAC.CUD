@@ -1,17 +1,26 @@
 package iac.cud.infosweb.entity;
 
+
+import java.util.List;
+
 import iac.cud.infosweb.dataitems.BaseItem;
 
 import java.io.Serializable;
+
 import javax.persistence.*;
 
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Role;
 
+import javaw.util.ArrayList;
+import javaw.util.HashSet;
 import javaw.util.SerializableSet;
 import javaw.util.SerializableList;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
 import javaw.util.SerializableList;
 import javaw.util.SerializableSet;
 
@@ -63,13 +72,13 @@ import javaw.util.SerializableSet;
 	private String sign;
 	
 	@OneToMany(mappedBy="acRole", cascade={CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
-	private SerializableSet<AcLinkRoleAppPagePrmssn> acLinkRoleAppPagePrmssns;
+    private /*Serializable*/ Set<AcLinkRoleAppPagePrmssn> acLinkRoleAppPagePrmssns;
 
 	@OneToMany(mappedBy="acRole", cascade={CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
-	private SerializableList<AcLinkUserToRoleToRaion> acLinkUserToRoleToRaions;
+	private /*Serializable*/ List<AcLinkUserToRoleToRaion> acLinkUserToRoleToRaions;
 
 	@OneToMany(mappedBy="acRolesBssT", cascade=CascadeType.REMOVE)
-	private SerializableList<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs;
+	private /*Serializable*/ List<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs;
 	
 	@ManyToOne
 	@JoinColumn(name="UP_IS", insertable=false, updatable=false)
@@ -177,7 +186,7 @@ import javaw.util.SerializableSet;
 	}
 	
 	public SerializableSet<AcLinkRoleAppPagePrmssn> getAcLinkRoleAppPagePrmssns() {
-		return this.acLinkRoleAppPagePrmssns;
+		return new HashSet<AcLinkRoleAppPagePrmssn>(this.acLinkRoleAppPagePrmssns);
 	}
 
 	public void setAcLinkRoleAppPagePrmssns(SerializableSet<AcLinkRoleAppPagePrmssn> acLinkRoleAppPagePrmssns) {
@@ -185,7 +194,7 @@ import javaw.util.SerializableSet;
 	}
 	
 	public SerializableList<AcLinkUserToRoleToRaion> getAcLinkUserToRoleToRaions() {
-		return this.acLinkUserToRoleToRaions;
+		return new ArrayList<AcLinkUserToRoleToRaion>(this.acLinkUserToRoleToRaions);
 	}
 
 	public void setAcLinkUserToRoleToRaions(SerializableList<AcLinkUserToRoleToRaion> acLinkUserToRoleToRaions) {
@@ -254,7 +263,7 @@ import javaw.util.SerializableSet;
 	}
 
 	public SerializableList<LinkGroupUsersRolesKnlT> getLinkGroupUsersRolesKnlTs() {
-		return this.linkGroupUsersRolesKnlTs;
+		return new ArrayList<LinkGroupUsersRolesKnlT>(this.linkGroupUsersRolesKnlTs);
 	}
     public void setLinkGroupUsersRolesKnlTs(SerializableList<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs) {
 		this.linkGroupUsersRolesKnlTs = linkGroupUsersRolesKnlTs;

@@ -20,15 +20,12 @@ import java.security.GeneralSecurityException;
 import java.security.Principal;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
-
-import javaw.util.ArrayList;
-
 import java.util.Arrays;
 
+import javaw.util.ArrayList;
 import javaw.util.HashMap;
 import javaw.util.SerializableList;
 import javaw.util.SerializableMap;
-import javaw.util.SerializableSet;
 
 import java.util.List;
 import java.util.Map;

@@ -1,6 +1,7 @@
 package iac.grn.infosweb.context.mc.perm;
 
 import java.util.List;
+import java.util.List;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -46,7 +47,7 @@ import java.util.Set;
 	
 	private String dellMessage;
 	 
-	private SerializableList<BaseItem> auditList; 
+	private /*Serializable*/ List<BaseItem> auditList; 
 	
 	private SerializableList <BaseTableItem> auditItemsListContext;
 

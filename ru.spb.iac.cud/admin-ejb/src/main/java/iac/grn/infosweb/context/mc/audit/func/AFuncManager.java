@@ -1,6 +1,6 @@
 package iac.grn.infosweb.context.mc.audit.func;
 
- 
+import java.util.List;
 import iac.cud.infosweb.dataitems.AuditFuncItem;
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.dataitems.BaseParamItem;
@@ -69,10 +69,10 @@ import org.jboss.seam.log.Log;
 		
 	private String dellMessage;
 	 
-	private SerializableList<BaseItem> auditList; 
+	private /*Serializable*/ List<BaseItem> auditList; 
 	
 	
-	private SerializableList<AuditFuncItem> auditReportCubeList;
+	private /*Serializable*/ List<AuditFuncItem> auditReportCubeList;
 	
 		
 	private SerializableList <BaseTableItem> auditItemsListSelect;
@@ -84,7 +84,7 @@ import org.jboss.seam.log.Log;
 	private Date clearDate1;
 	private Date clearDate2;
 	
-	private SerializableList<BaseItem> auditReportList;
+	private /*Serializable*/ List<BaseItem> auditReportList;
 	
 	
     private Date reportDate1;
@@ -146,7 +146,7 @@ import org.jboss.seam.log.Log;
 				 }
 		    }
 		}
-		return this.auditList;
+		return new ArrayList<BaseItem>(this.auditList);
 	}
 	
 	
@@ -182,7 +182,7 @@ import org.jboss.seam.log.Log;
 	  	    }
 		  
 		  }
-		  return this.auditReportList;
+		  return new ArrayList<BaseItem>(this.auditReportList);
 	}
 	
 
@@ -194,7 +194,7 @@ import org.jboss.seam.log.Log;
 		}catch(Exception e){
 			 log.error("aFuncManager:getAuditReportCubeList:Error:"+e);
 		}
-		return this.auditReportCubeList;
+		return new ArrayList<AuditFuncItem>(auditReportCubeList);
 	}
 	
 	public void invokeLocal(String type, int firstRow, int numberOfRows,

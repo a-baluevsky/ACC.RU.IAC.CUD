@@ -1,4 +1,7 @@
 package javaw.util;
+
+import java.util.Map;
+
 // Wrapper to deal with SONAR CWE-594 issue.
 // Use SerializableList<K> in Serializable classes instead of just SerializableList<K>.
 // This wrapper is compatible with original HashMap, so there's no problem
@@ -6,6 +9,9 @@ package javaw.util;
 public class HashMap<K,V> extends java.util.HashMap<K,V> implements SerializableMap<K,V> {
 	public HashMap(int i) 	{		super(i);	}
 	public HashMap() 	 	{		super();	}
+	public HashMap(Map<K, V> map) {
+		super(map);
+	}
 	private static final long serialVersionUID = 1L;
 };
 

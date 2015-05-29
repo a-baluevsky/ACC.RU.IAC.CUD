@@ -1,9 +1,13 @@
 package ru.spb.iac.cud.uarm.ejb.entity;
 
+import java.util.List;
 import java.io.Serializable;
+
 import javax.persistence.*;
 
 import java.util.Date;
+
+import javaw.util.ArrayList;
 import javaw.util.SerializableList;
 
 
@@ -68,7 +72,7 @@ import javaw.util.SerializableList;
 	private Long acUsersKnlT3Long;
 	
 	@OneToMany(mappedBy="journAppAccessBssT", cascade={CascadeType.PERSIST/*, CascadeType.REFRESH, CascadeType.REMOVE*/})
-	private SerializableList<RolesAppAccessBssT> rolesAppAccessBssTs;
+	private /*Serializable*/ List<RolesAppAccessBssT> rolesAppAccessBssTs;
 
 	
 	@Column(name="UP_USER")
@@ -196,7 +200,7 @@ import javaw.util.SerializableList;
 	}
 
 	public SerializableList<RolesAppAccessBssT> getRolesAppAccessBssTs() {
-		return this.rolesAppAccessBssTs;
+		return new ArrayList<RolesAppAccessBssT>(this.rolesAppAccessBssTs);
 	}
 
 	public void setRolesAppAccessBssTs(SerializableList<RolesAppAccessBssT> rolesAppAccessBssTs) {
