@@ -12,6 +12,11 @@
 	</build>
 	<dependencies>
 		<dependency>
+			<groupId>ru.spb.iac</groupId>
+			<artifactId>common-ilib</artifactId>
+			<version>1.0</version>
+		</dependency>	
+		<dependency>
 			<groupId>org.picketlink</groupId>
 			<artifactId>picketlink-federation</artifactId>
 			<version>2.5.2.Final</version>
