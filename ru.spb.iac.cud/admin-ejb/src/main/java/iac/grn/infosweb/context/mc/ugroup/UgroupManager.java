@@ -201,7 +201,7 @@ import org.jboss.seam.log.Log;
    }
    
    public void setAuditList(List<BaseItem> auditList){
-		this.auditList=new ArrayList<BaseItem>(auditList);
+		this.auditList=(auditList==null)?null:new ArrayList<BaseItem>(auditList);
 	}
    
    public boolean isAllowedSys(Long idGr){
@@ -589,7 +589,7 @@ import org.jboss.seam.log.Log;
        	return this.usrSelectList;
     }
     public void setUsrSelectList(List<String> usrSelectList){
-    	this.usrSelectList=new ArrayList<String>(usrSelectList);
+    	this.usrSelectList=(usrSelectList==null)?null:new ArrayList<String>(usrSelectList);
     }
     
     public List<String> getUsrSelectEditList(){
@@ -625,7 +625,7 @@ import org.jboss.seam.log.Log;
        	return this.usrSelectEditList;
     }
     public void setUsrSelectEditList(List<String> usrSelectEditList){
-    	this.usrSelectEditList=new ArrayList<String>(usrSelectEditList);
+    	this.usrSelectEditList=(usrSelectEditList==null)?null:new ArrayList<String>(usrSelectEditList);
     }
     
   
@@ -767,7 +767,7 @@ import org.jboss.seam.log.Log;
     
     
     public void setRoleList(List<BaseItem> roleList){
- 	   this.roleList=new ArrayList<BaseItem>(roleList);
+ 	   this.roleList=(roleList==null)?null:new ArrayList<BaseItem>(roleList);
     }
     
     public void ugroupRoleReset(){
@@ -840,7 +840,7 @@ import org.jboss.seam.log.Log;
     }
     
     public void setAuditItemsListSelect(List <BaseTableItem> auditItemsListSelect) {
-	    this.auditItemsListSelect=new ArrayList<BaseTableItem>(auditItemsListSelect);
+	    this.auditItemsListSelect=(auditItemsListSelect==null)?null:new ArrayList<BaseTableItem>(auditItemsListSelect);
   }
    public List <BaseTableItem> getAuditItemsListSelect() {
 		 log.info("getAuditItemsListSelect:01");

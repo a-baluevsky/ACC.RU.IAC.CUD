@@ -340,7 +340,7 @@ import java.util.Set;
    }
    
    public void setAuditItemsListSelect(List <BaseTableItem> auditItemsListSelect) {
-		this.auditItemsListSelect=new ArrayList<BaseTableItem>(auditItemsListSelect);
+		this.auditItemsListSelect=(auditItemsListSelect==null)?null:new ArrayList<BaseTableItem>(auditItemsListSelect);
    }
    
    public List <BaseTableItem> getAuditItemsListContext() {

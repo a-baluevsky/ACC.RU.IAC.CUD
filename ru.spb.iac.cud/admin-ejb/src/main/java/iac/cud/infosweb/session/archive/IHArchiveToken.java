@@ -44,7 +44,7 @@ import org.apache.log4j.Logger;
 	@Resource
 	UserTransaction utx;
 
-	private Logger log = Logger.getLogger(IHArchiveToken.class);
+	private final static Logger log = Logger.getLogger(IHArchiveToken.class);
 
 	private static String file_path = Configuration.getArchiveToken();
 

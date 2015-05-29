@@ -29,10 +29,6 @@ import javax.ejb.TransactionManagementType;
 
 import mypackage.Configuration;
 import iac.grn.infosweb.context.proc.TaskProcessor;
-
- 
- 
-
 import org.apache.log4j.Logger;
 
 @Stateless
@@ -45,7 +41,7 @@ import org.apache.log4j.Logger;
 	@Resource
 	UserTransaction utx;
 
-	private Logger log = Logger.getLogger(IHArchiveAuditFunc.class);
+	private final static Logger log = Logger.getLogger(IHArchiveAuditFunc.class);
 
 	private static String file_path = Configuration.getArchiveAuditFunc();
 

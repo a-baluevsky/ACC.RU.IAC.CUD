@@ -107,7 +107,7 @@ import iac.grn.serviceitems.BaseTableItem;
 		return this.auditList;
 	}
 	public void setAuditList(List<BaseItem> auditList){
-		this.auditList=new ArrayList<BaseItem>(auditList);
+		this.auditList=(auditList==null)?null:new ArrayList<BaseItem>(auditList);
 	}
 	public void invokeLocal(String type, int firstRow, int numberOfRows,
 	           String sessionId) {
@@ -302,7 +302,7 @@ import iac.grn.serviceitems.BaseTableItem;
    }
    
    public void setAuditItemsListSelect(List <BaseTableItem> auditItemsListSelect) {
-	    this.auditItemsListSelect=new ArrayList<BaseTableItem>(auditItemsListSelect);
+	    this.auditItemsListSelect=(auditItemsListSelect==null)?null:new ArrayList<BaseTableItem>(auditItemsListSelect);
 }
    
    public List <BaseTableItem> getAuditItemsListSelect() {

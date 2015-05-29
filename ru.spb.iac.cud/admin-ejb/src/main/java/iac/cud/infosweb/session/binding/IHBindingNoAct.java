@@ -38,7 +38,7 @@ import org.apache.log4j.Logger;
 	@Resource
 	UserTransaction utx;
 
-	private Logger log = Logger.getLogger(IHBindingNoAct.class);
+	private final static Logger log = Logger.getLogger(IHBindingNoAct.class);
 
 	private static final String proc_binding_noact_info_file = System
 			.getProperty("jboss.server.config.dir")

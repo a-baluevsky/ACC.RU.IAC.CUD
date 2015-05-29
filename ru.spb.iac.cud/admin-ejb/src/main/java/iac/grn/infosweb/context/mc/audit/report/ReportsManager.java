@@ -143,8 +143,12 @@ import org.jboss.seam.log.Log;
             reportParameters.put("reportId",    reportId);
             reportParameters.put("reportPath",  rep.getReportPath());
               reportParameters.put("reportName",  rep.getReportName());       
-             reportParameters.put("ReportDate1", fmtRequestDate(reportDate1));
-             reportParameters.put("ReportDate2", fmtRequestDate(reportDate2));          
+		        if(reportDate1!=null) {
+		        	reportParameters.put("ReportDate1", fmtRequestDate(reportDate1));
+		        }
+		    	if(reportDate2!=null) {
+		    		reportParameters.put("ReportDate2", fmtRequestDate(reportDate2));	    	
+		    	}
               if(orgCode!=null) reportParameters.put("orgCode", orgCode);           
             JasperReportService reporter = new JasperReportService(reportCode, reportParameters);
             SerializableMap<String, JasperReportService> reporters = getReporters();

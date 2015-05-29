@@ -174,7 +174,7 @@ import org.jboss.seam.annotations.Role;
 	}
 	public List<AcAppPage> getIdResCollectionSet() {
 		if(idResCollectionSet==null){
-			idResCollectionSet=new ArrayList<AcAppPage>(idResCollection);
+			idResCollectionSet=(idResCollection==null)?null:new ArrayList<AcAppPage>(idResCollection);
 		}
 		  return idResCollectionSet;
 	}

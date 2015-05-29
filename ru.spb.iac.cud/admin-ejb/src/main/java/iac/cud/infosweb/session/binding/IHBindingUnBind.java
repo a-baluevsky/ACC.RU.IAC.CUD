@@ -37,7 +37,7 @@ import org.apache.log4j.Logger;
 
    @Resource UserTransaction utx;
    
-   private Logger log = Logger.getLogger(IHBindingUnBind.class);
+   private final static Logger log = Logger.getLogger(IHBindingUnBind.class);
 
    private static final String proc_binding_unbind_info_file=System.getProperty("jboss.server.config.dir")+"/"+"proc_binding_unbind_info.properties";
 	

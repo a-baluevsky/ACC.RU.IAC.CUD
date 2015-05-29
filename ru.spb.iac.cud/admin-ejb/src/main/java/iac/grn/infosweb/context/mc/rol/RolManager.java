@@ -263,8 +263,9 @@ import iac.grn.serviceitems.BaseTableItem;
 	}
 
 	public void setAuditList(List<BaseItem> auditList){
-		this.auditList=new ArrayList<BaseItem>(auditList);
+		this.auditList=(auditList==null)?null:new ArrayList<BaseItem>(auditList);
 	}
+	
    public void forView(String modelType) {
 	   String  rolId = FacesContext.getCurrentInstance().getExternalContext()
 		        .getRequestParameterMap()
@@ -654,7 +655,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	    return listRolArm;
  }
    public void setListRolArm(List<AcApplication> listRolArm){
-	   this.listRolArm=new ArrayList<AcApplication>(listRolArm);
+	   this.listRolArm=(listRolArm==null)?null:new ArrayList<AcApplication>(listRolArm);
    }
    
    public List<AcAppPage> getListRolRes() throws Exception{
@@ -717,7 +718,7 @@ import iac.grn.serviceitems.BaseTableItem;
    }
    
    public void setListRolRes(List<AcAppPage> listRolRes){
-	   this.listRolRes=new ArrayList<AcAppPage>(listRolRes);
+	   this.listRolRes=(listRolRes==null)?null:new ArrayList<AcAppPage>(listRolRes);
    }
    
    public List<AcAppPage> getListRolResEdit() throws Exception{
@@ -825,7 +826,7 @@ import iac.grn.serviceitems.BaseTableItem;
    }
    public void setListRolResEdit( List<AcAppPage> listRolResEdit ){
 	   log.info("RolManager:setListRolResEdit");
-	   this.listRolResEdit=new ArrayList<AcAppPage>(listRolResEdit);
+	   this.listRolResEdit=(listRolResEdit==null)?null:new ArrayList<AcAppPage>(listRolResEdit);
    }
 
    public List<AcPermissionsList> getListRolPerm() throws Exception{
@@ -855,7 +856,7 @@ import iac.grn.serviceitems.BaseTableItem;
   }
   public void setCheckboxPerm(List<Long> checkboxPerm) throws Exception{
 	    log.info("setCheckboxPerm_01");
-	    this.checkboxPerm=new ArrayList<Long>(checkboxPerm);
+	    this.checkboxPerm=(checkboxPerm==null)?null:new ArrayList<Long>(checkboxPerm);
   }
   
   
@@ -924,7 +925,7 @@ import iac.grn.serviceitems.BaseTableItem;
         	return this.usrSelectListForView;
      }
   public void setAuditItemsListSelect(List <BaseTableItem> auditItemsListSelect) {
-	    this.auditItemsListSelect=new ArrayList<BaseTableItem>(auditItemsListSelect);
+	    this.auditItemsListSelect=(auditItemsListSelect==null)?null:new ArrayList<BaseTableItem>(auditItemsListSelect);
 }
   
    public int getConnectError(){
@@ -1144,7 +1145,7 @@ import iac.grn.serviceitems.BaseTableItem;
    	return this.usrAlfList;
    }
    public void setUsrAlfList(List<BaseItem> usrAlfList){
- 	   this.usrAlfList=new ArrayList<BaseItem>(usrAlfList);
+ 	   this.usrAlfList=(usrAlfList==null)?null:new ArrayList<BaseItem>(usrAlfList);
    }
    
    

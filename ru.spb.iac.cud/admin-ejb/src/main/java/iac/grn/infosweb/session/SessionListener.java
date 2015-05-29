@@ -17,7 +17,7 @@ import ru.spb.iac.cud.items.AuditFunction;
 
  public class SessionListener implements HttpSessionListener {
 
-	  private Logger log = Logger.getLogger(SessionListener.class);
+	  private final static Logger log = Logger.getLogger(SessionListener.class);
 	
 	  public void sessionCreated(HttpSessionEvent arg0) {
 	  }
