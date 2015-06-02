@@ -57,8 +57,8 @@
 
 		</plugins>
 	</build>
-
-	<dependencies>
+		
+	<dependencies>		
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>admin-web</artifactId>
@@ -178,6 +178,18 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpmime</artifactId>
             <version>4.2.5</version>
-        </dependency>		
+        </dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.1</version>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>	        
 	</dependencies>
 </project>
