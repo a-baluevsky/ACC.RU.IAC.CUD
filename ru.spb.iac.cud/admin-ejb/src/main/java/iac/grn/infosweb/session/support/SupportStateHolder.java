@@ -22,7 +22,7 @@ import org.jboss.seam.log.Log;
 @AutoCreate
  public class SupportStateHolder {
 	
-       @Logger private Log log;
+       @Logger private static Log log;
 	
        private Map<String, HashMap<String, String>> sortOrders = new HashMap<String, HashMap<String, String>>();
        private Map<String, HashMap<String, String>> columnFilterValues = new HashMap<String, HashMap<String, String>>();

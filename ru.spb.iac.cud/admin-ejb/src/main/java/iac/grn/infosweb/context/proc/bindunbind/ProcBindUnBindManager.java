@@ -37,7 +37,7 @@ import org.jboss.seam.log.Log;
 @Name("procBindUnBindManager")
  public class ProcBindUnBindManager {
 
-	@Logger private Log log;
+	@Logger private static Log log;
 	
 	private static final String proc_binding_unbind_exec_file=System.getProperty("jboss.server.config.dir")+"/"+"proc_binding_unbind_exec.properties";
 
@@ -62,10 +62,10 @@ import org.jboss.seam.log.Log;
 
 	
 	public synchronized Date getStartDate(){
-		return this.startDate;
+		return (startDate==null)?null:(Date)startDate.clone();
 	}
 	public synchronized void setStartDate(Date startDate){
-		this.startDate=(startDate==null)?null:(Date)startDate.clone();;
+		this.startDate=(startDate==null)?null:(Date)startDate.clone();
 	}
 	
 	

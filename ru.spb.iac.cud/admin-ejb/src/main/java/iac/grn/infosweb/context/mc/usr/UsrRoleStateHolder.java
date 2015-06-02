@@ -23,7 +23,7 @@ import org.jboss.seam.log.Log;
 @AutoCreate
  public class UsrRoleStateHolder extends BaseStateHolder{
 	
-	   @Logger private Log log;
+	   @Logger private static Log log;
 	
        @Create
        public void create() {

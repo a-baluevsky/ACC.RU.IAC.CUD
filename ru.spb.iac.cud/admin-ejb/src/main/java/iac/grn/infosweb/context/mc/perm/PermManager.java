@@ -175,7 +175,7 @@ import java.util.Set;
    }
    
    public void setAuditList(List<BaseItem> auditList){
-		this.auditList=new ArrayList<BaseItem>( auditList);
+		this.auditList=(auditList==null)?null:new ArrayList<BaseItem>(auditList);
 	}
    
    private  AcPermissionsList searchBean(String sessionId){

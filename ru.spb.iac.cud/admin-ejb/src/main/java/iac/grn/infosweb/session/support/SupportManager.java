@@ -23,7 +23,7 @@ import org.jboss.seam.transaction.Transaction;
 @Name("supportManager")
  public class SupportManager {
 	
-	@Logger private Log log;
+	@Logger private static Log log;
 	
 	@In 
 	transient EntityManager entityManager;

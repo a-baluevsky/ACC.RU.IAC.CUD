@@ -21,7 +21,7 @@ import org.jboss.seam.log.Log;
 @Name("procBindUnBindSettingsManager")
  public class ProcBindUnBindSettingsManager {
 
-	@Logger private Log log;
+	@Logger private static Log log;
 	
 	@In
 	transient EntityManager entityManager;

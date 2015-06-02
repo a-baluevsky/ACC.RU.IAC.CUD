@@ -19,7 +19,7 @@ import javax.persistence.EntityManager;
 @Name("treeManager")
  public class TreeManager {
 
-	 @Logger private Log log;
+	 @Logger private static Log log;
 	
 	 @In 
 	 transient EntityManager entityManager;

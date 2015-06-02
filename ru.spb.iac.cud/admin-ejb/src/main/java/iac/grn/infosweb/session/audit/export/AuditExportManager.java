@@ -32,7 +32,7 @@ import ru.spb.iac.cud.items.AuditFunction;
 @Name("auditExportManager")
  public class AuditExportManager {
 
-	 @Logger private Log log;
+	 @Logger private static Log log;
 	 
 	 final static org.slf4j.Logger LOGGER = LoggerFactory
 				.getLogger(AuditExportManager.class);

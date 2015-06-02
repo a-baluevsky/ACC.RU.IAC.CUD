@@ -22,7 +22,7 @@ import org.jboss.seam.log.Log;
 @AutoCreate
  public class AFuncStateHolder extends BaseStateHolder{
 	
-	   @Logger private Log log;
+	   @Logger private static Log log;
 	
          
        @Create

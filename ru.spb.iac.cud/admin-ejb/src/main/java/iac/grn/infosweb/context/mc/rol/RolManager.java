@@ -118,7 +118,7 @@ import iac.grn.serviceitems.BaseTableItem;
 			    "onSelColSaveFact".equals(remoteAudit))&&
 			    rolListCached!=null){
 		 		log.info("getAuditList:02:"+rolListCached.size());
-			    	this.auditList=new ArrayList<BaseItem>( rolListCached);
+			    	this.auditList=new ArrayList<BaseItem>(rolListCached);
 			}else{
 				log.info("getAuditList:03");
 		    	invokeLocal("list", firstRow, numberOfRows, null);

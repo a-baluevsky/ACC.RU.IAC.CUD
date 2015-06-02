@@ -186,7 +186,7 @@ import javaw.util.SerializableSet;
 	}
 	
 	public SerializableSet<AcLinkRoleAppPagePrmssn> getAcLinkRoleAppPagePrmssns() {
-		return new HashSet<AcLinkRoleAppPagePrmssn>(this.acLinkRoleAppPagePrmssns);
+		return (this.acLinkRoleAppPagePrmssns==null)?null:new HashSet<AcLinkRoleAppPagePrmssn>(this.acLinkRoleAppPagePrmssns);
 	}
 
 	public void setAcLinkRoleAppPagePrmssns(SerializableSet<AcLinkRoleAppPagePrmssn> acLinkRoleAppPagePrmssns) {
@@ -194,7 +194,7 @@ import javaw.util.SerializableSet;
 	}
 	
 	public SerializableList<AcLinkUserToRoleToRaion> getAcLinkUserToRoleToRaions() {
-		return new ArrayList<AcLinkUserToRoleToRaion>(this.acLinkUserToRoleToRaions);
+		return (this.acLinkUserToRoleToRaions==null)?null:new ArrayList<AcLinkUserToRoleToRaion>(this.acLinkUserToRoleToRaions);
 	}
 
 	public void setAcLinkUserToRoleToRaions(SerializableList<AcLinkUserToRoleToRaion> acLinkUserToRoleToRaions) {
@@ -263,7 +263,7 @@ import javaw.util.SerializableSet;
 	}
 
 	public SerializableList<LinkGroupUsersRolesKnlT> getLinkGroupUsersRolesKnlTs() {
-		return new ArrayList<LinkGroupUsersRolesKnlT>(this.linkGroupUsersRolesKnlTs);
+		return (this.linkGroupUsersRolesKnlTs==null)?null:new ArrayList<LinkGroupUsersRolesKnlT>(this.linkGroupUsersRolesKnlTs);
 	}
     public void setLinkGroupUsersRolesKnlTs(SerializableList<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs) {
 		this.linkGroupUsersRolesKnlTs = linkGroupUsersRolesKnlTs;

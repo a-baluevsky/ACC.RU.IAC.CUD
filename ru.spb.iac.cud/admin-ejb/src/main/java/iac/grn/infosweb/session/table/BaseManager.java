@@ -45,7 +45,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	 public class BaseManager implements java.io.Serializable {
 		
 		@Logger 
-		protected Log log;
+		protected static Log log;
 		
 		
 	    @In 
@@ -83,7 +83,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 		  log.info("baseManager:getAuditList:firstRow:"+firstRow);
 		  log.info("baseManager:getAuditList:numberOfRows:"+numberOfRows);
 		  
-		  SerializableList<BaseItem> contextListCached = (SerializableList<BaseItem>)
+		  List<BaseItem> contextListCached = (List<BaseItem>)
 				  Component.getInstance("contextListCached",ScopeType.SESSION);
 		  if(auditList==null){
 			  log.info("baseManager:getAuditList:01");
@@ -94,7 +94,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 				    "onSelColSaveFact".equals(remoteAudit))&&
 				    contextListCached!=null){
 			 		log.info("baseManager:getAuditList:02:"+contextListCached.size());
-				    	this.auditList=contextListCached;
+				    	this.auditList=new ArrayList<BaseItem>(contextListCached);
 				}else{
 					log.info("baseManager:getAuditList:03");
 			    	invokeLocal("list", firstRow, numberOfRows, null);
@@ -102,7 +102,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 				    log.info("baseManager:getAuditList:03:"+this.auditList.size());
 				}
 			 	
-			 	SerializableList<String> contextSelRec = (ArrayList<String>)
+			 	List<String> contextSelRec = (List<String>)
 						  Component.getInstance("contextSelRec",ScopeType.SESSION);
 			 	if(this.auditList!=null && contextSelRec!=null) {
 			 		 for(BaseItem it:this.auditList){
@@ -151,7 +151,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	   protected BaseItem searchBean(String sessionId){
 	    	
 	      if(sessionId!=null){
-	    	 SerializableList<BaseItem> contextListCached = (SerializableList<BaseItem>)
+	    	 List<BaseItem> contextListCached = (List<BaseItem>)
 					  Component.getInstance("contextListCached",ScopeType.SESSION);
 			if(contextListCached!=null){
 				for(BaseItem it : contextListCached){
@@ -219,7 +219,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 		   
 		    
 		   //  forView(); //!!!
-		    SerializableList<String> contextSelRec = (ArrayList<String>)
+		    List<String> contextSelRec = (List<String>)
 					  Component.getInstance("contextSelRec",ScopeType.SESSION);
 		    
 		    if(contextSelRec==null){

@@ -6,6 +6,7 @@ import iac.cud.infosweb.local.service.IHLocal;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.text.DateFormat;
@@ -27,11 +28,11 @@ import javax.transaction.UserTransaction;
 import javax.ejb.TransactionManagementType;
 
 import mypackage.Configuration;
-
 import iac.grn.infosweb.context.proc.TaskProcessor;
 
  
  
+
 import org.apache.log4j.Logger;
 
 @Stateless
@@ -144,8 +145,8 @@ import org.apache.log4j.Logger;
 			utx.begin();
 
 			File dirTkn = new File(file_path);
-			if (!dirTkn.exists()) {
-				dirTkn.mkdirs();
+			if (!dirTkn.exists() && !dirTkn.mkdirs()) {
+				throw new IOException("IHArchiveToken:process_start_content:Can't create directory: "+dirTkn);
 			}
 
 			List<String> losTkn = em

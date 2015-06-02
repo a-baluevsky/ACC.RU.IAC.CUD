@@ -955,7 +955,7 @@ public List<IspBssT> getListUsrAutocomplete() {
 	return listUsrAutocomplete;
 }
 public void setListUsrAutocomplete(List<IspBssT> listUsrAutocomplete) {
-	this.listUsrAutocomplete = new ArrayList<IspBssT>(listUsrAutocomplete);
+	this.listUsrAutocomplete = (listUsrAutocomplete==null)?null:new ArrayList<IspBssT>(listUsrAutocomplete);
 }
 
 public void audit(ResourcesMap resourcesMap, ActionsMap actionsMap){

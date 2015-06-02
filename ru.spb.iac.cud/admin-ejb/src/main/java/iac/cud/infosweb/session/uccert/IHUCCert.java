@@ -11,7 +11,7 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -252,8 +252,10 @@ import org.slf4j.LoggerFactory;
 					LOGGER.error("IHUCCert:process_start_content:error:2:", eUcc);
 				}
 				try {
-					if (file_reestr != null && file_reestr.exists()) {
-						file_reestr.delete();
+					if ( file_reestr!= null 
+							&& file_reestr.exists()
+							&& !file_reestr.delete()) {
+						throw new IOException("Can't delete file: "+file_reestr);
 					}
 				} catch (Exception eUcc) {
 					LOGGER.error("IHUCCert:process_start_content:error:2:", eUcc);

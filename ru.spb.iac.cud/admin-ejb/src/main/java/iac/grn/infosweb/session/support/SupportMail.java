@@ -19,7 +19,7 @@ import org.jboss.seam.log.Log;
 @Name("supportMail")
  public class SupportMail implements Runnable {
 	
-	@Logger private Log log;
+	@Logger private static Log log;
 	
 	@In 
 	transient EntityManager entityManager;

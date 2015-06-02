@@ -278,6 +278,7 @@ import ru.spb.iac.cud.context.ContextIDPUtilManager;
 				try {
 					inputStream.close();
 				} catch (IOException ioe) {
+					LOGGERSLF4J.debug("LoadKeyStore:close:IOException "+ioe);
 				}
 			}
 		}

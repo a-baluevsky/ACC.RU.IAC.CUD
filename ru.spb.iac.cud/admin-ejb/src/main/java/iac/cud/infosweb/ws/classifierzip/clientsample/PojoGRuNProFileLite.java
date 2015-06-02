@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.OutputStreamWriter;
@@ -148,8 +149,8 @@ import org.slf4j.LoggerFactory;
 		LOGGER.debug("GRuNProFileLite:temp_files_init:01");
 
 		File tmp_dir = new File(tmp_dir_name);
-		if (!tmp_dir.exists()) {
-			tmp_dir.mkdir();
+		if (!tmp_dir.exists() && !tmp_dir.mkdir()) {
+			LOGGER.error("temp_files_init: Can't mkdir "+tmp_dir);
 		}
 		buf_rec1_file = new File(tmp_dir_name + "f1_t1");
 		if (buf_rec1_file.exists()) {
@@ -599,8 +600,9 @@ import org.slf4j.LoggerFactory;
 
 	private void delTempFiles() {
 		try {
-			if (buf_rec1_file != null) {
-				buf_rec1_file.delete();
+			if (buf_rec1_file != null 
+					&& !buf_rec1_file.delete()) {
+				throw new IOException("can't delete: "+buf_rec1_file);
 			}
 
 		} catch (Exception e) {

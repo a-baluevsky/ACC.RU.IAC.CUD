@@ -406,6 +406,6 @@ import iac.grn.serviceitems.HeaderTableItem;
 		   }
 
 	 	}
-	   return new ArrayList<HeaderTableItem>(this.headerItemsListContextCREATE);
+	   return (this.headerItemsListContextCREATE==null)?null:new ArrayList<HeaderTableItem>(this.headerItemsListContextCREATE);
 }
 }

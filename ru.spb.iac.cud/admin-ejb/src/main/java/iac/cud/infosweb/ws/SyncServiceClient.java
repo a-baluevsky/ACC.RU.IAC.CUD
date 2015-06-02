@@ -24,7 +24,7 @@ import ru.spb.iac.cud.services.sync.SyncServices;
  public class SyncServiceClient {
 
 	@Logger
-	private Log log;
+	private static Log log;
 
 	static String endpointURI = "http://cudvm/CudServices/SyncService?wsdl";
 

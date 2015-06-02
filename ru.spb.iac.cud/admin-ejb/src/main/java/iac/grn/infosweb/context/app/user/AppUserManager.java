@@ -765,6 +765,6 @@ import org.jboss.seam.faces.FacesMessages;
 	    	 log.error("AppUsrManager:getListUsrArmForView:ERROR:"+eApp);
 	         throw eApp;
 	     }
-	    return new ArrayList<AcApplication>(listUsrArmForView);
+	    return (listUsrArmForView==null)?null:new ArrayList<AcApplication>(listUsrArmForView);
 }
 }

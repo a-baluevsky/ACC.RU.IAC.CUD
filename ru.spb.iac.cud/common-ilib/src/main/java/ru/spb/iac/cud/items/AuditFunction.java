@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlType;
 	}
 
 	public Date getDateFunction() {
-		return dateFunction;
+		return (dateFunction==null)?null:(Date)dateFunction.clone();
 	}
 
 	public void setDateFunction(Date dateFunction) {

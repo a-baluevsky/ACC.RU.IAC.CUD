@@ -3281,8 +3281,8 @@ import org.slf4j.LoggerFactory;
 				    }
 				    
 				}
-	    	   
-	    	   userCert.setUpUserRaw(Long.valueOf(id_user));
+
+	    	   userCert.setUpUserRaw(id_user);
 	    	   
 	    	   userCert.setCreator(getCurrentUser().getBaseId());
 	    	   userCert.setCreated(new Date());
@@ -3434,7 +3434,7 @@ import org.slf4j.LoggerFactory;
 		return result;
   }
    public String[] getFioArray(){
-		  return this.fioArray;
+		  return this.fioArray==null?null:(String[])this.fioArray.clone();
 	}
 	public void setFioArray(String[] fioArray){
 		this.fioArray=(fioArray==null)?new String[]{"", "", ""}:(String[])fioArray.clone();

@@ -77,7 +77,7 @@ import javax.persistence.NoResultException;
 	 */
 	private static final long serialVersionUID = 3140180937398943875L;
 
-	@Logger private Log log;
+	@Logger private static Log log;
 	
 	 @In 
 	 transient EntityManager entityManager;
@@ -145,7 +145,7 @@ import javax.persistence.NoResultException;
 	  log.info("getAuditList:firstRow:"+firstRow);
 	  log.info("getAuditList:numberOfRows:"+numberOfRows);
 	  
-	  SerializableList<BaseItem> bindListCached = (SerializableList<BaseItem>)
+	  List<BaseItem> bindListCached = (List<BaseItem>)
 			  Component.getInstance("bindListCached",ScopeType.SESSION);
 	  if(auditList==null){
 		  log.info("getAuditList:01");
@@ -164,7 +164,7 @@ import javax.persistence.NoResultException;
 			    log.info("getAuditList:03:"+this.auditList.size());
 			}
 		 	
-		 	SerializableList<String>  selRecBind = (ArrayList<String>)
+		 	List<String>  selRecBind = (List<String>)
 					  Component.getInstance("selRecBind",ScopeType.SESSION);
 		 	if(this.auditList!=null && selRecBind!=null) {
 		 		 for(BaseItem it:this.auditList){
@@ -614,7 +614,7 @@ import javax.persistence.NoResultException;
    private BaseItem searchBean(String sessionId){
     	
       if(sessionId!=null){
-    	 SerializableList<BaseItem> bindListCached = (SerializableList<BaseItem>)
+    	 List<BaseItem> bindListCached = (List<BaseItem>)
 				  Component.getInstance("bindListCached",ScopeType.SESSION);
 		if(bindListCached!=null){
 			for(BaseItem it : bindListCached){
@@ -2045,7 +2045,7 @@ import javax.persistence.NoResultException;
 	    	 log.error("BindManager:getListBindArmForView:ERROR:"+e);
 	         throw e;
 	     }
-	    return new ArrayList<AcApplication>(listBindArmForView);
+	    return (listBindArmForView==null)?null:new ArrayList<AcApplication>(listBindArmForView);
   }
   
    
@@ -2115,7 +2115,7 @@ import javax.persistence.NoResultException;
 	    	 log.error("BindManager:getListBindGroupForView:ERROR:"+e);
 	         throw e;
 	     }
-	    return new ArrayList<GroupUsersKnlT>(listBindGroupForView);
+	    return (listBindGroupForView==null)?null:new ArrayList<GroupUsersKnlT>(listBindGroupForView);
  }
    
    public SerializableList<BaseItem> getRoleList(){
@@ -2133,20 +2133,18 @@ import javax.persistence.NoResultException;
 		   log.error("BindManager:getRoleList:sessionId:"+sessionId);
 		   log.error("BindManager:getRoleList:remoteAudit:"+remoteAudit);
 		   
-		   if(idArm==null||sessionId==null){
-			   return new ArrayList<BaseItem>(this.roleList);
+		   if(idArm==null||sessionId==null) {
+			   return null;
 		   }
 		   
-		   this.roleList = new ArrayList<BaseItem>(entityManager.createQuery("select o from AcRole o where o.acApplication= :idArm order by o.roleTitle ")
+		   this.roleList = entityManager.createQuery("select o from AcRole o where o.acApplication= :idArm order by o.roleTitle ")
 				   .setParameter("idArm", Long.valueOf(idArm))
-                   .getResultList());
+                   .getResultList();
 		 
-		   if("armSelectFact".equals(remoteAudit)){
-		   
+		   if("armSelectFact".equals(remoteAudit)){		   
 		     List<AcRole> listBindRol=entityManager.createQuery("select o from AcRole o JOIN o.acLinkUserToRoleToRaions o1 where o1.pk.acUser = :acUser ")
 					 .setParameter("acUser", Long.valueOf(sessionId))
-		      		 .getResultList();
-		   
+		      		 .getResultList();		   
 		     for(BaseItem role :this.roleList){
 	           if (listBindRol.contains((AcRole)role)){  
 	        	  ((AcRole)role).setUsrChecked(true);
@@ -2163,7 +2161,7 @@ import javax.persistence.NoResultException;
    
    public SerializableList<BaseItem> getApplicantList(){
 	
-	   return new ArrayList<BaseItem>(this.applicantList);
+	   return (this.applicantList==null)?null:new ArrayList<BaseItem>(this.applicantList);
    }
    
    public void setApplicantList(SerializableList<BaseItem> applicantList){
@@ -2172,7 +2170,7 @@ import javax.persistence.NoResultException;
    
    
 	public String[] getFioArray(){
-		  return this.fioArray;
+		  return (fioArray==null)?null:(String[])fioArray.clone();
 	}
 	public void setFioArray(String[] fioArray){
 		this.fioArray=(fioArray==null)?null:(String[])fioArray.clone();
@@ -2248,7 +2246,7 @@ import javax.persistence.NoResultException;
 	    log.info("selectRecord:sessionId="+sessionId);
 	    
 	   //  forView(); //!!!
-	    SerializableList<String>  selRecBind = (ArrayList<String>)
+	    List<String>  selRecBind = (List<String>)
 				  Component.getInstance("selRecBind",ScopeType.SESSION);
 	    
 	    if(selRecBind==null){

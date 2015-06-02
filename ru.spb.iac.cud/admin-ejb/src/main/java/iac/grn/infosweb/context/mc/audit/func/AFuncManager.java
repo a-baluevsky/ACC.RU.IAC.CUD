@@ -113,7 +113,7 @@ import org.jboss.seam.log.Log;
 	  log.info("getAuditList:firstRow:"+firstRow);
 	  log.info("getAuditList:numberOfRows:"+numberOfRows);
 	  
-	  SerializableList<BaseItem> aFuncListCached = (SerializableList<BaseItem>)
+	  List<BaseItem> aFuncListCached = (List<BaseItem>)
 			  Component.getInstance("aFuncListCached",ScopeType.SESSION);
 	  if(auditList==null){
 		  log.info("getAuditList:01");
@@ -123,7 +123,7 @@ import org.jboss.seam.log.Log;
 			    "onSelColSaveFact".equals(remoteAudit)||
 			    "clSelOneFact".equals(remoteAudit) )&&
 			    aFuncListCached!=null){
-		 	    	this.auditList=aFuncListCached;
+		 	    	this.auditList=new ArrayList<BaseItem>(aFuncListCached);
 			}else{
 				log.info("getAuditList:03");
 		    	invokeLocal("list", firstRow, numberOfRows, null);
@@ -132,7 +132,7 @@ import org.jboss.seam.log.Log;
 			    log.info("getAuditList:03:"+auListSize);
 			}
 		 	
-		 	SerializableList<String>  selRecArmFunc = (ArrayList<String>)
+		 	List<String>  selRecArmFunc = (List<String>)
 					  Component.getInstance("selRecaFunc",ScopeType.SESSION);
 		 	
 		 	if(this.auditList!=null && selRecArmFunc!=null) {
@@ -146,7 +146,7 @@ import org.jboss.seam.log.Log;
 				 }
 		    }
 		}
-		return new ArrayList<BaseItem>(this.auditList);
+		return (this.auditList==null)?null:new ArrayList<BaseItem>(this.auditList);
 	}
 	
 	
@@ -182,7 +182,7 @@ import org.jboss.seam.log.Log;
 	  	    }
 		  
 		  }
-		  return new ArrayList<BaseItem>(this.auditReportList);
+		  return (this.auditReportList==null)?null:new ArrayList<BaseItem>(this.auditReportList);
 	}
 	
 
@@ -194,7 +194,7 @@ import org.jboss.seam.log.Log;
 		}catch(Exception e){
 			 log.error("aFuncManager:getAuditReportCubeList:Error:"+e);
 		}
-		return new ArrayList<AuditFuncItem>(auditReportCubeList);
+		return (auditReportCubeList==null)?null:new ArrayList<AuditFuncItem>(auditReportCubeList);
 	}
 	
 	public void invokeLocal(String type, int firstRow, int numberOfRows,
@@ -377,7 +377,7 @@ import org.jboss.seam.log.Log;
    private  ActionsLogKnlT searchBean(String sessionId){
     	
       if(sessionId!=null){
-    	 SerializableList<ActionsLogKnlT> aFuncListCached = (SerializableList<ActionsLogKnlT>)
+    	 List<ActionsLogKnlT> aFuncListCached = (List<ActionsLogKnlT>)
 				  Component.getInstance("aFuncListCached",ScopeType.SESSION);
     	 
 		if(aFuncListCached!=null){
@@ -466,7 +466,7 @@ import org.jboss.seam.log.Log;
 	    log.info("selectRecord:sessionIdAFunc="+sessionIdAFunc);
 	    
 	  
-	    SerializableList<String>  selRecFunc = (ArrayList<String>)
+	    List<String>  selRecFunc = (List<String>)
 				  Component.getInstance("selRecaFunc",ScopeType.SESSION);
 	    
 	    if(selRecFunc==null){

@@ -139,7 +139,7 @@ import javaw.util.SerializableList;
 	}
 
 	public SerializableList<AcUsersLinkKnlT> getAcUsersLinkKnlTs() {
-		return new ArrayList<AcUsersLinkKnlT>(this.acUsersLinkKnlTs);
+		return (this.acUsersLinkKnlTs==null)?null:new ArrayList<AcUsersLinkKnlT>(this.acUsersLinkKnlTs);
 	}
 
 	public void setAcUsersLinkKnlTs(SerializableList<AcUsersLinkKnlT> acUsersLinkKnlTs) {
@@ -161,7 +161,7 @@ import javaw.util.SerializableList;
 	}
 
 	public SerializableList<LinkGroupUsersRolesKnlT> getLinkGroupUsersRolesKnlTs() {
-		return new ArrayList<LinkGroupUsersRolesKnlT>(this.linkGroupUsersRolesKnlTs);
+		return (this.linkGroupUsersRolesKnlTs==null)?null:new ArrayList<LinkGroupUsersRolesKnlT>(this.linkGroupUsersRolesKnlTs);
 	}
 
 	public void setLinkGroupUsersRolesKnlTs(SerializableList<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs) {
@@ -191,7 +191,7 @@ import javaw.util.SerializableList;
 	}
 
 	public SerializableList<RolesAppAccessBssT> getRolesAppAccessBssTs() {
-		return new ArrayList<RolesAppAccessBssT>(this.rolesAppAccessBssTs);
+		return (this.rolesAppAccessBssTs==null)?null:new ArrayList<RolesAppAccessBssT>(this.rolesAppAccessBssTs);
 	}
 
 	public void setRolesAppAccessBssTs(SerializableList<RolesAppAccessBssT> rolesAppAccessBssTs) {

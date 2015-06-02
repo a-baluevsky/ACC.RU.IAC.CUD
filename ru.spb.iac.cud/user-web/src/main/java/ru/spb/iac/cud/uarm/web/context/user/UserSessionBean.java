@@ -24,7 +24,7 @@ import java.util.Map;
     private String userEmailReg;
     
     public SerializableMap<Long, String> getSumRoles() {
-		return new HashMap<Long, String>(sumRoles);
+		return (sumRoles==null)?null: new HashMap<Long, String>(sumRoles);
 	}
 
 	public void setSumRoles(SerializableMap<Long, String> sumRoles) {

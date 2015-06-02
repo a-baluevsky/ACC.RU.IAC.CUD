@@ -77,11 +77,13 @@ import ru.spb.iac.cud.exs.config.Configuration;
 								.get_reestr("curr_checksum");
 
 						if (!file_checksum.equals(reestr_checksum)) {
-
 							lct.set_reestr(directory + file_name, file_checksum);
-							new File(directory + "tmp_" + file_name)
-									.renameTo(new File(directory + file_name));
-
+							File fTmp = new File(directory + "tmp_" + file_name);
+							File fDst = new File(directory + file_name);
+							if(!fTmp.renameTo(fDst))
+							{
+								LOGGER.error("initTask:scheduleAtFixedRate: can't rename \""+fTmp+"\" -> \""+fDst+"\"");
+							}
 						} else {
 							new File(directory + "tmp_" + file_name).delete();
 						}

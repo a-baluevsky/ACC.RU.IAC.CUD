@@ -200,7 +200,7 @@ import javaw.util.SerializableList;
 	}
 
 	public SerializableList<RolesAppAccessBssT> getRolesAppAccessBssTs() {
-		return new ArrayList<RolesAppAccessBssT>(this.rolesAppAccessBssTs);
+		return (this.rolesAppAccessBssTs==null)?null:new ArrayList<RolesAppAccessBssT>(this.rolesAppAccessBssTs);
 	}
 
 	public void setRolesAppAccessBssTs(SerializableList<RolesAppAccessBssT> rolesAppAccessBssTs) {

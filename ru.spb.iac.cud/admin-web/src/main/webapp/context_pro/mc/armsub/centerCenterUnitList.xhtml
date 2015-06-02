@@ -110,9 +110,8 @@
 									<c:when test="#{field.itemField=='armName'}">
 										<h:selectOneMenu
 											value="#{armSubStateHolder.columnFilterValues[field.itemFiltField]}"
-											id="som#{index}" style="width:100px;"
-											onchange="invokeMyStart();"
-											style="width: 200px">											
+											id="som#{index}" style="width:200px;"
+											onchange="invokeMyStart();">
 											<f:selectItem itemLabel="Все" itemValue="#-1#" />
 											<s:selectItems value="#{armManager.listArm}" var="n"
 												label="#{n.name}" itemValue="#{n.idArm}" />

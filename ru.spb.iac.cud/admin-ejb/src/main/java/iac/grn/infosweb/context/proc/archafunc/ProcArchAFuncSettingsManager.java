@@ -21,7 +21,7 @@ import org.jboss.seam.log.Log;
 @Name("procArchAFuncSettingsManager")
  public class ProcArchAFuncSettingsManager {
 
-	@Logger private Log log;
+	@Logger private static Log log;
 	
 	@In
 	transient EntityManager entityManager;

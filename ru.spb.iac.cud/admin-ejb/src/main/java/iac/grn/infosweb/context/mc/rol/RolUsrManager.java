@@ -200,7 +200,7 @@ import org.jboss.seam.log.Log;
 		}
 	
 		public void setAuditList(List<BaseItem> auditList){
-			this.auditList=new ArrayList<BaseItem>( auditList);
+			this.auditList=(auditList==null)?null:new ArrayList<BaseItem>(auditList);
 		}
 		
 		

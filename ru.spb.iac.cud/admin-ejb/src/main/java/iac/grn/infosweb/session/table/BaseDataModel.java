@@ -25,7 +25,7 @@ import org.richfaces.model.SortField2;
 @Name("baseDataModel")
  public class BaseDataModel<T, U extends java.io.Serializable> extends SerializableDataModel {
 
-	@Logger protected Log log;
+	@Logger protected static Log log;
 	
 	protected U currentPk;
 	protected SerializableMap<U, T> wrappedData = new HashMap<U, T>();

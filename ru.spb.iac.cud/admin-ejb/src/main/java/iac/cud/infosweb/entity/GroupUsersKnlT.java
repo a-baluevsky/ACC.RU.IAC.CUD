@@ -131,7 +131,7 @@ import javaw.util.SerializableList;
     }
     
     public SerializableList<LinkGroupUsersRolesKnlT> getLinkGroupUsersRolesKnlTs() {
-        return new ArrayList<LinkGroupUsersRolesKnlT>(this.linkGroupUsersRolesKnlTs);
+        return (this.linkGroupUsersRolesKnlTs==null)?null:new ArrayList<LinkGroupUsersRolesKnlT>(this.linkGroupUsersRolesKnlTs);
     }
 
     public void setLinkGroupUsersRolesKnlTs(SerializableList<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs) {
@@ -139,7 +139,7 @@ import javaw.util.SerializableList;
     }
     
     public SerializableList<LinkGroupUsersUsersKnlT> getLinkGroupUsersUsersKnlTs() {
-        return new ArrayList<LinkGroupUsersUsersKnlT>(this.linkGroupUsersUsersKnlTs);
+        return (this.linkGroupUsersUsersKnlTs==null)?null:new ArrayList<LinkGroupUsersUsersKnlT>(this.linkGroupUsersUsersKnlTs);
     }
 
     public void setLinkGroupUsersUsersKnlTs(SerializableList<LinkGroupUsersUsersKnlT> linkGroupUsersUsersKnlTs) {
@@ -147,10 +147,10 @@ import javaw.util.SerializableList;
     }
     
     public SerializableList<AcApplication> getArmList() {
-        return new ArrayList<AcApplication>(this.armList);
+        return (this.armList==null)?null:new ArrayList<AcApplication>(this.armList);
     }
     public void setArmList(List<AcApplication> armList) {
-        this.armList = new ArrayList<AcApplication>(armList);
+        this.armList = (armList==null)?null:new ArrayList<AcApplication>(armList);
     }
     
     public Boolean getUsrChecked(){

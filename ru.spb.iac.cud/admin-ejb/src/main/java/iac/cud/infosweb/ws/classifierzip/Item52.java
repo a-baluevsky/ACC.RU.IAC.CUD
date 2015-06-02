@@ -71,7 +71,7 @@ import javax.xml.bind.annotation.XmlType;
      *     byte[]
      */
     public byte[] getFileContent() {
-        return fileContent;
+    	return (fileContent==null)?null:(byte[])fileContent.clone();
     }
 
     /**

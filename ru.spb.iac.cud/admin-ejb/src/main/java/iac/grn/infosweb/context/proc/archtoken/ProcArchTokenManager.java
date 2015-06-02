@@ -37,7 +37,7 @@ import org.jboss.seam.log.Log;
 @Name("procArchTokenManager")
  public class ProcArchTokenManager {
 
-	@Logger private Log log;
+	@Logger private static Log log;
 	
 	private static final String proc_atoken_exec_file=System.getProperty("jboss.server.config.dir")+"/"+"proc_atoken_exec.properties";
 	

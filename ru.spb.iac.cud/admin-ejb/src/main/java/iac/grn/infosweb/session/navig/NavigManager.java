@@ -29,7 +29,7 @@ import org.jboss.seam.log.Log;
  public class NavigManager {
 
 	@Logger
-	private Log log;
+	private static Log log;
 
 	
 	/**

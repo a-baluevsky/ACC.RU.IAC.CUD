@@ -532,27 +532,15 @@ import iac.grn.serviceitems.HeaderTableItem;
   
   public SerializableList<HeaderTableItem> getHeaderItemsListContext(String ids) {
 	  
-	 	AppSystemModifyContext ac= new AppSystemModifyContext();
-		
+	 	AppSystemModifyContext ac= new AppSystemModifyContext();		
 	 	if(ids!=null) {
-	 		
-	 	
-	 		headerItemsListContext=new ArrayList<HeaderTableItem>();
-	 				
-	 	    
-	 	
-	 	     SerializableList<String> idsList =  new ArrayList<String>(Arrays.asList(ids.split(",")));
-	 	   
+	 		headerItemsListContext=new ArrayList<HeaderTableItem>();	 				
+	 		List<String> idsList =  Arrays.asList(ids.split(","));	 	   
 	    	for(HeaderTableItem hti :ac.getHeaderItemsList()){
-			
-			 
-			
 			  if(idsList.contains(hti.getItemField())){
 				  headerItemsListContext.add(hti);
-			  }
-			  
+			  }			  
 		   }
-
 	 	}
 	   return this.headerItemsListContext;
  }
@@ -565,15 +553,9 @@ import iac.grn.serviceitems.HeaderTableItem;
 	 		
 	 	
 	 		headerItemsListContextCREATE=new ArrayList<HeaderTableItem>();
-	 				
-	 	    
-	 	
-	 	     SerializableList<String> idsList =  new ArrayList<String>(Arrays.asList(ids.split(",")));
+	 	    List<String> idsList =  Arrays.asList(ids.split(","));
 	 	   
 	    	for(HeaderTableItem hti :ac.getHeaderItemsList()){
-			
-			 
-			
 			  if(idsList.contains(hti.getItemField())){
 				  headerItemsListContextCREATE.add(hti);
 			  }
@@ -581,6 +563,6 @@ import iac.grn.serviceitems.HeaderTableItem;
 		   }
 
 	 	}
-	   return new ArrayList<HeaderTableItem>(this.headerItemsListContextCREATE);
+	   return (this.headerItemsListContextCREATE==null)?null:new ArrayList<HeaderTableItem>(this.headerItemsListContextCREATE);
 }
 }

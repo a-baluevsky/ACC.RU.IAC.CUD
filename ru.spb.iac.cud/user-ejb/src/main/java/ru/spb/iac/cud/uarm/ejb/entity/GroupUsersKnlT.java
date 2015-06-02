@@ -120,7 +120,7 @@ import javaw.util.SerializableList;
 	}
 
 	public SerializableList<LinkGroupUsersRolesKnlT> getLinkGroupUsersRolesKnlTs() {
-		return new ArrayList<LinkGroupUsersRolesKnlT>(this.linkGroupUsersRolesKnlTs);
+		return (this.linkGroupUsersRolesKnlTs==null)?null:new ArrayList<LinkGroupUsersRolesKnlT>(this.linkGroupUsersRolesKnlTs);
 	}
 
 	public void setLinkGroupUsersRolesKnlTs(SerializableList<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs) {
@@ -142,7 +142,7 @@ import javaw.util.SerializableList;
 	}
 
 	public SerializableList<LinkGroupUsersUsersKnlT> getLinkGroupUsersUsersKnlTs() {
-		return new ArrayList<LinkGroupUsersUsersKnlT>(this.linkGroupUsersUsersKnlTs);
+		return (this.linkGroupUsersUsersKnlTs==null)?null:new ArrayList<LinkGroupUsersUsersKnlT>(this.linkGroupUsersUsersKnlTs);
 	}
 
 	public void setLinkGroupUsersUsersKnlTs(SerializableList<LinkGroupUsersUsersKnlT> linkGroupUsersUsersKnlTs) {
@@ -164,7 +164,7 @@ import javaw.util.SerializableList;
 	}
 
 	public SerializableList<GroupsAppAccessGrBssT> getGroupsAppAccessGrBssTs() {
-		return new ArrayList<GroupsAppAccessGrBssT>(groupsAppAccessGrBssTs);
+		return (groupsAppAccessGrBssTs==null)?null:new ArrayList<GroupsAppAccessGrBssT>(groupsAppAccessGrBssTs);
 	}
 
 	public void setGroupsAppAccessGrBssTs(
@@ -189,7 +189,7 @@ import javaw.util.SerializableList;
 	}
 
 	public SerializableList<AcIsBssT> getArmList() {
-		return new ArrayList<AcIsBssT>(armList);
+		return (armList==null)?null:new ArrayList<AcIsBssT>(armList);
 	}
 
 	public void setArmList(List<AcIsBssT> armList) {

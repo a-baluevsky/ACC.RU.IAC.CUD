@@ -135,7 +135,7 @@ import javaw.util.SerializableList;
 	}
 
 	public SerializableList<AcRolesBssT> getAcRolesBssTs() {
-		return new ArrayList<AcRolesBssT>(this.acRolesBssTs);
+		return (this.acRolesBssTs==null)?null:new ArrayList<AcRolesBssT>(this.acRolesBssTs);
 	}
 
 	public void setAcRolesBssTs(List<AcRolesBssT> acRolesBssTs) {
@@ -156,7 +156,7 @@ import javaw.util.SerializableList;
 		return acRolesBssT;
 	}
 	public SerializableList<JournAppAccessBssT> getJournAppAccessBssTs() {
-		return new ArrayList<JournAppAccessBssT>(this.journAppAccessBssTs);
+		return (this.journAppAccessBssTs==null)?null:new ArrayList<JournAppAccessBssT>(this.journAppAccessBssTs);
 	}
 
 	public void setJournAppAccessBssTs(SerializableList<JournAppAccessBssT> journAppAccessBssTs) {
@@ -164,7 +164,7 @@ import javaw.util.SerializableList;
 	}
 
 	public SerializableList<LinkAdminUserSys> getLinkAdminUserSys() {
-		return new ArrayList<LinkAdminUserSys>(this.linkAdminUserSys);
+		return (this.linkAdminUserSys==null)?null:new ArrayList<LinkAdminUserSys>(this.linkAdminUserSys);
 	}
 
 	public void setLinkAdminUserSys(SerializableList<LinkAdminUserSys> linkAdminUserSys) {
@@ -187,7 +187,7 @@ import javaw.util.SerializableList;
 
 	
 	public SerializableList<JournAppAdminUserSysBssT> getJournAppAdminUserSysBssTs() {
-		return new ArrayList<JournAppAdminUserSysBssT>(journAppAdminUserSysBssTs);
+		return (journAppAdminUserSysBssTs==null)?null:new ArrayList<JournAppAdminUserSysBssT>(journAppAdminUserSysBssTs);
 	}
 
 	public void setJournAppAdminUserSysBssTs(
@@ -210,7 +210,7 @@ import javaw.util.SerializableList;
 	}
 
 	public SerializableList<JournAppAccessGroupsBssT> getJournAppAccessGroupsBssTs() {
-		return new ArrayList<JournAppAccessGroupsBssT>(journAppAccessGroupsBssTs);
+		return (journAppAccessGroupsBssTs==null)?null:new ArrayList<JournAppAccessGroupsBssT>(journAppAccessGroupsBssTs);
 	}
 
 	public void setJournAppAccessGroupsBssTs(
@@ -219,10 +219,10 @@ import javaw.util.SerializableList;
 	}
 
 	public SerializableList<GroupUsersKnlT> getGroups() {
-		return new ArrayList<GroupUsersKnlT>(groups);
+		return (groups==null)?null:new ArrayList<GroupUsersKnlT>(groups);
 	}
 
 	public void setGroups(List<GroupUsersKnlT> groups) {
-		this.groups = new ArrayList<GroupUsersKnlT>(groups);
+		this.groups = (groups==null)?null:new ArrayList<GroupUsersKnlT>(groups);
 	}
 }

@@ -106,9 +106,7 @@ import org.jboss.seam.transaction.Transaction;
 	  log.info("ArmManager:getAuditList:firstRow:"+firstRow);
 	  log.info("ArmManager:getAuditList:numberOfRows:"+numberOfRows);
 	  
-	  SerializableList<BaseItem> armListCached = new ArrayList<BaseItem>( 
-			  	(List<BaseItem>)
-			  	Component.getInstance("armListCached",ScopeType.SESSION));
+	  List<BaseItem> armListCached = (List<BaseItem>)Component.getInstance("armListCached",ScopeType.SESSION);
 	  if(auditList==null){
 		  log.info("getAuditList:01");
 		 	if(("rowSelectFact".equals(remoteAudit)||
@@ -117,21 +115,18 @@ import org.jboss.seam.transaction.Transaction;
 			    "clSelOneFact".equals(remoteAudit)||
 			    "onSelColSaveFact".equals(remoteAudit))&&
 			    armListCached!=null){
-			    	this.auditList=armListCached;
+			    	this.auditList =  new ArrayList<BaseItem>(armListCached);
 			}else{
-				
-				
 		    	invokeLocal("list", firstRow, numberOfRows, null);
 			    Contexts.getSessionContext().set("armListCached", this.auditList);
 			    log.info("getAuditList:03:"+this.auditList.size());
 			}
 		 	
-		 	List<String>  selRecArm = (ArrayList<String>)
+		 	List<String>  selRecArm = (List<String>)
 					  Component.getInstance("selRecArm",ScopeType.SESSION);
 		 	if(this.auditList!=null && selRecArm!=null) {
 		 		 for(BaseItem it:this.auditList){
 				   if(selRecArm.contains(it.getBaseId().toString())){
-					 
 					 it.setSelected(true);
 				   }else{
 					  it.setSelected(false);
@@ -829,7 +824,7 @@ import org.jboss.seam.transaction.Transaction;
 	   return adminListForView;
 	}
 	public void setAdminListForView(List<AcUser> adminListForView) {
-		this.adminListForView = new ArrayList<AcUser>(adminListForView);
+		this.adminListForView = (adminListForView==null)?null:new ArrayList<AcUser>(adminListForView);
 	}
 	
     

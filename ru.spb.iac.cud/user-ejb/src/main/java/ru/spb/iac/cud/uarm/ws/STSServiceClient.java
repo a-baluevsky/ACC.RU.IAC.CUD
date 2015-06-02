@@ -3,6 +3,7 @@ package ru.spb.iac.cud.uarm.ws;
 import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.security.KeyFactory;
 import java.security.KeyStore;
 import java.security.PrivateKey;
@@ -18,6 +19,7 @@ import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import javax.sound.sampled.AudioFormat.Encoding;
 import javax.xml.crypto.XMLStructure;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.crypto.dsig.Reference;
@@ -329,22 +331,11 @@ import org.w3c.dom.NodeList;
 			     
 			    //add cert to RST for HOK
 			 try{
-			    	
-			    	
-			    
 			      URI uri = new URI(WSTrustConstants.KEY_TYPE_PUBLIC); 
-			      
 			      request.setKeyType(uri);
-			      
-			     
-			      
 			      //!!!
 			      Certificate cert_hok = cert;
-			      
-			         
-			      byte[] value = Base64.encodeBytes(cert_hok.getEncoded()).getBytes();
-			      
-			     		  
+			      byte[] value = Base64.encodeBytes(cert_hok.getEncoded()).getBytes(Charset.forName("UTF-8"));
 	              UseKeyType useKeyType = new UseKeyType();
 
 	              useKeyType.add(value);

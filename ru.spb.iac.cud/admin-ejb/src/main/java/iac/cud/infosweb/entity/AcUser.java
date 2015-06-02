@@ -295,7 +295,7 @@ import org.jboss.seam.annotations.Role;
 	}
 
 	public SerializableList<AcLinkUserToRoleToRaion> getAcLinkUserToRoleToRaions() {
-		return new ArrayList<AcLinkUserToRoleToRaion>(this.acLinkUserToRoleToRaions);
+		return (this.acLinkUserToRoleToRaions==null)?null:new ArrayList<AcLinkUserToRoleToRaion>(this.acLinkUserToRoleToRaions);
 	}
 
 	public void setAcLinkUserToRoleToRaions(SerializableList<AcLinkUserToRoleToRaion> acLinkUserToRoleToRaions) {
@@ -376,7 +376,7 @@ import org.jboss.seam.annotations.Role;
 	}
 	
 	public SerializableList<LinkGroupUsersUsersKnlT> getLinkGroupUsersUsersKnlTs() {
-		return new ArrayList<LinkGroupUsersUsersKnlT>(this.linkGroupUsersUsersKnlTs);
+		return (this.linkGroupUsersUsersKnlTs==null)?null:new ArrayList<LinkGroupUsersUsersKnlT>(this.linkGroupUsersUsersKnlTs);
 	}
     public void setLinkGroupUsersUsersKnlTs(SerializableList<LinkGroupUsersUsersKnlT> linkGroupUsersUsersKnlTs) {
 		this.linkGroupUsersUsersKnlTs = linkGroupUsersUsersKnlTs;
@@ -437,11 +437,11 @@ import org.jboss.seam.annotations.Role;
 	}
 	
 	public SerializableList<String> getRolesInfoList() {
-		return new ArrayList<String>(this.rolesInfoList);
+		return (this.rolesInfoList==null)?null:new ArrayList<String>(this.rolesInfoList);
 	}
 
 	public void setRolesInfoList(List<String> rolesInfoList) {
-		this.rolesInfoList = new ArrayList<String>(rolesInfoList);
+		this.rolesInfoList = (rolesInfoList==null)?null:new ArrayList<String>(rolesInfoList);
 	}
 	
 	public String getDepartment() {
@@ -492,46 +492,46 @@ import org.jboss.seam.annotations.Role;
 	}
 
 	public SerializableList<AcUsersCertBssT> getAcUsersCert() {
-		return new ArrayList<AcUsersCertBssT>(acUsersCert);
+		return (acUsersCert==null)?null:new ArrayList<AcUsersCertBssT>(acUsersCert);
 	}
 	public void setAcUsersCert(SerializableList<AcUsersCertBssT> acUsersCert) {
 		this.acUsersCert = acUsersCert;
 	}
 	
 	public SerializableList<BindingLogT> getBindingLogTs() {
-		return new ArrayList<BindingLogT>(this.bindingLogTs);
+		return (this.bindingLogTs==null)?null:new ArrayList<BindingLogT>(this.bindingLogTs);
 	}
 	public void setBindingLogTs(SerializableList<BindingLogT> bindingLogTs) {
 		this.bindingLogTs = bindingLogTs;
 	}
 	
 	public SerializableList<BindingAutoLinkBssT> getBindingAutoLinkBssTs() {
-		return new ArrayList<BindingAutoLinkBssT>(this.bindingAutoLinkBssTs);
+		return (this.bindingAutoLinkBssTs==null)?null:new ArrayList<BindingAutoLinkBssT>(this.bindingAutoLinkBssTs);
 	}
 	public void setBindingAutoLinkBssTs(SerializableList<BindingAutoLinkBssT> bindingAutoLinkBssTs) {
 		this.bindingAutoLinkBssTs = bindingAutoLinkBssTs;
 	}
 	
 	public SerializableList<ServicesLogKnlT> getServicesLogKnlTs() {
-		return new ArrayList<ServicesLogKnlT>(this.servicesLogKnlTs);
+		return (this.servicesLogKnlTs==null)?null:new ArrayList<ServicesLogKnlT>(this.servicesLogKnlTs);
 	}
 	public void setServicesLogKnlTs(SerializableList<ServicesLogKnlT> servicesLogKnlTs) {
 		this.servicesLogKnlTs = servicesLogKnlTs;
 	}
 
 	public SerializableList<LinkAdminUserSys> getLinkAdminUserSys() {
-		return new ArrayList<LinkAdminUserSys>(this.linkAdminUserSys);
+		return (this.linkAdminUserSys==null)?null:new ArrayList<LinkAdminUserSys>(this.linkAdminUserSys);
 	}
 	public void setLinkAdminUserSys(SerializableList<LinkAdminUserSys> linkAdminUserSys) {
 		this.linkAdminUserSys = linkAdminUserSys;
 	}
 	
 	public SerializableList<Long> getAllowedSys() {
-		return new ArrayList<Long>(allowedSys);
+		return (allowedSys==null)?null:new ArrayList<Long>(allowedSys);
 	}
 
 	public void setAllowedSys(List<Long> allowedSys) {
-		this.allowedSys = new ArrayList<Long>(allowedSys);
+		this.allowedSys = (allowedSys==null)?null:new ArrayList<Long>(allowedSys);
 	}
 	
 	public boolean isAllowedSys(Long idSys) {
@@ -548,7 +548,7 @@ import org.jboss.seam.annotations.Role;
 	}
 
 	public void setAllowedReestr(List<String> allowedReestr) {
-		this.allowedReestr = new ArrayList<String>(allowedReestr);
+		this.allowedReestr = (allowedReestr==null)?null:new ArrayList<String>(allowedReestr);
 	}
 	
 	//проверка только для текущего (вошедшего) пользователя

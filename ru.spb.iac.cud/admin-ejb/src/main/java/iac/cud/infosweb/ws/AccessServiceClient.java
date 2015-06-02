@@ -24,7 +24,7 @@ import ru.spb.iac.cud.services.access.AccessServices;
  public class AccessServiceClient {
 
 	@Logger
-	private Log log;
+	private static Log log;
 
 	private static String endpointURI = "http://cudvm/CudServices/AccessService?wsdl";
 

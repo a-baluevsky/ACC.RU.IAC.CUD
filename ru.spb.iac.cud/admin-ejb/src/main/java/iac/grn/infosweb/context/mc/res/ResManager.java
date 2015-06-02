@@ -29,7 +29,7 @@ import iac.grn.infosweb.session.audit.export.AuditExportData;
 @Name("resManager")
  public class ResManager {
 	
-	 @Logger private Log log;
+	 @Logger private static Log log;
 	
 	
 	/**

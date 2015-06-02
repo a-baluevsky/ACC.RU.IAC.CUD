@@ -129,11 +129,12 @@
 									style="width:90px;margin-left:10px;" value="Сформировать"
 									reRender="outMPReport"
 									oncomplete="#{rich:component('CBReport')}.show();"
-									styleClass="but_class" rendered="#{it.dateRequired==1}">
+									styleClass="but_class" rendered="#{it.dateRequired gt 0}">
 									<f:param name="sessionId" value="#{param['sessionId']}" />
 									<f:param name="remoteAudit" value="reportCreateOpenFact" />
 									<f:param name="reportId" value="#{it.idSrv}" />
 									<f:param name="onCreate" value="1" />
+									<f:param name="dateRequired" value="#{it.dateRequired}" />
 								</a4j:commandButton>
 							</td>
 							
@@ -215,8 +216,9 @@
 			<h:form id="CBfReport" target="#">
 				<table>
 					<tr>
-						<td colspan="3" height="25px"><h:outputText
-								value="Период отчёта:" /></td>
+						<td colspan="3" height="25px"><h:outputText value="Период отчёта: " />
+						<!--h:outputText value="#{param['dateRequired']}" /-->
+						</td>
 					</tr>
 					<tr>
 						<td width="20px" />
@@ -225,7 +227,7 @@
 								datePattern="dd.MM.yyyy" locale="RU"
 								showWeeksBar="false" inputSize="16" enableManualInput="true" /></td>
 					</tr>
-					<tr>
+					<tr style="display:#{ param['dateRequired'] lt 2 ? 'none': ''}">
 						<td width="20px" />
 						<td width="20px" height="25px"><h:outputText value="По:" /></td>
 						<td ><rich:calendar id="report_date2" value="#{reportsManager.reportDate2}"

@@ -15,7 +15,7 @@ import org.jboss.seam.log.Log;
 @Name("cacheManager")
  public class CacheManager {
 
-	 @Logger private Log log;
+	 @Logger private static Log log;
 	 
 	 @In CacheProvider cacheProvider;
 	 

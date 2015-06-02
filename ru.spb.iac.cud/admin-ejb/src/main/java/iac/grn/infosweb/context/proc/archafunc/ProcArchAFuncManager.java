@@ -37,7 +37,7 @@ import org.jboss.seam.log.Log;
 @Name("procArchAFuncManager")
  public class ProcArchAFuncManager {
 
-	@Logger private Log log;
+	@Logger private static Log log;
 	
 	private static final String proc_aafunc_exec_file=System.getProperty("jboss.server.config.dir")+"/"+"proc_aafunc_exec.properties";
 	
@@ -106,47 +106,39 @@ import org.jboss.seam.log.Log;
 		
 		 procAAFBean= new ProcAAFItem();
 		 
-		 if(remoteAudit!=null && "procInfo".equals(remoteAudit)){
-			 // кнопка "обновить" задействована для обновления и Center, и Bottom панелей 
-		     // чтобы отобразить изменения, если кто другой запустил/остановил процесс
-			
-			 log.info("confLogContrManager:initProcAAFBean:return");
+		 if(remoteAudit!=null) {
+			 if("procInfo".equals(remoteAudit)){
+				 // кнопка "обновить" задействована для обновления и Center, и Bottom панелей 
+			     // чтобы отобразить изменения, если кто другой запустил/остановил процесс
+				 log.info("confLogContrManager:initProcAAFBean:return");
+			 }			 
+			 if("procCrt".equals(remoteAudit)){
+				 procAAFBean.setStatus("passive");
+				 return;
+			 }
+			 if("procDel".equals(remoteAudit)){
+				 procAAFBean.setStatus("active");
+				 return;
+			 }
+			 if("procPause".equals(remoteAudit)){
+				 procAAFBean.setStatus("active");
+				 return;
+			 }
+			 if("procRun".equals(remoteAudit)){
+				 procAAFBean.setStatus("pause");
+				 return;
+			 }			 
 		 }
 		 
-		 if(remoteAudit!=null && "procCrt".equals(remoteAudit)){
-			 procAAFBean.setStatus("passive");
-			 return;
-		 }
-		 if(remoteAudit!=null && "procDel".equals(remoteAudit)){
-			 procAAFBean.setStatus("active");
-			 return;
-		 }
-		 if(remoteAudit!=null && "procPause".equals(remoteAudit)){
-			 procAAFBean.setStatus("active");
-			 return;
-		 }
-		 if(remoteAudit!=null && "procRun".equals(remoteAudit)){
-			 procAAFBean.setStatus("pause");
-			 return;
-		 }
-		 
-		 try {
-			    
-			 File f=new File(path); 
-			 
-		     if(f.exists()) { 
-		    	 
+		 try {			    
+			 File f=new File(path);
+		     if(f.exists()) {
 		    	 properties.load(is=new FileInputStream(f));
-		    	 
-		    		 status=properties.getProperty("status");
-		    	 
+		    	 status=properties.getProperty("status");
 		    	 log.info("confLogContrManager:initProcAAFBean:status:"+status);
-		    	 
-		    	 if(status!=null){
-		    		 if("active".equals(status)||"pause".equals(status)){
-		    			   }
-		    		 procAAFBean.setStatus(status);
-		    		 }
+	    		 if(status!=null && ("active".equals(status)||"pause".equals(status))) {
+	    			 procAAFBean.setStatus(status);
+	    	     }		    		 
 		      }else{
 		    	  procAAFBean.setStatus("passive");
 		      }

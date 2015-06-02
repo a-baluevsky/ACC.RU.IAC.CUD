@@ -137,7 +137,7 @@ import javaw.util.SerializableList;
 	}
 
 	public SerializableList<GroupsAppAccessGrBssT> getGroupsAppAccessGrBssTs() {
-		return new ArrayList<GroupsAppAccessGrBssT>(this.groupsAppAccessGrBssTs);
+		return (this.groupsAppAccessGrBssTs==null)?null:new ArrayList<GroupsAppAccessGrBssT>(this.groupsAppAccessGrBssTs);
 	}
 
 	public void setGroupsAppAccessGrBssTs(SerializableList<GroupsAppAccessGrBssT> groupsAppAccessGrBssTs) {

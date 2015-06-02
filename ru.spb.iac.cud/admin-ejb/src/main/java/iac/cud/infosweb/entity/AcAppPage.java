@@ -179,15 +179,16 @@ import org.jboss.seam.annotations.Role;
 		  return idResCollectionSet;
 	}
 	public List<AcAppPage> getIdResCollectionNavigation() {
-		if(idResCollectionNavigation==null){
-		List <AcAppPage> laap =new ArrayList<AcAppPage>(idResCollection);
-		idResCollectionNavigation=new ArrayList<AcAppPage>();
-		
-		for(AcAppPage aap :laap){
-			if(aap.visible!=null&&aap.visible.intValue()==1){
-				idResCollectionNavigation.add(aap);
+		if(idResCollectionNavigation==null) {
+			idResCollectionNavigation=new ArrayList<AcAppPage>();
+			if(idResCollection!=null) {
+				List <AcAppPage> laap = new ArrayList<AcAppPage>(idResCollection);
+				for(AcAppPage aap :laap){
+					if(aap.visible!=null&&aap.visible.intValue()==1){
+						idResCollectionNavigation.add(aap);
+					}
+				}				
 			}
-		}
 		}
 		return idResCollectionNavigation;
 	}

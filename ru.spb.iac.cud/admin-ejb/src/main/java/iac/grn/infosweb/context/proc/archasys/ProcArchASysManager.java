@@ -36,7 +36,7 @@ import org.jboss.seam.log.Log;
 @Name("procArchASysManager")
  public class ProcArchASysManager {
 
-	@Logger private Log log;
+	@Logger private static Log log;
 	
 	private static final String proc_aasys_exec_file=System.getProperty("jboss.server.config.dir")+"/"+"proc_aasys_exec.properties";
 	

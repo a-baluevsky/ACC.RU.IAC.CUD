@@ -1,6 +1,7 @@
 package ru.spb.iac.cud.uarm.web.context.user;
 
 import java.util.List;
+
 import iac.cud.infosweb.dataitems.BaseItem;
 
 import java.io.InputStream;
@@ -10,13 +11,18 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
 import javaw.util.ArrayList;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Map;
+
 import javaw.util.HashMap;
 import javaw.util.SerializableList;
 import javaw.util.SerializableMap;
+
 import java.util.regex.Pattern;
 
 import javax.ejb.EJB;
@@ -158,12 +164,9 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 		LOGGER.debug("UserManagerBean:getListArmFull:01_2:"+onArmSelectOpen);
 		
 		if(this.listArmFull==null){
-				this.listArmFull =new ArrayList<AcIsBssT>(userManagerEJB.getArmList());
+			this.listArmFull =new ArrayList<AcIsBssT>(userManagerEJB.getArmList());
 		}
-		
-		if(this.listArmFull!=null){
-			LOGGER.debug("UserManagerBean:getListArmFull:02:"+this.listArmFull.size());
-		}
+		LOGGER.debug("UserManagerBean:getListArmFull:02:"+this.listArmFull.size());
 		
 		return new ArrayList<AcIsBssT>(listArmFull);
 	}
@@ -287,8 +290,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 			 LOGGER.debug("UserManagerBean:addRole:02:"+nameRole);
 			 
 			 if(userSessionBean.getSumRoles()==null){
-				SerializableMap<Long, String> sumRoles = new  HashMap<Long, String>();
-				userSessionBean.setSumRoles(sumRoles);
+				userSessionBean.setSumRoles(new HashMap<Long, String>());
 			 }
 			 
 			 if(userSessionBean.getSumRoles().containsKey(Long.valueOf(idRole))){
@@ -346,7 +348,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 		}catch(Exception e){
 			 LOGGER.error("UserManagerBean:getSumRoles:error:"+e);
 		}
-		return new ArrayList<String>(this.sumRoles);
+		return (this.sumRoles==null)?null:new ArrayList<String>(this.sumRoles);
 	}
 	
 	public void setSumRoles(SerializableList<String> sumRoles) {
@@ -371,7 +373,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 		}catch(Exception e){
 			 LOGGER.error("UserManagerBean:getSumGroups:error:"+e);
 		}
-		return new ArrayList<String>(sumGroups);
+		return (sumGroups==null)?null:new ArrayList<String>(sumGroups);
 	}
 	
 	public void setSumGroups(SerializableList<String> sumGroups) {
@@ -757,7 +759,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 	       }
 		}
 		
-		return new ArrayList<GroupUsersKnlT>(userGroups);
+		return (userGroups==null)?null:new ArrayList<GroupUsersKnlT>(userGroups);
 	}
 
 	public void setUserGroups(SerializableList<GroupUsersKnlT> userGroups) {
@@ -780,7 +782,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 			}
 		}
 		
-		return new ArrayList<BaseItem>(userCertList);
+		return (userCertList==null)?null:new ArrayList<BaseItem>(userCertList);
 	}
 
 	public void setUserCertList(SerializableList<BaseItem> userCertList) {

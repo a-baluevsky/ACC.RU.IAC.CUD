@@ -20,7 +20,7 @@ import org.jboss.seam.log.Log;
 @AutoCreate
  public class AppSystemStateHolder extends BaseStateHolder{
 	
-	   @Logger private Log log;
+	   @Logger private static Log log;
 	
         
        @Create

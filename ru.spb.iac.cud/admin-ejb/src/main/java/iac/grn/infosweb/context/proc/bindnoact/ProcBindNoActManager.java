@@ -37,7 +37,7 @@ import org.jboss.seam.log.Log;
 @Name("procBindNoActManager")
  public class ProcBindNoActManager {
 
-	@Logger private Log log;
+	@Logger private static Log log;
 	
 	private static final String proc_binding_noact_exec_file=System.getProperty("jboss.server.config.dir")+"/"+"proc_binding_noact_exec.properties";
 	
@@ -53,7 +53,7 @@ import org.jboss.seam.log.Log;
 	private ProcBNAInfoItem procBNAInfoBean;
 	
 	public synchronized Date getStartDate(){
-		return this.startDate;
+		return (this.startDate==null)?null:(Date)this.startDate.clone();
 	}
 	public synchronized void setStartDate(Date startDate){
 		this.startDate=(startDate==null)?null:(Date)startDate.clone();
