@@ -23,7 +23,11 @@ import org.jboss.seam.log.Log;
 @AutoCreate
  public class UsrRoleStateHolder extends BaseStateHolder{
 	
-	   @Logger private static Log log;
+	   /**
+	 * 
+	 */
+	private static final long serialVersionUID = 591731228690399136L;
+	@Logger private static Log log;
 	
        @Create
        public void create() {

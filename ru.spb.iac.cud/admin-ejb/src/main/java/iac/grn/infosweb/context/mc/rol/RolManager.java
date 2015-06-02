@@ -359,7 +359,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	    		  log.info("RolManager:addRol:Res:"+res.getPageName());
 	    		  for(Object l:res.getPermList()){
 	    			  log.info("RolManager:addRol:perm:"+l.toString());
-	    			  AcLinkRoleAppPagePrmssn ap = new AcLinkRoleAppPagePrmssn(res.getIdRes(), Long.valueOf(l.toString()), rolBeanCrt.getIdRol());
+	    			  AcLinkRoleAppPagePrmssn ap = new AcLinkRoleAppPagePrmssn(res.getIdRes(), Long.parseLong(l.toString()), rolBeanCrt.getIdRol());
 	    			  ap.setCreated(new Date());
 	    			  ap.setCreator(Long.valueOf(1));
 	    			  arList.add(ap);
