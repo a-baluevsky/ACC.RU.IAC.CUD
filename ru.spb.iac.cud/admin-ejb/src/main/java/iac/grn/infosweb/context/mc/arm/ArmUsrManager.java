@@ -426,7 +426,7 @@ import org.jboss.seam.log.Log;
 					  }
 				  }
 
-				   
+				    aum.setLinkAdminUserSys(oldLinkList);
 			        entityManager.flush();
 			    	
 				    entityManager.refresh(aum);

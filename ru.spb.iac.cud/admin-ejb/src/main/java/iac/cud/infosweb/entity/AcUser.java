@@ -298,8 +298,8 @@ import org.jboss.seam.annotations.Role;
 		return (this.acLinkUserToRoleToRaions==null)?null:new ArrayList<AcLinkUserToRoleToRaion>(this.acLinkUserToRoleToRaions);
 	}
 
-	public void setAcLinkUserToRoleToRaions(SerializableList<AcLinkUserToRoleToRaion> acLinkUserToRoleToRaions) {
-		this.acLinkUserToRoleToRaions = acLinkUserToRoleToRaions;
+	public void setAcLinkUserToRoleToRaions(List<AcLinkUserToRoleToRaion> acLinkUserToRoleToRaions) {
+		this.acLinkUserToRoleToRaions = acLinkUserToRoleToRaions==null?null:new ArrayList<AcLinkUserToRoleToRaion>(acLinkUserToRoleToRaions);
 	}
 
 	public String getFio(){
@@ -378,8 +378,8 @@ import org.jboss.seam.annotations.Role;
 	public SerializableList<LinkGroupUsersUsersKnlT> getLinkGroupUsersUsersKnlTs() {
 		return (this.linkGroupUsersUsersKnlTs==null)?null:new ArrayList<LinkGroupUsersUsersKnlT>(this.linkGroupUsersUsersKnlTs);
 	}
-    public void setLinkGroupUsersUsersKnlTs(SerializableList<LinkGroupUsersUsersKnlT> linkGroupUsersUsersKnlTs) {
-		this.linkGroupUsersUsersKnlTs = linkGroupUsersUsersKnlTs;
+    public void setLinkGroupUsersUsersKnlTs(List<LinkGroupUsersUsersKnlT> linkGroupUsersUsersKnlTs) {
+		this.linkGroupUsersUsersKnlTs = linkGroupUsersUsersKnlTs ==null?null:new ArrayList<LinkGroupUsersUsersKnlT>(linkGroupUsersUsersKnlTs);
 	}
 	
 	public Long getIsCudRole() {
@@ -522,8 +522,8 @@ import org.jboss.seam.annotations.Role;
 	public SerializableList<LinkAdminUserSys> getLinkAdminUserSys() {
 		return (this.linkAdminUserSys==null)?null:new ArrayList<LinkAdminUserSys>(this.linkAdminUserSys);
 	}
-	public void setLinkAdminUserSys(SerializableList<LinkAdminUserSys> linkAdminUserSys) {
-		this.linkAdminUserSys = linkAdminUserSys;
+	public void setLinkAdminUserSys(List<LinkAdminUserSys> linkAdminUserSys) {
+		this.linkAdminUserSys = linkAdminUserSys==null?null:new ArrayList<LinkAdminUserSys>(linkAdminUserSys);
 	}
 	
 	public SerializableList<Long> getAllowedSys() {

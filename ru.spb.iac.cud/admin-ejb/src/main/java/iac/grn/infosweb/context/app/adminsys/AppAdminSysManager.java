@@ -494,6 +494,7 @@ import org.jboss.seam.faces.FacesMessages;
 				 return;
 			 }
 			 
+			 aum.setLinkAdminUserSys(guuExistList);
 			 entityManager.flush();
 	    	 
 		     entityManager.createNativeQuery(

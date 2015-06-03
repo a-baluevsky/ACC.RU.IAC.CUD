@@ -441,9 +441,10 @@ import org.jboss.seam.log.Log;
 			                }
 	    			  }
 	    		  }
-	     	  
+	      
+	     	aum.setLinkGroupUsersRolesKnlTs(guuExistList);	  
 	    	log.info("ugroupManager:updUgroupRole:size3:"+aum.getLinkGroupUsersRolesKnlTs().size());
-	    	  
+	    	    	  
 	        entityManager.flush();
 	    	 
 	        entityManager.refresh(aum);

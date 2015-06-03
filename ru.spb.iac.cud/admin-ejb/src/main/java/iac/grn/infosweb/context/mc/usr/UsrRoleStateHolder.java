@@ -93,11 +93,11 @@ import org.jboss.seam.log.Log;
 
 
    	public List<Long> getAppRolesList() {
-   		return appRolesList;
+   		return appRolesList==null?null: new ArrayList<Long>(appRolesList);
    	}
 
    	public void setAppRolesList(List<Long> appRolesList) {
-   		this.appRolesList = appRolesList;
+   		this.appRolesList = appRolesList==null?null: new ArrayList<Long>(appRolesList);
    	}
    	
    	public void resetAppRolesList() {

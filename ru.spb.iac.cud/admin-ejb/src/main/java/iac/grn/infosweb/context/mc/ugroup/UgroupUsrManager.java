@@ -229,18 +229,14 @@ import org.jboss.seam.log.Log;
 				        .getRequestParameterMap()
 				        .get("sessionId");
 			   log.info("ugroupUsrManager:updUgroupUserAlf:sessionId:"+sessionId);
-			  
-			   
+
 			   if(ugroupBean==null || sessionId==null){
 				   return;
 			   }
-			
 			 	   
 			   try {
-				   AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
-				   
-				   GroupUsersKnlT aum = entityManager.find(GroupUsersKnlT.class, Long.valueOf(sessionId));
-				   
+				   AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);				   
+				   GroupUsersKnlT aum = entityManager.find(GroupUsersKnlT.class, Long.valueOf(sessionId));				   
 				   List<LinkGroupUsersUsersKnlT> oldLinkList = aum.getLinkGroupUsersUsersKnlTs();
 				   
 				   log.info("ugroupUsrManager:updUgroupUserAlf:size1:"+oldLinkList.size());
@@ -277,25 +273,15 @@ import org.jboss.seam.log.Log;
 									  log.info("ugroupManager:not_in_db");
 								  }
 							  }
-						  }					   
-				   }
-				   
-				   
-
-
-				   
-			        entityManager.flush();
-			    	
-				    entityManager.refresh(aum);
-			    	  
-			    	Contexts.getEventContext().set("ugroupBean", aum);
-			    	 
+						  }
+					    aum.setLinkGroupUsersUsersKnlTs(oldLinkList);
+				        entityManager.flush();				    	
+					    entityManager.refresh(aum);				    	  
+				    	Contexts.getEventContext().set("ugroupBean", aum);					   
+				   }			    	 
 			    	//аудит!!!
 			    	UgroupManager ugroupManager = (UgroupManager)Component.getInstance("ugroupManager", ScopeType.EVENT);
 				    ugroupManager.audit(ResourcesMap.UGROUP, ActionsMap.UPDATE_USER); 
-			    	
-			    	
-			    	
 			     }catch (Exception e) {
 		       log.error("ugroupUsrManager:updUgroupUserAlf:ERROR:"+e);
 		     }

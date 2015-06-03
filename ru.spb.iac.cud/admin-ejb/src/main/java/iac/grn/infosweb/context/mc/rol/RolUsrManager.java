@@ -242,7 +242,7 @@ import org.jboss.seam.log.Log;
 				   AcRole aum = entityManager.find(AcRole.class, Long.valueOf(sessionId));
 				   
 				   List<AcLinkUserToRoleToRaion> oldLinkList = aum.getAcLinkUserToRoleToRaions();
-				   
+				   				   
 				   log.info("rolUsrManager:updRolUserAlf:size1:"+oldLinkList.size());
 				   if(this.auditList==null) {
 					   log.info("rolUsrManager:updRolUserAlf:auditList is null");
@@ -276,6 +276,8 @@ import org.jboss.seam.log.Log;
 							  }
 						  }					   
 				   }
+				   
+				    aum.setAcLinkUserToRoleToRaions(oldLinkList);
 			        entityManager.flush();
 		    	
 				    entityManager.refresh(aum);

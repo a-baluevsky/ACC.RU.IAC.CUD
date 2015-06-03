@@ -482,9 +482,10 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 	     	  
 	    
 	     	
+	     	aum.setLinkGroupSysSysKnlTs(guuExistList);
 	     	
-	   	log.info("armGroupManager:updIS:size3:"+aum.getLinkGroupSysSysKnlTs().size());
-	    	  
+	     	log.info("armGroupManager:updIS:size3:"+aum.getLinkGroupSysSysKnlTs().size());
+	    	 
 	        entityManager.flush();
 	    	 
 	        entityManager.refresh(aum);

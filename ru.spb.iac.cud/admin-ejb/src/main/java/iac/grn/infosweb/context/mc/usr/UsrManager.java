@@ -1237,6 +1237,7 @@ import org.slf4j.LoggerFactory;
 		
 		  List<AcLinkUserToRoleToRaion> guuExistList =  aum.getAcLinkUserToRoleToRaions();
 		  
+		  
 	      for(BaseItem rol:this.roleList){
 	    			  log.info("UsrManager:editUsr:updUsrRole:"+((AcRole)rol).getRoleTitle());
 	    			  log.info("UsrManager:editUsr:updUsrRole:"+((AcRole)rol).getUsrChecked());
@@ -1281,7 +1282,7 @@ import org.slf4j.LoggerFactory;
 	    			  }
 	    		  }
 	     	  
-	     	  
+	        aum.setAcLinkUserToRoleToRaions(guuExistList);  
 	        entityManager.flush();
 	    	 
 	        entityManager.refresh(aum);
@@ -1329,9 +1330,7 @@ import org.slf4j.LoggerFactory;
 		
 		
 		  List<Long> guuExistList =  usrRoleStateHolder.getAppRolesList();
-		  
-		 
-		  
+
 	      for(BaseItem rol:this.roleList){
 	    			  log.info("UsrManager:editUsr:updUsrRole:"+((AcRole)rol).getRoleTitle());
 	    			  log.info("UsrManager:editUsr:updUsrRole:"+((AcRole)rol).getUsrChecked());
@@ -1365,7 +1364,8 @@ import org.slf4j.LoggerFactory;
 			                }
 	    			  }
 	    		  }
-	     	 
+	      	usrRoleStateHolder.setAppRolesList(guuExistList);
+	      
 	    	usrRoleReset();
 	    	
 	    	listUsrArmForView = null;
@@ -1398,6 +1398,7 @@ import org.slf4j.LoggerFactory;
 	
 		
 		  List<LinkGroupUsersUsersKnlT> guuExistList =  aum.getLinkGroupUsersUsersKnlTs();
+		  
 		  log.info("usrManager:updUsrGroup:size1:"+guuExistList.size());
 		  
 		  
@@ -1444,11 +1445,10 @@ import org.slf4j.LoggerFactory;
  			                }
 	    			  }
 	    		  }
-	     	  
 	     	
-	     	
-	     	
-	   	log.info("usrManager:updUsrGroup:size3:"+aum.getLinkGroupUsersUsersKnlTs().size());
+		  	aum.setLinkGroupUsersUsersKnlTs(guuExistList);
+		  	
+	   		log.info("usrManager:updUsrGroup:size3:"+aum.getLinkGroupUsersUsersKnlTs().size());
 	    	  
 	        entityManager.flush();
 	    	 
@@ -1497,7 +1497,7 @@ import org.slf4j.LoggerFactory;
 		  AcUser aum = entityManager.find(AcUser.class, Long.valueOf(sessionId));
 		
 		  List<LinkAdminUserSys> guuExistList =  aum.getLinkAdminUserSys();
-		 
+		  
 		  
 		 
 		  
@@ -1545,7 +1545,7 @@ import org.slf4j.LoggerFactory;
 	    			  }
 	    		  }
 	     	  
-	     	
+		    aum.setLinkAdminUserSys(guuExistList);
 	     	
 	     	
 	        entityManager.flush();
@@ -2080,7 +2080,7 @@ import org.slf4j.LoggerFactory;
 				
 				
 				List<Long> guuExistList =  usrRoleStateHolder.getAppRolesList();
-			
+				
 				
 				
 				for (Long idRole : guuExistList) {

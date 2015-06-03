@@ -541,7 +541,7 @@ import iac.grn.serviceitems.BaseTableItem;
  			  }
  		  }
 			   
-  		   
+		    aum.setAcLinkUserToRoleToRaions(oldLinkList);
 	        entityManager.flush();
 	    	
 		    entityManager.refresh(aum);

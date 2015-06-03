@@ -197,8 +197,8 @@ import javaw.util.SerializableSet;
 		return (this.acLinkUserToRoleToRaions==null)?null:new ArrayList<AcLinkUserToRoleToRaion>(this.acLinkUserToRoleToRaions);
 	}
 
-	public void setAcLinkUserToRoleToRaions(SerializableList<AcLinkUserToRoleToRaion> acLinkUserToRoleToRaions) {
-		this.acLinkUserToRoleToRaions = acLinkUserToRoleToRaions;
+	public void setAcLinkUserToRoleToRaions(List<AcLinkUserToRoleToRaion> acLinkUserToRoleToRaions) {
+		this.acLinkUserToRoleToRaions = acLinkUserToRoleToRaions==null?null:new ArrayList<AcLinkUserToRoleToRaion>(acLinkUserToRoleToRaions);
 	}
 	public Boolean getUsrChecked(){
 		return this.usrChecked;

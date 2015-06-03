@@ -54,7 +54,7 @@ import javaw.util.SerializableList;
     private Date modified;
         
     @OneToMany(mappedBy="groupUsersKnlT", cascade={CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
-    private /*Serializable*/ List<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs;
+	private /*Serializable*/ List<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs;
 
     @OneToMany(mappedBy="groupUsersKnlT",  cascade={CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
     private /*Serializable*/ List<LinkGroupUsersUsersKnlT> linkGroupUsersUsersKnlTs;
@@ -130,20 +130,22 @@ import javaw.util.SerializableList;
         this.modificator = modificator;
     }
     
+
     public SerializableList<LinkGroupUsersRolesKnlT> getLinkGroupUsersRolesKnlTs() {
         return (this.linkGroupUsersRolesKnlTs==null)?null:new ArrayList<LinkGroupUsersRolesKnlT>(this.linkGroupUsersRolesKnlTs);
     }
-
-    public void setLinkGroupUsersRolesKnlTs(SerializableList<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs) {
-        this.linkGroupUsersRolesKnlTs = linkGroupUsersRolesKnlTs;
-    }
     
+    public void setLinkGroupUsersRolesKnlTs(List<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs) {
+        this.linkGroupUsersRolesKnlTs = linkGroupUsersRolesKnlTs==null?null:new ArrayList<LinkGroupUsersRolesKnlT>(linkGroupUsersRolesKnlTs);
+    }
+
+
     public SerializableList<LinkGroupUsersUsersKnlT> getLinkGroupUsersUsersKnlTs() {
         return (this.linkGroupUsersUsersKnlTs==null)?null:new ArrayList<LinkGroupUsersUsersKnlT>(this.linkGroupUsersUsersKnlTs);
     }
 
-    public void setLinkGroupUsersUsersKnlTs(SerializableList<LinkGroupUsersUsersKnlT> linkGroupUsersUsersKnlTs) {
-        this.linkGroupUsersUsersKnlTs = linkGroupUsersUsersKnlTs;
+    public void setLinkGroupUsersUsersKnlTs(List<LinkGroupUsersUsersKnlT> linkGroupUsersUsersKnlTs) {
+    	this.linkGroupUsersUsersKnlTs = (linkGroupUsersUsersKnlTs==null)?null:new ArrayList<LinkGroupUsersUsersKnlT>(linkGroupUsersUsersKnlTs);
     }
     
     public SerializableList<AcApplication> getArmList() {
