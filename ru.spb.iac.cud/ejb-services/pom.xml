@@ -112,7 +112,20 @@
     <artifactId>oracle-ojdbc6</artifactId>
     <version>11.2.0.3.0</version>
 </dependency>
+
+ 		<dependency>
+            <groupId>org.jboss.shrinkwrap</groupId>
+            <artifactId>shrinkwrap-extension-openejb</artifactId>
+            <version>1.0.0-alpha-13</version>
+        </dependency>
+		
+		<dependency>
+    <groupId>cn.guoyukun.jdbc</groupId>
+    <artifactId>oracle-ojdbc6</artifactId>
+    <version>11.2.0.3.0</version>
+</dependency>
             
+
 		
 	<!-- arquillian - end -->
 		
