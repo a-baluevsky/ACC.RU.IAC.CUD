@@ -10,7 +10,10 @@ import iac.grn.serviceitems.HeaderTableItem;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
 import javaw.util.ArrayList;
+import javaw.util.SerializableSet;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -445,7 +448,7 @@ import org.jboss.seam.faces.FacesMessages;
 			 log.info("AppAdminSysManager:createAdminSys:modeExec:"+modeExec);
 			 
 			 AcUser aum = entityManager.find(AcUser.class, idUser);
-				
+			 
 			 List<LinkAdminUserSys> guuExistList =  aum.getLinkAdminUserSys();
 		 
 			 LinkAdminUserSys au = new LinkAdminUserSys(idUser, idArm);

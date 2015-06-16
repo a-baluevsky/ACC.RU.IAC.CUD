@@ -594,11 +594,11 @@ private static final PicketLinkLogger LOGGER = PicketLinkLoggerFactory.getLogger
             keyInfo = keyInfoFactory.newKeyInfo(Collections.singletonList(keyValue));
         }
         if(x509Certificate != null){
-            List x509list = new ArrayList();
+            List<X509Certificate> x509list = new ArrayList<X509Certificate>();
 
             x509list.add(x509Certificate);
             X509Data x509Data = keyInfoFactory.newX509Data(x509list);
-            List items = new ArrayList();
+            List<Object> items = new ArrayList<Object>();
 
             items.add(x509Data);
             if(keyValue != null){

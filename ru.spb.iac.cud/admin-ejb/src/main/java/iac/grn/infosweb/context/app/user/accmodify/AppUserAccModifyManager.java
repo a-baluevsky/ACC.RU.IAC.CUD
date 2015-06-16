@@ -57,7 +57,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 			 
 			 AppUserAccModifyStateHolder appUserAccModifyStateHolder = (AppUserAccModifyStateHolder)
 					  Component.getInstance("appUserAccModifyStateHolder",ScopeType.SESSION);
-			 SerializableMap<String, String> filterMap = appUserAccModifyStateHolder.getColumnFilterValues();
+			 Map<String, String> filterMap = appUserAccModifyStateHolder.getColumnFilterValues();
 			 String st=null;
 			  
 			 if("list".equals(type)){
@@ -100,12 +100,11 @@ import iac.grn.serviceitems.HeaderTableItem;
                  log.info("AppUserAcc:invokeLocal:list:filterQuery:"+st);
 
              
-               SerializableList<Object[]> lo=null;
                AppUserAccModifyItem ui = null;
                DateFormat df = new SimpleDateFormat ("dd.MM.yy HH:mm:ss");
                
 
-             lo=new ArrayList<Object[]>(entityManager.createNativeQuery(
+             List<Object[]> lo=(entityManager.createNativeQuery(
                      (new StringBuilder("select t1.t1_id, t1.t1_created, "))
                      .append("t1.t1_status, t1_org_name,  t1_user_fio, t1_reject_reason, t1_comment, ")
                      .append("t1_LOGIN_USER, ") 
@@ -221,7 +220,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 				 
                  
                  if(filterMap!=null){
-    	    		 Set<SerializableMap.Entry<String, String>> setFilterAppUserAcc = filterMap.entrySet();
+    	    		 Set<Map.Entry<String, String>> setFilterAppUserAcc = filterMap.entrySet();
     	              for (Map.Entry<String, String> me : setFilterAppUserAcc) {
     	            	
     	            	  
@@ -318,7 +317,6 @@ import iac.grn.serviceitems.HeaderTableItem;
 		   }
 		   
 		   try{
-	           SerializableList<Object[]> lo=null;
 	           AppUserAccModifyItem ui = null;
 	           DateFormat df = new SimpleDateFormat ("dd.MM.yy HH:mm:ss");
 	           
@@ -326,7 +324,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	           //t1_usr_code_app - субъект заявки(у кого изменяются аттрибуты)
 	           //t1_SIGN_USER - один из аттрибутов на изменение
 	           
-	           lo=new ArrayList<Object[]>(entityManager.createNativeQuery(
+	           List<Object[]> lo=(entityManager.createNativeQuery(
 	        		    (new StringBuilder("select t1.t1_id, t1.t1_created, "))
  		               .append("t1.t1_status, t1_org_name,  t1_user_fio, t1_reject_reason, t1_comment, ")
                         .append("t1_LOGIN_USER, ") 
@@ -666,7 +664,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	 }
 	 
 	 @Override
-	 public SerializableList <BaseTableItem> getAuditItemsListSelect() {
+	 public List <BaseTableItem> getAuditItemsListSelect() {
 		   log.info("getAuditItemsListSelect:01");
 		   AppUserAccModifyContext ac= new AppUserAccModifyContext();
 		   if( auditItemsListSelect==null){
@@ -684,7 +682,7 @@ import iac.grn.serviceitems.HeaderTableItem;
   
 
   @Override
-  public SerializableList <BaseTableItem> getAuditItemsListContext() {
+  public List <BaseTableItem> getAuditItemsListContext() {
 	   log.info("AppUserAccModifyManager:getAuditItemsListContext");
 	   if(auditItemsListContext==null){
 		   AppUserAccModifyContext ac= new AppUserAccModifyContext();
@@ -698,7 +696,7 @@ import iac.grn.serviceitems.HeaderTableItem;
   }
   
   @Override
-  public SerializableList<HeaderTableItem> getHeaderItemsListContext() {
+  public List<HeaderTableItem> getHeaderItemsListContext() {
 	  
 	  if(headerItemsListContext==null){
 		   AppUserAccModifyContext ac= new AppUserAccModifyContext();
@@ -712,7 +710,7 @@ import iac.grn.serviceitems.HeaderTableItem;
   }
   
   
-  public SerializableList<HeaderTableItem> getHeaderItemsListContext(String ids) {
+  public List<HeaderTableItem> getHeaderItemsListContext(String ids) {
 	 	AppUserAccModifyContext ac= new AppUserAccModifyContext();
 	 	if(ids!=null) {
 	 		headerItemsListContext=new ArrayList<HeaderTableItem>();

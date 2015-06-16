@@ -51,17 +51,17 @@ import iac.grn.serviceitems.HeaderTableItem;
 	    @In 
 	    protected /*transient*/ EntityManager entityManager;
 		 
-		protected SerializableList<BaseItem> auditList; 
+		protected /*Serializable*/ List<BaseItem> auditList; 
 		
 		protected Long auditCount;
 		
-		protected SerializableList <BaseTableItem> auditItemsListSelect;
+		protected /*Serializable*/ List <BaseTableItem> auditItemsListSelect;
 		
-		protected SerializableList <BaseTableItem> auditItemsListContext;
+		protected /*Serializable*/ List <BaseTableItem> auditItemsListContext;
 		
 		//protected HashMap<String, SerializableList<BaseTableItem>> headerItemsListContext;
 		
-		protected SerializableList<HeaderTableItem> headerItemsListContext;
+		protected /*Serializable*/ List<HeaderTableItem> headerItemsListContext;
 		
 		protected Boolean evaluteForList;
 		protected Boolean evaluteForListFooter;  
@@ -73,7 +73,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 		private String dellMessage = null;
 		
 		
-		public SerializableList<BaseItem> getAuditList(int firstRow, int numberOfRows){
+		public List<BaseItem> getAuditList(int firstRow, int numberOfRows){
 		  String remoteAudit = FacesContext.getCurrentInstance().getExternalContext()
 		             .getRequestParameterMap()
 		             .get("remoteAudit");
@@ -117,7 +117,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 			}
 			return this.auditList;
 		}
-		public void setAuditList(SerializableList<BaseItem> auditList){
+		public void setAuditList(List<BaseItem> auditList){
 			this.auditList=auditList;
 		}
 		public void invokeLocal(String type, int firstRow, int numberOfRows,

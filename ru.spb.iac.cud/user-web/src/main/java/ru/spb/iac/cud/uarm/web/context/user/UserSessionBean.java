@@ -8,7 +8,6 @@ import javaw.util.SerializableMap;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
-import java.util.List;
 import java.util.Map;
  
 @ManagedBean(name="userSessionBean")
@@ -23,12 +22,12 @@ import java.util.Map;
     
     private String userEmailReg;
     
-    public SerializableMap<Long, String> getSumRoles() {
+    public Map<Long, String> getSumRoles() {
 		return (sumRoles==null)?null: new HashMap<Long, String>(sumRoles);
 	}
 
 	public void setSumRoles(SerializableMap<Long, String> sumRoles) {
-		this.sumRoles = sumRoles;
+		this.sumRoles = (sumRoles==null)?null: new HashMap<Long, String>(sumRoles);
 	}
 
 	public String getUserEmailReg() {
@@ -39,12 +38,12 @@ import java.util.Map;
 		this.userEmailReg = userEmailReg;
 	}
 
-	public SerializableMap<Long, String> getSumGroups() {
-		return new HashMap<Long, String>(sumGroups);
+	public Map<Long, String> getSumGroups() {
+		return (sumGroups==null)?null: new HashMap<Long, String>(sumGroups);
 	}
 
-	public void setSumGroups(SerializableMap<Long, String> sumGroups) {
-		this.sumGroups = sumGroups;
+	public void setSumGroups(/*Serializable*/Map<Long, String> sumGroups) {
+		this.sumGroups = (sumGroups==null)?null: new HashMap<Long, String>(sumGroups);
 	}
 
 	

@@ -163,11 +163,11 @@ import javaw.util.SerializableList;
 		this.journAppAccessBssTs = journAppAccessBssTs;
 	}
 
-	public SerializableList<LinkAdminUserSys> getLinkAdminUserSys() {
-		return (this.linkAdminUserSys==null)?null:new ArrayList<LinkAdminUserSys>(this.linkAdminUserSys);
+	public List<LinkAdminUserSys> getLinkAdminUserSys() {
+		return this.linkAdminUserSys;
 	}
 
-	public void setLinkAdminUserSys(SerializableList<LinkAdminUserSys> linkAdminUserSys) {
+	public void setLinkAdminUserSys(List<LinkAdminUserSys> linkAdminUserSys) {
 		this.linkAdminUserSys = linkAdminUserSys;
 	}
 
@@ -186,12 +186,11 @@ import javaw.util.SerializableList;
 	}
 
 	
-	public SerializableList<JournAppAdminUserSysBssT> getJournAppAdminUserSysBssTs() {
-		return (journAppAdminUserSysBssTs==null)?null:new ArrayList<JournAppAdminUserSysBssT>(journAppAdminUserSysBssTs);
+	public List<JournAppAdminUserSysBssT> getJournAppAdminUserSysBssTs() {
+		return journAppAdminUserSysBssTs;
 	}
 
-	public void setJournAppAdminUserSysBssTs(
-			SerializableList<JournAppAdminUserSysBssT> journAppAdminUserSysBssTs) {
+	public void setJournAppAdminUserSysBssTs(List<JournAppAdminUserSysBssT> journAppAdminUserSysBssTs) {
 		this.journAppAdminUserSysBssTs = journAppAdminUserSysBssTs;
 	}
 

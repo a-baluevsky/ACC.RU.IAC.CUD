@@ -138,11 +138,11 @@ import javaw.util.SerializableList;
 		this.acIsBssT = acIsBssT;
 	}
 
-	public SerializableList<AcUsersLinkKnlT> getAcUsersLinkKnlTs() {
+	public List<AcUsersLinkKnlT> getAcUsersLinkKnlTs() {
 		return (this.acUsersLinkKnlTs==null)?null:new ArrayList<AcUsersLinkKnlT>(this.acUsersLinkKnlTs);
 	}
 
-	public void setAcUsersLinkKnlTs(SerializableList<AcUsersLinkKnlT> acUsersLinkKnlTs) {
+	public void setAcUsersLinkKnlTs(List<AcUsersLinkKnlT> acUsersLinkKnlTs) {
 		this.acUsersLinkKnlTs = acUsersLinkKnlTs;
 	}
 
@@ -160,12 +160,12 @@ import javaw.util.SerializableList;
 		return acUsersLinkKnlT;
 	}
 
-	public SerializableList<LinkGroupUsersRolesKnlT> getLinkGroupUsersRolesKnlTs() {
+	public List<LinkGroupUsersRolesKnlT> getLinkGroupUsersRolesKnlTs() {
 		return (this.linkGroupUsersRolesKnlTs==null)?null:new ArrayList<LinkGroupUsersRolesKnlT>(this.linkGroupUsersRolesKnlTs);
 	}
 
-	public void setLinkGroupUsersRolesKnlTs(SerializableList<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs) {
-		this.linkGroupUsersRolesKnlTs = linkGroupUsersRolesKnlTs;
+	public void setLinkGroupUsersRolesKnlTs(List<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs) {
+		this.linkGroupUsersRolesKnlTs = (linkGroupUsersRolesKnlTs==null)?null:new ArrayList<LinkGroupUsersRolesKnlT>(linkGroupUsersRolesKnlTs);
 	}
 
 	public LinkGroupUsersRolesKnlT addLinkGroupUsersRolesKnlT(LinkGroupUsersRolesKnlT linkGroupUsersRolesKnlT) {
@@ -190,11 +190,11 @@ import javaw.util.SerializableList;
 		this.checked = checked;
 	}
 
-	public SerializableList<RolesAppAccessBssT> getRolesAppAccessBssTs() {
-		return (this.rolesAppAccessBssTs==null)?null:new ArrayList<RolesAppAccessBssT>(this.rolesAppAccessBssTs);
+	public List<RolesAppAccessBssT> getRolesAppAccessBssTs() {
+		return (rolesAppAccessBssTs==null)?null:new ArrayList<RolesAppAccessBssT>(rolesAppAccessBssTs);
 	}
 
-	public void setRolesAppAccessBssTs(SerializableList<RolesAppAccessBssT> rolesAppAccessBssTs) {
-		this.rolesAppAccessBssTs = rolesAppAccessBssTs;
+	public void setRolesAppAccessBssTs(List<RolesAppAccessBssT> rolesAppAccessBssTs) {
+		this.rolesAppAccessBssTs = (rolesAppAccessBssTs==null)?null:new ArrayList<RolesAppAccessBssT>(rolesAppAccessBssTs);
 	}
 }

@@ -138,27 +138,28 @@ import org.slf4j.LoggerFactory;
 			// копируем текущее в архив на случай отката
 			// ISP_BSS_T -> ISP_ARH_BSS_T
 			em.createNativeQuery(
-					"insert /*+ APPEND */ into ISP_ARH_BSS_T( " + "ID_SRV, "
-							+ "SIGN_OBJECT, " + "SIGN_OKOGY, " + "FULL_, "
-							+ "POSITION, " + "FIO, " + "POSTAL_CODE, "
-							+ "COUNTRY, " + "REGION, " + "PLACE, " + "PREFIX, "
-							+ "HOUSE, " + "HOUSING, " + "FLAT, " + "PHONE, "
-							+ "FAX, " + "EMAIL, " + "STATUS, "
-							+ "DATE_IN_SRV, " + "DATE_DEL_SRV, "
-							+ "DOC_IN_SRV, " + "DOC_DEL_SRV, " + "UNI_ID, "
-							+ "IS_EXTERNAL, " + "SIGN_OKATO, "
-							+ "UP_ISP_LOAD, " + "CREATED " + ") select "
-							+ "ID_SRV, " + "SIGN_OBJECT, " + "SIGN_OKOGY, "
-							+ "FULL_, " + "POSITION, " + "FIO, "
-							+ "POSTAL_CODE, " + "COUNTRY, " + "REGION, "
-							+ "PLACE, " + "PREFIX, " + "HOUSE, " + "HOUSING, "
-							+ "FLAT, " + "PHONE, " + "FAX, " + "EMAIL, "
-							+ "STATUS, " + "DATE_IN_SRV, " + "DATE_DEL_SRV, "
-							+ "DOC_IN_SRV, " + "DOC_DEL_SRV, " + "UNI_ID, "
-							+ "IS_EXTERNAL, " + "SIGN_OKATO, "
-							+ "UP_ISP_LOAD, " + "sysdate " +
+					(new StringBuilder("insert /*+ APPEND */ into ISP_ARH_BSS_T( ID_SRV, ")
+							) .append("SIGN_OBJECT, " ) .append("SIGN_OKOGY, " ) .append("FULL_, "
+							) .append("POSITION, " ) .append("FIO, " ) .append("POSTAL_CODE, "
+							) .append("COUNTRY, " ) .append("REGION, " ) .append("PLACE, " ) .append("PREFIX, "
+							) .append("HOUSE, " ) .append("HOUSING, " ) .append("FLAT, " ) .append("PHONE, "
+							) .append("FAX, " ) .append("EMAIL, " ) .append("STATUS, "
+							) .append("DATE_IN_SRV, " ) .append("DATE_DEL_SRV, "
+							) .append("DOC_IN_SRV, " ) .append("DOC_DEL_SRV, " ) .append("UNI_ID, "
+							) .append("IS_EXTERNAL, " ) .append("SIGN_OKATO, "
+							) .append("UP_ISP_LOAD, " ) .append("CREATED " ) .append(") select "
+							) .append("ID_SRV, " ) .append("SIGN_OBJECT, " ) .append("SIGN_OKOGY, "
+							) .append("FULL_, " ) .append("POSITION, " ) .append("FIO, "
+							) .append("POSTAL_CODE, " ) .append("COUNTRY, " ) .append("REGION, "
+							) .append("PLACE, " ) .append("PREFIX, " ) .append("HOUSE, " ) .append("HOUSING, "
+							) .append("FLAT, " ) .append("PHONE, " ) .append("FAX, " ) .append("EMAIL, "
+							) .append("STATUS, " ) .append("DATE_IN_SRV, " ) .append("DATE_DEL_SRV, "
+							) .append("DOC_IN_SRV, " ) .append("DOC_DEL_SRV, " ) .append("UNI_ID, "
+							) .append("IS_EXTERNAL, " ) .append("SIGN_OKATO, "
+							) .append("UP_ISP_LOAD, " ) .append("sysdate ") 
 							// " from ISP_TEST_BSS_T  ")
-							" from ISP_BSS_T  ").executeUpdate();
+							.append(" from ISP_BSS_T  ").toString()
+							).executeUpdate();
 
 			// чистим текущее
 			// clear ISP_BSS_T

@@ -18,7 +18,6 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TemporalType;
 
-import ru.CryptoPro.Install.InvalidArgumentException;
 import ru.spb.iac.cud.core.util.CUDConstants;
 import ru.spb.iac.cud.core.util.HashPassword;
 import ru.spb.iac.cud.exceptions.GeneralFailure;
@@ -30,7 +29,6 @@ import ru.spb.iac.cud.items.AuthMode;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
-import org.apache.openejb.util.Debug;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

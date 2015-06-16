@@ -119,11 +119,11 @@ import javaw.util.SerializableList;
 		this.modified = (modified==null)?null:(Date)modified.clone();
 	}
 
-	public SerializableList<LinkGroupUsersRolesKnlT> getLinkGroupUsersRolesKnlTs() {
-		return (this.linkGroupUsersRolesKnlTs==null)?null:new ArrayList<LinkGroupUsersRolesKnlT>(this.linkGroupUsersRolesKnlTs);
+	public List<LinkGroupUsersRolesKnlT> getLinkGroupUsersRolesKnlTs() {
+		return this.linkGroupUsersRolesKnlTs;
 	}
 
-	public void setLinkGroupUsersRolesKnlTs(SerializableList<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs) {
+	public void setLinkGroupUsersRolesKnlTs(List<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs) {
 		this.linkGroupUsersRolesKnlTs = linkGroupUsersRolesKnlTs;
 	}
 
@@ -141,11 +141,11 @@ import javaw.util.SerializableList;
 		return linkGroupUsersRolesKnlT;
 	}
 
-	public SerializableList<LinkGroupUsersUsersKnlT> getLinkGroupUsersUsersKnlTs() {
-		return (this.linkGroupUsersUsersKnlTs==null)?null:new ArrayList<LinkGroupUsersUsersKnlT>(this.linkGroupUsersUsersKnlTs);
+	public List<LinkGroupUsersUsersKnlT> getLinkGroupUsersUsersKnlTs() {
+		return this.linkGroupUsersUsersKnlTs;
 	}
 
-	public void setLinkGroupUsersUsersKnlTs(SerializableList<LinkGroupUsersUsersKnlT> linkGroupUsersUsersKnlTs) {
+	public void setLinkGroupUsersUsersKnlTs(List<LinkGroupUsersUsersKnlT> linkGroupUsersUsersKnlTs) {
 		this.linkGroupUsersUsersKnlTs = linkGroupUsersUsersKnlTs;
 	}
 
@@ -163,12 +163,12 @@ import javaw.util.SerializableList;
 		return linkGroupUsersUsersKnlT;
 	}
 
-	public SerializableList<GroupsAppAccessGrBssT> getGroupsAppAccessGrBssTs() {
-		return (groupsAppAccessGrBssTs==null)?null:new ArrayList<GroupsAppAccessGrBssT>(groupsAppAccessGrBssTs);
+	public List<GroupsAppAccessGrBssT> getGroupsAppAccessGrBssTs() {
+		return groupsAppAccessGrBssTs;
 	}
 
 	public void setGroupsAppAccessGrBssTs(
-			SerializableList<GroupsAppAccessGrBssT> groupsAppAccessGrBssTs) {
+			List<GroupsAppAccessGrBssT> groupsAppAccessGrBssTs) {
 		this.groupsAppAccessGrBssTs = groupsAppAccessGrBssTs;
 	}
 	
@@ -188,12 +188,12 @@ import javaw.util.SerializableList;
 		this.signObject = signObject;
 	}
 
-	public SerializableList<AcIsBssT> getArmList() {
-		return (armList==null)?null:new ArrayList<AcIsBssT>(armList);
+	public List<AcIsBssT> getArmList() {
+		return armList;
 	}
 
 	public void setArmList(List<AcIsBssT> armList) {
-		this.armList = new ArrayList(armList);
+		this.armList = armList;
 	}
 
 

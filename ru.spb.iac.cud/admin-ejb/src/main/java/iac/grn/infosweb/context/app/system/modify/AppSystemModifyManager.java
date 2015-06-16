@@ -46,7 +46,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 			 
 			 AppSystemModifyStateHolder appSystemModifyStateHolder = (AppSystemModifyStateHolder)
 					  Component.getInstance("appSystemModifyStateHolder",ScopeType.SESSION);
-			 SerializableMap<String, String> filterMap = appSystemModifyStateHolder.getColumnFilterValues();
+			 Map<String, String> filterMap = appSystemModifyStateHolder.getColumnFilterValues();
 			 String st=null;
 			  
 			 if("list".equals(type)){
@@ -66,7 +66,7 @@ import iac.grn.serviceitems.HeaderTableItem;
                  log.info("invokeLocal:list:orderQueryAppSys:"+orderQueryAppSys);
                  
                  if(filterMap!=null){
-    	    		 Set<SerializableMap.Entry<String, String>> setFilterAppSys = filterMap.entrySet();
+    	    		 Set<Map.Entry<String, String>> setFilterAppSys = filterMap.entrySet();
     	              for (Map.Entry<String, String> me : setFilterAppSys) {
     	            	 
     	   		     if("t1_crt_date".equals(me.getKey())){  
@@ -87,12 +87,12 @@ import iac.grn.serviceitems.HeaderTableItem;
                  log.info("AppSys:invokeLocal:list:filterQuery:"+st);
 
              
-               SerializableList<Object[]> lo=null;
+               List<Object[]> lo=null;
                AppSystemModifyItem ui = null;
                DateFormat df = new SimpleDateFormat ("dd.MM.yy HH:mm:ss");
                
 
-             lo=new ArrayList<Object[]>(entityManager.createNativeQuery(
+             lo=(entityManager.createNativeQuery(
                      (new StringBuilder("select t1.t1_id, t1.t1_created, t1.t1_full_name, t1.t1_short_name, t1.t1_description, "))
                      .append("t1.t1_status, t1_org_name,  t1_user_fio, t1_reject_reason, ") 
                      .append("t1_arm_id, t1_arm_code, t1_arm_name, t1_arm_description, t1_comment ")
@@ -230,11 +230,11 @@ import iac.grn.serviceitems.HeaderTableItem;
 		   }
 		   
 		   try{
-	           SerializableList<Object[]> lo=null;
+	           List<Object[]> lo=null;
 	           AppSystemModifyItem ui = null;
 	           DateFormat df = new SimpleDateFormat ("dd.MM.yy HH:mm:ss");
 	           
-	           lo=new ArrayList<Object[]>(entityManager.createNativeQuery(
+	           lo=(entityManager.createNativeQuery(
 	        		   (new StringBuilder("select t1.t1_id, t1.t1_created, t1.t1_full_name, t1.t1_short_name, t1.t1_description, "))
 		               .append("t1.t1_status, t1_org_name,  t1_user_fio, t1_reject_reason, ") 
 		               .append("t1_arm_id, t1_arm_code, t1_arm_name, t1_arm_description, t1_comment ")
@@ -485,7 +485,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 		 this.commentText=commentText;
 	 }
 	 
-	 public SerializableList <BaseTableItem> getAuditItemsListSelect() {
+	 public List <BaseTableItem> getAuditItemsListSelect() {
 		   log.info("getAuditItemsListSelect:01");
 		   AppSystemModifyContext ac= new AppSystemModifyContext();
 		   if( auditItemsListSelect==null){
@@ -503,7 +503,7 @@ import iac.grn.serviceitems.HeaderTableItem;
   
 
   
-  public SerializableList <BaseTableItem> getAuditItemsListContext() {
+  public List <BaseTableItem> getAuditItemsListContext() {
 	   log.info("AppSystemModifyManager:getAuditItemsListContext");
 	   if(auditItemsListContext==null){
 		   AppSystemModifyContext ac= new AppSystemModifyContext();
@@ -516,23 +516,18 @@ import iac.grn.serviceitems.HeaderTableItem;
 	   return this.auditItemsListContext;
   }
   
-  public SerializableList<HeaderTableItem> getHeaderItemsListContext() {
-	  
+  public List<HeaderTableItem> getHeaderItemsListContext() {
 	  if(headerItemsListContext==null){
 		   AppSystemModifyContext ac= new AppSystemModifyContext();
 		   headerItemsListContext=new ArrayList<HeaderTableItem>(ac.getHeaderItemsList());
-		   
-	
-		   
 	   }
 	  
 	   return this.headerItemsListContext;
   }
   
   
-  public SerializableList<HeaderTableItem> getHeaderItemsListContext(String ids) {
-	  
-	 	AppSystemModifyContext ac= new AppSystemModifyContext();		
+  public List<HeaderTableItem> getHeaderItemsListContext(String ids) {
+	 	AppSystemModifyContext ac = new AppSystemModifyContext();		
 	 	if(ids!=null) {
 	 		headerItemsListContext=new ArrayList<HeaderTableItem>();	 				
 	 		List<String> idsList =  Arrays.asList(ids.split(","));	 	   

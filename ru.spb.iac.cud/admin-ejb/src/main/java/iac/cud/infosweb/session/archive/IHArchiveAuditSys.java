@@ -221,10 +221,12 @@ import org.apache.log4j.Logger;
 					bwSys = new BufferedWriter(new OutputStreamWriter(
 							new FileOutputStream(fileSys), "Cp1251"), BUFF_SIZE);
 
-					bwSys.append("ID_SRV" + "\t" + "UP_SERVICES" + "\t"
-							+ "UP_USERS" + "\t" + "CREATED" + "\t"
-							+ "INPUT_PARAM" + "\t" + "RESULT_VALUE" + "\t"
-							+ "IP_ADDRESS" + "\n");
+					bwSys.append((new StringBuilder("ID_SRV"))
+							  .append("\t")   .append("UP_SERVICES")   .append("\t")
+							  .append("UP_USERS")   .append("\t")   .append("CREATED")   .append("\t")
+							  .append("INPUT_PARAM")   .append("\t")   .append("RESULT_VALUE")   .append("\t")
+							  .append("IP_ADDRESS")   .append("\n")
+							  .toString());
 				}
 
 				bwSys.append ((objectArray[1] != null ? objectArray[1].toString()

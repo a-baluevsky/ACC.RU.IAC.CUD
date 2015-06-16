@@ -48,9 +48,9 @@ import javaw.util.ArrayList;
 	 transient EntityManager entityManager;
 	 
 	
-	 private SerializableList <BaseTableItem> auditItemsListSelect;
+	 private /*Serializable*/ List <BaseTableItem> auditItemsListSelect;
 		
-	private SerializableList <BaseTableItem> auditItemsListContext;
+	private /*Serializable*/ List <BaseTableItem> auditItemsListContext;
 		
 	 private String dellMessage;
 	 

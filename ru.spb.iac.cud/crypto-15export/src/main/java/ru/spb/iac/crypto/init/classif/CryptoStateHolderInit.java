@@ -314,7 +314,7 @@ if (LOGGER.isDebugEnabled()) {
 							"http://www.xmlsecurity.org/NS/#configuration",
 							"Resolver");
 
-					List classNamesTest5n = new ArrayList(resolverElemTest5n.length);
+					List<String> classNamesTest5n = new ArrayList<String>(resolverElemTest5n.length);
 					for (int i = 0; i < resolverElemTest5n.length; i++) {
 						String javaclass = resolverElemTest5n[i].getAttributeNS(null,
 								"JAVACLASS");

@@ -53,7 +53,7 @@ import org.jboss.seam.log.Log;
 	
 	private Long auditCount;
 	
-	private SerializableList <BaseTableItem> auditItemsListSelect;
+	private /*Serializable*/ List <BaseTableItem> auditItemsListSelect;
 	
 	public List<BaseItem> getAuditList(int firstRow, int numberOfRows){
 		  

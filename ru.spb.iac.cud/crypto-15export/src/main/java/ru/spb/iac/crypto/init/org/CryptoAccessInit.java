@@ -317,7 +317,7 @@ import org.w3c.dom.Node;
 							"http://www.xmlsecurity.org/NS/#configuration",
 							"Resolver");
 
-					List classNamesTest1l = new ArrayList(resolverElemTest1l.length);
+					List<String> classNamesTest1l = new ArrayList<String>(resolverElemTest1l.length);
 					for (int i = 0; i < resolverElemTest1l.length; i++) {
 						String javaclass = resolverElemTest1l[i].getAttributeNS(null,
 								"JAVACLASS");

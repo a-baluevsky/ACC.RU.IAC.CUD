@@ -323,7 +323,7 @@ import org.xml.sax.SAXException;
 							"http://www.xmlsecurity.org/NS/#configuration",
 							"Resolver");
 
-					List classNamesTest2l = new ArrayList(resolverElemTest2l.length);
+					List<String> classNamesTest2l = new ArrayList<String>(resolverElemTest2l.length);
 					for (int i = 0; i < resolverElemTest2l.length; i++) {
 						String javaclass = resolverElemTest2l[i].getAttributeNS(null,
 								"JAVACLASS");

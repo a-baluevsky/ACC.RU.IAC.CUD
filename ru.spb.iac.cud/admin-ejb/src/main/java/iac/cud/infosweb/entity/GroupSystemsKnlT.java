@@ -140,11 +140,11 @@ import javaw.util.SerializableList;
       this.description = description;
    }
    
-   public SerializableList<LinkGroupSysSysKnlT> getLinkGroupSysSysKnlTs() {
+   public List<LinkGroupSysSysKnlT> getLinkGroupSysSysKnlTs() {
       return (this.linkGroupSysSysKnlTs==null)?null:new ArrayList<LinkGroupSysSysKnlT>(this.linkGroupSysSysKnlTs);
    }
 
-   public void setLinkGroupSysSysKnlTs(List<LinkGroupSysSysKnlT> linkGroupSysSysKnlTs) {
+   public void setLinkGroupSysSysKnlTs(/*Serializable*/List<LinkGroupSysSysKnlT> linkGroupSysSysKnlTs) {
       this.linkGroupSysSysKnlTs = linkGroupSysSysKnlTs==null?null:new ArrayList<LinkGroupSysSysKnlT>(linkGroupSysSysKnlTs);
    }
 

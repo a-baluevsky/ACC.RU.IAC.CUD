@@ -58,9 +58,9 @@ import org.jboss.seam.log.Log;
 	
 	private Long auditCount;
 	
-	private SerializableList <BaseTableItem> auditItemsListSelect;
+	private /*Serializable*/ List <BaseTableItem> auditItemsListSelect;
 	
-	private SerializableList <BaseTableItem> auditItemsListContext;
+	private /*Serializable*/ List <BaseTableItem> auditItemsListContext;
 	
 	private int connectError=0;
 	private Boolean evaluteForList;

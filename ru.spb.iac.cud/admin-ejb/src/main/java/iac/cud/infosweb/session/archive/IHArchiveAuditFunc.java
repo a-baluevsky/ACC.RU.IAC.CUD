@@ -210,9 +210,12 @@ import org.apache.log4j.Logger;
 					bwFunc = new BufferedWriter(new OutputStreamWriter(
 							new FileOutputStream(fileFunc), "Cp1251"), BUFF_SIZE);
 
-					bwFunc.append("ID_SRV" + "\t" + "UP_ACTIONS" + "\t"
-							+ "UP_USERS" + "\t" + "DATE_ACTION" + "\t"
-							+ "CREATED" + "\n");
+					bwFunc.append(
+							(new StringBuilder("ID_SRV"))
+							  .append("\t")   .append("UP_ACTIONS")   .append("\t")
+							  .append("UP_USERS")   .append("\t")   .append("DATE_ACTION")   .append("\t")
+							  .append("CREATED")   .append("\n")
+							.toString());
 				}
 
 				bwFunc.append ((objectArray[1] != null ? objectArray[1].toString()

@@ -528,9 +528,11 @@ import org.slf4j.LoggerFactory;
 
 			result = ((java.math.BigDecimal) em
 					.createNativeQuery(
-							"select RL.ID_SRV " + "from AC_ROLES_BSS_T rl "
-									+ "where RL.UP_IS=? "
-									+ "and rl.SIGN_OBJECT= ? ")
+							(new StringBuilder("select RL.ID_SRV "))
+							  .append("from AC_ROLES_BSS_T rl ")
+							  .append("where RL.UP_IS=? ")
+							  .append("and rl.SIGN_OBJECT= ? ")
+							  .toString())
 					.setParameter(1, idSystem).setParameter(2, codeRole)
 					.getSingleResult()).longValue();
 

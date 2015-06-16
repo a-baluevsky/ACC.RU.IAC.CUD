@@ -50,7 +50,7 @@ import org.jboss.seam.log.Log;
 	private Boolean evaluteForListFooter;  
 	
 	
-	private SerializableList <BaseTableItem> auditItemsListSelect;
+	private /*Serializable*/ List <BaseTableItem> auditItemsListSelect;
 	
     private /*Serializable*/ List<BaseItem> auditList; 
 	

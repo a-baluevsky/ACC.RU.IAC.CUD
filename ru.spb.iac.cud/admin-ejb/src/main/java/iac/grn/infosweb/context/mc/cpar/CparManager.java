@@ -56,9 +56,9 @@ import iac.grn.serviceitems.BaseTableItem;
 	private Boolean evaluteForListFooter;  
 	private Boolean evaluteForBean;
 
-   private SerializableList <BaseTableItem> auditItemsListSelect;
+   private /*Serializable*/ List <BaseTableItem> auditItemsListSelect;
 	
-	private SerializableList <BaseTableItem> auditItemsListContext;
+	private /*Serializable*/ List <BaseTableItem> auditItemsListContext;
 
 	
 	

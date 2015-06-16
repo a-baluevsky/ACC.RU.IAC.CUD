@@ -75,9 +75,9 @@ import org.jboss.seam.log.Log;
 	private /*Serializable*/ List<AuditFuncItem> auditReportCubeList;
 	
 		
-	private SerializableList <BaseTableItem> auditItemsListSelect;
+	private /*Serializable*/ List <BaseTableItem> auditItemsListSelect;
 	
-	private SerializableList <BaseTableItem> auditItemsListContext;
+	private /*Serializable*/ List <BaseTableItem> auditItemsListContext;
 	
 	private int connectError=0;
 	
@@ -204,7 +204,7 @@ import org.jboss.seam.log.Log;
 			 String sQuerySql; javax.persistence.Query query;
 			 AFuncStateHolder aFuncStateHolder = (AFuncStateHolder)
 					  Component.getInstance("aFuncStateHolder",ScopeType.SESSION);
-			 SerializableMap<String, String> filterMap = aFuncStateHolder.getColumnFilterValues();
+			 Map<String, String> filterMap = aFuncStateHolder.getColumnFilterValues();
 			 resetWhereConditions();
 			 // TODO: use QuerySvc to analyze filter data and produce consistent SQL-query	
 			 AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
@@ -424,7 +424,7 @@ import org.jboss.seam.log.Log;
    }
   
    
-   public SerializableList <BaseTableItem> getAuditItemsListSelect() {
+   public List <BaseTableItem> getAuditItemsListSelect() {
 		 log.info("getAuditItemsListSelect:01");
 	
 	    AFuncContext ac= new AFuncContext();
@@ -445,7 +445,7 @@ import org.jboss.seam.log.Log;
 		    this.auditItemsListSelect=auditItemsListSelect;
    }
    
-   public SerializableList <BaseTableItem> getAuditItemsListContext() {
+   public List <BaseTableItem> getAuditItemsListContext() {
 	   log.info("orgManager:getAuditItemsListContext");
 	   if(auditItemsListContext==null){
 		   AFuncContext ac= new AFuncContext();

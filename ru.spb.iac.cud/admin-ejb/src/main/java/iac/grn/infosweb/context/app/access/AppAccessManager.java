@@ -734,7 +734,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 		
 	
 	 
-	 public SerializableList<BaseTableItem> getAuditItemsListSelect() {
+	 public List<BaseTableItem> getAuditItemsListSelect() {
 		   log.info("getAuditItemsListSelect:01");
 		   AppAccessContext acAppAccess= new AppAccessContext();
 		   if( auditItemsListSelect==null){
@@ -757,7 +757,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 		 this.rejectReason=rejectReason;
 	 }
   
-  public SerializableList <BaseTableItem> getAuditItemsListContext() {
+  public List <BaseTableItem> getAuditItemsListContext() {
 	   log.info("AppAccessManager:getAuditItemsListContext");
 	   if(auditItemsListContext==null){
 		   AppAccessContext acAppAccess= new AppAccessContext();
@@ -766,8 +766,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	   return this.auditItemsListContext;
   }
   
-  public SerializableList<HeaderTableItem> getHeaderItemsListContext() {
-	  
+  public List<HeaderTableItem> getHeaderItemsListContext() {	  
 	  if(headerItemsListContext==null){
 		   AppAccessContext acAppAccess= new AppAccessContext();
 			   headerItemsListContext=new ArrayList<HeaderTableItem>(acAppAccess.getHeaderItemsList());

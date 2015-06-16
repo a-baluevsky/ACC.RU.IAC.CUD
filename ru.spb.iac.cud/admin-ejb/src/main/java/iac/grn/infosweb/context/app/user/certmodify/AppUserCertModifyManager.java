@@ -59,7 +59,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 			 
 			 AppUserCertModifyStateHolder appUserCertModifyStateHolder = (AppUserCertModifyStateHolder)
 					  Component.getInstance("appUserCertModifyStateHolder",ScopeType.SESSION);
-			 SerializableMap<String, String> filterMapUserCert = appUserCertModifyStateHolder.getColumnFilterValues();
+			 Map<String, String> filterMapUserCert = appUserCertModifyStateHolder.getColumnFilterValues();
 			 String st=null;
 			  
 			 if("list".equals(type)){
@@ -102,12 +102,12 @@ import iac.grn.serviceitems.HeaderTableItem;
                  log.info("AppUserCertMod:invokeLocal:list:filterQuery:"+st);
 
              
-               SerializableList<Object[]> loUserCert=null;
+               List<Object[]> loUserCert=null;
                AppUserCertModifyItem uiUserCert = null;
                DateFormat df = new SimpleDateFormat ("dd.MM.yy HH:mm:ss");
                
 
-             loUserCert=new ArrayList<Object[]>(entityManager.createNativeQuery(
+             loUserCert=(entityManager.createNativeQuery(
                      (new StringBuilder("select t1.t1_id, t1.t1_created, "))
                      .append("t1.t1_status, t1_org_name,  t1_user_fio, t1_reject_reason, t1_comment, ")
                      .append("t1_org_name_app, t1_user_id_app,  t1_user_login_app, t1_user_fio_app, t1_user_pos_app, ")
@@ -317,7 +317,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 		   }
 		   
 		   try{
-	           SerializableList<Object[]> lo=null;
+	           List<Object[]> lo=null;
 	           AppUserCertModifyItem ui = null;
 	           DateFormat df = new SimpleDateFormat ("dd.MM.yy HH:mm:ss");
 	           
@@ -325,7 +325,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	           //t1_usr_code_app - субъект заявки(у кого изменяются аттрибуты)
 	           //t1_SIGN_USER - один из аттрибутов на изменение
 	           
-	           lo=new ArrayList<Object[]>(entityManager.createNativeQuery(
+	           lo=(entityManager.createNativeQuery(
 	        		    (new StringBuilder("select t1.t1_id, t1.t1_created, "))
  		               .append("t1.t1_status, t1_org_name,  t1_user_fio, t1_reject_reason, t1_comment, ")
                         .append("t1_CERTIFICATE_USER, ")
@@ -828,7 +828,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	 }
 	 
 	 @Override
-	 public SerializableList <BaseTableItem> getAuditItemsListSelect() {
+	 public List <BaseTableItem> getAuditItemsListSelect() {
 		   log.info("getAuditItemsListSelect:01");
 		   AppUserCertModifyContext ac= new AppUserCertModifyContext();
 		   if( auditItemsListSelect==null){
@@ -841,12 +841,12 @@ import iac.grn.serviceitems.HeaderTableItem;
 			  
 			   auditItemsListSelect.add(ac.getAuditItemsMap().get("statusValue"));
 		   }
-	       return this.auditItemsListSelect;
+	       return new ArrayList<BaseTableItem>(this.auditItemsListSelect);
   }
   
 
   @Override
-  public SerializableList <BaseTableItem> getAuditItemsListContext() {
+  public List <BaseTableItem> getAuditItemsListContext() {
 	   log.info("AppUserCertModifyManager:getAuditItemsListContext");
 	   if(auditItemsListContext==null){
 		   AppUserCertModifyContext ac= new AppUserCertModifyContext();
@@ -860,21 +860,18 @@ import iac.grn.serviceitems.HeaderTableItem;
   }
   
   @Override
-  public SerializableList<HeaderTableItem> getHeaderItemsListContext() {
+  public List<HeaderTableItem> getHeaderItemsListContext() {
 	  
 	  if(headerItemsListContext==null){
 		   AppUserCertModifyContext ac= new AppUserCertModifyContext();
 			   headerItemsListContext=new ArrayList<HeaderTableItem>(ac.getHeaderItemsList());
-		   
-		
-		   
 	   }
 	  
 	   return this.headerItemsListContext;
   }
   
   
-  public SerializableList<HeaderTableItem> getHeaderItemsListContext(String ids) {	  
+  public List<HeaderTableItem> getHeaderItemsListContext(String ids) {	  
 	 	AppUserCertModifyContext ac= new AppUserCertModifyContext();		
 	 	if(ids!=null) {
 	 		headerItemsListContext=new ArrayList<HeaderTableItem>();
@@ -889,7 +886,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	   return this.headerItemsListContext;
  }
   
-  public SerializableList<HeaderTableItem> getHeaderItemsListContextCREATE(String ids) {
+  public List<HeaderTableItem> getHeaderItemsListContextCREATE(String ids) {
 	  
 	 	AppUserCertModifyContext acApUserCert= new AppUserCertModifyContext();
 		
@@ -908,7 +905,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 		   }
 
 	 	}
-	   return (this.headerItemsListContextCREATE==null)?null:new ArrayList<HeaderTableItem>(this.headerItemsListContextCREATE);
+	   return this.headerItemsListContextCREATE;
 }
   private String decToHex(BigInteger bi) {
 		

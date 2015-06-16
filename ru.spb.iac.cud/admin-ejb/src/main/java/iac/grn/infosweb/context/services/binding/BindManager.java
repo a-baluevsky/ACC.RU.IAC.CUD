@@ -1,6 +1,7 @@
 package iac.grn.infosweb.context.services.binding;
 
 import java.util.List; 
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -36,6 +37,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javaw.util.HashMap;
@@ -43,6 +45,7 @@ import javaw.util.SerializableList;
 import javaw.util.ArrayList;
 import javaw.util.SerializableMap;
 import javaw.util.SerializableSet;
+
 
 
 
@@ -194,14 +197,14 @@ import javax.persistence.NoResultException;
 			 
 			 BindStateHolder bindStateHolder = (BindStateHolder)
 					  Component.getInstance("bindStateHolder",ScopeType.SESSION);
-			 SerializableMap<String, String> filterMap = bindStateHolder.getColumnFilterValues();
+			 Map<String, String> filterMap = bindStateHolder.getColumnFilterValues();
 			 String st=null;
 			  
 			 if("list".equals(type)){
 				 log.info("Bind:invokeLocal:list:01");
 				 
-				 Set<SerializableMap.Entry<String, String>> set = bindStateHolder.getSortOrders().entrySet();
-                 for (SerializableMap.Entry<String, String> me : set) {
+				 Set<Map.Entry<String, String>> set = bindStateHolder.getSortOrders().entrySet();
+                 for (Map.Entry<String, String> me : set) {
       		       
       		       if(orderQuery==null){
       		    	 orderQuery="order by "+me.getKey()+" "+me.getValue();
@@ -1814,7 +1817,7 @@ import javax.persistence.NoResultException;
 	   
 	      BindStateHolder bindStateHolder = (BindStateHolder)
 				  Component.getInstance("bindStateHolder",ScopeType.SESSION);
-	      SerializableMap<String, String> filterMap = bindStateHolder.getColumnFilterValues();
+	      Map<String, String> filterMap = bindStateHolder.getColumnFilterValues();
 	   
 	      if(filterMap!=null){
 		   //при любом переключении t1_iogv_bind_type сбрасываем t1_bin_flag

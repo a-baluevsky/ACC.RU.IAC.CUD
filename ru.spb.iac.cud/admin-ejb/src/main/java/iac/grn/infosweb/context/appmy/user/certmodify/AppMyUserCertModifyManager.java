@@ -50,7 +50,7 @@ import org.jboss.seam.faces.FacesMessages;
 			 
 			 AppMyUserCertModifyStateHolder appMyUserCertModifyStateHolder = (AppMyUserCertModifyStateHolder)
 					  Component.getInstance("appMyUserCertModifyStateHolder",ScopeType.SESSION);
-			 SerializableMap<String, String> filterMap = appMyUserCertModifyStateHolder.getColumnFilterValues();
+			 Map<String, String> filterMap = appMyUserCertModifyStateHolder.getColumnFilterValues();
 			 String st=null;
 			  
 			 if("list".equals(type)){
@@ -90,13 +90,11 @@ import org.jboss.seam.faces.FacesMessages;
     	    	   }
                  log.info("AppMyCert:invokeLocal:list:filterQuery:"+st);
 
-             
-               SerializableList<Object[]> lo=null;
                AppUserCertModifyItem ui = null;
                DateFormat df = new SimpleDateFormat ("dd.MM.yy HH:mm:ss");
                
 
-             lo=new ArrayList<Object[]>(entityManager.createNativeQuery(
+             List<Object[]> lo=(entityManager.createNativeQuery(
                      (new StringBuilder("select t1.t1_id, t1.t1_created, "))
                      .append("t1.t1_status, t1_org_name,  t1_user_fio, t1_reject_reason, t1_comment, ")
           		   .append("t1_org_name_app, t1_user_id_app,  t1_user_login_app, t1_user_fio_app, t1_user_pos_app, ")
@@ -362,7 +360,7 @@ import org.jboss.seam.faces.FacesMessages;
 		 this.commentText=commentText;
 	 }
 	 
-	 public SerializableList <BaseTableItem> getAuditItemsListSelect() {
+	 public List <BaseTableItem> getAuditItemsListSelect() {
 		   log.info("getAuditItemsListSelect:01");
 		   AppMyUserCertModifyContext ac= new AppMyUserCertModifyContext();
 		   if( auditItemsListSelect==null){
@@ -380,7 +378,7 @@ import org.jboss.seam.faces.FacesMessages;
   
 
   
-  public SerializableList <BaseTableItem> getAuditItemsListContext() {
+  public List <BaseTableItem> getAuditItemsListContext() {
 	   log.info("AppMyUserCertModifyManager:getAuditItemsListContext");
 	   if(auditItemsListContext==null){
 		   AppMyUserCertModifyContext ac= new AppMyUserCertModifyContext();
@@ -393,7 +391,7 @@ import org.jboss.seam.faces.FacesMessages;
 	   return this.auditItemsListContext;
   }
   
-  public SerializableList<HeaderTableItem> getHeaderItemsListContext() {
+  public List<HeaderTableItem> getHeaderItemsListContext() {
 	  
 	  if(headerItemsListContext==null){
 		   AppMyUserCertModifyContext ac= new AppMyUserCertModifyContext();
@@ -405,7 +403,7 @@ import org.jboss.seam.faces.FacesMessages;
   }
   
   
-  public SerializableList<HeaderTableItem> getHeaderItemsListContext(String ids) {
+  public List<HeaderTableItem> getHeaderItemsListContext(String ids) {
 	  
 	 	AppMyUserCertModifyContext ac= new AppMyUserCertModifyContext();
 		

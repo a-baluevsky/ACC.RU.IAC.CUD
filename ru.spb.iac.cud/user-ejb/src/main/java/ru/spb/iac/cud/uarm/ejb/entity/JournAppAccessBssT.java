@@ -199,11 +199,11 @@ import javaw.util.SerializableList;
 		this.acUsersKnlT3 = acUsersKnlT3;
 	}
 
-	public SerializableList<RolesAppAccessBssT> getRolesAppAccessBssTs() {
-		return (this.rolesAppAccessBssTs==null)?null:new ArrayList<RolesAppAccessBssT>(this.rolesAppAccessBssTs);
+	public List<RolesAppAccessBssT> getRolesAppAccessBssTs() {
+		return this.rolesAppAccessBssTs;
 	}
 
-	public void setRolesAppAccessBssTs(SerializableList<RolesAppAccessBssT> rolesAppAccessBssTs) {
+	public void setRolesAppAccessBssTs(List<RolesAppAccessBssT> rolesAppAccessBssTs) {
 		this.rolesAppAccessBssTs = rolesAppAccessBssTs;
 	}
 

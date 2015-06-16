@@ -49,7 +49,7 @@ import java.util.Set;
 	 
 	private /*Serializable*/ List<BaseItem> auditList; 
 	
-	private SerializableList <BaseTableItem> auditItemsListContext;
+	private /*Serializable*/ List <BaseTableItem> auditItemsListContext;
 
 	
 	private Long auditCount;
@@ -58,7 +58,7 @@ import java.util.Set;
 	private Boolean evaluteForListFooter;  
 	private Boolean evaluteForBean;
 
-	private SerializableList <BaseTableItem> auditItemsListSelect;
+	private /*Serializable*/ List <BaseTableItem> auditItemsListSelect;
 	
 	
 	private int connectError=0;

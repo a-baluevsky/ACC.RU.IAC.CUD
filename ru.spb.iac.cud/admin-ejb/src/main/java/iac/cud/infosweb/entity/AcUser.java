@@ -294,11 +294,11 @@ import org.jboss.seam.annotations.Role;
 		this.surname = surname;
 	}
 
-	public SerializableList<AcLinkUserToRoleToRaion> getAcLinkUserToRoleToRaions() {
+	public List<AcLinkUserToRoleToRaion> getAcLinkUserToRoleToRaions() {
 		return (this.acLinkUserToRoleToRaions==null)?null:new ArrayList<AcLinkUserToRoleToRaion>(this.acLinkUserToRoleToRaions);
 	}
 
-	public void setAcLinkUserToRoleToRaions(List<AcLinkUserToRoleToRaion> acLinkUserToRoleToRaions) {
+	public void setAcLinkUserToRoleToRaions(/*Serializable*/List<AcLinkUserToRoleToRaion> acLinkUserToRoleToRaions) {
 		this.acLinkUserToRoleToRaions = acLinkUserToRoleToRaions==null?null:new ArrayList<AcLinkUserToRoleToRaion>(acLinkUserToRoleToRaions);
 	}
 
@@ -375,11 +375,11 @@ import org.jboss.seam.annotations.Role;
 		this.crtUserName = crtUserName;
 	}
 	
-	public SerializableList<LinkGroupUsersUsersKnlT> getLinkGroupUsersUsersKnlTs() {
+	public List<LinkGroupUsersUsersKnlT> getLinkGroupUsersUsersKnlTs() {
 		return (this.linkGroupUsersUsersKnlTs==null)?null:new ArrayList<LinkGroupUsersUsersKnlT>(this.linkGroupUsersUsersKnlTs);
 	}
-    public void setLinkGroupUsersUsersKnlTs(List<LinkGroupUsersUsersKnlT> linkGroupUsersUsersKnlTs) {
-		this.linkGroupUsersUsersKnlTs = linkGroupUsersUsersKnlTs ==null?null:new ArrayList<LinkGroupUsersUsersKnlT>(linkGroupUsersUsersKnlTs);
+    public void setLinkGroupUsersUsersKnlTs(/*Serializable*/List<LinkGroupUsersUsersKnlT> linkGroupUsersUsersKnlTs) {
+		this.linkGroupUsersUsersKnlTs = linkGroupUsersUsersKnlTs==null?null:new ArrayList<LinkGroupUsersUsersKnlT>(linkGroupUsersUsersKnlTs);
 	}
 	
 	public Long getIsCudRole() {
@@ -491,11 +491,11 @@ import org.jboss.seam.annotations.Role;
 		this.usrChecked=usrChecked;
 	}
 
-	public SerializableList<AcUsersCertBssT> getAcUsersCert() {
+	public List<AcUsersCertBssT> getAcUsersCert() {
 		return (acUsersCert==null)?null:new ArrayList<AcUsersCertBssT>(acUsersCert);
 	}
 	public void setAcUsersCert(SerializableList<AcUsersCertBssT> acUsersCert) {
-		this.acUsersCert = acUsersCert;
+		this.acUsersCert = (acUsersCert==null)?null:new ArrayList<AcUsersCertBssT>(acUsersCert);
 	}
 	
 	public SerializableList<BindingLogT> getBindingLogTs() {
@@ -508,29 +508,29 @@ import org.jboss.seam.annotations.Role;
 	public SerializableList<BindingAutoLinkBssT> getBindingAutoLinkBssTs() {
 		return (this.bindingAutoLinkBssTs==null)?null:new ArrayList<BindingAutoLinkBssT>(this.bindingAutoLinkBssTs);
 	}
-	public void setBindingAutoLinkBssTs(SerializableList<BindingAutoLinkBssT> bindingAutoLinkBssTs) {
-		this.bindingAutoLinkBssTs = bindingAutoLinkBssTs;
+	public void setBindingAutoLinkBssTs(/*Serializable*/List<BindingAutoLinkBssT> bindingAutoLinkBssTs) {
+		this.bindingAutoLinkBssTs = bindingAutoLinkBssTs==null?null:new ArrayList<BindingAutoLinkBssT>(bindingAutoLinkBssTs);
 	}
 	
-	public SerializableList<ServicesLogKnlT> getServicesLogKnlTs() {
+	public List<ServicesLogKnlT> getServicesLogKnlTs() {
 		return (this.servicesLogKnlTs==null)?null:new ArrayList<ServicesLogKnlT>(this.servicesLogKnlTs);
 	}
 	public void setServicesLogKnlTs(SerializableList<ServicesLogKnlT> servicesLogKnlTs) {
-		this.servicesLogKnlTs = servicesLogKnlTs;
+		this.servicesLogKnlTs = servicesLogKnlTs==null?null:new ArrayList<ServicesLogKnlT>(servicesLogKnlTs);
 	}
 
-	public SerializableList<LinkAdminUserSys> getLinkAdminUserSys() {
+	public List<LinkAdminUserSys> getLinkAdminUserSys() {
 		return (this.linkAdminUserSys==null)?null:new ArrayList<LinkAdminUserSys>(this.linkAdminUserSys);
 	}
-	public void setLinkAdminUserSys(List<LinkAdminUserSys> linkAdminUserSys) {
+	public void setLinkAdminUserSys(/*Serializable*/List<LinkAdminUserSys> linkAdminUserSys) {
 		this.linkAdminUserSys = linkAdminUserSys==null?null:new ArrayList<LinkAdminUserSys>(linkAdminUserSys);
 	}
 	
-	public SerializableList<Long> getAllowedSys() {
+	public List<Long> getAllowedSys() {
 		return (allowedSys==null)?null:new ArrayList<Long>(allowedSys);
 	}
 
-	public void setAllowedSys(List<Long> allowedSys) {
+	public void setAllowedSys(/*Serializable*/List<Long> allowedSys) {
 		this.allowedSys = (allowedSys==null)?null:new ArrayList<Long>(allowedSys);
 	}
 	
@@ -544,10 +544,10 @@ import org.jboss.seam.annotations.Role;
 	}
 	
 	public List<String> getAllowedReestr() {
-		return allowedReestr;
+		return this.allowedSys==null?null:new ArrayList<String>(allowedReestr);
 	}
 
-	public void setAllowedReestr(List<String> allowedReestr) {
+	public void setAllowedReestr(/*Serializable*/List<String> allowedReestr) {
 		this.allowedReestr = (allowedReestr==null)?null:new ArrayList<String>(allowedReestr);
 	}
 	

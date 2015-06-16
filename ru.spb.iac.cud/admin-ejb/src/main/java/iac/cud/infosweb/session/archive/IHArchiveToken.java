@@ -198,9 +198,11 @@ import org.apache.log4j.Logger;
 					bwTkn = new BufferedWriter(new OutputStreamWriter(
 							new FileOutputStream(fileTkn), "Cp1251"), BUFF_SIZE);
 
-					bwTkn.append("ID_SRV" + "\t" + "UP_USERS" + "\t"
-							+ "SIGN_OBJECT" + "\t" + "CREATED" + "\t"
-							+ "UP_SERVICE" + "\n");
+					bwTkn.append((new StringBuilder("ID_SRV"))
+							  .append("\t")   .append("UP_USERS")   .append("\t")
+							  .append("SIGN_OBJECT")   .append("\t")   .append("CREATED")   .append("\t")
+							  .append("UP_SERVICE")   .append("\n")
+							  .toString());
 				}
 
 				bwTkn.append ((objectArray[1] != null ? objectArray[1].toString()

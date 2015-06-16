@@ -83,14 +83,16 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppUserBssT;
         	
         	LOGGER.debug("UserRegEJB:step1:02:"+link);
         	 
-        	String content = "Добрый день!<br/>"
-        	 + "Вы интересовались запросом на регистрацию пользователя в ИАЦ ПААА.<br/>" 
-        	 + "Пожалуйста перейдите по ссылке ниже, чтобы подтвердить " 
-        	 + "Ваш адрес эл. почты: <br/>" 
-        	 + "<a href=\""+link+"\">" + link +"</a> <br/><br/>" 
-        	 + "---<br/>" 
-        	 + "С уважением,<br/> " 
-        	 + "ИАЦ";
+        	String content = (new StringBuilder("Добрый день!<br/>"))
+             	   .append("Вы интересовались запросом на регистрацию пользователя в ИАЦ ПААА.<br/>") 
+            	   .append("Пожалуйста перейдите по ссылке ниже, чтобы подтвердить ") 
+            	   .append("Ваш адрес эл. почты: <br/>")
+            	   .append("<a href=\"").append(link).append("\">").append(link)
+            	   .append("</a> <br/><br/>") 
+		      	   .append("---<br/>") 
+		      	   .append("С уважением,<br/> ") 
+		      	   .append("ИАЦ")       	 
+		        	 .toString();
         	
         	m.setContent(content, "text/html; charset=utf-8");
         	

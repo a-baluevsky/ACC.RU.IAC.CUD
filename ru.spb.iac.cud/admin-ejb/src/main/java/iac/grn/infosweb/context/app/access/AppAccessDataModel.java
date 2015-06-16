@@ -4,10 +4,6 @@ import iac.cud.infosweb.dataitems.BaseItem;
 import iac.grn.infosweb.session.table.BaseDataModel;
 
 import java.util.List;
-
-import javaw.util.ArrayList;
-import javaw.util.SerializableList;
-
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -40,7 +36,7 @@ import org.jboss.seam.annotations.Name;
 
 	@Override
 	public List<BaseItem> findObjects(int firstRow, int numberOfRows,
-									String sortField, boolean ascending, String modelType) {
+			String sortField, boolean ascending, String modelType) {
 		
     	return appAccessManager.getAuditList(firstRow, numberOfRows);  
 	}

@@ -151,15 +151,16 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppUserBssT;
         	
         	LOGGER.debug("UserForgotEJB:step1:02:"+link);
         	 
-        	String content = "Добрый день!<br/>"
-        	 + "Мы получили запрос на сброс Вашего пароля в ИАЦ ПААА.<br/>" 
-        	 + "Если Вы запрашивали сброс Вашего пароля, пожалуйста, следуйте инструкциям ниже. "
-        	 + "Если Вам это не требуется, просто проигнорируйте это сообщение. <br/>"
-        	 + "Чтобы сбросить пароль перейдите по следующей ссылке: <br/>" 
-        	 + "<a href=\""+link+"\">" + link +"</a> <br/><br/>" 
-        	 + "---<br/>" 
-        	 + "С уважением,<br/> " 
-        	 + "ИАЦ";
+        	String content = (new StringBuilder("Добрый день!<br/>"))
+             	   .append("Мы получили запрос на сброс Вашего пароля в ИАЦ ПААА.<br/>") 
+            	   .append("Если Вы запрашивали сброс Вашего пароля, пожалуйста, следуйте инструкциям ниже. ")
+            	   .append("Если Вам это не требуется, просто проигнорируйте это сообщение. <br/>")
+            	   .append("Чтобы сбросить пароль перейдите по следующей ссылке: <br/>")
+            	   .append("<a href=\"").append(link).append("\">").append(link).append("</a> <br/><br/>")
+            	   .append("---<br/>") 
+            	   .append("С уважением,<br/> ") 
+            	   .append("ИАЦ")
+            	   .toString() ;
         	
         	m.setContent(content, "text/html; charset=utf-8");
         	
@@ -185,9 +186,10 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppUserBssT;
    	 try{
    		 
    		     entityManager.createNativeQuery(
-         		   "update AC_USERS_KNL_T t1 " 
-         		   + "set t1.PASSWORD_ = ? "
-         		   + "where t1.LOGIN = ? ")
+   		    		(new StringBuilder("update AC_USERS_KNL_T t1 "))
+        		     .append("set t1.PASSWORD_ = ? ")
+        		     .append("where t1.LOGIN = ? ")
+        		     .toString())
          		   .setParameter(1, newPassword)
          		   .setParameter(2, loginUser)
                  .executeUpdate();

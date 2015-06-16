@@ -58,9 +58,9 @@ import iac.grn.serviceitems.BaseTableItem;
 	 transient EntityManager entityManager;
 	 
 	
-	 private SerializableList <BaseTableItem> auditItemsListSelect;
+	 private /*Serializable*/ List <BaseTableItem> auditItemsListSelect;
 		
-	private SerializableList <BaseTableItem> auditItemsListContext;
+	private /*Serializable*/ List <BaseTableItem> auditItemsListContext;
 		
 		
 	private /*Serializable*/ List<BaseItem> auditList; 
@@ -688,11 +688,12 @@ import iac.grn.serviceitems.BaseTableItem;
 	    		//1)при ajax смене АРМ(pidArm!=null)
 	    		//2)при нажатии Сохранить (pidArm!=null)
 	    		listRolRes=new ArrayList<AcAppPage>(
-	    				entityManager.createQuery("select o from AcAppPage o where " 
-	    				+ "o.idResCollection is empty and "
-	    				+ "o.visible=1 and "
-	    		    	+ "o.acApplication = :idArm and " 
-	    				+ "o.idParent2 !=1 and o.pageCode is not null ")
+	    				entityManager.createQuery((new StringBuilder("select o from AcAppPage o where "))
+	  	    				  .append("o.idResCollection is empty and ")
+		    				  .append("o.visible=1 and ")
+		    		    	  .append("o.acApplication = :idArm and ") 
+		    				  .append("o.idParent2 !=1 and o.pageCode is not null ")
+		    				  .toString())
 	    				.setParameter("idArm", (pidArm!=null ? Long.valueOf(pidArm) : rolBeanCrt.getAcApplication()))
 	    				.getResultList());
 	   		   for(AcAppPage aap:listRolRes){
@@ -760,11 +761,12 @@ import iac.grn.serviceitems.BaseTableItem;
 	    		//3)при нажатии Сохранить (pidArm!=null)
 		    	
 	    		listRolResEdit=new ArrayList<AcAppPage>(
-	    				entityManager.createQuery("select o from AcAppPage o where " 
-	    				+ "o.idResCollection is empty and " 
-	    				+ "o.visible=1 and "
-	    				+ "o.acApplication = :idArm and " 
-	    				+ "o.idParent2 !=1 and o.pageCode is not null ")
+	    				entityManager.createQuery((new StringBuilder("select o from AcAppPage o where "))
+	  	    				  .append("o.idResCollection is empty and ") 
+		    				  .append("o.visible=1 and ")
+		    				  .append("o.acApplication = :idArm and ") 
+		    				  .append("o.idParent2 !=1 and o.pageCode is not null ")
+		    				  .toString())
 	    				.setParameter("idArm",(pidArm!=null ? Long.valueOf(pidArm) : rolBean.getAcApplication()))
 	    				.getResultList()
 	    				);

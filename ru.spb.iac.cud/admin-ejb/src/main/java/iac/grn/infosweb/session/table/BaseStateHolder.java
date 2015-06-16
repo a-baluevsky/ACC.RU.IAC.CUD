@@ -1,5 +1,8 @@
 package iac.grn.infosweb.session.table;
 
+import java.util.List;
+import java.util.Map;
+
 import javaw.util.ArrayList;
 import javaw.util.HashMap; import javaw.util.SerializableMap;
 import javaw.util.SerializableList;
@@ -7,10 +10,10 @@ import javaw.util.SerializableList;
 
  public class BaseStateHolder implements java.io.Serializable {
 	
-	   protected SerializableMap<String, String> sortOrders = new HashMap<String, String>();
-       protected SerializableMap<String, String> columnFilterValues = new HashMap<String, String>();
+	   protected /*Serializable*/ Map<String, String> sortOrders = new HashMap<String, String>();
+       protected /*Serializable*/ Map<String, String> columnFilterValues = new HashMap<String, String>();
       
-       protected SerializableList <String> auditFieldListSelect = new ArrayList<String>();
+       protected /*Serializable*/ List <String> auditFieldListSelect = new ArrayList<String>();
        
        protected int pageNumber;
 
@@ -19,21 +22,20 @@ import javaw.util.SerializableList;
        public SerializableList<String> getAuditFieldListSelect() {
     	   return (this.auditFieldListSelect==null)?null:new ArrayList<String>(this.auditFieldListSelect);
        }
-       public void setAuditFieldListSelect(SerializableList <String> auditFieldListSelect) {
+       public void setAuditFieldListSelect(List <String> auditFieldListSelect) {
     	   this.auditFieldListSelect=auditFieldListSelect;
        }
-       public SerializableMap<String, String> getColumnFilterValues() {
-    	 
+       public Map<String, String> getColumnFilterValues() {    	 
            return columnFilterValues;
        }
-       public void setColumnFilterValues(HashMap<String, String> columnFilterValues) {
+       public void setColumnFilterValues(Map<String, String> columnFilterValues) {    	  
     	  
     	   this.columnFilterValues = columnFilterValues;
        }
-       public SerializableMap<String, String> getSortOrders() {
+       public Map<String, String> getSortOrders() {
                return sortOrders;
        }
-       public void setSortOrders(HashMap<String, String> sortOrders) {
+       public void setSortOrders(Map<String, String> sortOrders) {
                 this.sortOrders = sortOrders;
        }
        
