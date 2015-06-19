@@ -1,5 +1,6 @@
 package iac.grn.infosweb.context.mc.audit.report;
 import mypackage.Configuration;
+import iac.grn.infosweb.context.mc.cpar.CparManager;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -7,9 +8,9 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.EnumMap;
 import java.util.Map.Entry;
 
+import javaw.lang.Strings;
 import javaw.util.SerializableEnumMap;
 import javaw.util.SerializableMap;
 import javaw.util.HashMap;
@@ -37,6 +38,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.jboss.seam.Component;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -94,7 +97,7 @@ public class JasperReportService implements Serializable {
 		}			
 		private static final SerializableMap<REPORTSTATUS, Integer> m_intMap = getIntMap();
 		private static final SerializableMap<REPORTSTATUS, String> m_strMsgMap1 = getStrMsgMap1(), m_strMsgMap2 = getStrMsgMap2();		
-		private static Object getFromMap(REPORTSTATUS status, SerializableMap mapValue) {
+		private static Object getFromMap(REPORTSTATUS status, SerializableMap<REPORTSTATUS, ?> mapValue) {
 			if(mapValue.containsKey(status)) return mapValue.get(status);
 			else throw new AssertionError("REPORTSTATUS.getFromMap: Unexpected enumerated value - "+status);			
 		}
@@ -184,7 +187,8 @@ public class JasperReportService implements Serializable {
 	
 	// ` "http://192.168.68.7:8080/jasperserver/rest_v2/reports/"
 	// ` "http://report.tp.toris.vpn/jasperserver"
-	private static final String csReportSvrRt=getReportSvrRt(Configuration.getJasperServer());
+	private static final String csReportSvrRt=getReportSvrRt();
+	
 	//"j_username=jasperadmin&j_password=jasperadmin"
 	private static final String csReportCredStr=getReportCredStr(Configuration.getJasperLogin(),Configuration.getJasperPassword());
 
@@ -192,6 +196,16 @@ public class JasperReportService implements Serializable {
 		return (new StringBuffer("j_username=")).append(username)
 				.append("&j_password=").append(password).toString();
 	}
+	
+	private static String getReportSvrRt() {
+		CparManager settings = (CparManager)Component.getInstance("cparManager", ScopeType.SESSION);
+		String jasperServer =  settings.getSettingValue("JASPER_SERVER");
+		if(Strings.isNullOrEmptyTrim(jasperServer)) {				
+			jasperServer = Configuration.getJasperServer();				
+		}
+		LOG("JASPER_SERVER", jasperServer);
+		return getReportSvrRt(jasperServer);
+	}	
 	protected static String getReportSvrRt(String JasperServerConfig) {
 		int p=JasperServerConfig.indexOf("/rest_v2/");
 		return (p>0)?JasperServerConfig.substring(0, p):JasperServerConfig;
