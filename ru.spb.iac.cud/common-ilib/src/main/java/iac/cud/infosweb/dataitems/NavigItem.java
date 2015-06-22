@@ -2,6 +2,8 @@ package iac.cud.infosweb.dataitems;
 
 import java.util.List;
 
+import javaw.util.Strings;
+
  public class NavigItem {
 
 	private String idRes;
@@ -57,5 +59,10 @@ import java.util.List;
 
 	public void setChildren(List<NavigItem> children) {
 		this.children = children;
+	}
+	
+	@Override
+	public String toString() {
+		return Strings.toRON("", this);		
 	}
 }
