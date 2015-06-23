@@ -1,10 +1,14 @@
 package iac.grn.infosweb.session.navig;
 
+import iac.cud.authmodule.dataitem.AuthItem;
+import iac.cud.authmodule.dataitem.PageItem;
 import iac.cud.infosweb.dataitems.NavigItem;
 import iac.cud.infosweb.entity.AcAppPage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 
@@ -17,6 +21,7 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.log.Log;
+import org.omg.CORBA.INTF_REPOS;
 
 /**
  * Управляющий бин, осуществляющий реализацию навигации по используемым ресурсам
@@ -61,8 +66,6 @@ import org.jboss.seam.log.Log;
 
 		try {
 			if (listMenu == null) {
-				 
-				
 				listMenu = entityManager
 						.createQuery(
 								(new StringBuilder("select aap from AcAppPage aap "))
@@ -98,6 +101,62 @@ import org.jboss.seam.log.Log;
 				.getResultList();
 	}
 	
+	private static class NavigItemInfo {
+		public NavigItem navi;
+		public int level;
+		
+		public boolean hasAdded;
+		public boolean isAccessible;
+		
+		NavigItemInfo(Object[] objectArray, Map<String, PageItem> mpPageList) {
+			String pageCode = (objectArray[2] != null ? objectArray[2].toString(): "");
+			this.level = Integer.parseInt(objectArray[4].toString());
+			navi = new NavigItem(
+					(objectArray[0] != null ? objectArray[0].toString(): ""),
+					pageCode,
+					(objectArray[3] != null ? objectArray[3].toString(): ""));
+			isAccessible = mpPageList.containsKey(pageCode);			
+		}
+		
+		void linkParent(NavigItemInfo parentInfo, List<NavigItem> navList) {
+			if(isAccessible ) { // && parentInfo.isAccessible
+				NavigItem parent = parentInfo.navi;
+				if(parentInfo.level==1 && !parentInfo.hasAdded) {
+					navList.add(parent);
+					parentInfo.hasAdded = true;
+				}				
+				linkParent2(parent /*, navList*/ );
+			}
+		}
+		private void linkParent(NavigItem parent) {
+			if(isAccessible)
+				linkParent2(parent);
+		}
+		private void linkParent2(NavigItem parent /*, List<NavigItem> navList*/) {
+			navi.setParent(parent);
+			List<NavigItem> kids = parent.getChildren();
+			if (kids == null) {
+				kids = new ArrayList<NavigItem>();							
+				parent.setChildren(kids);
+			}
+			kids.add(navi);
+			//if(!hasAdded) {
+			//	navList.add(navi);
+			//	hasAdded = true;
+			//}			
+		}		
+		
+		public static enum NavigItemRelation { LOWER, SIBLING, UPPER }
+		public NavigItemRelation getRelationTo(NavigItemInfo niInfo) {
+			if(level>niInfo.level) return NavigItemRelation.LOWER;
+			else if(level<niInfo.level) return NavigItemRelation.UPPER;
+			return NavigItemRelation.SIBLING;			
+		}
+		
+	}
+	
+
+	
 	private List<NavigItem> getNavigList() {
 		List<NavigItem> navigList = (List<NavigItem>) Component
 				.getInstance("navigList", ScopeType.SESSION);
@@ -106,47 +165,26 @@ import org.jboss.seam.log.Log;
 			navigList = new ArrayList<NavigItem>();
 			log.info("navigManager:getListNavigMenu:02");
 			List<Object[]> lo = queryNavigData(entityManager, linksMap);
-			int level_curr = -1, level_prev = -1;
-			NavigItem ni_prev = null;
-			NavigItem ni_parent = null;				
+			AuthItem ai=(AuthItem)Component.getInstance("authItem", ScopeType.SESSION);
+			Map<String, PageItem> mpPageList = ai.getPageList();			
+			
+			NavigItemInfo nifprv = null, nifpar = null; //, nifpar2 = null;
 			for (Object[] objectArray : lo) {
-				level_curr = Integer
-						.parseInt(objectArray[4].toString());
-
-				NavigItem navi = new NavigItem(
-						(objectArray[0] != null ? objectArray[0].toString()
-								: ""),
-						(objectArray[2] != null ? objectArray[2]
-								.toString() : ""),
-						(objectArray[3] != null ? objectArray[3]
-								.toString() : ""));
-
-				if (level_curr == 1) {
-					navigList.add(navi);
-				} else {
-					if (level_curr > level_prev) { // пошли дочерние
-													// зописи
-						ni_parent = ni_prev;
-						if (ni_parent.getChildren() == null) {
-							ni_parent
-									.setChildren(new ArrayList<NavigItem>());
-						}
-
-						navi.setParent(ni_parent);
-						ni_parent.getChildren().add(navi);
-
-					} else if (level_curr == level_prev) {
-						navi.setParent(ni_parent);
-						ni_parent.getChildren().add(navi);
-
-					} else if (level_curr < level_prev) { // прошли
-															// дочерние
-															// зописи
-						ni_parent.getParent().getChildren().add(navi);
+				NavigItemInfo nif = new NavigItemInfo(objectArray, mpPageList);
+				if(nif.level>1) {
+					switch(nif.getRelationTo(nifprv)) {
+						case LOWER:  // пошли дочерние записи
+							//nifpar2 = nifpar; 
+							nifpar = nifprv;
+						case SIBLING:	
+							nif.linkParent(nifpar, navigList);
+							break;
+						case UPPER:  // прошли дочерние записи	
+							//nif.linkParent(nifpar2, navigList);
+							nif.linkParent(nifpar.navi.getParent());
 					}
 				}
-				level_prev = level_curr;
-				ni_prev = navi;
+				nifprv = nif;
 			}
 			Contexts.getSessionContext().set("navigList", navigList);
 		}
