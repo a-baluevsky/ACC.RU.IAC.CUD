@@ -131,6 +131,9 @@ import javaw.util.SerializableList;
 	@Transient
 	private UserItem userItem;
 	
+	@Column(name="NOTE")
+	private String note;
+	
 	public AcUsersKnlT() {
 	}
 
@@ -602,7 +605,15 @@ import javaw.util.SerializableList;
 		this.userItem = userItem;
 	}
 	
-	 public static class UserItem /*extends BaseItem*/ implements Serializable {
+	 public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+
+	public static class UserItem /*extends BaseItem*/ implements Serializable {
 		
 		private static final long serialVersionUID = 1L;
 		
@@ -942,6 +953,7 @@ import javaw.util.SerializableList;
         public void setEmailSecond(String emailSecond) {
 			this.emailSecond = emailSecond;
 		}
-	}
+       
+ 	}
 	
 }

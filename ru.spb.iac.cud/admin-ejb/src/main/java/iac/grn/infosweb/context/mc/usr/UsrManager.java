@@ -37,6 +37,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import javaw.lang.Strings;
+
 import javax.faces.context.FacesContext;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
@@ -144,6 +146,8 @@ import org.slf4j.LoggerFactory;
 	//проверка для любого пользователя
 		
 	private List<MunicBssT> municList;
+	
+	private String note;
 	
 	static{
 		
@@ -477,15 +481,10 @@ import org.slf4j.LoggerFactory;
 		        .get("sessionId");
 	  log.info("forView:sessionId:"+usrId);
 	  log.info("forView:modelType:"+modelType);
-	  if(usrId!=null ){
-		  
-		   
+	  if(!Strings.isNullOrEmpty(usrId)){
 			if(modelType==null){
 		    	return ;
 		    }
-			
-		
-		 
 		 UserItem au = (UserItem)searchBean(usrId);
 		 
 		 // то надо когда мы после сохранения пользователя
@@ -513,13 +512,11 @@ import org.slf4j.LoggerFactory;
 	    		log.info("forView:setCudRole");
 	    		au.setIsCudRole(1L);
 	    		
-	    		for(AcRole ar :rlist){
-	    			
+	    		for(AcRole ar :rlist){	    			
 	    			if (ar.getSign().equals("role:urn:sys_admin_cud")){
 	    				au.setIsSysAdmin(1L);
 	    				break;
-	    			}
-	    			
+	    			}	    			
 	    		}
 	    		
 	    	}
@@ -529,7 +526,7 @@ import org.slf4j.LoggerFactory;
    
    private BaseItem searchBean(String sessionId){
     	
-      if(sessionId!=null){
+      if(!Strings.isNullOrEmpty(sessionId)){
     	 List<BaseItem> usrListCached = (List<BaseItem>)
 				  Component.getInstance("usrListCached",ScopeType.SESSION);
 		if(usrListCached!=null){
@@ -553,6 +550,16 @@ import org.slf4j.LoggerFactory;
 	   return auditCount;
 	   }
    
+   public static boolean isPowerUser(AcUser u, String pageCode, String idPerm){
+	   return (u.getAllowedSys()==null && !u.getIsAccOrgManagerValue()) || u.isAllowedReestr(pageCode, idPerm);
+   }    
+   public static boolean isPowerUser2(AcUser u){
+	   return isPowerUser(u, "002", "2");
+   }
+   public static boolean isPowerUser3(AcUser u){
+	   return isPowerUser(u, "002", "3");
+   }   
+    
    public void addUsr(){
 	   log.info("usrManager:addUsr:01");
 	   
@@ -579,7 +586,7 @@ import org.slf4j.LoggerFactory;
 		   AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
 		    
 		   
-	      if((((cau.getAllowedSys()!=null || cau.getIsAccOrgManagerValue()) && !cau.isAllowedReestr("002", "2"))|| !loginExist(usrBeanCrt.getLogin().trim()))&&!certNumExistCrt(usrBeanCrt.getCertificate())) {
+	      if((!isPowerUser2(cau)|| !loginExist(usrBeanCrt.getLogin().trim()))&&!certNumExistCrt(usrBeanCrt.getCertificate())) {
 	    	   
 	    	   if(clUsrBean.getSignObject()!=null){
 	    	   
@@ -619,7 +626,7 @@ import org.slf4j.LoggerFactory;
 	    	  usrBeanCrt.setCreator(cau.getIdUser()); 
 	    	  usrBeanCrt.setCreated(new Date());
 	    	  
-	    	 if((cau.getAllowedSys()!=null || cau.getIsAccOrgManagerValue()) && !cau.isAllowedReestr("002", "2")){
+	    	 if(!isPowerUser2(cau)){
 	    		  //пользователь имеет право только создать заявку 
 	    		  //на создание пользователя
 	    		  log.info("usrManager:addUsr:05");
@@ -633,12 +640,14 @@ import org.slf4j.LoggerFactory;
 	    	     entityManager.persist(usrBeanCrt);
 	    	      
 		    	 entityManager.flush();
-	    	  	 entityManager.refresh(usrBeanCrt);
-	    	     
-	    	  	 idUserCrt=usrBeanCrt.getIdUser();
-	    	  	 
-	    	  	 log.info("UsrManager:addUsr:idUserCrt:"+idUserCrt);
-	    	  	 
+		    	 
+		    	 //try {
+		    	 // 	 entityManager.refresh(usrBeanCrt);
+		    	 //} catch(Exception x) {
+		    	 //	 logger.warn("UsrManager:addUsr:644:"+x);
+		    	 //}
+	    	  	 //idUserCrt=usrBeanCrt.getIdUser();	    	  	 
+	    	  	 log.info("UsrManager:addUsr:idUserCrt:"+idUserCrt);		    	 
 	    	  	 audit(ResourcesMap.USER, ActionsMap.CREATE); 
 	    	  	 
 	    	  }	 
@@ -809,6 +818,8 @@ import org.slf4j.LoggerFactory;
 		  
 		  aum.setModificator(cau.getIdUser());
 		  aum.setModified(new Date());
+		  
+		  aum.setNote(usrBean.getNote());
 		  
 		  
 		     entityManager.flush();
@@ -1874,13 +1885,11 @@ import org.slf4j.LoggerFactory;
    } 
    
    public void forViewDelMessage() {
-	   
-	     
 		  String sessionId = FacesContext.getCurrentInstance().getExternalContext()
 				.getRequestParameterMap()
 				.get("sessionId");
 		  log.info("forViewDel:sessionId:"+sessionId);
-		  if(sessionId!=null){
+		  if(!Strings.isNullOrEmpty(sessionId)){
 			 AcUser aa = entityManager.find(AcUser.class, Long.valueOf(sessionId));
 			 
 			 //с 16.09.2014 перещли на логическое удаление
@@ -2019,7 +2028,7 @@ import org.slf4j.LoggerFactory;
 	    
 	    try {
 	    	
-	    	if(listUsrArmForView==null && sessionId!=null){
+	    	if(listUsrArmForView==null && !Strings.isNullOrEmpty(sessionId)){
 	      	
 	    		lo=entityManager.createNativeQuery(
 	    				(new StringBuilder("select APP.ID_SRV app_id, APP.FULL_ app_name, ROL.FULL_ role_name "))
@@ -2157,7 +2166,7 @@ import org.slf4j.LoggerFactory;
 	    
 	    try {
 	    	
-	    	if(listUsrGroupForView==null && sessionId!=null){
+	    	if(listUsrGroupForView==null && !Strings.isNullOrEmpty(sessionId)){
 	      	
 	    		lo=entityManager.createNativeQuery(
 	    				(new StringBuilder("select GR.ID_SRV gr_id, GR.FULL_ gr_name, APP.ID_SRV app_id, APP.FULL_ app_name, ROL.FULL_ role_name "))
@@ -3612,6 +3621,9 @@ public void setCommentApp(String commentApp) {
 	this.commentApp = commentApp;
 }
 
+
+
+
 public Boolean getAccOrgManager() {
 	
 	 if(this.accOrgManager==null){
@@ -3680,6 +3692,26 @@ public List<MunicBssT> getMunicList() {
 public void setMunicList(List<MunicBssT> municList) {
 	this.municList = municList;
 }
+
+	public String getNote() {
+		if(this.note==null){
+			   String sessionId = FacesContext.getCurrentInstance().getExternalContext()
+				        .getRequestParameterMap()
+				        .get("sessionId");
+			   if(!Strings.isNullOrEmpty(sessionId))
+				   note = (String) entityManager.createNativeQuery(
+			    		 "select NOTE " 
+			    		 + "from AC_USERS_KNL_T t1 " 
+			    		 + "where t1.ID_SRV = :idUser ")
+						 .setParameter("idUser", Long.valueOf(sessionId))
+						 .getSingleResult();
+		}
+		return note;
+	}
+	
+	public void setNote(String note) {
+		this.note = note;
+	}
 
 }
 

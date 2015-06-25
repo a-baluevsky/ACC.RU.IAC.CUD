@@ -1,6 +1,7 @@
 package iac.cud.infosweb.entity;
 
 import java.util.List;
+
 import iac.cud.infosweb.dataitems.BaseItem;
 
 import java.io.Serializable;
@@ -192,6 +193,10 @@ import org.jboss.seam.annotations.Role;
     
     @Transient
    	private /*Serializable*/ List<String> allowedReestr;
+    
+	@Column(name="NOTE")
+	private String note;   
+    
     
     public AcUser() {
     }
@@ -575,5 +580,10 @@ import org.jboss.seam.annotations.Role;
   	public void setMunic(Long munic) {
   		this.munic = munic;
   	}
-	
+  	public String getNote() {
+  		return note;
+  	}  		
+	public void setNote(String note) {
+		this.note = note;
+	}  	
   }

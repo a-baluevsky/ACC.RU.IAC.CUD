@@ -140,7 +140,13 @@
 											<td style="padding-top: 10px;" valign="top"><h:outputText
 													value="#{usrManager.accOrgManager ? 'да' : ''}" /></td>
 										</tr>
-
+										<tr>
+											<td width="150px" height="25px" class="table_left_header"
+												style="padding-top: 10px;" valign="top"><h:outputText
+													value="Примечание" /></td>
+											<td style="padding-top: 10px;" valign="top"><h:outputText
+													value="#{usrManager.note}" /></td>
+										</tr>
 										<!--tr>
             <td width="150px" height="25px" class="table_left_header">
               <h:outputText value="Создал"/>
@@ -578,8 +584,7 @@
             </td>
           </tr-->
 
-						<c:if
-							test="#{(empty currentUser.allowedSys and !currentUser.isAccOrgManagerValue) or currentUser.isAllowedReestr('002', '2')}">
+						<c:if test="#{usrManager.isPowerUser2(currentUser)}">
 
 							<!--c:if test="#{!authenticator.accessPerm('002','23')&&authenticator.accessPerm('002','2')}"-->
 							<tr>
@@ -625,8 +630,7 @@
 							</tr>
 
 						</c:if>
-						<c:if
-							test="#{(not empty currentUser.allowedSys or currentUser.isAccOrgManagerValue) and !currentUser.isAllowedReestr('002', '2')}">
+						<c:if test="#{not usrManager.isPowerUser2(currentUser)}">
 							<!--c:if test="#{authenticator.accessPerm('002','23')&&!authenticator.accessPerm('002','2')}"-->
 							
 							<tr>
@@ -653,6 +657,14 @@
 								<td><h:inputTextarea value="#{usrManager.commentApp}"
 										id="comment_app" cols="41" rows="3" /></td>
 							</tr>
+						</c:if>
+						<c:if test="#{usrManager.isPowerUser2(currentUser)}">
+							<tr>
+								<td width="100px" height="20px"><h:outputText
+										value="Примечание" /></td>
+								<td><h:inputTextarea value="#{usrBeanCrt.note}"
+										id="note" cols="62" rows="5"  /></td>
+							</tr>						
 						</c:if>
 						<tr>
 							<td colspan="2" align="center" height="35px"><a4j:commandButton
@@ -797,7 +809,7 @@
 
 
 						<c:if
-							test="#{(empty currentUser.allowedSys and !currentUser.isAccOrgManagerValue) or currentUser.isAllowedReestr('002', '3')}">
+							test="#{usrManager.isPowerUser3(currentUser)}">
 							<tr>
 								<td width="100px" height="20px"><h:outputText value="Логин" /></td>
 								<td><h:inputText value="#{usrBean.login}" id="login"
@@ -867,9 +879,9 @@
 
 						</c:if>
 
-
+								
 						<c:if
-							test="#{(not empty currentUser.allowedSys or currentUser.isAccOrgManagerValue) and !currentUser.isAllowedReestr('002', '3')}">
+							test="#{not usrManager.isPowerUser3(currentUser)}">
 
 							<c:if
 								test="#{param['onUpdate']!=null and usrBean.upSignUser==null}">
@@ -882,14 +894,24 @@
 								</tr>
 							</c:if>
 						</c:if>
-
+						
+						<!-- (not empty currentUser.allowedSys or currentUser.isAccOrgManagerValue) and !currentUser.isAllowedReestr('002', '3')  -->
+						<c:if test="#{usrManager.isPowerUser3(currentUser)}">
+								<tr>
+									<td width="100px" height="20px"><h:outputText
+											value="Примечание" /></td>
+									<td><h:inputTextarea value="#{usrBean.note}"
+											id="note" cols="62" rows="5"  /></td>
+								</tr>
+								
+						</c:if>
+						
 						<tr>
 							<td colspan="2" align="center" height="35px"><a4j:commandButton
 									value="Отмена"
 									onclick="#{rich:component('CBmpUpd')}.hide();return false;"
 									styleClass="but_class" /> <c:if
-									test="#{(empty currentUser.allowedSys and !currentUser.isAccOrgManagerValue) or currentUser.isAllowedReestr('002', '3') 
-                           or(param['onUpdate']!=null and usrBean.upSignUser==null)}">
+									test="#{usrManager.isPowerUser3(currentUser) or (param['onUpdate']!=null and usrBean.upSignUser==null)}">
 									<a4j:commandButton value="Сохранить"
 										action="#{usrManager.updUsr}"
 										reRender="outCenterCenter, outCenterBottom"
@@ -1839,7 +1861,7 @@
 																	</rich:toolTip></td>
 																<td width="20px;" align="center"><s:link
 																		title="Удалить"
-																		onclick="if (confirm('#{(not empty currentUser.allowedSys or currentUser.isAccOrgManagerValue) and !currentUser.isAllowedReestr('002', '3') ? 'Отправить заявку на удаление \\n сертификата' : ' Удалить \\n сертификат'} 
+																		onclick="if (confirm('#{not usrManager.isPowerUser3(currentUser) ? 'Отправить заявку на удаление \\n сертификата' : ' Удалить \\n сертификат'} 
                                           \\n#{it_user_cert.certNum} ?')){/*set_id_activ_span('#{it_user_cert.baseId}');*/invokeUCCertRemove('#{it_user_cert.baseId}', '#{(param['sessionId']!=null ? param['sessionId'] : param['sessionId_crack'])}');} return false;">
 																		<h:graphicImage value="/img/error.gif"
 																			styleClass="pic_tbar"
@@ -1961,7 +1983,7 @@
 																		<span id="uccert_span_true_#{it_iogv.baseId}"
 																		style="display: #{(it_iogv.certUsed=='0'? 'inline': 'none')}">
 																			<s:link title="Связать"
-																				onclick="if (confirm('#{(not empty currentUser.allowedSys or currentUser.isAccOrgManagerValue) and !currentUser.isAllowedReestr('002', '3') ? 'Отправить заявку на привязку записи' : ' Привязать запись'}
+																				onclick="if (confirm('#{not usrManager.isPowerUser3(currentUser) ? 'Отправить заявку на привязку записи' : ' Привязать запись'}
                                           \\n#{usrBeanViewList.get(0).fio} 
                                           \\nк сертификату 
                                           \\n#{it_iogv.certNum} ?')){set_id_activ_span('#{it_iogv.baseId}'); invokeUCCert('#{it_iogv.baseId}', '#{param['sessionId']}');} return false;">
@@ -2443,56 +2465,79 @@ function check(tform){
 }
 }*/
 
+function getFrmElmValue(tform,id) {
+	return document.getElementById(tform+id).value;
+}
+
+function chkValueNull(tform,id) {
+	return getFrmElmValue(tform,id)=="";
+}
+
+function chkValueSize(tform,id,maxLen) {
+	return getFrmElmValue(tform,id).length > maxLen;
+}
+
+function getTrimValue(tform,id) {
+	return jQuery.trim(getFrmElmValue(tform,id));
+}
+
+function chkTrimValueNull(tform,id) {
+	return getTrimValue(tform,id)=="";
+}
+
+
+
 function check_crt(tform){
 
 	 var msg="";
-	 if (document.getElementById(tform+":clorgso").value==""){
+	 if (chkValueNull(tform,":clorgso")){
 		  msg+="Не выбрана Организация !\n";
 	  }
 	 if(document.getElementById(tform+":cluso")!=null){
-	   if (document.getElementById(tform+":cluso").value==""){
+	   if (chkValueNull(tform,":cluso")){
 		  msg+="Не выбран Пользователь !\n";
 	   }
      }else{
-    	 if (jQuery.trim(document.getElementById(tform+":name1").value)==""){
+    	 if (chkTrimValueNull(tform,":name1")){
     		  msg+="Нет Фамилии !\n";
     	 }
-    	 if (jQuery.trim(document.getElementById(tform+":name2").value)==""){
+    	 if (chkTrimValueNull(tform,":name2")){
     		  msg+="Нет Имени !\n";
     	 }
-    	 if (jQuery.trim(document.getElementById(tform+":name3").value)==""){
+    	 if (chkTrimValueNull(tform,":name3")){
     		  msg+="Нет Отчества !\n";
     	 }
 
-    	 if(jQuery.trim(document.getElementById(tform+":email").value)!=""){
-    	     if(!IsEmail(jQuery.trim(document.getElementById(tform+":email").value))){
+    	 if(getTrimValue(tform,":email")!=""){
+    	     if(!IsEmail(getTrimValue(tform,":email"))){
     	    	 msg+="Не корректный e-mail !\n";
     	       }
     	 }
      }
-	/* if (document.getElementById(tform+":cert").value==""){
+	/* if (chkValueNull(tform,":cert")){
 		  msg+="Нет Номера сертификата !\n";
 	 }*/  
 
-	if(#{(empty currentUser.allowedSys and !currentUser.isAccOrgManagerValue) or currentUser.isAllowedReestr('002', '2')}){
+	if(#{usrManager.isPowerUser2(currentUser)}){
 	 
-	 if (jQuery.trim(document.getElementById(tform+":login").value)==""){
+	 if (chkTrimValueNull(tform,":login")){
 		  msg+="Нет Логина !\n";
 	 }else{
-		 if( jQuery.trim(document.getElementById(tform+":login").value).search(new RegExp(/[А-яёЁ]/g)) !=-1){
+		 if( getTrimValue(tform,":login").search(new RegExp(/[А-яёЁ]/g)) !=-1){
 			 msg+="В Логине недопустима кириллица !\n";
 	     }
 	 }
-	 if (jQuery.trim(document.getElementById(tform+":pass").value)==""){
+	 if (chkTrimValueNull(tform,":pass")){
 		  msg+="Нет Пароля !\n";
 	 }else{
-		 if(jQuery.trim(document.getElementById(tform+":pass").value).search(new RegExp(/[А-яёЁ]/g)) !=-1){
+		 if(getTrimValue(tform,":pass").search(new RegExp(/[А-яёЁ]/g)) !=-1){
 			 msg+="В Пароле недопустима кириллица !\n";
 	     }
 	 }
 
 	}
-		
+	
+	
 	 if(msg!=""){
 	  alert(msg);
 	  return true;
@@ -2504,41 +2549,45 @@ function check_crt(tform){
 function check_upd(tform){
 	var msg="";
 	if(document.getElementById(tform+":fio")==null){
-	 if ( jQuery.trim(document.getElementById(tform+":name1").value)==""){
+	 if ( chkTrimValueNull(tform,":name1")){
    		  msg+="Нет Фамилии !\n";
    	 }
-   	 if ( jQuery.trim(document.getElementById(tform+":name2").value)==""){
+   	 if ( chkTrimValueNull(tform,":name2")){
    		  msg+="Нет Имени !\n";
    	 }
-   	 if ( jQuery.trim(document.getElementById(tform+":name3").value)==""){
+   	 if ( chkTrimValueNull(tform,":name3")){
    		  msg+="Нет Отчества !\n";
    	 }
-   	 if(jQuery.trim(document.getElementById(tform+":email").value)!=""){
-	     if(!IsEmail(jQuery.trim(document.getElementById(tform+":email").value))){
+   	 if(getTrimValue(tform,":email")!=""){
+	     if(!IsEmail(getTrimValue(tform,":email"))){
 	    	 msg+="Не корректный e-mail !\n";
 	       }
 	 }
 	 
     }  
 
-   if(#{(empty currentUser.allowedSys and !currentUser.isAccOrgManagerValue) or currentUser.isAllowedReestr('002', '3')}){ 
-	 if (jQuery.trim(document.getElementById(tform+":login").value)==""){
+   if(#{usrManager.isPowerUser3(currentUser)}){ 
+	 if (chkTrimValueNull(tform,":login")){
 		  msg+="Нет Логина !\n";
 	 }else{
-		 if( jQuery.trim(document.getElementById(tform+":login").value).search(new RegExp(/[А-яёЁ]/g)) !=-1){
+		 if( getTrimValue(tform,":login").search(new RegExp(/[А-яёЁ]/g)) !=-1){
 			 msg+="В Логине недопустима кириллица !\n";
 	     }
 	 }
 	 
-	 if ( jQuery.trim(document.getElementById(tform+":pass").value)==""){
+	 if ( chkTrimValueNull(tform,":pass")){
 		  msg+="Нет Пароля !\n";
 	 }else{
-		 if(  jQuery.trim(document.getElementById(tform+":pass").value).search(new RegExp(/[А-яёЁ]/g)) !=-1){
+		 if(  getTrimValue(tform,":pass").search(new RegExp(/[А-яёЁ]/g)) !=-1){
 			 msg+="В Пароле недопустима кириллица !\n";
 	     }
 	 }
    }
-		
+
+	if(chkValueSize(tform,":note",500)) {
+		msg+="Примечание превышает 500 символов!";
+	}
+   
 	 if(msg!=""){
 	  alert(msg);
 	  return true;
@@ -2550,22 +2599,23 @@ function check_upd(tform){
 function check_upd_app_acc(tform){
 	var msg="";
 	
-	 if (jQuery.trim(document.getElementById(tform+":login").value)==""){
+	 if (chkTrimValueNull(tform,":login")){
 		  msg+="Нет Логина !\n";
 	 }else{
-		 if( jQuery.trim(document.getElementById(tform+":login").value).search(new RegExp(/[А-яёЁ]/g)) !=-1){
+		 if( getTrimValue(tform,":login").search(new RegExp(/[А-яёЁ]/g)) !=-1){
 			 msg+="В Логине недопустима кириллица !\n";
 	     }
 	 }
 	 
-	 if ( jQuery.trim(document.getElementById(tform+":pass").value)==""){
+	 if ( chkTrimValueNull(tform,":pass")){
 		  msg+="Нет Пароля !\n";
 	 }else{
-		 if(  jQuery.trim(document.getElementById(tform+":pass").value).search(new RegExp(/[А-яёЁ]/g)) !=-1){
+		 if(  getTrimValue(tform,":pass").search(new RegExp(/[А-яёЁ]/g)) !=-1){
 			 msg+="В Пароле недопустима кириллица !\n";
 	     }
 	 }
 	
+	 
 	 if(msg!=""){
 	  alert(msg);
 	  return true;
@@ -2574,24 +2624,36 @@ function check_upd_app_acc(tform){
 	}
 }
 
+function scHeight(object,factor) {
+	return jQuery(object).height()*factor;
+}
+
+function scjHeight(jqId,factor) {
+	return jQuery('#'+jqId).height()*factor;
+}
+
+function scaleHeight(object,factor) {
+	return Math.floor(scHeight(object,factor));
+}
+
 function setHDiv(hdiv){
-	jQuery('#'+hdiv).height(Math.floor(jQuery(window).height()*(2/3)));
+	jQuery('#'+hdiv).height(scaleHeight(window,2/3));
 }
 
 function setHDiv_min_pro(hdiv){
 
-	if(jQuery('#'+hdiv).height()>Math.floor(jQuery(window).height()*(2/3)-100)){
-	   jQuery('#'+hdiv).height(Math.floor(jQuery(window).height()*(2/3)-100));
+	if(jQuery('#'+hdiv).height()>scaleHeight(window,2/3)-100){
+	   jQuery('#'+hdiv).height(scaleHeight(window,2/3)-100);
 	} 
 }
 
 function setHDiv_min_proSoft_top(hdiv, cdiv, size){
 
-   	if(jQuery('#'+hdiv).height()>Math.floor(jQuery(window).height()*(3/4)-size)){
-	   jQuery('#'+hdiv).height(Math.floor(jQuery(window).height()*(3/4)-size));
+   	if(jQuery('#'+hdiv).height()>scaleHeight(window,3/4)-size){
+	   jQuery('#'+hdiv).height(scaleHeight(window,3/4)-size);
 
-	   //!!! set top only haight>
-       jQuery('#'+cdiv).css('top',Math.floor(jQuery(window).height()*(1/2)-jQuery('#'+hdiv).height()*(1/2)));
+	   //!!! set top only height>
+       jQuery('#'+cdiv).css('top',scaleHeight(window,1/2)-scHeight('#'+hdiv,1/2));
 	} 
 }
 
@@ -2600,12 +2662,12 @@ function setHDiv_min_proSoft_top_rmp(hdiv, cdiv, size){
 	//!!! reset to small
 	resetHDiv_min(hdiv);
 
-   	if(jQuery('#'+hdiv).height()>Math.floor(jQuery(window).height()*(3/4)-size)){
-	   jQuery('#'+hdiv).height(Math.floor(jQuery(window).height()*(3/4)-size));
+   	if(jQuery('#'+hdiv).height()>scaleHeight(window,3/4)-size){
+	   jQuery('#'+hdiv).height(scaleHeight(window,3/4)-size);
 	} 
  	
     //!!! set top always
-	jQuery('#'+cdiv).css('top',Math.floor(jQuery(window).height()*(1/2)-jQuery('#'+hdiv).height()*(1/2)));
+	jQuery('#'+cdiv).css('top',scaleHeight(window,1/2)-scHeight('#'+hdiv,1/2));
  	
 }
 
@@ -2615,7 +2677,7 @@ function resetHDiv_min(hdiv){
 
 function setMPTop_pro(hdiv, cdiv){
 
-	jQuery('#'+cdiv).css('top',Math.floor(jQuery(window).height()*(1/2)-jQuery('#'+hdiv).height()*(1/2)-168));
+	jQuery('#'+cdiv).css('top',scaleHeight(window,1/2)-scjHeight(hdiv,1/2)-168);
 
 }
 
@@ -2630,16 +2692,16 @@ function setHDiv_min_proSoft_without_top(hdiv, size){
 	resetHDiv_min(hdiv);
 
 	alert(jQuery('#'+hdiv).height());
-	alert(Math.floor(jQuery(window).height()*(3/4)-size));
-	if(jQuery('#'+hdiv).height()>Math.floor(jQuery(window).height()*(3/4)-size)){
-		   jQuery('#'+hdiv).height(Math.floor(jQuery(window).height()*(3/4)-size));
+	alert(scaleHeight(window,3/4)-size));
+	if(jQuery('#'+hdiv).height()>scaleHeight(window,3/4)-size)){
+		   jQuery('#'+hdiv).height(scaleHeight(window,3/4)-size));
 	} 
 	//!!! without_top
 }*/
 
 
 function setMPTop(){
-	jQuery('#CBmpUpdRoleCDiv').css('top',Math.floor(jQuery(window).height()*(1/6)));
+	jQuery('#CBmpUpdRoleCDiv').css('top',scaleHeight(window,1/6));
 }
 
 function hideMPCrt(idUser){
@@ -2648,7 +2710,7 @@ function hideMPCrt(idUser){
 
   	//if(idUser!=''){
 
-  	if(#{(empty currentUser.allowedSys and !currentUser.isAccOrgManagerValue) or currentUser.isAllowedReestr('002', '2')}){
+  	if(#{usrManager.isPowerUser2(currentUser)}){
   	  		
   		invokeRemoteAuditBeanContext(
   				idUser,
@@ -2685,9 +2747,9 @@ function reset_radio_stiu(tform){
 function check_search(tform){
 	var msg="";
 
-	 if ((jQuery.trim(document.getElementById(tform+":search_fam").value)=="")&&
-		 (jQuery.trim(document.getElementById(tform+":search_name").value)=="")&&
-		 (jQuery.trim(document.getElementById(tform+":search_otch").value)=="")){
+	 if ((chkTrimValueNull(tform,":search_fam"))&&
+		 (chkTrimValueNull(tform,":search_name"))&&
+		 (chkTrimValueNull(tform,":search_otch"))){
 		  msg+="Должно быть заполнено хотя бы одно поле из ФИО !\n";
 	 }
 	
