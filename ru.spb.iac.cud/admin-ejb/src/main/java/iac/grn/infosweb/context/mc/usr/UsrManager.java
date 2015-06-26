@@ -629,27 +629,14 @@ import org.slf4j.LoggerFactory;
 	    	 if(!isPowerUser2(cau)){
 	    		  //пользователь имеет право только создать заявку 
 	    		  //на создание пользователя
-	    		  log.info("usrManager:addUsr:05");
-	    		  
-	    		  addUsrApp(usrBeanCrt, commentApp);
-	    		  
+	    		  log.info("usrManager:addUsr:05");	    		  
+	    		  addUsrApp(usrBeanCrt, commentApp);	    		  
 	    		  audit(ResourcesMap.APP_USER, ActionsMap.CREATE); 
-	    		  
-	    	  }else{
-	    	  
+	    	  }else{	    	  
 	    	     entityManager.persist(usrBeanCrt);
-	    	      
-		    	 entityManager.flush();
-		    	 
-		    	 //try {
-		    	 // 	 entityManager.refresh(usrBeanCrt);
-		    	 //} catch(Exception x) {
-		    	 //	 logger.warn("UsrManager:addUsr:644:"+x);
-		    	 //}
-	    	  	 //idUserCrt=usrBeanCrt.getIdUser();	    	  	 
+	    	  	 idUserCrt=usrBeanCrt.getIdUser();
 	    	  	 log.info("UsrManager:addUsr:idUserCrt:"+idUserCrt);		    	 
-	    	  	 audit(ResourcesMap.USER, ActionsMap.CREATE); 
-	    	  	 
+	    	  	 audit(ResourcesMap.USER, ActionsMap.CREATE);
 	    	  }	 
 	    	  	 
 	    	 
@@ -3695,16 +3682,22 @@ public void setMunicList(List<MunicBssT> municList) {
 
 	public String getNote() {
 		if(this.note==null){
-			   String sessionId = FacesContext.getCurrentInstance().getExternalContext()
-				        .getRequestParameterMap()
-				        .get("sessionId");
-			   if(!Strings.isNullOrEmpty(sessionId))
+			try {				
+				String ssid = FacesContext.getCurrentInstance().getExternalContext()
+								        .getRequestParameterMap()
+								        .get("sessionId");
+				if(!Strings.isNullOrEmpty(ssid)) {
 				   note = (String) entityManager.createNativeQuery(
 			    		 "select NOTE " 
 			    		 + "from AC_USERS_KNL_T t1 " 
 			    		 + "where t1.ID_SRV = :idUser ")
-						 .setParameter("idUser", Long.valueOf(sessionId))
-						 .getSingleResult();
+						 .setParameter("idUser", Long.valueOf(ssid))
+						 .getSingleResult();					
+				}
+
+			} catch(Exception x) {
+				logger.warn("UsrManager:getNote:error:"+x);
+			}
 		}
 		return note;
 	}
