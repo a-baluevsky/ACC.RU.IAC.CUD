@@ -8,6 +8,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.security.auth.login.LoginException;
+import javax.xml.crypto.dsig.XMLSignature;
 
 import org.jboss.security.JBossJSSESecurityDomain;
 import org.picketlink.identity.federation.bindings.jboss.auth.AS7AuthCacheInvalidationFactory;
@@ -18,6 +19,7 @@ import org.picketlink.identity.federation.saml.v2.assertion.AssertionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import ru.spb.iac.cud.sts.core.auth.util.GOSTAssertionUtil;
 
@@ -48,6 +50,24 @@ import ru.spb.iac.cud.sts.core.auth.util.GOSTAssertionUtil;
 			LOGGERSLF4J.debug("localValidation:01:"
 					+ localValidationSecurityDomain);
 
+			
+			NodeList signatureList = assertionElement.getElementsByTagNameNS(XMLSignature.XMLNS,
+					"Signature");
+
+			String sign_req = (String) options.get("signAssertionRequired");
+			
+			LOGGERSLF4J.debug("localValidation:02:"
+					+ sign_req);
+			
+			//подписи нет, а требуется
+			if ((signatureList == null || signatureList.getLength() == 0)&&("true".equals(sign_req)||"TRUE".equals(sign_req))) {
+				LOGGERSLF4J.debug("localValidation:03");
+				throw logger.authSAMLInvalidSignatureError();
+			}
+			
+			//подпись есть, не важно требуется или нет
+			if (signatureList != null && signatureList.getLength() > 0) {
+					
 			Context ctx = new InitialContext();
 			String jsseLookupString = super.localValidationSecurityDomain
 					+ "/jsse";
@@ -95,6 +115,9 @@ import ru.spb.iac.cud.sts.core.auth.util.GOSTAssertionUtil;
 				throw logger.authSAMLInvalidSignatureError();
 			}
 
+		} //элсе подписи нет и не требуется
+			
+			
 			AssertionType assertion = SAMLUtil.fromElement(assertionElement);
 			if (AssertionUtil.hasExpired(assertion)) {
 				throw logger.authSAMLAssertionExpiredError();

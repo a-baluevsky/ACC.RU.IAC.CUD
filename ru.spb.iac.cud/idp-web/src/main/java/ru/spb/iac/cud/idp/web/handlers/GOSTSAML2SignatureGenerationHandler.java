@@ -1,7 +1,6 @@
 package ru.spb.iac.cud.idp.web.handlers;
 
-import org.picketlink.identity.federation.web.handlers.saml2.AbstractSignatureHandler;
-import org.picketlink.common.constants.GeneralConstants;
+import static org.picketlink.common.util.StringUtil.isNotNull;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -9,22 +8,22 @@ import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 
-import org.picketlink.identity.federation.api.saml.v2.sig.SAML2Signature;
+import org.picketlink.common.constants.GeneralConstants;
 import org.picketlink.common.exceptions.ConfigurationException;
 import org.picketlink.common.exceptions.ProcessingException;
 import org.picketlink.common.util.DocumentUtil;
+import org.picketlink.identity.federation.api.saml.v2.sig.SAML2Signature;
 import org.picketlink.identity.federation.core.saml.v2.interfaces.SAML2HandlerRequest;
 import org.picketlink.identity.federation.core.saml.v2.interfaces.SAML2HandlerResponse;
+import org.picketlink.identity.federation.web.handlers.saml2.AbstractSignatureHandler;
 import org.picketlink.identity.federation.web.util.RedirectBindingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+
 import ru.spb.iac.cud.idp.web.sig.GOSTSAML2Signature;
 import ru.spb.iac.cud.idp.web.util.GOSTRedirectBindingSignatureUtil;
-import ru.spb.iac.cud.services.web.init.Configuration;
-
-import static org.picketlink.common.util.StringUtil.isNotNull;
 
  public class GOSTSAML2SignatureGenerationHandler extends
 		AbstractSignatureHandler {
@@ -51,8 +50,13 @@ import static org.picketlink.common.util.StringUtil.isNotNull;
 		
 		//for IDP handle Request from SP
 		
-		if(Configuration.isSignRequired()){
-			 
+		
+		//if(Configuration.isSignRequired()
+		// есть подпись
+			
+		if(request.getOptions().get("request_with_sign") != null){
+		
+			
 		Document responseDocument = response.getResultingDocument();
 
 		LOGGERSLF4J.debug("handleRequestType:01");

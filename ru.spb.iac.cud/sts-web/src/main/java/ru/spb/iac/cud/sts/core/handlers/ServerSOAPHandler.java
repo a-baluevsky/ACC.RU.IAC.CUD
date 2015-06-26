@@ -153,7 +153,7 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 					LOGGER.debug("handleMessage:02_1");
 					
 					
-					if(Configuration.isSignRequired()){
+					if(Configuration.isSignRequired()){ //подписи нет, а требуется	
 					   throw new GeneralFailure(
 							"This service requires <dsig:Signature>, which is missing!!!");
 					}
@@ -695,12 +695,11 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 
 				http_session.setAttribute("system_principal", system_principal);
 
-			 if(Configuration.isSignRequired()){
-				
+			// if(Configuration.isSignRequired()){
+				//подпись есть, не важно требуется или нет
+			 if (signatureList != null  && signatureList.getLength() > 0) {
 				X509Certificate cert_user = (new ContextIDPUtilManager())
 						.system_cert(system_principal);
-
-				 
 
 				
 				if (cert_user != null) {
@@ -762,10 +761,12 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 				if (result1 == false) {
 					throw new GeneralFailure("Signature is not valid!!!");
 				}
-
 				
-			}
+				http_session.setAttribute("request_with_sign", true);
 				
+			}// элсе подписи нет и не требуется
+				
+							
 				// ответ
 			} else {
 
@@ -852,7 +853,9 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 				 
 
 				
-				if(Configuration.isSignRequired()){
+				//if(Configuration.isSignRequired()){
+				// есть подпись
+				if(http_session.getAttribute("request_with_sign") != null){	
 					
 					
 					KeyStoreKeyManager kskm = new KeyStoreKeyManager();

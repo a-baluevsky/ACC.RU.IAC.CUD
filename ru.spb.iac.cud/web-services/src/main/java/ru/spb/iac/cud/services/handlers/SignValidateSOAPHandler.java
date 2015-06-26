@@ -139,7 +139,43 @@ import ru.spb.iac.cud.services.web.init.Configuration;
 				http_session.setAttribute("cud_sts_principal",
 						cud_sts_principal);
 
-			 if(Configuration.isSignRequired()){
+				
+				//проверка наличия подписи
+				Node securityNode = soapHeader.getFirstChild();
+
+				if (securityNode == null) {
+					 
+					throw new GeneralFailure(
+							"This service requires <wsse:Security>, which is missing!!!");
+				}
+
+				NodeList securityNodeChilds = securityNode.getChildNodes();
+
+				Node signatureNode1 = null;
+
+				for (int i = 0; i < securityNodeChilds.getLength(); i++) {
+
+					if (securityNodeChilds.item(i).getLocalName() != null
+							&& securityNodeChilds.item(i).getLocalName()
+									.equals("Signature")) {
+						signatureNode1 = securityNodeChilds.item(i);
+					}
+				}
+
+				 
+
+				// signature
+
+				if (signatureNode1 == null && Configuration.isSignRequired()) { //подписи нет, а требуется	
+					 
+					throw new GeneralFailure(
+							"This service requires <dsig:Signature>, which is missing!!!");
+				}
+				
+				
+			 //if(Configuration.isSignRequired()){
+			 if(signatureNode1 != null) { //подпись есть, не важно требуется или нет
+				 
 				/*
 				 * //1-й вариант: взять код системы из Assertion/subject/NameID
 				 * //по этому коду найти в базе сертификат
@@ -199,41 +235,9 @@ import ru.spb.iac.cud.services.web.init.Configuration;
 
 				XMLSignatureFactory fac = XMLSignatureFactory.getInstance(
 						"DOM", xmlDSigProvider);
-
-				Node securityNode = soapHeader.getFirstChild();
-
-				if (securityNode == null) {
-					 
-					throw new GeneralFailure(
-							"This service requires <wsse:Security>, which is missing!!!");
-				}
-
-				NodeList securityNodeChilds = securityNode.getChildNodes();
-
-				Node signatureNode1 = null;
-
-				for (int i = 0; i < securityNodeChilds.getLength(); i++) {
-
-					 
-
-					if (securityNodeChilds.item(i).getLocalName() != null
-							&& securityNodeChilds.item(i).getLocalName()
-									.equals("Signature")) {
-						signatureNode1 = securityNodeChilds.item(i);
-					}
-				}
-
-				 
-
-				// signature
-
-				if (signatureNode1 == null) {
-					 
-					throw new GeneralFailure(
-							"This service requires <dsig:Signature>, which is missing!!!");
-				}
-
-				 
+/*
+	взятие сигнатуры до 22 апреля 2015 было здесь
+*/	 
 
 				DOMValidateContext valContext1 = new DOMValidateContext(
 						publicKey2, signatureNode1);
@@ -262,12 +266,17 @@ import ru.spb.iac.cud.services.web.init.Configuration;
 					throw new GeneralFailure("Signature is not valid!!!");
 				}
 
-			  }
+				http_session.setAttribute("request_with_sign", true);
+			  
+			 } //элсе подписи нет и не требуется
+			 
 			} else {
 				// ответ
 
-				if(Configuration.isSignRequired()){
-					
+				//if(Configuration.isSignRequired()){
+
+				// есть подпись
+				if(http_session.getAttribute("request_with_sign")!=null){	
 				
 				char[] signingKeyPass = "Access_Control".toCharArray();
 				String signingAlias = "cudvm_export";

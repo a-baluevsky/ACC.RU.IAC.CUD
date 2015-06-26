@@ -32,10 +32,15 @@
 	   <!--Handler
 			class="ru.spb.iac.cud.idp.web.handlers.GOSTKeyHandler" /-->
 	
-		<!--Handler
+	   <Handler
+            class="ru.spb.iac.cud.idp.web.handlers.GOSTSAML2SignatureValidationHandler" />
+     
+     	<!--Handler
 			class="org.picketlink.identity.federation.web.handlers.saml2.SAML2IssuerTrustHandler" /-->
 		<Handler
 			class="ru.spb.iac.cud.idp.web.handlers.CUDSAML2LogOutHandler" />
+		
+		
 		<!--Handler
 			class="org.picketlink.identity.federation.web.handlers.saml2.SAML2AuthenticationHandler" /-->
 		<Handler
@@ -52,8 +57,6 @@
 	
 		<Handler
 			class="ru.spb.iac.cud.idp.web.handlers.GOSTSAML2SignatureGenerationHandler" />
-        <Handler
-            class="ru.spb.iac.cud.idp.web.handlers.GOSTSAML2SignatureValidationHandler" />
             
 	    <Handler class="org.picketlink.identity.federation.web.handlers.saml2.SAML2AttributeHandler">
            <!--Option Key="ATTRIBUTE_KEYS" Value="username,firstName,lastName,email,userRoles" /-->  

@@ -1,6 +1,10 @@
 package ru.spb.iac.cud.idp.web.handlers;
 
-import org.picketlink.identity.federation.web.handlers.saml2.AbstractSignatureHandler;
+import java.security.PublicKey;
+import java.util.Map;
+
+import javax.xml.crypto.dsig.XMLSignature;
+
 import org.jboss.security.audit.AuditLevel;
 import org.picketlink.common.constants.GeneralConstants;
 import org.picketlink.common.exceptions.ProcessingException;
@@ -13,16 +17,15 @@ import org.picketlink.identity.federation.core.saml.v2.interfaces.SAML2HandlerEr
 import org.picketlink.identity.federation.core.saml.v2.interfaces.SAML2HandlerRequest;
 import org.picketlink.identity.federation.core.saml.v2.interfaces.SAML2HandlerResponse;
 import org.picketlink.identity.federation.web.core.HTTPContext;
+import org.picketlink.identity.federation.web.handlers.saml2.AbstractSignatureHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
 import ru.spb.iac.cud.idp.web.sig.GOSTSAML2Signature;
 import ru.spb.iac.cud.idp.web.util.GOSTRedirectBindingSignatureUtil;
 import ru.spb.iac.cud.services.web.init.Configuration;
-
-import java.security.PublicKey;
-import java.util.Map;
 
  public class GOSTSAML2SignatureValidationHandler extends
 		AbstractSignatureHandler {
@@ -35,9 +38,14 @@ import java.util.Map;
 	public void handleRequestType(SAML2HandlerRequest request,
 			SAML2HandlerResponse response) throws ProcessingException {
 		
-		 if(Configuration.isSignRequired()){
+		
+		// перенесено в verifyRedirectBindingSignature()
+		// и в 
+		/* if(Configuration.isSignRequired()){  //обязательно
 		    validateSender(request, response);
-		}
+		}*/
+		 
+		 validateSender(request, response);
 	}
 
 	@Override
@@ -65,7 +73,7 @@ import java.util.Map;
 		if (Boolean.TRUE.equals(ignoreSignatures)) {
 			return;
 		}
-
+		
 		LOGGERSLF4J.debug("validateSender:02");
 		
 		Document signedDocument = request.getRequestDocument();
@@ -90,9 +98,9 @@ import java.util.Map;
 			LOGGERSLF4J.debug("isPost:" + isPost);
 
 			if (isPost) {
-				isValid = verifyPostBindingSignature(signedDocument, publicKey);
+				isValid = verifyPostBindingSignature(signedDocument, publicKey, request);
 			} else {
-				isValid = verifyRedirectBindingSignature(httpContext, publicKey);
+				isValid = verifyRedirectBindingSignature(httpContext, publicKey, request);
 			}
 
 			LOGGERSLF4J.debug("validateSender:03:"+isValid);
@@ -127,9 +135,29 @@ import java.util.Map;
 	}
 
 	private boolean verifyPostBindingSignature(Document signedDocument,
-			PublicKey publicKey) throws ProcessingException {
+			PublicKey publicKey, SAML2HandlerRequest request) throws ProcessingException {
 		try {
-			return this.saml2Signature.validate(signedDocument, publicKey);
+			
+			boolean isSign = false;
+			NodeList nl = signedDocument.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature");
+	        if (nl != null && nl.getLength() > 0) {
+	        	isSign = true;
+	        }
+	      //подписи нет, а требуется			
+			if (!isSign && Configuration.isSignRequired()) {
+				 throw logger.nullValueError("Cannot find Signature element");
+			}
+
+			if (isSign){//подпись есть, не важно требуется или нет
+				
+				
+				request.addOption("request_with_sign", true);
+				return this.saml2Signature.validate(signedDocument, publicKey);
+			}else{ //подписи нет и не требуется
+				return true;
+			}
+			
+			
 		} catch (Exception e) {
 			logger.samlHandlerErrorValidatingSignature(e);
 			throw logger.samlHandlerInvalidSignatureError();
@@ -147,7 +175,7 @@ import java.util.Map;
 	 * @throws ProcessingException
 	 */
 	private boolean verifyRedirectBindingSignature(HTTPContext httpContext,
-			PublicKey publicKey) throws ProcessingException {
+			PublicKey publicKey, SAML2HandlerRequest request) throws ProcessingException {
 		try {
 			String queryString = httpContext.getRequest().getQueryString();
 
@@ -158,13 +186,19 @@ import java.util.Map;
 			sigValue = GOSTRedirectBindingSignatureUtil
 					.getSignatureValueFromSignedURL(queryString);
 
-			if (sigValue == null) {
+			//подписи нет, а требуется			
+			if (sigValue == null && Configuration.isSignRequired()) {
 				throw logger.samlHandlerSignatureNotPresentError();
 			}
 
-			return GOSTRedirectBindingSignatureUtil.validateSignature(
+			if (sigValue != null){//подпись есть, не важно требуется или нет
+			   request.addOption("request_with_sign", true);
+			   return GOSTRedirectBindingSignatureUtil.validateSignature(
 					queryString, publicKey, sigValue);
-
+			}else{ //подписи нет и не требуется
+				return true;
+			}
+			
 		} catch (Exception e) {
 			throw logger.samlHandlerSignatureValidationError(e);
 		}

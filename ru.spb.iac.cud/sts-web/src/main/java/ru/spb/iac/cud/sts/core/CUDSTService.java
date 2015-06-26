@@ -1,5 +1,30 @@
 package ru.spb.iac.cud.sts.core;
 
+import java.io.File;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
+import javax.annotation.Resource;
+import javax.jws.HandlerChain;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.xml.soap.SOAPException;
+import javax.xml.soap.SOAPHeader;
+import javax.xml.soap.SOAPMessage;
+import javax.xml.transform.Source;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.ws.Provider;
+import javax.xml.ws.Service;
+import javax.xml.ws.ServiceMode;
+import javax.xml.ws.WebServiceContext;
+import javax.xml.ws.WebServiceException;
+import javax.xml.ws.WebServiceProvider;
+import javax.xml.ws.handler.MessageContext;
+
 import org.picketlink.common.ErrorCodes;
 import org.picketlink.common.PicketLinkLogger;
 import org.picketlink.common.PicketLinkLoggerFactory;
@@ -29,30 +54,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import ru.spb.iac.cud.util.CudPrincipal;
-
-import javax.annotation.Resource;
-import javax.jws.HandlerChain;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.xml.soap.SOAPException;
-import javax.xml.soap.SOAPHeader;
-import javax.xml.soap.SOAPMessage;
-import javax.xml.transform.Source;
-import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.ws.Provider;
-import javax.xml.ws.Service;
-import javax.xml.ws.ServiceMode;
-import javax.xml.ws.WebServiceContext;
-import javax.xml.ws.WebServiceException;
-import javax.xml.ws.WebServiceProvider;
-import javax.xml.ws.handler.MessageContext;
-import java.io.File;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URL;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 
 @WebServiceProvider(serviceName = "CUDSTS", portName = "CUDSTSPort", targetNamespace = "http://sts.services.cud.iac.spb.ru/", wsdlLocation = "WEB-INF/wsdl/CUDSTS_FULL.wsdl")
 @ServiceMode(value = Service.Mode.MESSAGE)
@@ -260,23 +261,38 @@ import java.security.PrivilegedAction;
 		LOGGER.trace("STS received request of type " + requestType);
 
 		try {
+			
+			MessageContext mc = context.getMessageContext();
+			HttpServletRequest hr = (HttpServletRequest) mc
+					.get(MessageContext.SERVLET_REQUEST);
+			HttpSession hs = hr.getSession();
+			
 			if (requestType.equals(WSTrustConstants.ISSUE_REQUEST)) {
 
 				Source source = this.marshallResponse(handler.issue(request,
 						cud_principal));
 
-				Document doc = handler.postProcess(
-						(Document) ((DOMSource) source).getNode(), request);
-
-				 
-
+				Document doc = null;
+				// есть подпись
+				if(hs.getAttribute("request_with_sign")!= null){
+					doc = handler.postProcess(
+							(Document) ((DOMSource) source).getNode(), request);
+				}else{
+					doc = DocumentUtil.normalizeNamespaces((Document) ((DOMSource) source).getNode());
+				}
+				
 				return new DOMSource(doc);
 			} else if (requestType.equals(WSTrustConstants.RENEW_REQUEST)) {
 				Source source = this.marshallResponse(handler.renew(request,
 						cud_principal));
-
-				Document document = handler.postProcess(
-						(Document) ((DOMSource) source).getNode(), request);
+				Document document = null;
+				// есть подпись
+				if(hs.getAttribute("request_with_sign")!= null){
+					document= handler.postProcess(
+							(Document) ((DOMSource) source).getNode(), request);
+				}else{
+					document = DocumentUtil.normalizeNamespaces((Document) ((DOMSource) source).getNode());
+				}
 				return new DOMSource(document);
 			} else if (requestType.equals(WSTrustConstants.CANCEL_REQUEST)) {
 				return this.marshallResponse(handler.cancel(request,
