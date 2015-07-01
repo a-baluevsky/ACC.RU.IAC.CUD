@@ -599,9 +599,8 @@ import org.slf4j.LoggerFactory;
 	    	
 	    	 usrBeanCrt.setUpSignUser(clUsrBean.getSignObject());
 	    	    	  
-	    	  usrBeanCrt.setUpSign(clUsrBean.getSignObject().substring(0,3)+"00000");
-	    	 //изменение для учёта отделов как организаций 
-	    	 //usrBeanCrt.setUpSign(clOrgBean.getSignObject());	    	 
+	    	  //usrBeanCrt.setUpSign(clUsrBean.getSignObject().substring(0,3)+"00000");
+	    	 usrBeanCrt.setUpSign(clOrgBean.getSignObject());	//изменение для учёта отделов как организаций     	 
 	    	  
 	       }else{
 	       	  log.info("usrManager:addUsr:03");

@@ -3,15 +3,15 @@ package iac.grn.infosweb.context.mc.clorg;
 import java.util.List;
 import java.util.List;
 import java.util.List;
+
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.entity.AcLegalEntityType;
 import iac.cud.infosweb.entity.AcUser;
 import iac.cud.infosweb.entity.IspBssT;
 import iac.grn.serviceitems.BaseTableItem;
-
 import javaw.util.SerializableList;
-
 import javaw.util.ArrayList;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -346,8 +346,8 @@ import org.jboss.seam.log.Log;
 	     }
 	    return listOrg;
    }
-    /*
-     //изменение для учёта отделов как организаций
+
+    
     public List<IspBssT> autocomplete(Object suggest) throws Exception{
     	String pref = (String)suggest;
     	
@@ -361,12 +361,13 @@ import org.jboss.seam.log.Log;
 	    		AcUser  cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
 	    		
 	    		listOrg=entityManager.createQuery(
-	    				"select o from IspBssT o where o.status='A' " +
-	    				//"and o.signObject like '%00000' " 
-	    				+ "and o.signObject like '%000' " 
-	    				+ "and ( 1 = :orgAccFlag  or o.signObject = :orgCode) " 
-	    				+ "and upper(o.full) like upper(:pref) " 
-	    				+ "order by o.full ")
+	    				(new StringBuilder("select o from IspBssT o where o.status='A' "))
+	    			  //.append("and o.signObject like '%00000' ")
+	    				.append("and o.signObject like '%000' " ) //изменение для учёта отделов как организаций
+	    				.append("and ( 1 = :orgAccFlag  or o.signObject = :orgCode) ")	    				
+	    				  .append("and upper(o.full) like upper(:pref) ") 
+	    				  .append("order by o.full ")	    				
+	    				.toString())
 	    				.setParameter("pref", "%"+pref+"%")
 	    				.setParameter("orgAccFlag", cau.getIsAccOrgManagerValue() ? -1 : 1)
 	    				.setParameter("orgCode", cau.getUpSign()!=null? cau.getUpSign():"")
@@ -379,41 +380,12 @@ import org.jboss.seam.log.Log;
 	         throw e;
 	     }
 	    return listOrg;
-   }*/
-   
-    public List<IspBssT> autocomplete(Object suggest) throws Exception{
-    	String pref = (String)suggest;
-    	
-	    log.info("autocomplete:01:pref:"+pref);
-	    try {
-	    	
-	    	if(listOrg==null){
-	    		
-	    		log.info("autocomplete:02");
-	    		
-	    		AcUser  cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
-	    		
-	    		listOrg=new ArrayList<IspBssT>(entityManager.createQuery(
-	    				(new StringBuilder("select o from IspBssT o where o.status='A' "))
-	    				  .append("and o.signObject like '%00000' ") 
-	    				  .append("and ( 1 = :orgAccFlag  or o.signObject = :orgCode) ")	    				
-	    			//	"and o.full like '"+pref+"%' " 
-	    				  .append("and upper(o.full) like upper(:pref) ") 
-	    				  .append("order by o.full ")	    				
-	    				.toString())
-	    				.setParameter("pref", pref+"%")
-	    				.setParameter("orgAccFlag", cau.getIsAccOrgManagerValue() ? -1 : 1)
-	    				.setParameter("orgCode", cau.getUpSign()!=null? cau.getUpSign():"")
-	    				.getResultList());
-	    		
-	    		log.info("autocomplete:03:size:"+listOrg.size());
-	    	}
-	     } catch (Exception e) {
-	    	 log.error("autocomplete:ERROR:"+e);
-	         throw e;
-	     }
-	    return listOrg;
    }
+   
+	    		
+
+	    		
+   
    public int getConnectError(){
 	   return connectError;
    }
@@ -425,12 +397,10 @@ import org.jboss.seam.log.Log;
 		   if( auditItemsListSelect==null){
 			   log.info("getAuditItemsListSelect:02");
 			   auditItemsListSelect = new ArrayList<BaseTableItem>();
-			   
-			
-			   
-			   auditItemsListSelect.add(acClOrg.getAuditItemsMap().get("signObject"));
-			   auditItemsListSelect.add(acClOrg.getAuditItemsMap().get("full"));
-			   auditItemsListSelect.add(acClOrg.getAuditItemsMap().get("fio"));
+			   Map<String, BaseTableItem> mpAuItems = acClOrg.getAuditItemsMap();
+			   auditItemsListSelect.add(mpAuItems.get("signObject"));
+			   auditItemsListSelect.add(mpAuItems.get("full"));
+			   auditItemsListSelect.add(mpAuItems.get("fio"));
 			   }
 	       return this.auditItemsListSelect;
    }
@@ -444,9 +414,7 @@ import org.jboss.seam.log.Log;
 	   if(auditItemsListContext==null){
 		   ClOrgContext acClOrg= new ClOrgContext();
 		   auditItemsListContext = new ArrayList<BaseTableItem>();
-		   
-		   
-		   auditItemsListContext=new ArrayList<BaseTableItem>( acClOrg.getAuditItemsCollection());
+		   auditItemsListContext=acClOrg.getAuditItemsCollection();
 	   }
 	   return this.auditItemsListContext;
    }
