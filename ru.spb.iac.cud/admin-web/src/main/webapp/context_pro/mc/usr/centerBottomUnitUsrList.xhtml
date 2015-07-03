@@ -339,10 +339,11 @@
 										status="statusCompOrg" usingSuggestObjects="true"
 										for="statesinput"
 										suggestionAction="#{clOrgManager.autocomplete}" var="cap"
-										fetchValue="#{cap.full}" id="suggestion" minChars="1"
+										fetchValue="#{cap.full}" id="suggestion" minChars="3"
 										ajaxSingle="true"
 										onselect="invokeClOrgSelect(#{rich:component('suggestion')}.getSelectedItems().pluck('signObject'));"
-										nothingLabel="Нет данных">
+										nothingLabel="Нет данных"
+										ignoreDupResponses="true">
 										<f:param name="onCreate" value="1" />
 										<f:param name="remoteAudit" value="clOrgSuggestFact" />
 										<!--h:column>
@@ -2536,8 +2537,7 @@ function check_crt(tform){
 	 }
 
 	}
-	
-	
+		
 	 if(msg!=""){
 	  alert(msg);
 	  return true;

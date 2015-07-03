@@ -7,7 +7,7 @@
 
 	<context-param>
 		<param-name>SIGN_REQUIRED</param-name>
-		<param-value>TRUE</param-value>
+		<param-value>false</param-value>
 	</context-param>
 
 	<servlet>

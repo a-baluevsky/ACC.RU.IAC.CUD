@@ -359,15 +359,21 @@ import org.jboss.seam.log.Log;
 	    		log.info("autocomplete:02");
 	    		
 	    		AcUser  cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+	    		boolean bFltr = pref.length()<3;
+	    		StringBuilder sbRequest = new StringBuilder("select o");
+	    		sbRequest.append(" from IspBssT o where o.status='A' ");
+	    		if(bFltr) {
+		    		sbRequest.append(" AND ROWNUM < 100 ");
+	    		}
 	    		
-	    		listOrg=entityManager.createQuery(
-	    				(new StringBuilder("select o from IspBssT o where o.status='A' "))
-	    			  //.append("and o.signObject like '%00000' ")
-	    				.append("and o.signObject like '%000' " ) //изменение для учёта отделов как организаций
-	    				.append("and ( 1 = :orgAccFlag  or o.signObject = :orgCode) ")	    				
-	    				  .append("and upper(o.full) like upper(:pref) ") 
-	    				  .append("order by o.full ")	    				
-	    				.toString())
+	    		sbRequest	
+	    		//.append("and o.signObject like '%00000' ")
+	    		.append("and o.signObject like '%000' " ) //изменение для учёта отделов как организаций
+	    		.append("and ( 1 = :orgAccFlag  or o.signObject = :orgCode) ")	    				
+	    		.append("and upper(o.full) like upper(:pref) ") 
+	    		.append("order by o.full ");
+	    		
+	    		listOrg=entityManager.createQuery(sbRequest.toString())
 	    				.setParameter("pref", "%"+pref+"%")
 	    				.setParameter("orgAccFlag", cau.getIsAccOrgManagerValue() ? -1 : 1)
 	    				.setParameter("orgCode", cau.getUpSign()!=null? cau.getUpSign():"")
@@ -381,11 +387,6 @@ import org.jboss.seam.log.Log;
 	     }
 	    return listOrg;
    }
-   
-	    		
-
-	    		
-   
    public int getConnectError(){
 	   return connectError;
    }

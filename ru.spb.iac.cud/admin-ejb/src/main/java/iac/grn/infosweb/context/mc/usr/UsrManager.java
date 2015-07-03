@@ -512,11 +512,13 @@ import org.slf4j.LoggerFactory;
 	    		log.info("forView:setCudRole");
 	    		au.setIsCudRole(1L);
 	    		
-	    		for(AcRole ar :rlist){	    			
+	    		for(AcRole ar :rlist){
+	    			
 	    			if (ar.getSign().equals("role:urn:sys_admin_cud")){
 	    				au.setIsSysAdmin(1L);
 	    				break;
-	    			}	    			
+	    			}
+	    			
 	    		}
 	    		
 	    	}
