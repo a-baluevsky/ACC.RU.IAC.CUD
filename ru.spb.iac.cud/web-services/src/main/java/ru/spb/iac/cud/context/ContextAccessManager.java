@@ -59,9 +59,11 @@ import ru.spb.iac.cud.items.wrapper.AuditDataPage;
 
 	public AuditDataPage getAuditDataISByPeriod(String sysCode, 
 			Date date1, Date date2, 
-			int rowsCount, int rowStartOffset) {
+			int rowsCount, long rowStartOffset, 
+			long filterUser) {
 		try {
-			return aml.getAuditDataISByPeriod(sysCode, date1, date2, rowsCount, rowStartOffset);
+			LOGGER.debug("getAuditDataISByPeriod");
+			return aml.getAuditDataISByPeriod(sysCode, date1, date2, rowsCount, rowStartOffset, filterUser);
 		} catch (GeneralFailure e) {
 			LOGGER.error("getAuditDataISByPeriod:error:", e);
 			return null;

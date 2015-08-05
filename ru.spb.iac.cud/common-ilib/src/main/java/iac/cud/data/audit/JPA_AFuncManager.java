@@ -71,6 +71,8 @@ public class JPA_AFuncManager extends JPABuilder {
 	        	  putWhereCondition(Date.class, "act_dat", ">=", me.getValue());
 	          } else if("act_dat_value2".equals(sKey)) {
 	        	  putWhereCondition(Date.class, "act_dat", "<=", me.getValue());
+	          } else if("usr_id".equals(sKey)) {
+	        	  putWhereCondition(Long.class, "usr_id", "=", me.getValue());
 	          } else { //делаем фильтр на начало текста
 	        	  putWhereCondition(sKey, "like", me.getValue());
 	          }
@@ -83,7 +85,7 @@ public class JPA_AFuncManager extends JPABuilder {
 	}
 	
 	public List<Object[]> getAuditList( EntityManager entityManager,
-										int firstRow, int numberOfRows) 
+										long rowStartOffset, int numberOfRows) 
 	throws InvalidAlgorithmParameterException {	
         StringBuilder sQuerySql = new StringBuilder("select "); 
         sQuerySql.append("t1.act_id, t1.act_dat_value, t1.usr_fio, t1.arm_name, t1.act_name, t1.usr_id, t1.org_name ")
@@ -103,7 +105,7 @@ public class JPA_AFuncManager extends JPABuilder {
         	query = entityManager.createNativeQuery(sQuerySql.toString()); 	    			
         }
         // для отладки: System.out.println(getQueryString(query));
-        return query.setFirstResult(firstRow).setMaxResults(numberOfRows).getResultList();
+        return query.setFirstResult((int)rowStartOffset).setMaxResults(numberOfRows).getResultList();
 	}
 	
 	public Long getAuditCount(EntityManager entityManager) 

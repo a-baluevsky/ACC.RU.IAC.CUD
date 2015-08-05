@@ -29,6 +29,7 @@ public interface AuditService {
 			@WebParam(name = "date1", targetNamespace = NS) Date date1,
 			@WebParam(name = "date2", targetNamespace = NS) Date date2,
 			@WebParam(name = "rowsCount", targetNamespace = NS) int rowsCount,
-			@WebParam(name = "rowStartOffset", targetNamespace = NS) int rowStartOffset
+			@WebParam(name = "rowStartOffset", targetNamespace = NS) long rowStartOffset,
+			@WebParam(name = "filterUser", targetNamespace = NS) long filterUser
 		) throws GeneralFailure;	
 }

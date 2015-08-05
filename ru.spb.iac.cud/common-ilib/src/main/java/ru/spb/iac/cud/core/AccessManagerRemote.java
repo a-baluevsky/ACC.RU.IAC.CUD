@@ -42,5 +42,5 @@ public interface AccessManagerRemote {
 			String ip_adr, Long idUser, String loginUser, String codeSys);
 	
 	public AuditDataPage getAuditDataISByPeriod(String sysCode, Date date1,
-			Date date2, int rowsCount, int rowStartOffset) throws GeneralFailure;	
+			Date date2, int rowsCount, long rowStartOffset, long filterUser) throws GeneralFailure;	
 }

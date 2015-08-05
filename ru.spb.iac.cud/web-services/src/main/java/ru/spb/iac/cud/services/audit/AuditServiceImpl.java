@@ -46,14 +46,15 @@ import ru.spb.iac.cud.services.CUDService;
 			@WebParam(name = "date1", targetNamespace = NS) Date date1,
 			@WebParam(name = "date2", targetNamespace = NS) Date date2,
 			@WebParam(name = "rowsCount", targetNamespace = NS) int rowsCount,
-			@WebParam(name = "rowStartOffset", targetNamespace = NS) int rowStartOffset
+			@WebParam(name = "rowStartOffset", targetNamespace = NS) long rowStartOffset,
+			@WebParam(name = "filterUser", targetNamespace = NS) long filterUser
 		) throws GeneralFailure {
 		
 		AuditDataPage adp = null;
 		try {
 			String sysCode = getIDSystem(); //LoadAssertionFromMessageContext(wsContext.getMessageContext()).getSubjectNameID();
 			LOGGER.debug("getAuditDataISByPeriod");
-			adp = (new ContextAccessManager()).getAuditDataISByPeriod(sysCode, date1, date2, rowsCount, rowStartOffset);
+			adp = (new ContextAccessManager()).getAuditDataISByPeriod(sysCode, date1, date2, rowsCount, rowStartOffset, filterUser);
 		} catch (Exception e) {		
 			e.printStackTrace();
 		}

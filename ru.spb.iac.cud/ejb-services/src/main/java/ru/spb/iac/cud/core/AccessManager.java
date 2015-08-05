@@ -1,12 +1,12 @@
 package ru.spb.iac.cud.core;
 
 import iac.cud.data.audit.JPA_AFuncManager;
+import iac.cud.data.usr.JPA_UsrManager;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.security.InvalidAlgorithmParameterException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509CRL;
 import java.security.cert.X509CRLEntry;
@@ -16,8 +16,6 @@ import java.util.Date;
 import java.util.HashMap; import java.util.Map;
 import java.util.List;
 import java.util.Properties;
-
-import javaw.util.ArrayList;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -37,7 +35,6 @@ import ru.spb.iac.cud.items.wrapper.AuditDataPage;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
-import org.apache.openejb.jee.jba.cmp.Strategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -175,20 +172,8 @@ public String authenticate_login(String login, String password,
 		try {
 
 			LOGGER.debug("authenticate_login_obo:01");
-			idUser = ((java.math.BigDecimal) em
-					.createNativeQuery(
-							(new StringBuilder("select AU.ID_SRV "))
-							  .append("from ")
-							  .append("AC_USERS_KNL_T au ")
-							  .append("where AU.LOGIN=? ")
-							  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT <= sysdate) ")
-							  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT > sysdate) ")
-							  .append("and AU.STATUS = 1 ")
-					.toString())
-					.setParameter(1, login).getSingleResult()).longValue();
-
-			LOGGER.debug("authenticate_login_obo:idUser:"
-					+ idUser);
+			idUser = JPA_UsrManager.FindUserIdByFieldValue(em, "LOGIN", login);
+			LOGGER.debug("authenticate_login_obo:idUser:" + idUser);
 
 			sys_audit(authModeValue, "login:" + login + "; passw:***", "true",
 					IPAddress, idUser, codeSys);
@@ -235,17 +220,7 @@ public String authenticate_login(String login, String password,
 
 			LOGGER.debug("authenticate_login_obo:01");
 
-			loginUser = ((String) em
-					.createNativeQuery(
-							(new StringBuilder("select AU.LOGIN "))
-							  .append("from ")
-							  .append("AC_USERS_KNL_T au ")
-							  .append("where AU.ID_SRV=? ")
-							  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT <= sysdate) ")
-							  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT > sysdate) ")
-							  .append("and AU.STATUS = 1 ")
-					.toString())
-					.setParameter(1, Long.valueOf(uid)).getSingleResult());
+			loginUser = (String)JPA_UsrManager.FindUserDataByFieldValue(em, "LOGIN", "ID_SRV", uid);
 
 			LOGGER.debug("authenticate_login_obo:loginUser:"
 					+ loginUser);
@@ -859,24 +834,11 @@ public String authenticate_login(String login, String password,
 
 		Long result = null;
 		try {
-			result = ((java.math.BigDecimal) em
-					.createNativeQuery(
-							(new StringBuilder("select AU.ID_SRV "))
-							  .append("from ")
-							  .append("AC_USERS_KNL_T au ")
-							  .append("where AU.LOGIN=? ")
-							  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT <= sysdate) ")
-							  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT > sysdate) ")
-					.toString())
-					.setParameter(1, login).getSingleResult()).longValue();
-
+			result = JPA_UsrManager.FindUserIdByFieldValue(em, "LOGIN", login);
 		} catch (NoResultException ex) {
-
 			LOGGER.debug("get_id_user:NoResultException");
 			throw new GeneralFailure("User is not defined!");
-
 		} catch (Exception e) {
-
 			LOGGER.error("get_id_user:Error:", e);
 			throw new GeneralFailure(e.getMessage());
 		}
@@ -891,7 +853,8 @@ public String authenticate_login(String login, String password,
 	@Override
 	public AuditDataPage getAuditDataISByPeriod(String sysCode, 
 			Date date1, Date date2, 
-			int rowsCount, int rowStartOffset) 
+			int rowsCount, long rowStartOffset, 
+			long filterUser) 
 	throws GeneralFailure {
 		try {
 			AuditDataPage adp = new AuditDataPage();
@@ -901,7 +864,10 @@ public String authenticate_login(String login, String password,
 			SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy");
 			filter.put("act_dat_value", df.format(date1));
 			filter.put("act_dat_value2", df.format(date2));
-			filter.put("arm_id", get_id_is(sysCode).toString());		
+			filter.put("arm_id", get_id_is(sysCode).toString());
+			if(filterUser!=0) {				
+				filter.put("usr_id", String.valueOf(filterUser)); //"usr_fio"
+			}
 			jpaFuncMgr.setFilter(filter);
 			adp.setTotalRowsCount(jpaFuncMgr.getAuditCount(em));
 			StringBuilder errMsg = new StringBuilder();

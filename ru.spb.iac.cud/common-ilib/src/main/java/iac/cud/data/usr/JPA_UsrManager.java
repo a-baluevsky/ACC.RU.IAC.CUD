@@ -185,4 +185,23 @@ public class JPA_UsrManager extends JPABuilder {
 				 .getSingleResult()).longValue();
 	}
 	
+	public static Object FindUserDataByFieldValue(EntityManager em, String dataFieldName, String fieldName, String fieldValue) {
+		return  em
+				.createNativeQuery(
+						(new StringBuilder("select AU.").append(dataFieldName).append(" "))
+						  .append("from ")
+						  .append("AC_USERS_KNL_T au ")
+						  .append("where AU.").append(fieldName).append("=? ")
+						  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT <= sysdate) ")
+						  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT > sysdate) ")
+								// "and AU.STATUS != 2 ")
+								  .append("and AU.STATUS = 1 ")
+								.toString())
+				.setParameter(1, fieldValue).getSingleResult();
+	}
+	
+	public static Long FindUserIdByFieldValue(EntityManager em, String fieldName, String fieldValue) {
+		return ((java.math.BigDecimal)FindUserDataByFieldValue(em, "ID_SRV", fieldName, fieldValue)).longValue();
+	}
+	
 }
