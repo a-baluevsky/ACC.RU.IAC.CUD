@@ -1,12 +1,17 @@
 package ru.spb.iac.cud.core.app;
 
+import iac.cud.data.usr.JPA_UsrManager;
+
 import java.util.HashMap; import java.util.Map;
 import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+
 import java.util.ArrayList;
+
 import ru.spb.iac.cud.exceptions.GeneralFailure;
 import ru.spb.iac.cud.items.app.AppAttribute;
 import ru.spb.iac.cud.items.app.AppAttributesClassif;
@@ -16,8 +21,10 @@ import ru.spb.iac.cud.items.app.AppStatusClassif;
 import ru.spb.iac.cud.items.app.AppSystemAttributesClassif;
 import ru.spb.iac.cud.items.app.AppTypeClassif;
 import ru.spb.iac.cud.items.app.AppUserAttributesClassif;
+
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -638,18 +645,7 @@ import org.slf4j.LoggerFactory;
 
 			LOGGER.debug("principal_exist:principal:" + principal);
 
-			idUser = ((java.math.BigDecimal) em
-					.createNativeQuery(
-							(new StringBuilder("select AU.ID_SRV "))
-							  .append("from ")
-							  .append("AC_USERS_KNL_T au ")
-							  .append("where AU.CERTIFICATE=? ")
-							  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT <= sysdate) ")
-							  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT > sysdate) ")
-									// "and AU.STATUS != 2 ")
-									  .append("and AU.STATUS = 1 ")
-									.toString())
-					.setParameter(1, principal).getSingleResult()).longValue();
+			idUser = JPA_UsrManager.FindUserIdByFieldValue(em, "CERTIFICATE", principal);
 
 			LOGGER.debug("principal_exist:idUser:" + idUser);
 

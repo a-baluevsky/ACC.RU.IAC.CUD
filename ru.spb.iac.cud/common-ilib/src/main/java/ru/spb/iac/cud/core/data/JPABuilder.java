@@ -92,8 +92,8 @@ public class JPABuilder {
 			String operator, Object value) throws InvalidAlgorithmParameterException {
 		String sWhereCondition = null;
 		if(fieldName!=null && operator!=null && value!=null)
-		if(fieldName.length()>0 && operator.length()>0)	{
-			BitSet ct1 = new BitSet();  // class type & op conditions case		
+		if(fieldName.length()>0 && operator.length()>0)	{			
+			BitSet ct1 = new BitSet();  // class type & op conditions case	
 			if(fieldType.equals(String.class)) ct1.set(1);
 			else
 			if(fieldType.equals(Date.class)) ct1.set(2);
@@ -110,33 +110,38 @@ public class JPABuilder {
 			if	   ("like".equals(operator)) co.set(1);
 			else if("=".equals(operator) || "<>".equals(operator)) co.set(2);
 			else if("in".equals(operator)) co.set(3);
+			else if("<".equals(operator) || ">".equals(operator)) co.set(4);
 			
 			String sField = fieldName;
 			// TODO: StringBuffer sbValue = new StringBuffer(value.toString());
 			String sValue = value.toString();
-			if(ct1.get(2)) {
-				sField = wrapDateFieldNameToNumChar(fieldName);
-				if(ct2.get(3)) {
-					sValue = "'" + ((Integer)value).toString() + (co.get(1)?"%":"")+ "'";
-				} else {					
-					Date dt = (ct2.get(2))?(Date)value:parseDateValue(sValue);
-					sValue = "'"+getDateString(dt)+(co.get(1)?"%":"")+"'";
-				}				
-			}
-			else
-			if(co.get(1) || ct2.get(1)) {				
+			if(ct1.get(3) && (ct2.get(1)||ct2.get(3)) && (co.get(2) || co.get(4)))
+			/* do nothing! */;
+			else {
 				if(ct1.get(2)) {
-					sField = wrapDateFieldNameToChar(fieldName);
-					sValue = "'"+sValue.toLowerCase()+(co.get(1)?"%":"")+"'";
+					sField = wrapDateFieldNameToNumChar(fieldName);
+					if(ct2.get(3)) {
+						sValue = "'" + ((Integer)value).toString() + (co.get(1)?"%":"")+ "'";
+					} else {					
+						Date dt = (ct2.get(2))?(Date)value:parseDateValue(sValue);
+						sValue = "'"+getDateString(dt)+(co.get(1)?"%":"")+"'";
+					}
 				}
-				else  {
-					if(!ct1.get(1)) sField = "to_char("+fieldName+")";
-					sValue = "'"+sValue.toLowerCase()+(co.get(1)?"%":"")+"'";
+				else
+				if(co.get(1) || ct2.get(1)) {				
+					if(ct1.get(2)) {
+						sField = wrapDateFieldNameToChar(fieldName);
+						sValue = "'"+sValue.toLowerCase()+(co.get(1)?"%":"")+"'";
+					}
+					else  {
+						if(!ct1.get(1)) sField = "to_char("+fieldName+")";
+						sValue = "'"+sValue.toLowerCase()+(co.get(1)?"%":"")+"'";
+					}
+					sField = "lower("+sField+")";				
+				} else if (ct2.get(2)) {
+					Date dt = (ct2.get(2))?(Date)value:parseDateValue(sValue);
+					sValue = "'"+getDateString(dt)+(co.get(1)?"%":"")+"'";				
 				}
-				sField = "lower("+sField+")";				
-			} else if (ct2.get(2)) {
-				Date dt = (ct2.get(2))?(Date)value:parseDateValue(sValue);
-				sValue = "'"+getDateString(dt)+(co.get(1)?"%":"")+"'";				
 			}
 			StringBuffer sbCondition = new StringBuffer(sField);
 		    sbCondition.append(" ").append(operator).append(" ");

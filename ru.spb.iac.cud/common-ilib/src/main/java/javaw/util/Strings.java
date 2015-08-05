@@ -137,4 +137,8 @@ public class Strings {
 		return l;		
 	}
 
+	public static boolean isNullOrEmpty(String str) {
+		return str==null || str.length()==0;
+	}
+
 }
