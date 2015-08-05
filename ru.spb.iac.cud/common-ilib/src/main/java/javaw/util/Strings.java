@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Strings {
 	interface Stringer {
@@ -118,6 +119,22 @@ public class Strings {
 	public static String toRON(String varName, Object o) {
 		StringerRON ron = new StringerRON();
 		return StrSerializer.fmtVariable(ron, varName, o);		
+	}
+
+	public static List<String[]> stringifyList(List<Object[]> dataRows) {
+		List<String[]> l = new ArrayList<String[]>();
+		if(dataRows!=null && dataRows.get(0)!=null) {
+			int rwSize = dataRows.get(0).length;
+			for(Object o: dataRows) {
+				Object[] r = (Object[]) o;
+				String[] curRow = new String[rwSize];
+				for (int i = 0; i < rwSize; i++) {
+					curRow[i] = r[i].toString();					
+				}
+				l.add(curRow);
+			}			
+		}
+		return l;		
 	}
 
 }

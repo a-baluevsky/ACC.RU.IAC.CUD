@@ -1,5 +1,6 @@
 package ru.spb.iac.cud.context;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.naming.Context;
@@ -12,6 +13,7 @@ import ru.spb.iac.cud.core.AccessManagerLocal;
 import ru.spb.iac.cud.exceptions.GeneralFailure;
 import ru.spb.iac.cud.exceptions.InvalidCredentials;
 import ru.spb.iac.cud.items.AuditFunction;
+import ru.spb.iac.cud.items.wrapper.AuditDataPage;
 
  public class ContextAccessManager {
 
@@ -53,6 +55,17 @@ import ru.spb.iac.cud.items.AuditFunction;
 			InvalidCredentials {
 		LOGGER.debug("change_password");
 		aml.change_password(login, password, new_password, IPAddress);
+	}
+
+	public AuditDataPage getAuditDataISByPeriod(String sysCode, 
+			Date date1, Date date2, 
+			int rowsCount, int rowStartOffset) {
+		try {
+			return aml.getAuditDataISByPeriod(sysCode, date1, date2, rowsCount, rowStartOffset);
+		} catch (GeneralFailure e) {
+			LOGGER.error("getAuditDataISByPeriod:error:", e);
+			return null;
+		}
 	}
 
 }

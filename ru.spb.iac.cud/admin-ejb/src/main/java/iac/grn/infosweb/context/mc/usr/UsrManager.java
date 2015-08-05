@@ -1,5 +1,6 @@
 package iac.grn.infosweb.context.mc.usr;
 
+import iac.cud.data.usr.JPA_UsrManager;
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.dataitems.UCCertItem;
 import iac.cud.infosweb.dataitems.UserItem;
@@ -217,177 +218,31 @@ import org.slf4j.LoggerFactory;
 	public void invokeLocal(String type, int firstRow, int numberOfRows,
 	           String sessionId) {
 		try{			 
-			 log.info("UserManager:invokeLocal");
-			 
+			 log.info("UserManager:invokeLocal");			 
+			 JPA_UsrManager jpaUsrManager = new JPA_UsrManager();
+             // 13.02.15: ab 
+			 AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+			 if(cau!=null && cau.getIsAccOrgManagerValue()) {
+				String curUserName = cau.getName1();
+				String sCurUserOrg = cau.getUpSign();
+				log.info("invokeLocal - filter for: "+curUserName+", "+sCurUserOrg);
+				jpaUsrManager.IsAccOrgManagerValue = true;
+				jpaUsrManager.UpSign = sCurUserOrg;
+			 }
 			 UsrStateHolder usrStateHolder = (UsrStateHolder)
-					  Component.getInstance("usrStateHolder",ScopeType.SESSION);
+					  Component.getInstance("usrStateHolder",ScopeType.SESSION);			 
 			 Map<String, String> filterMap = usrStateHolder.getColumnFilterValues();
-			 resetWhereConditions();
-			 //String st=null;
-			 
-             // TODO: use QuerySvc to analyze filter data and produce consistent SQL-query			 
-                if(filterMap!=null) {
-   	    		 Set<Map.Entry<String, String>> setFilterUser = filterMap.entrySet();
-   	              for (Map.Entry<String, String> me : setFilterUser) {   	               
-	   	   		     if("t1_crt_date".equals(me.getKey())){  
-	   	   		    	 putWhereCondition(Date.class, "t1_crt_date", ">=", me.getValue());
-	   	        	   //делаем фильтр на начало  
-	   	        	     //st=(st!=null?st+" and " :"")+" lower(to_char("+me.getKey()+",'DD.MM.YY HH24:MI:SS')) like lower('"+me.getValue()+"%') ";
-	   	    	     }
-	   	   		     else if ("t1_crt_date2".equals(me.getKey())) {
-	   	   		    	putWhereCondition(Date.class, "t1_crt_date", "<=", me.getValue());
-	   	   		    	System.out.println("invokeLocal: t1_crt_date2="+me.getValue());
-					 }
-	   	   		     else{
-	   	   		    	 putWhereCondition(me.getKey(), "like", me.getValue());
-	   	        		//делаем фильтр на начало
-	   	            	//st=(st!=null?st+" and " :"")+" lower("+me.getKey()+") like lower('"+me.getValue()+"%') ";
-	   	        	  }   	              
-   	              }
-                }
-                
-                // 13.02.15: ab 
-				AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
-				if(cau!=null) {
-					if(cau.getIsAccOrgManagerValue()) {
-						String curUserName = cau.getName1();
-						String sCurUserOrg = cau.getUpSign();
-						System.out.println("invokeLocal - filter for: "+curUserName+", "+sCurUserOrg);
-						//String sfltUsersByMgrOrg = " t1.t1_org_code='"+sCurUserOrg+"'";
-						//log.info("sfltUsersByMgrOrg: "+sfltUsersByMgrOrg);	
-						//st=(st==null)?sfltUsersByMgrOrg:st+" and "+sfltUsersByMgrOrg;
-						putWhereCondition(/*Integer.class,*/ "t1.t1_org_code", "=", sCurUserOrg);
-					}
-				}
-                
-             //log.info("User:invokeLocal:list:filterQuery:"+st);
-				log.info("User:invokeLocal:list:filterQuery: "+getWhereAndClause());
-				
+			 jpaUsrManager.setFilter(filterMap);                
+			 log.info("User:invokeLocal:list:filterQuery: "+jpaUsrManager.getWhereAndClause());
 				
 			 if("list".equals(type)){
-				 log.info("User:invokeLocal:list:01");
-				 String orderQueryUsr=null;
-   				 Set<Map.Entry<String, String>> set = usrStateHolder.getSortOrders().entrySet();		                
-   				 for (Map.Entry<String, String> me : set) {
-        		       if(orderQueryUsr==null){
-        		    	 orderQueryUsr="order by "+me.getKey()+" "+me.getValue();
-        		       }else{
-        		    	 orderQueryUsr=orderQueryUsr+", "+me.getKey()+" "+me.getValue();  
-        		       }
-        		     }
-                   log.info("User:invokeLocal:list:orderQueryUsr:"+orderQueryUsr); 
-                   
-               List<Object[]> lo=null;
-               UserItem ui = null;
-               DateFormat df = new SimpleDateFormat ("dd.MM.yy HH:mm:ss");
-     
-               lo=entityManager.createNativeQuery(
-   					(new StringBuilder("select t1.t1_id, t1.t1_login, t1.t1_cert, t1.t1_usr_code, t1.t1_fio, "))
-			         .append("t1.t1_tel, t1.t1_email,t1.t1_pos, t1.t1_dep_name, t1.t1_org_code, ") 
-			         .append("t1.t1_org_name, t1.t1_org_adr, t1.t1_org_tel, t1.t1_start, t1.t1_end, ") 
-			         .append("t1.t1_status, t1.t1_crt_date, t1.t1_crt_usr_login, t1.t1_upd_date, t1.t1_upd_usr_login, ")
-			         .append("t1.t1_dep_code, t1.t1_org_status, t1.t1_usr_status, t1.t1_dep_status, t1.t1_iogv_bind_type  ")
-			  .append("from( ")
-			  .append("select AU_FULL.ID_SRV t1_id, AU_FULL.login t1_login, AU_FULL.CERTIFICATE t1_cert, t2.CL_USR_CODE t1_usr_code, ")
-			   .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_fio, ")
-			    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.PHONE, CL_USR_FULL.PHONE ) t1_tel, ")
-			    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.E_MAIL, CL_USR_FULL.EMAIL) t1_email, ")
-			    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.POSITION, CL_USR_FULL.POSITION)t1_pos, ")
-			    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.DEPARTMENT, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.FULL_)) t1_dep_name, ")
-			    .append("t1.CL_ORG_CODE t1_org_code, CL_ORG_FULL.FULL_ t1_org_name, ")
-			    .append("CL_ORG_FULL.PREFIX || decode(CL_ORG_FULL.HOUSE, null, null, ','  ||CL_ORG_FULL.HOUSE  ) t1_org_adr, ")
-			    .append("CL_ORG_FULL.PHONE t1_org_tel, ")
-			    .append("to_char(AU_FULL.START_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_start, ")
-			    .append("to_char(AU_FULL.END_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_end, ")
-			    .append("AU_FULL.STATUS t1_status, ")
-			    .append("AU_FULL.CREATED t1_crt_date, ")
-			    .append("USR_CRT.LOGIN t1_crt_usr_login, ")
-			    .append("to_char(AU_FULL.MODIFIED, 'DD.MM.YY HH24:MI:SS') t1_upd_date, ")
-			    .append("USR_UPD.LOGIN t1_upd_usr_login, ")
-			    .append("decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.sign_object)) t1_dep_code, ")
-			    .append("CL_ORG_FULL.STATUS t1_org_status,  CL_usr_FULL.STATUS t1_usr_status, ")
-			     .append("decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.STATUS)) t1_dep_status, ") 
-			     .append("AU_FULL.UP_BINDING t1_iogv_bind_type ")
-			  .append("from ")
-			  .append("(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE ")
-			  .append("from ISP_BSS_T cl_org, ")
-			  .append("AC_USERS_KNL_T au ")
-			  .append("where AU.UP_SIGN = CL_ORG.SIGN_OBJECT ")
-			  .append("group by CL_ORG.SIGN_OBJECT) t1, ")
-			  .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
-			  .append("from ISP_BSS_T cl_usr, ")
-			  .append("AC_USERS_KNL_T au ")
-			  .append("where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT ")
-			  .append("group by CL_usr.SIGN_OBJECT) t2, ")
-			  .append("(select max(CL_dep.ID_SRV) CL_DEP_ID,  CL_DEP.SIGN_OBJECT  CL_DEP_CODE ")
-			  .append("from ISP_BSS_T cl_dep, ")
-			  .append("AC_USERS_KNL_T au ")
-			  .append("where substr(au.UP_SIGN_USER,1,5)||'000'  =cl_dep.SIGN_OBJECT(+) ")
-			  .append("group by CL_DEP.SIGN_OBJECT) t3, ")
-			  .append("ISP_BSS_T cl_org_full, ")
-			  .append("ISP_BSS_T cl_usr_full, ")
-			  .append("ISP_BSS_T cl_dep_full, ")
-			  .append("AC_USERS_KNL_T au_full, ")
-			  .append("AC_USERS_KNL_T usr_crt, ")
-			  .append("AC_USERS_KNL_T usr_upd ")
-			  .append("where cl_org_full.ID_SRV= CL_ORG_ID ")
-			  .append("and cl_usr_full.ID_SRV(+)=CL_USR_ID ")
-			  .append("and cl_DEP_full.ID_SRV(+)=CL_DEP_ID ")
-			  .append("and au_full.UP_SIGN = CL_ORG_CODE ")
-			  .append("and au_full.UP_SIGN_USER  =  CL_USR_CODE(+) ")
-			  .append("and substr(au_full.UP_SIGN_USER,1,5)||'000'  =  CL_DEP_CODE(+) ")
-			  .append("and au_full.CREATOR=USR_CRT.ID_SRV ")
-			  .append("and au_full.MODIFICATOR=USR_UPD.ID_SRV(+) ")
-					//!!!
-					  .append("and AU_FULL.STATUS !=3 ")
-					  .append(")t1 ")
-					  .append(getWhereAndClause())
-					  .append(" ")
-					  //+(st!=null ? " where "+st :" ")+
-                      .append(orderQueryUsr!=null ? orderQueryUsr+", t1_fio " : " order by t1_fio ")
-                      .toString())
-              .setFirstResult(firstRow)
-              .setMaxResults(numberOfRows)
-              .getResultList();
-               
-               
-               auditList = new ArrayList<BaseItem>();
-               
-               for(Object[] objectArrayUm :lo){
-            	   try{
-            	     ui= new UserItem(
-            			  objectArrayUm[0]!=null?Long.valueOf(objectArrayUm[0].toString()):null,
-            			  objectArrayUm[1]!=null?objectArrayUm[1].toString():"",
-            			  objectArrayUm[2]!=null?objectArrayUm[2].toString():"",
-            			  objectArrayUm[3]!=null?objectArrayUm[3].toString():"",
-            			  objectArrayUm[4]!=null?objectArrayUm[4].toString():"",
-            			  objectArrayUm[5]!=null?objectArrayUm[5].toString():"",
-            			  objectArrayUm[6]!=null?objectArrayUm[6].toString():"",
-            			  objectArrayUm[7]!=null?objectArrayUm[7].toString():"",
-            			  objectArrayUm[8]!=null?objectArrayUm[8].toString():"",
-            			  objectArrayUm[9]!=null?objectArrayUm[9].toString():"",
-            			  objectArrayUm[10]!=null?objectArrayUm[10].toString():"",
-            			  objectArrayUm[11]!=null?objectArrayUm[11].toString():"",
-            			  objectArrayUm[12]!=null?objectArrayUm[12].toString():"",
-            			  objectArrayUm[13]!=null?objectArrayUm[13].toString():"",
-            			  objectArrayUm[14]!=null?objectArrayUm[14].toString():"",
-            			  objectArrayUm[15]!=null?Long.valueOf(objectArrayUm[15].toString()):null,
-            			  objectArrayUm[16]!=null?df.format((Date)objectArrayUm[16]) :"",
-            			  objectArrayUm[17]!=null?objectArrayUm[17].toString():"",
-            			  objectArrayUm[18]!=null?objectArrayUm[18].toString():"",
-            			  objectArrayUm[19]!=null?objectArrayUm[19].toString():"",
-            			  objectArrayUm[20]!=null?objectArrayUm[20].toString():"",
-            			  objectArrayUm[21]!=null?objectArrayUm[21].toString():"",
-            			  objectArrayUm[22]!=null?objectArrayUm[22].toString():"",
-            			  objectArrayUm[23]!=null?objectArrayUm[23].toString():"",
-            			  objectArrayUm[24]!=null?Long.valueOf(objectArrayUm[24].toString()):null
-            			   );
-            	     auditList.add(ui);
-            	   }catch(Exception e1){
-            		   log.error("invokeLocal:for:error:"+e1);
-            	   }
-               }  
-               
+				 log.info("User:invokeLocal:list:01");				 
+   				 jpaUsrManager.setSortOrders(usrStateHolder.getSortOrders().entrySet());
+                 log.info("User:invokeLocal:list:orderQueryUsr:"+jpaUsrManager.getOrderByClause());
+                 List<Object[]> lo=jpaUsrManager.getAuditList(entityManager, firstRow, numberOfRows);
+                 StringBuilder errInfo = new StringBuilder();
+                 auditList = UserItem.FromRows(lo, errInfo);
+                 if(errInfo.length()>0) log.error(errInfo.toString());
                // 17.02.15: AB: MANTIS-4954
                m_QueryStats = new long[]{1+firstRow, firstRow+auditList.size(), (auditCount==null)?0:auditCount};
                //System.out.println("m_QueryStats = "+QueryStatsToString());   
@@ -395,74 +250,13 @@ import org.slf4j.LoggerFactory;
              log.info("User:invokeLocal:list:02");
              
 			 } else if("count".equals(type)){
-				 log.info("UserList:count:01");				 
-                 
-                 auditCount = ((java.math.BigDecimal)entityManager.createNativeQuery(
-					        (new StringBuilder("select count(*) "))
-							   .append("from( ")
-							   .append("select AU_FULL.ID_SRV t1_id, AU_FULL.login t1_login, AU_FULL.CERTIFICATE t1_cert, t2.CL_USR_CODE t1_usr_code, ")
-							    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_fio, ")
-							     .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.PHONE, CL_USR_FULL.PHONE ) t1_tel, ")
-							     .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.E_MAIL, CL_USR_FULL.EMAIL) t1_email, ")
-							     .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.POSITION, CL_USR_FULL.POSITION)t1_pos, ")
-							     .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.DEPARTMENT, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.FULL_)) t1_dep_name, ")
-							     .append("t1.CL_ORG_CODE t1_org_code, CL_ORG_FULL.FULL_ t1_org_name, ")
-							     .append("CL_ORG_FULL.PREFIX || decode(CL_ORG_FULL.HOUSE, null, null, ','  ||CL_ORG_FULL.HOUSE  ) t1_org_adr, ")
-							     .append("CL_ORG_FULL.PHONE t1_org_tel, ")
-							     .append("to_char(AU_FULL.START_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_start, ")
-							     .append("to_char(AU_FULL.END_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_end, ")
-							     .append("AU_FULL.STATUS t1_status, ")
-							     .append("AU_FULL.CREATED t1_crt_date, ")
-							     .append("USR_CRT.LOGIN t1_crt_usr_login, ")
-							     .append("to_char(AU_FULL.MODIFIED, 'DD.MM.YY HH24:MI:SS') t1_upd_date, ")
-							     .append("USR_UPD.LOGIN t1_upd_usr_login, ")
-							     .append("decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.sign_object)) t1_dep_code, ")
-							     .append("CL_ORG_FULL.STATUS t1_org_status,  CL_usr_FULL.STATUS t1_usr_status, ")
-							      .append("decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.STATUS)) t1_dep_status, ") 
-							      .append("AU_FULL.UP_BINDING t1_iogv_bind_type ")
-							   .append("from ")
-							   .append("(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE ")
-							   .append("from ISP_BSS_T cl_org, ")
-							   .append("AC_USERS_KNL_T au ")
-							   .append("where AU.UP_SIGN = CL_ORG.SIGN_OBJECT ")
-							   .append("group by CL_ORG.SIGN_OBJECT) t1, ")
-							   .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
-							   .append("from ISP_BSS_T cl_usr, ")
-							   .append("AC_USERS_KNL_T au ")
-							   .append("where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT ")
-							   .append("group by CL_usr.SIGN_OBJECT) t2, ")
-							   .append("(select max(CL_dep.ID_SRV) CL_DEP_ID,  CL_DEP.SIGN_OBJECT  CL_DEP_CODE ")
-							   .append("from ISP_BSS_T cl_dep, ")
-							   .append("AC_USERS_KNL_T au ")
-							   .append("where substr(au.UP_SIGN_USER,1,5)||'000'  =cl_dep.SIGN_OBJECT(+) ")
-							   .append("group by CL_DEP.SIGN_OBJECT) t3, ")
-							   .append("ISP_BSS_T cl_org_full, ")
-							   .append("ISP_BSS_T cl_usr_full, ")
-							   .append("ISP_BSS_T cl_dep_full, ")
-							   .append("AC_USERS_KNL_T au_full, ")
-							   .append("AC_USERS_KNL_T usr_crt, ")
-							   .append("AC_USERS_KNL_T usr_upd ")
-							   .append("where cl_org_full.ID_SRV= CL_ORG_ID ")
-							   .append("and cl_usr_full.ID_SRV(+)=CL_USR_ID ")
-							   .append("and cl_DEP_full.ID_SRV(+)=CL_DEP_ID ")
-							   .append("and au_full.UP_SIGN = CL_ORG_CODE ")
-							   .append("and au_full.UP_SIGN_USER  =  CL_USR_CODE(+) ")
-							   .append("and substr(au_full.UP_SIGN_USER,1,5)||'000'  =  CL_DEP_CODE(+) ")
-							   .append("and au_full.CREATOR=USR_CRT.ID_SRV ")
-							   .append("and au_full.MODIFICATOR=USR_UPD.ID_SRV(+) ")
-								 //!!!
-								   .append("and AU_FULL.STATUS !=3 ")
-								   .append(")t1 ")
-								 .append(getWhereAndClause())	//(st!=null ? " where "+st :" "))							 
-								 .toString())   
-               .getSingleResult()).longValue();
-               
+				 log.info("UserList:count:01");
+                 auditCount = jpaUsrManager.getAuditCount(entityManager);
                  // 17.02.15: AB: MANTIS-4954
                  if(m_QueryStats!=null) {
                 	 m_QueryStats[2] = auditCount;
                 	 //System.out.println("m_QueryStats = "+QueryStatsToString());
-                 }
-                 
+                 }                 
                log.info("User:invokeLocal:count:02:"+auditCount);
            	 } else if("bean".equals(type)){
 				 

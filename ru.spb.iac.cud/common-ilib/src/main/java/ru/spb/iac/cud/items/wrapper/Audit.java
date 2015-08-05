@@ -14,18 +14,18 @@ import ru.spb.iac.cud.items.AuditFunction;
 // используется совместно с @RequestWrapper
  public class Audit {
 
-	@XmlElement(name = "login", required = true, namespace = "http://audit.services.cud.iac.spb.ru/")
-	protected String login;
+	@XmlElement(name = "uidUser", required = true, namespace = "http://audit.services.cud.iac.spb.ru/")
+	protected String uidUser;
 
 	@XmlElement(name = "userFunctions", required = true, namespace = "http://audit.services.cud.iac.spb.ru/")
 	protected List<AuditFunction> userFunctions;
 
-	public String getLogin() {
-		return login;
+	public String getuidUser() {
+		return uidUser;
 	}
 
-	public void setLogin(String login) {
-		this.login = login;
+	public void setuidUser(String uidUser) {
+		this.uidUser = uidUser;
 	}
 
 	public List<AuditFunction> getUserFunctions() {

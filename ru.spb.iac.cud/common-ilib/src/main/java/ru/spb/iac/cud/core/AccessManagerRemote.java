@@ -1,12 +1,16 @@
 package ru.spb.iac.cud.core;
 
+import java.util.Date;
 import java.util.List;
+
 import javax.ejb.Remote;
+
 import ru.spb.iac.cud.exceptions.GeneralFailure;
 import ru.spb.iac.cud.exceptions.InvalidCredentials;
 import ru.spb.iac.cud.exceptions.RevokedCertificate;
 import ru.spb.iac.cud.items.AuditFunction;
 import ru.spb.iac.cud.items.AuthMode;
+import ru.spb.iac.cud.items.wrapper.AuditDataPage;
 
 @Remote
 public interface AccessManagerRemote {
@@ -36,4 +40,7 @@ public interface AccessManagerRemote {
 
 	public void sys_audit_public(Long idServ, String inp_param, String result,
 			String ip_adr, Long idUser, String loginUser, String codeSys);
+	
+	public AuditDataPage getAuditDataISByPeriod(String sysCode, Date date1,
+			Date date2, int rowsCount, int rowStartOffset) throws GeneralFailure;	
 }

@@ -3,9 +3,13 @@ package iac.cud.infosweb.entity;
 import iac.cud.infosweb.dataitems.BaseItem;
 
 import java.io.Serializable;
+
+import javaw.util.ArrayList;
+
 import javax.persistence.*;
 
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -157,6 +161,28 @@ import java.util.Date;
 	}
     public void setAcUsersKnlT(AcUser acUsersKnlT) {
 		this.acUsersKnlT = acUsersKnlT;
+	}
+
+	public static List<BaseItem> FromRows(List<Object[]> lo, StringBuilder errMsg) {
+		List<BaseItem> auditList = new ArrayList<BaseItem>();
+        for(Object[] objectArray :lo){
+       	 try{ 
+             auditList.add(FromRow(objectArray));                      
+     	   }catch(Exception e1){
+     		   errMsg.append("AFunc:invokeLocal:for:error:").append(e1).append('\n');
+     	   }
+        }
+		return auditList;
+	}
+
+	private static ActionsLogKnlT FromRow(Object[] objectArray) {
+		ActionsLogKnlT al = new ActionsLogKnlT();  
+         al.setIdSrv(Long.valueOf(objectArray[0].toString()));
+         al.setDateActionValue(objectArray[1].toString());
+         al.setUserName(objectArray[2]!=null?objectArray[2].toString():"");
+         al.setIsName(objectArray[3]!=null?objectArray[3].toString():"");
+         al.setActName(objectArray[4]!=null?objectArray[4].toString():"");
+		return al;
 	}
 	
 }

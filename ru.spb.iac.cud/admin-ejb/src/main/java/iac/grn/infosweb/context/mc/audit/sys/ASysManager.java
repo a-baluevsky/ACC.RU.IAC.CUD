@@ -36,6 +36,8 @@ import iac.grn.serviceitems.BaseTableItem;
 
 import javax.servlet.http.HttpServletResponse;
 
+import iac.cud.data.audit.JPA_ASysManager;
+
 /**
  * ”правл€ющий Ѕин
  * @author bubnov
@@ -170,146 +172,30 @@ import javax.servlet.http.HttpServletResponse;
 	
     public void invokeLocal(String type, int firstRow, int numberOfRows,
 	           String sessionId) {
+    	
 		try{
-			 String orderQuery=null;
-			 DateFormat df = new SimpleDateFormat ("dd.MM.yy HH:mm:ss");
-			 
 			 log.info("ASysManager:invokeLocal");
 			 
 			 ASysStateHolder aSysStateHolder = (ASysStateHolder)
 					  Component.getInstance("aSysStateHolder",ScopeType.SESSION);
-			 Map<String, String> filterMap = aSysStateHolder.getColumnFilterValues();
-			 String st=null;
-			 
+
+			 String st=null;			 
 			 if("list".equals(type)){
 				 log.info("ASys:invokeLocal:list:01");
 				 
-				 Set<Map.Entry<String, String>> set = aSysStateHolder.getSortOrders().entrySet();
-                 for (Map.Entry<String, String> me : set) {
-      		       log.info("me.getKey+:"+me.getKey());
-      		       log.info("me.getValue:"+me.getValue());
-      		       
-      		       if(orderQuery==null){
-      		    	 orderQuery="order by "+me.getKey()+" "+me.getValue();
-      		       }else{
-      		    	 orderQuery=orderQuery+", "+me.getKey()+" "+me.getValue();  
-      		       }
-      		     }
-                 log.info("ASys:invokeLocal:list:orderQuery:"+orderQuery);
-                 
-                 if(filterMap!=null){
-    	    		 Set<Map.Entry<String, String>> setFilterASys = filterMap.entrySet();
-    	              for (Map.Entry<String, String> me : setFilterASys) {
-    	            	
-    	   		        	  if(me.getKey().equals("crt_date")){  
-    	    	      	     	 st=(st!=null?st+" and " :"")+" lower(to_char("+me.getKey()+",'DD.MM.YY HH24:MI:SS')) like lower('"+me.getValue()+"%') ";
-    	    	    	  }else{
-    	    	        		//делаем фильтр на начало
-    	    	            	  st=(st!=null?st+" and " :"")+" lower("+me.getKey()+") like lower('"+me.getValue()+"%') ";
-    	    	          }
-    	              }
-    	    	   }
-                 log.info("ASys:invokeLocal:list:filterQuery:"+st);
-                 
-				
-				 
-                 List<Object[]> lo = entityManager.createNativeQuery(
-                		 (new StringBuilder("select t1.sys_id, t1.crt_date, t1.serv_name, t1.input_param, t1.RESULT_VALUE, "))
-                         .append("t1.IP_ADDRESS, t1.fio ")
-                         .append("from( ")
-                         .append("select SL.ID_SRV sys_id , ")
-                         .append("SL.CREATED crt_date, ")
-                          .append("SERV.FULL_ serv_name, SL.INPUT_PARAM input_param, SL.RESULT_VALUE RESULT_VALUE, SL.IP_ADDRESS, ")
-                         .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO) fio ")
-                         .append("from SERVICES_LOG_KNL_T sl,  ")
-                         .append("SERVICES_BSS_T serv, ")
-                         .append("AC_USERS_KNL_T AU_FULL, ")
-                         .append("ISP_BSS_T cl_usr_full, ")
-                         .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
-                         .append("from ISP_BSS_T cl_usr, ")
-                         .append("AC_USERS_KNL_T au ")
-                         .append("where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT ")
-                         .append("group by CL_usr.SIGN_OBJECT) t2 ")
-                         .append("where SERV.ID_SRV=SL.UP_SERVICES ")
-                         .append("and AU_FULL.UP_SIGN_USER=t2.CL_USR_CODE(+) ")
-                         .append("and AU_FULL.ID_SRV (+)=SL.UP_USERS ")
-                         .append("and CL_USR_FULL.ID_SRV(+)=t2.CL_USR_ID ")
-                         .append(") t1")
-                         .append(st!=null ? " where "+st :" ")
-                         .append(orderQuery!=null ? orderQuery+", sys_id desc " : " order by sys_id desc ")
-                         .toString())
-                          .setFirstResult(firstRow)
-                          .setMaxResults(numberOfRows)
-        		          .getResultList();
-                 auditList = new ArrayList<BaseItem>();
-                 
-                 for(Object[] objectArray :lo){
-                	 
-                	 try{ 
-                		 
-                	  ServicesLogKnlT sl = new ServicesLogKnlT();
-                      
-                      sl.setIdSrv(Long.valueOf(objectArray[0].toString()));
-                      sl.setCreatedValue(df.format((Date)objectArray[1]));
-                      sl.setServName(objectArray[2]!=null?objectArray[2].toString():"");
-                      sl.setInputParam(objectArray[3]!=null?objectArray[3].toString():"");
-                      sl.setResultValue(objectArray[4]!=null?objectArray[4].toString():"");
-                      sl.setIpAddress(objectArray[5]!=null?objectArray[5].toString():"");
-                      sl.setUserFio(objectArray[6]!=null?objectArray[6].toString():"");
-                      
-                       auditList.add(sl);
-                      
-              	   }catch(Exception e1){
-              		   log.error("ASys:invokeLocal:for:error:"+e1);
-              	   }
-                 }
-				 
-             log.info("ASys:invokeLocal:list:02");
+				 List<Object[]> lo = JPA_ASysManager.getAuditList(entityManager,
+						 		firstRow, numberOfRows,
+						 		aSysStateHolder.getColumnFilterValues(), 
+						 		aSysStateHolder.getSortOrders().entrySet());
+		         StringBuilder errInfo = new StringBuilder();
+				 auditList = ServicesLogKnlT.FromRows(lo, errInfo);
+				 if(errInfo.length()>0) log.error(errInfo.toString());
+		         log.info("ASys:invokeLocal:list:02");
   
 			 } else if("count".equals(type)){
 				 log.info("ASysList:count:01");
-				 
-				 if(filterMap!=null){
-    	    		 Set<Map.Entry<String, String>> setFilterASys = filterMap.entrySet();
-    	              for (Map.Entry<String, String> me : setFilterASys) {
-    	              
-    	   		   
-    	             if(me.getKey().equals("crt_date")){  
-  	    	             	 st=(st!=null?st+" and " :"")+" lower(to_char("+me.getKey()+",'DD.MM.YY HH24:MI:SS')) like lower('"+me.getValue()+"%') ";
-  	    	    	  }else{
-  	    	        		//делаем фильтр на начало
-  	    	            	  st=(st!=null?st+" and " :"")+" lower("+me.getKey()+") like lower('"+me.getValue()+"%') ";
-  	    	          }  
-    	              }
-    	    	   }
-                 log.info("ASys:invokeLocal:count:filterQuery:"+st);
-				 
-				 auditCount = ((java.math.BigDecimal)entityManager.createNativeQuery(
-					        (new StringBuilder("select count(*) "))
-	                           .append("from( ")
-	                           .append("select SL.ID_SRV sys_id , ")
-	                           .append("SL.CREATED crt_date, ") /*"to_char(SL.CREATED , 'DD.MM.YY HH24:MI:SS') crt_value, "*/
-	                           .append("SERV.FULL_ serv_name, SL.INPUT_PARAM input_param, SL.RESULT_VALUE RESULT_VALUE, SL.IP_ADDRESS, ")
-	                           .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO) fio ")
-	                           .append("from SERVICES_LOG_KNL_T sl,  ")
-	                           .append("SERVICES_BSS_T serv, ")
-	                           .append("AC_USERS_KNL_T AU_FULL, ")
-	                           .append("ISP_BSS_T cl_usr_full, ")
-	                           .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
-	                           .append("from ISP_BSS_T cl_usr, ")
-	                           .append("AC_USERS_KNL_T au ")
-	                           .append("where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT ")
-	                           .append("group by CL_usr.SIGN_OBJECT) t2 ")
-	                           .append("where SERV.ID_SRV=SL.UP_SERVICES ")
-	                           .append("and AU_FULL.UP_SIGN_USER=t2.CL_USR_CODE(+) ")
-	                           .append("and AU_FULL.ID_SRV (+)=SL.UP_USERS ")
-	                           .append("and CL_USR_FULL.ID_SRV(+)=t2.CL_USR_ID ")
-	                           .append(") t1")
-			                   .append(st!=null ? " where "+st :" ")
-	               			 .toString())
-                   .getSingleResult()).longValue();
-                 
-               log.info("ASys:invokeLocal:count:02:"+auditCount);
+				 auditCount = JPA_ASysManager.getAuditCount(entityManager, aSysStateHolder.getColumnFilterValues());                 
+                 log.info("ASys:invokeLocal:count:02:"+auditCount);
            	 } 
 			 else if("listReport".equals(type)){
 				 log.info("invokeLocal:listReport:01");

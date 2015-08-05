@@ -3,6 +3,11 @@ package iac.cud.infosweb.dataitems;
 import iac.cud.infosweb.dataitems.BaseItem;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
  public class UserItem extends BaseItem implements Serializable {
 
@@ -68,7 +73,50 @@ import java.io.Serializable;
 
 	public UserItem() {
 	}
-
+	
+	public static List<BaseItem> FromRows(List<Object[]> lo, StringBuilder log) {
+		DateFormat df = new SimpleDateFormat ("dd.MM.yy HH:mm:ss");	
+		List<BaseItem> auditList = new ArrayList<BaseItem>();
+        for(Object[] objectArrayUm :lo){
+	        try{
+	   		   auditList.add(UserItem.FromRow(objectArrayUm, df));
+	   	   	}catch(Exception e1){
+	   	   		log.append("FromRows:for:error:"+e1).append('\n');
+	   	   	}
+        }
+		return auditList;
+	}
+	
+	public static UserItem FromRow(Object[] objectArrayUm, DateFormat df) {
+		return new UserItem(
+  			  objectArrayUm[0]!=null?Long.valueOf(objectArrayUm[0].toString()):null,
+  			  objectArrayUm[1]!=null?objectArrayUm[1].toString():"",
+  			  objectArrayUm[2]!=null?objectArrayUm[2].toString():"",
+  			  objectArrayUm[3]!=null?objectArrayUm[3].toString():"",
+  			  objectArrayUm[4]!=null?objectArrayUm[4].toString():"",
+  			  objectArrayUm[5]!=null?objectArrayUm[5].toString():"",
+  			  objectArrayUm[6]!=null?objectArrayUm[6].toString():"",
+  			  objectArrayUm[7]!=null?objectArrayUm[7].toString():"",
+  			  objectArrayUm[8]!=null?objectArrayUm[8].toString():"",
+  			  objectArrayUm[9]!=null?objectArrayUm[9].toString():"",
+  			  objectArrayUm[10]!=null?objectArrayUm[10].toString():"",
+  			  objectArrayUm[11]!=null?objectArrayUm[11].toString():"",
+  			  objectArrayUm[12]!=null?objectArrayUm[12].toString():"",
+  			  objectArrayUm[13]!=null?objectArrayUm[13].toString():"",
+  			  objectArrayUm[14]!=null?objectArrayUm[14].toString():"",
+  			  objectArrayUm[15]!=null?Long.valueOf(objectArrayUm[15].toString()):null,
+  			  objectArrayUm[16]!=null?df.format((Date)objectArrayUm[16]) :"",
+  			  objectArrayUm[17]!=null?objectArrayUm[17].toString():"",
+  			  objectArrayUm[18]!=null?objectArrayUm[18].toString():"",
+  			  objectArrayUm[19]!=null?objectArrayUm[19].toString():"",
+  			  objectArrayUm[20]!=null?objectArrayUm[20].toString():"",
+  			  objectArrayUm[21]!=null?objectArrayUm[21].toString():"",
+  			  objectArrayUm[22]!=null?objectArrayUm[22].toString():"",
+  			  objectArrayUm[23]!=null?objectArrayUm[23].toString():"",
+  			  objectArrayUm[24]!=null?Long.valueOf(objectArrayUm[24].toString()):null
+		);		
+	}
+	
 	public UserItem(Long idUser, String login, String cert, String usrCode,
 			String fio, String phone, String email, String position,
 			String department, String orgCode, String orgName, String orgAdr,
@@ -360,5 +408,7 @@ import java.io.Serializable;
 	public void setUsrChecked(Boolean usrChecked) {
 		this.usrChecked = usrChecked;
 	}
+
+
 
 }

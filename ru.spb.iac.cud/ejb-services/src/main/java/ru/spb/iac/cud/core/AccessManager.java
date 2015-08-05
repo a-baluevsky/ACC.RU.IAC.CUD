@@ -1,16 +1,23 @@
 package ru.spb.iac.cud.core;
 
+import iac.cud.data.audit.JPA_AFuncManager;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.math.BigInteger;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509CRL;
 import java.security.cert.X509CRLEntry;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap; import java.util.Map;
 import java.util.List;
 import java.util.Properties;
+
+import javaw.util.ArrayList;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -25,10 +32,12 @@ import ru.spb.iac.cud.exceptions.InvalidCredentials;
 import ru.spb.iac.cud.exceptions.RevokedCertificate;
 import ru.spb.iac.cud.items.AuditFunction;
 import ru.spb.iac.cud.items.AuthMode;
+import ru.spb.iac.cud.items.wrapper.AuditDataPage;
 
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import org.apache.openejb.jee.jba.cmp.Strategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -873,6 +882,38 @@ public String authenticate_login(String login, String password,
 		}
 
 		return result;
+	}
+
+	/**
+	 * постраничное возвращение данных аудита для системы за период
+	 * @throws GeneralFailure 
+	 */	
+	@Override
+	public AuditDataPage getAuditDataISByPeriod(String sysCode, 
+			Date date1, Date date2, 
+			int rowsCount, int rowStartOffset) 
+	throws GeneralFailure {
+		try {
+			AuditDataPage adp = new AuditDataPage();
+			adp.setRowStartOffset(rowStartOffset);
+			JPA_AFuncManager jpaFuncMgr = new JPA_AFuncManager();
+			Map<String, String> filter = new javaw.util.HashMap<String, String>();
+			SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy");
+			filter.put("act_dat_value", df.format(date1));
+			filter.put("act_dat_value2", df.format(date2));
+			filter.put("arm_id", get_id_is(sysCode).toString());		
+			jpaFuncMgr.setFilter(filter);
+			adp.setTotalRowsCount(jpaFuncMgr.getAuditCount(em));
+			StringBuilder errMsg = new StringBuilder();
+			adp.setDataRows(AuditFunction.FromRows_getAuditDataISByPeriodList(jpaFuncMgr.getAuditList(em, rowStartOffset, rowsCount), errMsg));
+			if(errMsg.length()>0) {
+				throw new GeneralFailure(errMsg.toString());
+			}
+			return adp;
+		} catch (Exception e) {
+			LOGGER.error("getAuditDataISByPeriod:Error:", e);
+			throw new GeneralFailure(e.getMessage());
+		}
 	}
 
 }

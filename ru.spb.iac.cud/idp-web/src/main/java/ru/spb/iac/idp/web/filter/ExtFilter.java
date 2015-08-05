@@ -260,7 +260,7 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 							
 						 LOGGER.debug("doFilter:07_004:" + reqAuthType);
 						 
-						 if((rememberPass&&getAuthTypeForCookie(authTypePassword).equals(reqAuthType)||rememberCert&&getAuthTypeForCookie(authTypeX509).equals(reqAuthType)||
+						 if((rememberPass&&getAuthTypeForCookie(authTypePassword.toLowerCase()).equals(reqAuthType.toLowerCase())||rememberCert&&getAuthTypeForCookie(authTypeX509).equals(reqAuthType)||
 								 (rememberPass||rememberCert)&&getAuthTypeForCookie(authTypeMulti).equals(reqAuthType)) && loginUser !=null){
 							 try{	
 								 (new ContextAccessWebManager())
@@ -274,7 +274,7 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 								 
 								
 									
-									if (!getAuthTypeForCookie(authTypePassword).equals(authType)&&!getAuthTypeForCookie(authTypeX509).equals(authType)){
+									if (!getAuthTypeForCookie(authTypePassword.toLowerCase()).equals(authType.toLowerCase())&&!getAuthTypeForCookie(authTypeX509).equals(authType)){
 										
 										authType=getAuthTypeForCookie(authTypePassword);
 										
@@ -868,7 +868,7 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 
 									response.sendRedirect(redirect_url);
 								
-								} else if (authTypePassword.equals(authType)) {
+								} else if (authTypePassword.toLowerCase().equals(authType.toLowerCase())) {
 
 									// отмечаем, что это цуд перенаправил на
 									// страницу логин/пароля
@@ -931,8 +931,8 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 										+ mainAuthType);
 
 								if (authTypeX509.equals(reqAuthType)
-										&& authTypePassword
-												.equals(mainAuthType)) {
+										&& authTypePassword.toLowerCase()
+												.equals(mainAuthType.toLowerCase())) {
 
 									// когда от нас требуют сертификат,
 									// а у нас есть логин/пароль

@@ -1,6 +1,8 @@
 package iac.grn.infosweb.context.mc.audit.func;
 
 import java.util.List;
+
+import iac.cud.data.audit.JPA_AFuncManager;
 import iac.cud.infosweb.dataitems.AuditFuncItem;
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.dataitems.BaseParamItem;
@@ -200,104 +202,38 @@ import org.jboss.seam.log.Log;
 	public void invokeLocal(String type, int firstRow, int numberOfRows,
 	           String sessionId) {
 		try{
+			JPA_AFuncManager jpaAFuncManager = new JPA_AFuncManager();
+			
 			 log.info("AFuncManager:invokeLocal");
-			 String sQuerySql; javax.persistence.Query query;
+			 
 			 AFuncStateHolder aFuncStateHolder = (AFuncStateHolder)
 					  Component.getInstance("aFuncStateHolder",ScopeType.SESSION);
-			 Map<String, String> filterMap = aFuncStateHolder.getColumnFilterValues();
-			 resetWhereConditions();
-			 // TODO: use QuerySvc to analyze filter data and produce consistent SQL-query	
+
 			 AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
-			 String sQuerySqlT1 =
-					 (new StringBuilder("(select AL.ID_SRV act_id, "))
-					   .append("AL.DATE_ACTION act_dat, to_char(AL.DATE_ACTION, 'DD.MM.YY HH24:MI:SS') act_dat_value, ")
-					   .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO) usr_fio, ")
-					   .append("ARM.ID_SRV arm_id, ARM.FULL_ arm_name, ACT.FULL_ act_name ")
-					   .append("from ACTIONS_LOG_KNL_T al, ")
-					   .append("AC_IS_BSS_T arm, ")
-					   .append("ACTIONS_BSS_T act, ")
-					   .append("AC_USERS_KNL_T AU_FULL, ")
-					   .append("ISP_BSS_T cl_usr_full, ")
-						   .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
-						   .append("from ISP_BSS_T cl_usr, ")
-						   .append("AC_USERS_KNL_T au ")
-						   .append("where AU.UP_SIGN_USER  = CL_usr.SIGN_OBJECT ")
-						   .append("group by CL_usr.SIGN_OBJECT) t2 ")
-					   .append("where ACT.ID_SRV=AL.UP_ACTIONS ")
-					   .append("and ACT.UP_IS=ARM.ID_SRV ")
-					   .append("and AU_FULL.UP_SIGN_USER=t2.CL_USR_CODE(+) ")
-					   .append("and AU_FULL.ID_SRV=AL.UP_USERS ")
-					   .append("and CL_USR_FULL.ID_SRV(+)=t2.CL_USR_ID ")
-					   .append(au.getIsAccOrgManagerValue() ? "and au_full.UP_SIGN = "+au.getUpSign() : "" )
-					   .append(") t1 ")					 
-					 .toString();
-			 Set<Map.Entry<String, String>> set = aFuncStateHolder.getSortOrders().entrySet();			 
-			 resetOrderBy(); putOrderByFromStringSet(set);
-			 String orderQuery=getOrderByClause();
-			 log.info("AFunc:invokeLocal:list:orderQuery:"+orderQuery);  			 
-             if(filterMap!=null){
-	    		 Set<Map.Entry<String, String>> setFilterAFunc = filterMap.entrySet();
-	              for (SerializableMap.Entry<String, String> me : setFilterAFunc) {  
-	            	  String sKey=me.getKey();
-	              //у нас act_dat_value переведена в строку уже в запросе	            	  
-	   		      if("arm_id".equals(sKey)){ 
-	   		    	 putWhereCondition("arm_id", "=", me.getValue());      	        		  
-  	        	  } else if("act_dat_value".equals(sKey)) {
-  	        		  putWhereCondition(Date.class, "act_dat", ">=", me.getValue());
-  	        	  } else if("act_dat_value2".equals(sKey)) {
-  	        		  putWhereCondition(Date.class, "act_dat", "<=", me.getValue());
-  	        	  } else{ //делаем фильтр на начало текста
-	            	 putWhereCondition(sKey, "like", me.getValue());
-	        	  }
-	            }
-	    	  }
-             log.info("AFunc:invokeLocal:filterQuery:"+getWhereAndClause());
+			 jpaAFuncManager.listAllowedSys = au.getAllowedSys();
+			 jpaAFuncManager.IsAccOrgManagerValue = au.getIsAccOrgManagerValue();
+			 jpaAFuncManager.UpSign = au.getUpSign();
+			 
+			 jpaAFuncManager.setFilter(aFuncStateHolder.getColumnFilterValues());
+			 jpaAFuncManager.setSortOrders(aFuncStateHolder.getSortOrders().entrySet());
+			 
+			 log.info("AFunc:invokeLocal:list:orderQuery:"+jpaAFuncManager.getOrderByClause());
+             log.info("AFunc:invokeLocal:filterQuery:"+jpaAFuncManager.getWhereAndClause());
 			 if("list".equals(type)) {
 				 log.info("AFunc:invokeLocal:list:01");
-                 sQuerySql = "select t1.act_id, t1.act_dat_value, t1.usr_fio, t1.arm_name, t1.act_name "
-                		 	 + "from "+sQuerySqlT1;
-                 putOrderBy("act_id", "desc"); 
- 	    		if(au.getAllowedSys()!=null){
-					putWhereCondition("arm_id", "in", ":idsArm");
-					sQuerySql += getWhereAndClause()+" "+getOrderByClause();
-					query = entityManager.createNativeQuery(sQuerySql).setParameter("idsArm", au.getAllowedSys());
- 	    		}else{
-					sQuerySql += getWhereAndClause()+" "+getOrderByClause();
-					query = entityManager.createNativeQuery(sQuerySql); 	    			
- 	    		}
-                 List<Object[]> lo = query.setFirstResult(firstRow).setMaxResults(numberOfRows).getResultList();  
-                 auditList = new ArrayList<BaseItem>();                 
-                 for(Object[] objectArray :lo){
-                	 try{ 
-                      ActionsLogKnlT al = new ActionsLogKnlT();                      
-                      al.setIdSrv(Long.valueOf(objectArray[0].toString()));
-                      al.setDateActionValue(objectArray[1].toString());
-                      al.setUserName(objectArray[2]!=null?objectArray[2].toString():"");
-                      al.setIsName(objectArray[3]!=null?objectArray[3].toString():"");
-                      al.setActName(objectArray[4]!=null?objectArray[4].toString():"");
-                      auditList.add(al);                      
-              	   }catch(Exception e1){
-              		   log.error("AFunc:invokeLocal:for:error:"+e1);
-              	   }
+				 StringBuilder errMsg = new StringBuilder();
+                 auditList = ActionsLogKnlT.FromRows(jpaAFuncManager.getAuditList(entityManager, firstRow, numberOfRows), errMsg);
+                 if(errMsg.length()>0) {
+                	 log.error(errMsg.toString());
                  }
                  m_QueryStats = new long[]{1+firstRow, firstRow+auditList.size(), (auditCount==null)?0:auditCount};
                  log.info("AFunc:invokeLocal:list:02");  
 			 } else if("count".equals(type)){
 				 log.info("AFuncList:count:01");
-				 sQuerySql = "select count(*) from "+sQuerySqlT1; 				 
-  	    		 if(au.getAllowedSys()!=null){
-  	    			putWhereCondition("arm_id", "in", ":idsArm");
-  	    			sQuerySql += getWhereAndClause();
-  	    			query = entityManager.createNativeQuery(sQuerySql)
-                         .setParameter("idsArm", au.getAllowedSys());
-  	    		 } else{
-  	    			sQuerySql += getWhereAndClause();
-  	    			query = entityManager.createNativeQuery(sQuerySql);
-  	    		 } 
-    			 auditCount = ((java.math.BigDecimal)query.getSingleResult()).longValue();
+    			 auditCount = jpaAFuncManager.getAuditCount(entityManager);    			 
                  if(m_QueryStats!=null) {
                 	 m_QueryStats[2] = auditCount;
-                 }    			 
+                 } 
                  log.info("AFunc:invokeLocal:count:02:"+auditCount);
            	 }  else if("listReport".equals(type)){
 				 log.info("AFunc:invokeLocal:listReport:01");

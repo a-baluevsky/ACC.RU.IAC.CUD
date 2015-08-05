@@ -144,9 +144,7 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(AuthEJB.class);
 	
-    public AuthEJB() {
-        // TODO Auto-generated constructor stub
-    }
+    public AuthEJB() {}
 
     public AcUsersKnlT login(String login, String password) {
 
@@ -1027,7 +1025,7 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
 		  
 		  session.setAttribute(CUDUserConsoleConstants.authUserID, Long.valueOf(uid));
      
-          if(CUDUserConsoleConstants.auth_type_password.equals(authType)){
+          if(CUDUserConsoleConstants.auth_type_password.toLowerCase().equals(authType.toLowerCase())){
         	  session.setAttribute(CUDUserConsoleConstants.authType, CUDUserConsoleConstants.authTypeLogin);
           }else if(CUDUserConsoleConstants.auth_type_x509.equals(authType)){
         	  session.setAttribute(CUDUserConsoleConstants.authType, CUDUserConsoleConstants.authTypeCert);

@@ -3,9 +3,16 @@ package iac.cud.infosweb.entity;
 import iac.cud.infosweb.dataitems.BaseItem;
 
 import java.io.Serializable;
+
 import javax.persistence.*;
 
+import org.apache.http.impl.client.AIMDBackoffManager;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -157,6 +164,31 @@ import java.util.Date;
 	}
 	public void setCreatedValue(String createdValue) {
 		this.createdValue = createdValue;
+	}
+
+	public static List<BaseItem> FromRows(List<Object[]> lo, StringBuilder errInfo) {
+		DateFormat df = new SimpleDateFormat ("dd.MM.yy HH:mm:ss");
+        List<BaseItem> auditList = new ArrayList<BaseItem>();        
+        for(Object[] objectArray :lo){       	 
+       	 try{        		 
+              auditList.add(FromRow(objectArray, df));             
+     	   }catch(Exception e1){
+     		   errInfo.append("FromRows:invokeLocal:for:error:"+e1);
+     	   }
+        }
+		return auditList;
+	}	
+	
+	public static ServicesLogKnlT FromRow(Object[] objectArray, DateFormat df) {		
+   		 ServicesLogKnlT sl = new ServicesLogKnlT();             
+         sl.setIdSrv(Long.valueOf(objectArray[0].toString()));
+         sl.setCreatedValue(df.format((Date)objectArray[1]));
+         sl.setServName(objectArray[2]!=null?objectArray[2].toString():"");
+         sl.setInputParam(objectArray[3]!=null?objectArray[3].toString():"");
+         sl.setResultValue(objectArray[4]!=null?objectArray[4].toString():"");
+         sl.setIpAddress(objectArray[5]!=null?objectArray[5].toString():"");
+         sl.setUserFio(objectArray[6]!=null?objectArray[6].toString():"");
+		return sl;		
 	}
 
 }
