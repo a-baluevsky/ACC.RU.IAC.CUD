@@ -18,7 +18,7 @@ import ru.spb.iac.cud.items.wrapper.AuditDataPage;
  public class ContextAccessManager {
 
 	static Context ctx;
-	AccessManagerLocal aml = null;
+	public AccessManagerLocal aml = null;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ContextAccessManager.class);
 

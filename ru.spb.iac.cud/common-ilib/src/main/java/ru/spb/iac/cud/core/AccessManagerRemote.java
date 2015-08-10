@@ -2,6 +2,7 @@ package ru.spb.iac.cud.core;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Remote;
 
@@ -43,4 +44,8 @@ public interface AccessManagerRemote {
 	
 	public AuditDataPage getAuditDataISByPeriod(String sysCode, Date date1,
 			Date date2, int rowsCount, long rowStartOffset, long filterUser) throws GeneralFailure;	
+	
+	public List<String> getUserRolesArm(String codeSys, String login) throws GeneralFailure;
+	
+	public Map<String, Object> getAppUserAttrs(String login);
 }

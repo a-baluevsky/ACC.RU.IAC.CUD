@@ -1,7 +1,10 @@
 package ru.spb.iac.cud.core;
 
+import iac.cud.data.app.JPA_AppAccessManager;
 import iac.cud.data.audit.JPA_AFuncManager;
+import iac.cud.data.usr.JPA_AppUserManager;
 import iac.cud.data.usr.JPA_UsrManager;
+import iac.cud.infosweb.dataitems.AppUserItem;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,6 +14,7 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509CRL;
 import java.security.cert.X509CRLEntry;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap; import java.util.Map;
@@ -828,13 +832,18 @@ public String authenticate_login(String login, String password,
 	/**
 	 * определение уид пользователя по его логину
 	 */
+	String rqCache_login; Long rqCache_login_value; // use cached value
 	private Long get_id_user(String login) throws GeneralFailure {
-
 		LOGGER.debug("get_id_user:login:" + login);
-
 		Long result = null;
 		try {
-			result = JPA_UsrManager.FindUserIdByFieldValue(em, "LOGIN", login);
+			if(rqCache_login!=null && rqCache_login.equals(login)) {
+				result = rqCache_login_value;
+			} else {
+				result = JPA_UsrManager.FindUserIdByFieldValue(em, "LOGIN", login);
+				rqCache_login = login;
+				rqCache_login_value = result;
+			}
 		} catch (NoResultException ex) {
 			LOGGER.debug("get_id_user:NoResultException");
 			throw new GeneralFailure("User is not defined!");
@@ -881,5 +890,27 @@ public String authenticate_login(String login, String password,
 			throw new GeneralFailure(e.getMessage());
 		}
 	}
+	
+	public List<String> getUserRolesArm(String codeSys, String login) throws GeneralFailure {
+		try{
+			return JPA_AppAccessManager.getUserRolesArm(em, get_id_is(codeSys), get_id_user(login));
+		 } catch(Exception e){
+			   LOGGER.error("AccessManager:getUserRolesArm:error:"+e);
+			   return null;
+		 }			
+	}
+	
+	public Map<String, Object> getAppUserAttrs(String login){
+		 try{
+	           List<Object[]> lo=JPA_AppUserManager.getUserItem(em, get_id_user(login));
+	           return AppUserItem.FirstRowToAttrsMap(lo, new AppUserItem.INotify() {
+					@Override public void gotRow(Object[] row)  { LOGGER.info("AccessManager:getUserItemAttrs:login:"+row[1].toString()); }
+					@Override public void error(Exception x) 	{ LOGGER.error("AccessManager:getUserItemAttrs:for:error:"+x); }
+	           }); 
+		 } catch(Exception e){
+			   LOGGER.error("AccessManager:getAppUserAttrs:error:"+e);
+			   return null;
+		 }
+	}	
 
 }

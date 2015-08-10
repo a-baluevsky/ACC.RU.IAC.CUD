@@ -3,8 +3,10 @@ package iac.grn.infosweb.context.app.access;
 import java.util.List;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
 import javaw.util.ArrayList;
 import javaw.util.SerializableList;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
@@ -20,6 +22,9 @@ import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.faces.FacesMessages;
 
 
+
+
+import iac.cud.data.app.JPA_AppAccessManager;
 import iac.cud.infosweb.dataitems.AppAccessItem;
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.entity.AcRole;
@@ -448,42 +453,19 @@ import iac.grn.serviceitems.HeaderTableItem;
 			 log.info("AppAccessManager:createAccess:modeExec:"+modeExec);
 			 
 			 //список ролей, которые надо назначить пользователю по заявке
-			 List<String> roles_app=(List<String>) entityManager.createNativeQuery(
-	    			  (new StringBuilder("select to_char(RL.ID_SRV) "))
-                      .append("from JOURN_APP_ACCESS_BSS_T jas, ")
-                      .append("ROLES_APP_ACCESS_BSS_T rlapp, ")
-                      .append("AC_ROLES_BSS_T rl ")
-                      .append("where RLAPP.UP_APP_ACCESS=JAS.ID_SRV ")
-                      .append("and RL.ID_SRV=RLAPP.UP_ROLE ")
-                      .append("and JAS.ID_SRV=? ")
-                      .append("order by RL.FULL_ ")
-	    			  .toString())
-	    			.setParameter(1, idApp)
-	    			.getResultList();
+			 List<String> roles_app=JPA_AppAccessManager.getUserRolesReq(entityManager, idApp);
 			 
 			 //список ролей, которые уже есть у пользователя в системе 
-			 List<String> roles_user=(List<String>)entityManager.createNativeQuery(
-	    			  (new StringBuilder("select to_char(URL.UP_ROLES) "))
-                      .append("from AC_ROLES_BSS_T rl, ")
-                      .append("AC_USERS_LINK_KNL_T url ")
-                      .append("where RL.ID_SRV=URL.UP_ROLES ")
-                      .append("and RL.UP_IS=? ")
-                      .append("and URL.UP_USERS=? ")
-	    			  .toString())
-	    			.setParameter(1, idArm)
-	    			.setParameter(2, idUser)
-	    			.getResultList();
-			
+			 List<String> roles_user=JPA_AppAccessManager.getUserRolesArm(entityManager, idArm, idUser);
+					 
 			 if(modeExec==0){ //REPLACE
-				 
 				 //удаляем имеющиеся у пользователя роли в системе
 				 for(String role :roles_user){
 					 if(rolesLine==null){
 						 rolesLine=role;
 					 }else{
 						 rolesLine+=", "+role;
-					 }
-						  
+					 }						  
 				 }
 				 
 				 log.info("AppAccessManager:createAccess:rolesLine:"+rolesLine);

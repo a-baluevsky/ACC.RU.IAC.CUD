@@ -1,5 +1,6 @@
 package iac.grn.infosweb.context.app.user;
 
+import iac.cud.data.usr.JPA_AppUserManager;
 import iac.cud.infosweb.dataitems.AppUserItem;
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.entity.AcApplication;
@@ -53,220 +54,26 @@ import org.jboss.seam.faces.FacesMessages;
 		
 		 log.info("hostsManager:invokeLocal");
 		 try{
-			 String orderQuery=null;
+			 
 			 log.info("hostsManager:invokeLocal");
 			 
 			 AppUserStateHolder appUserStateHolder = (AppUserStateHolder)
 					  Component.getInstance("appUserStateHolder",ScopeType.SESSION);
 			 Map<String, String> filterMap = appUserStateHolder.getColumnFilterValues();
-			 String st=null;
-			  
+			 
 			 if("list".equals(type)){
 				 log.info("invokeLocal:list:01");
-				 
-				 Set<Map.Entry<String, String>> set = appUserStateHolder.getSortOrders().entrySet();
-                 for (Map.Entry<String, String> me : set) {
-      		       log.info("me.getKey+:"+me.getKey());
-      		       log.info("me.getValue:"+me.getValue());
-      		       
-      		       if(orderQuery==null){
-      		    	 orderQuery="order by "+me.getKey()+" "+me.getValue();
-      		       }else{
-      		    	 orderQuery=orderQuery+", "+me.getKey()+" "+me.getValue();  
-      		       }
-      		     }
-                 log.info("AppUser:invokeLocal:list:orderQuery:"+orderQuery);
-                 
-                 if(filterMap!=null){
-    	    		 Set<Map.Entry<String, String>> setFilterAppUser = filterMap.entrySet();
-    	              for (Map.Entry<String, String> me : setFilterAppUser) {
-    	              
-    	   		     if("t1_crt_date".equals(me.getKey())){  
-    	        	   
-    	        	   //делаем фильтр на начало  
-    	        	     st=(st!=null?st+" and " :"")+" lower(to_char("+me.getKey()+",'DD.MM.YY HH24:MI:SS')) like lower('"+me.getValue()+"%') ";
-    	    	   
-    	   		     }else if("t1_iogv_bind_type".equals(me.getKey())&&(me.getValue()!=null && "-2".equals(me.getValue()))){
-    	    	    	 
-    	    	    	 st=(st!=null?st+" and " :"")+" t1_usr_code is null ";
-    	    	    	 
-    	    	     }else{
-    	        		//делаем фильтр на начало
-    	            	  st=(st!=null?st+" and " :"")+" lower("+me.getKey()+") like lower('"+me.getValue()+"%') ";
-    	        	  }
-    	              }
-    	    	   }
-                 log.info("AppUser:invokeLocal:list:filterQuery:"+st);
-
              
-               List<Object[]> lo=null;
-               AppUserItem ui = null;
-               DateFormat df = new SimpleDateFormat ("dd.MM.yy HH:mm:ss");
-               
-
-             lo=entityManager.createNativeQuery(
-                     (new StringBuilder("select t1.t1_id, t1.t1_created, t1.t1_status, t1_org_name,  t1_user_fio, t1_reject_reason, t1_comment, "))
-                     .append("t1_SURNAME_USER, ")
-                     .append("t1_NAME_USER, ")
-                     .append("t1_PATRONYMIC_USER, ")
-                     .append("t1_SIGN_USER, ")
-                     .append("t1_POSITION_USER, ")
-                     .append("t1_EMAIL_USER, ")
-                     .append("t1_PHONE_USER, ")
-                     .append("t1_CERTIFICATE_USER, ")
-                     .append("t1_NAME_DEPARTAMENT, ")
-                     .append("t1_NAME_ORG, ")
-                     .append("t1_SIGN_ORG, ")
-                 .append("t1_user_id, t1_user_login, ") 
-                 .append("t1_comment_app ")
-                 .append("from( ")
-                .append("select JAS.ID_SRV t1_id, JAS.CREATED t1_created, ")
-                     .append("JAS.SURNAME_USER t1_SURNAME_USER, ")
-                     .append("JAS.NAME_USER t1_NAME_USER, ")
-                     .append("JAS.PATRONYMIC_USER t1_PATRONYMIC_USER, ")
-                     .append("JAS.SIGN_USER t1_SIGN_USER, ")
-                     .append("JAS.POSITION_USER t1_POSITION_USER, ")
-                     .append("JAS.EMAIL_USER t1_EMAIL_USER, ")
-                     .append("JAS.PHONE_USER t1_PHONE_USER, ")
-                     .append("JAS.CERTIFICATE_USER t1_CERTIFICATE_USER, ")
-                     .append("JAS.NAME_DEPARTAMENT t1_NAME_DEPARTAMENT, ")
-                     .append("JAS.NAME_ORG t1_NAME_ORG, ")
-                     .append("JAS.SIGN_ORG t1_SIGN_ORG, ")
-                     .append("JAS.STATUS t1_status,  CL_ORG_FULL.FULL_ t1_org_name, ")
-                 .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_user_fio, ")
-                 .append("JAS.REJECT_REASON t1_reject_reason, ")
-                 .append("au_APP.ID_SRV t1_user_id, AU_APP.LOGIN t1_user_login, ") 
-                 .append("JAS.COMMENT_ t1_comment, ") 
-                 .append("JAS.COMMENT_APP t1_comment_app ")
-                .append("from JOURN_APP_USER_BSS_T jas, ")
-                  .append("AC_USERS_KNL_T au_FULL, ")
-                   .append("ISP_BSS_T cl_org_full, ")
-                    .append("ISP_BSS_T cl_usr_full, ")
-                     .append("AC_USERS_KNL_T au_APP, ")
-                 .append("(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE ")
-                   .append("from ISP_BSS_T cl_org ")
-                   .append("where  CL_ORG.SIGN_OBJECT LIKE '%00000' ")
-                   .append("group by CL_ORG.SIGN_OBJECT) t03, ")
-                    .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
-                               .append("from ISP_BSS_T cl_usr ")
-                               .append("where CL_USR.FIO is not null ")
-                               .append("group by CL_usr.SIGN_OBJECT) t02 ")
-                  .append("where JAS.UP_USER=AU_FULL.ID_SRV(+) ")
-                   .append("and AU_FULL.UP_SIGN=t03.CL_ORG_CODE(+) ")
-                   .append("and CL_ORG_FULL.ID_SRV(+)=t03.CL_ORG_ID ")
-                   .append("and AU_FULL.UP_SIGN_USER=t02.CL_USR_CODE(+) ")
-                   .append("and CL_USR_FULL.ID_SRV(+)=t02.CL_USR_ID ")
-                  .append("and au_APP.ID_SRV(+) =JAS.UP_USER_APP ")
-                  .append(") t1")
-		           .append(st!=null ? " where "+st :" ")
-		           .append(orderQuery!=null ? orderQuery+", t1_id desc " : " order by t1_id desc ")
-                         .toString())
-                         .setFirstResult(firstRow)
-                         .setMaxResults(numberOfRows)
-                         .getResultList();
-               auditList = new ArrayList<BaseItem>();
-               
-               for(Object[] objectArray :lo){
-            	   try{
-            		 ui= new AppUserItem(
-            				objectArray[0]!=null?Long.valueOf(objectArray[0].toString()):null,
-            				objectArray[1]!=null?df.format((Date)objectArray[1]) :"",
-            				objectArray[2]!=null?Integer.parseInt(objectArray[2].toString()):0,	
-            				objectArray[3]!=null?objectArray[3].toString():"",
-            				objectArray[4]!=null?objectArray[4].toString():"",
-            				objectArray[5]!=null?objectArray[5].toString():"",
-            				objectArray[6]!=null?objectArray[6].toString():"",
-            				 
-            				objectArray[7]!=null?objectArray[7].toString():"",
-            				objectArray[8]!=null?objectArray[8].toString():"",
-            				objectArray[9]!=null?objectArray[9].toString():"",
-            				objectArray[10]!=null?objectArray[10].toString():"",
-            				objectArray[11]!=null?objectArray[11].toString():"",
-            				objectArray[12]!=null?objectArray[12].toString():"",
-            				objectArray[13]!=null?objectArray[13].toString():"",
-            				objectArray[14]!=null?objectArray[14].toString():"",
-            				objectArray[15]!=null?objectArray[15].toString():"",
-            				objectArray[16]!=null?objectArray[16].toString():"",
-            				objectArray[17]!=null?objectArray[17].toString():"",
-            				objectArray[18]!=null?Long.valueOf(objectArray[18].toString()):null,
-              			    objectArray[19]!=null?objectArray[19].toString():"",
-              			    objectArray[20]!=null?objectArray[20].toString():""
-            				);  
-            	   	     auditList.add(ui);
-            	   }catch(Exception e1){
-            		   log.error("AppUserinvokeLocal:for:error:"+e1);
-            	   }
-               }  
-               
-             log.info("AppUser:invokeLocal:list:02");
+				 StringBuilder errMsg = new StringBuilder();
+				 auditList = AppUserItem.FromRows(JPA_AppUserManager.getAuditList(entityManager, filterMap, 
+            		   appUserStateHolder.getSortOrders().entrySet(), firstRow, numberOfRows), errMsg);
+				 if(errMsg.length()>0) log.error(errMsg.toString());
+				 log.info("AppUser:invokeLocal:list:02");
              
 			 } else if("count".equals(type)){
-				 log.info("AppUser:AppUserList:count:01");
-				 
-                 
-                 if(filterMap!=null){
-    	    		 Set<Map.Entry<String, String>> setFilterAppUser = filterMap.entrySet();
-    	              for (Map.Entry<String, String> me : setFilterAppUser) {
-    	            	
-    	            	  
-    	              if("t1_iogv_bind_type".equals(me.getKey())&&(me.getValue()!=null && "-2".equals(me.getValue()))){
-     	    	    	 st=(st!=null?st+" and " :"")+" t1_usr_code is null ";
-    	              }else{
-    	            	 st=(st!=null?st+" and " :"")+" lower("+me.getKey()+") like lower('"+me.getValue()+"%') ";
-    	              }	 
-     	    	 
-    	            	  
-    	              }
-    	    	   }
-			 
-			
-				
-				 auditCount = ((java.math.BigDecimal)entityManager.createNativeQuery(
-						 (new StringBuilder("select count(*) "))
-						  .append("from( ")
-			               .append("select JAS.ID_SRV t1_id, JAS.CREATED t1_created, ")
-			                    .append("JAS.SURNAME_USER t1_SURNAME_USER, ")
-			                    .append("JAS.NAME_USER t1_NAME_USER, ")
-			                    .append("JAS.PATRONYMIC_USER t1_PATRONYMIC_USER, ")
-			                    .append("JAS.SIGN_USER t1_SIGN_USER, ")
-			                    .append("JAS.POSITION_USER t1_POSITION_USER, ")
-			                    .append("JAS.EMAIL_USER t1_EMAIL_USER, ")
-			                    .append("JAS.PHONE_USER t1_PHONE_USER, ")
-			                    .append("JAS.CERTIFICATE_USER t1_CERTIFICATE_USER, ")
-			                    .append("JAS.NAME_DEPARTAMENT t1_NAME_DEPARTAMENT, ")
-			                    .append("JAS.NAME_ORG t1_NAME_ORG, ")
-			                    .append("JAS.SIGN_ORG t1_SIGN_ORG, ")
-			                    .append("JAS.STATUS t1_status,  CL_ORG_FULL.FULL_ t1_org_name, ")
-			                .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_user_fio, ")
-			                .append("JAS.REJECT_REASON t1_reject_reason, ")
-			                .append("au_APP.ID_SRV t1_user_id, AU_APP.LOGIN t1_user_login, ")
-			                .append("JAS.COMMENT_ t1_comment ")
-			               .append("from JOURN_APP_USER_BSS_T jas, ")
-			                 .append("AC_USERS_KNL_T au_FULL, ")
-			                  .append("ISP_BSS_T cl_org_full, ")
-			                   .append("ISP_BSS_T cl_usr_full, ")
-			                    .append("AC_USERS_KNL_T au_APP, ")
-			                .append("(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE ")
-			                  .append("from ISP_BSS_T cl_org ")
-			                  .append("where  CL_ORG.SIGN_OBJECT LIKE '%00000' ")
-			                  .append("group by CL_ORG.SIGN_OBJECT) t03, ")
-			                   .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
-			                              .append("from ISP_BSS_T cl_usr ")
-			                              .append("where CL_USR.FIO is not null ")
-			                              .append("group by CL_usr.SIGN_OBJECT) t02 ")
-			                  .append("where JAS.UP_USER=AU_FULL.ID_SRV ")
-			                  .append("and AU_FULL.UP_SIGN=t03.CL_ORG_CODE ")
-			                  .append("and CL_ORG_FULL.ID_SRV=t03.CL_ORG_ID ")
-			                  .append("and AU_FULL.UP_SIGN_USER=t02.CL_USR_CODE(+) ")
-			                  .append("and CL_USR_FULL.ID_SRV(+)=t02.CL_USR_ID ")
-			                 .append("and au_APP.ID_SRV(+) =JAS.UP_USER_APP ")
-			                 .append(") t1")
-			                 .append(st!=null ? " where "+st :" ")
-			                 .toString())
-               .getSingleResult()).longValue();
-                 
-                 
-               log.info("AppUser:invokeLocal:count:02:"+auditCount);
+				 log.info("AppUser:AppUserList:count:01");				 
+				 auditCount = JPA_AppUserManager.getAuditCount(entityManager, filterMap);
+                 log.info("AppUser:invokeLocal:count:02:"+auditCount);
            	 } else if("bean".equals(type)){
 				 
 			 }
@@ -279,114 +86,18 @@ import org.jboss.seam.faces.FacesMessages;
 	}
 	
 	 private AppUserItem getUserItem(Long idUser){
-		 if(idUser==null){
-			  return null;
-		   }
-		   
-		   try{
-	           List<Object[]> lo=null;
-	           AppUserItem ui = null;
-	           DateFormat df = new SimpleDateFormat ("dd.MM.yy HH:mm:ss");
-	           
-	           lo=entityManager.createNativeQuery(
-	        		   (new StringBuilder("select t1.t1_id, t1.t1_created, t1.t1_status, t1_org_name,  t1_user_fio, t1_reject_reason, t1_comment, "))
-	                    .append("t1_SURNAME_USER, ")
-	                    .append("t1_NAME_USER, ")
-	                    .append("t1_PATRONYMIC_USER, ")
-	                    .append("t1_SIGN_USER, ")
-	                    .append("t1_POSITION_USER, ")
-	                    .append("t1_EMAIL_USER, ")
-	                    .append("t1_PHONE_USER, ")
-	                    .append("t1_CERTIFICATE_USER, ")
-	                    .append("t1_NAME_DEPARTAMENT, ")
-	                    .append("t1_NAME_ORG, ")
-	                    .append("t1_SIGN_ORG, ")
-	                .append("t1_user_id, t1_user_login, ")
-	                .append("t1_comment_app ")
-	                .append("from( ")
-	               .append("select JAS.ID_SRV t1_id, JAS.CREATED t1_created, ")
-	                    .append("JAS.SURNAME_USER t1_SURNAME_USER, ")
-	                    .append("JAS.NAME_USER t1_NAME_USER, ")
-	                    .append("JAS.PATRONYMIC_USER t1_PATRONYMIC_USER, ")
-	                    .append("JAS.SIGN_USER t1_SIGN_USER, ")
-	                    .append("JAS.POSITION_USER t1_POSITION_USER, ")
-	                    .append("JAS.EMAIL_USER t1_EMAIL_USER, ")
-	                    .append("JAS.PHONE_USER t1_PHONE_USER, ")
-	                    .append("JAS.CERTIFICATE_USER t1_CERTIFICATE_USER, ")
-	                    .append("JAS.NAME_DEPARTAMENT t1_NAME_DEPARTAMENT, ")
-	                    .append("JAS.NAME_ORG t1_NAME_ORG, ")
-	                    .append("JAS.SIGN_ORG t1_SIGN_ORG, ")
-	                    .append("JAS.STATUS t1_status,  CL_ORG_FULL.FULL_ t1_org_name, ")
-	                .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_user_fio, ")
-	                .append("JAS.REJECT_REASON t1_reject_reason, ")
-	                .append("au_APP.ID_SRV t1_user_id, AU_APP.LOGIN t1_user_login, ")
-	                .append("JAS.COMMENT_ t1_comment, ")
-	                .append("JAS.COMMENT_APP t1_comment_app ")
-	               .append("from JOURN_APP_USER_BSS_T jas, ")
-	                 .append("AC_USERS_KNL_T au_FULL, ")
-	                  .append("ISP_BSS_T cl_org_full, ")
-	                   .append("ISP_BSS_T cl_usr_full, ")
-	                    .append("AC_USERS_KNL_T au_APP, ")
-	                .append("(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE ")
-	                  .append("from ISP_BSS_T cl_org ")
-	                  .append("where  CL_ORG.SIGN_OBJECT LIKE '%00000' ")
-	                  .append("group by CL_ORG.SIGN_OBJECT) t03, ")
-	                   .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
-	                              .append("from ISP_BSS_T cl_usr ")
-	                              .append("where CL_USR.FIO is not null ")
-	                              .append("group by CL_usr.SIGN_OBJECT) t02 ")		   
-	        	             /*   "where JAS.UP_USER=AU_FULL.ID_SRV "
-	        	                + "and AU_FULL.UP_SIGN=t03.CL_ORG_CODE "
-	        	                + "and CL_ORG_FULL.ID_SRV=t03.CL_ORG_ID "+*/
-	        	                  .append("where JAS.UP_USER=AU_FULL.ID_SRV(+) ")
-	        	                  .append("and AU_FULL.UP_SIGN=t03.CL_ORG_CODE(+) ")
-	        	                  .append("and CL_ORG_FULL.ID_SRV(+)=t03.CL_ORG_ID ")
-	        	                  .append("and AU_FULL.UP_SIGN_USER=t02.CL_USR_CODE(+) ")
-	        	                  .append("and CL_USR_FULL.ID_SRV(+)=t02.CL_USR_ID ")
-	        	                 .append("and au_APP.ID_SRV(+) =JAS.UP_USER_APP ") 
-	        	                 .append("and JAS.ID_SRV=? ")
-	        	                 .append(") t1")
-	        	               .toString())
-	         .setParameter(1, idUser)
-	         .getResultList();
-	           
-	           for(Object[] objectArray :lo){
-	        	   try{
-	        		   log.info("AppUserManager:getUserItem:login:"+objectArray[1].toString());
-	        		   
-	        		   ui= new AppUserItem(
-	            				objectArray[0]!=null?Long.valueOf(objectArray[0].toString()):null,
-	            				objectArray[1]!=null?df.format((Date)objectArray[1]) :"",
-	            				objectArray[2]!=null?Integer.parseInt(objectArray[2].toString()):0,	
-	            				objectArray[3]!=null?objectArray[3].toString():"",
-	            				objectArray[4]!=null?objectArray[4].toString():"",
-	            				objectArray[5]!=null?objectArray[5].toString():"",
-	            				objectArray[6]!=null?objectArray[6].toString():"",
-	            				 
-	            				objectArray[7]!=null?objectArray[7].toString():"",
-	            				objectArray[8]!=null?objectArray[8].toString():"",
-	            				objectArray[9]!=null?objectArray[9].toString():"",
-	            				objectArray[10]!=null?objectArray[10].toString():"",
-	            				objectArray[11]!=null?objectArray[11].toString():"",
-	            				objectArray[12]!=null?objectArray[12].toString():"",
-	            				objectArray[13]!=null?objectArray[13].toString():"",
-	            				objectArray[14]!=null?objectArray[14].toString():"",
-	            				objectArray[15]!=null?objectArray[15].toString():"",
-	            				objectArray[16]!=null?objectArray[16].toString():"",
-	            				objectArray[17]!=null?objectArray[17].toString():"",
-	            				objectArray[18]!=null?Long.valueOf(objectArray[18].toString()):null,
-	              			    objectArray[19]!=null?objectArray[19].toString():"",
-	              			    objectArray[20]!=null?objectArray[20].toString():""
-	            				);  
-	        	     return ui;
-	        	   }catch(Exception e1){
-	        		   log.error("AppUserManager:getUserItem:for:error:"+e1);
-	        	   }
-	           }  
-		   }catch(Exception e){
-			   log.error("AppUserManager:getUserItem:error:"+e);
-		   }
-		   return null;
+		 if(idUser!=null) {
+			   try{
+		           List<Object[]> lo=JPA_AppUserManager.getUserItem(entityManager, idUser);
+		           return AppUserItem.FirstFromRows(lo, new AppUserItem.INotify() {
+						@Override public void gotRow(Object[] row)  { log.info("AppUserManager:getUserItem:login:"+row[1].toString()); }
+						@Override public void error(Exception x) 	{ log.error("AppUserManager:getUserItem:for:error:"+x); }
+		           }); 
+			   } catch(Exception e){
+				   log.error("AppUserManager:getUserItem:error:"+e);
+			   }
+		 }
+		 return null;
 	 }
 	 
 	 
@@ -401,9 +112,6 @@ import org.jboss.seam.faces.FacesMessages;
 	     
 		   try{
 			   
-			   
-			 
-			 
 			 UsrManager usrManager = (UsrManager)
 			          Component.getInstance("usrManager", ScopeType.EVENT);
 		   
@@ -640,10 +348,7 @@ import org.jboss.seam.faces.FacesMessages;
 					        .get("sessionId");
 			     log.info("AppUserManager:forViewComment:sessionId:"+sessionId);
 			     if(sessionId!=null){
-			    	
-			     	 
 			    	 AppUserItem ui = getUserItem(Long.valueOf(sessionId));
-			    	 
 			    	 this.commentText=ui.getComment();
 
 	     }
@@ -672,13 +377,12 @@ import org.jboss.seam.faces.FacesMessages;
 		   AppUserContext ac= new AppUserContext();
 		   if( auditItemsListSelect==null){
 			   log.info("getAuditItemsListSelect:02");
-			   auditItemsListSelect = new ArrayList<BaseTableItem>();
-			   
-			   auditItemsListSelect.add(ac.getAuditItemsMap().get("idApp"));
-			   auditItemsListSelect.add(ac.getAuditItemsMap().get("created"));
-			   auditItemsListSelect.add(ac.getAuditItemsMap().get("orgName"));
-			  
-			   auditItemsListSelect.add(ac.getAuditItemsMap().get("statusValue"));
+			   auditItemsListSelect = new ArrayList<BaseTableItem>();			   
+			   final Map<String, BaseTableItem> auditItemsMap = ac.getAuditItemsMap();
+			   auditItemsListSelect.add(auditItemsMap.get("idApp"));
+			   auditItemsListSelect.add(auditItemsMap.get("created"));
+			   auditItemsListSelect.add(auditItemsMap.get("orgName"));			  
+			   auditItemsListSelect.add(auditItemsMap.get("statusValue"));
 		   }
 	       return new ArrayList<BaseTableItem>(this.auditItemsListSelect);
   }
@@ -689,9 +393,6 @@ import org.jboss.seam.faces.FacesMessages;
 	   log.info("AppUserManager:getAuditItemsListContext");
 	   if(auditItemsListContext==null){
 		   AppUserContext ac= new AppUserContext();
-		  
-		   
-		   
 		   auditItemsListContext=new ArrayList<BaseTableItem>(ac.getAuditItemsCollection());
 		   
 	   }
@@ -699,16 +400,11 @@ import org.jboss.seam.faces.FacesMessages;
   }
   
   @Override
-  public List<HeaderTableItem> getHeaderItemsListContext() {
-	  
-	  if(headerItemsListContext==null){
+  public List<HeaderTableItem> getHeaderItemsListContext() {	  
+	   if(headerItemsListContext==null){
 		   AppUserContext ac= new AppUserContext();
 		   headerItemsListContext=new ArrayList<HeaderTableItem>(ac.getHeaderItemsList());
-		   
-	
-		   
-	   }
-	  
+	   }	  
 	   return this.headerItemsListContext;
   }
   

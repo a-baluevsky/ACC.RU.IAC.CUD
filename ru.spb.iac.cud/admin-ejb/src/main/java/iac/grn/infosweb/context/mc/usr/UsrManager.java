@@ -1,5 +1,6 @@
 package iac.grn.infosweb.context.mc.usr;
 
+import iac.cud.data.usr.JPA_AppUserManager;
 import iac.cud.data.usr.JPA_UsrManager;
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.dataitems.UCCertItem;
@@ -290,18 +291,9 @@ import org.slf4j.LoggerFactory;
 		 
 		 
 		 Long appCode = ((LinksMap)Component.getInstance("linksMap",ScopeType.APPLICATION)).getAppCode();
-			
     	 
-	     List<AcRole> rlist = entityManager.createQuery(
-	    			"select ar from AcRole ar, AcLinkUserToRoleToRaion alur " 
-	    	 		+ "where alur.acRole = ar and alur.pk.acUser = :acUser " 
-	    	 		+ "and ar.acApplication= :acApplication ")
-	    	 		 .setParameter("acUser", Long.valueOf(usrId))
-	    	 		 .setParameter("acApplication", appCode)
-	    	 		 .getResultList();
-	    	
-	    	 
-	    	 
+	     List<AcRole> rlist = (List<AcRole>)JPA_AppUserManager.getAcRoleList(entityManager, Long.valueOf(usrId), appCode);
+	     
 	    	if(!rlist.isEmpty()){
 	    		log.info("forView:setCudRole");
 	    		au.setIsCudRole(1L);

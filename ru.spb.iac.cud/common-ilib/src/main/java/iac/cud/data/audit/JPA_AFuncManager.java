@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import javaw.util.SerializableMap;
+import javax.persistence.EntityManager;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -62,7 +62,7 @@ public class JPA_AFuncManager extends JPABuilder {
 		resetWhereConditions();
         if(filter!=null){
    		 Set<Map.Entry<String, String>> setFilterAFunc = filter.entrySet();
-             for (SerializableMap.Entry<String, String> me : setFilterAFunc) {  
+             for (Map.Entry<String, String> me : setFilterAFunc) {  
            	  String sKey=me.getKey();
              //у нас act_dat_value переведена в строку уже в запросе	            	  
   		      if("arm_id".equals(sKey)){ 

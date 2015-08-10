@@ -32,7 +32,7 @@ public class JPABuilder {
     .getResultList();
     */
 	
-	public String getQueryString(Query query) {
+	public static String getQueryString(Query query) {
 		org.hibernate.Query hbQuery = ((org.hibernate.ejb.QueryImpl)query).getHibernateQuery();
 		return hbQuery.getQueryString();
 	}

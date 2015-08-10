@@ -11,6 +11,8 @@ import javax.jws.WebService;
 import javax.xml.ws.BindingType;
 import javax.xml.ws.soap.SOAPBinding;
 
+import org.slf4j.LoggerFactory;
+
 import ru.spb.iac.cud.context.ContextAccessManager;
 import ru.spb.iac.cud.exceptions.GeneralFailure;
 import ru.spb.iac.cud.items.AuditFunction;
@@ -21,7 +23,10 @@ import ru.spb.iac.cud.services.CUDService;
 @HandlerChain(file = "/handlers_anonym.xml")
 @BindingType(SOAPBinding.SOAP12HTTP_BINDING)
  public class AuditServiceImpl extends CUDService implements AuditService{
-
+	 public AuditServiceImpl() {
+		LOGGER = LoggerFactory.getLogger(AuditServiceImpl.class);
+	 }
+	 
      public static final String NS = "http://audit.services.cud.iac.spb.ru/";
 
      //@Resource(name="wsContext")
