@@ -1,23 +1,35 @@
 package ru.spb.iac.cud.core.eis;
 
+import iac.cud.data.eis.JPA_EisAdminManager;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.nio.charset.Charset;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 import java.util.ArrayList;
+import java.util.Map.Entry;
 
+import ru.spb.iac.cud.core.data.JPABuilder;
 import ru.spb.iac.cud.exceptions.GeneralFailure;
+import ru.spb.iac.cud.items.Attribute;
+import ru.spb.iac.cud.items.OrganisationAttribute;
+import ru.spb.iac.cud.items.OrganisationAttributes;
 
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.jws.WebParam;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +51,17 @@ import org.slf4j.LoggerFactory;
 	private static final Logger LOGGER = LoggerFactory.getLogger(EisAdminManager.class);
 
 	public EisAdminManager() {
+		initDatabaseFieldDescriptor();
+	}
+
+	private void initDatabaseFieldDescriptor() {
+		if( JPABuilder.databaseFieldDescriptor == null && em!=null)
+			try {				
+				JPABuilder.databaseFieldDescriptor = new JPABuilder.OracleDatabaseFieldDescriptor(em);
+			} catch (GeneralFailure e) {
+				LOGGER.error(e.getMessage());
+				e.printStackTrace();
+			}
 	}
 
 	/**
@@ -575,6 +598,44 @@ import org.slf4j.LoggerFactory;
 		return result;
 	}
 
-
 	
+	// простая логика: прямой доступ к таблице
+	private void storeOrgAttrs(OrganisationAttributes orgAttrs) throws InvalidAlgorithmParameterException {
+		LOGGER.debug("store_organization_attributes: "+orgAttrs.toString());
+		for (String q : orgAttrs.getUpdateQueries().values()) {
+			em.createNativeQuery(q).executeUpdate();
+		}		
+	}
+	// расширенная логика: защита справочника и версионный контроль (backup) таблицы расширенных атрибутов
+	// вывод только актуальной записи
+	private static void storeOrgAttrsEx(OrganisationAttributes orgAttrs, Long CreatorId, EntityManager em) throws GeneralFailure {
+		try {		
+			LOGGER.debug("storeOrgAttrsEx: ");
+			OrganisationAttributes oaChk = JPA_EisAdminManager.checkAllowedAttributes(orgAttrs);
+			Map<String, List<String>> qs = JPA_EisAdminManager.getStoreQueries(oaChk, CreatorId, em);
+			for(Entry<String, List<String>> e: qs.entrySet()) {			
+				String sTableName = e.getKey();
+				if(sTableName.equals("ISP_EXT_BSS_T"))
+				for (String sSQL : e.getValue()) {
+					LOGGER.debug(sTableName+" => "+sSQL);
+					em.createNativeQuery(sSQL).executeUpdate();
+				}
+			}		
+		} catch (Exception e1) {
+			throw new GeneralFailure(e1.toString());
+		}
+	}
+	
+	// внешний API
+	public void store_organization_attributes(OrganisationAttributes orgAttrs, Long userId) throws GeneralFailure {
+		//storeOrgAttrs(orgAttrs);
+		initDatabaseFieldDescriptor();			
+		storeOrgAttrsEx(orgAttrs, userId, em);
+	}	
+	
+	public List<Attribute> fetch_organization_attributes(OrganisationAttributes orgAttrs) throws GeneralFailure {
+		LOGGER.debug("fetch_organization_attributes: "+orgAttrs.toString());
+		initDatabaseFieldDescriptor();
+		return  JPA_EisAdminManager.fetchOrgAttrs(em, orgAttrs);		
+	}
 }

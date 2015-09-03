@@ -673,11 +673,11 @@ import org.xml.sax.SAXException;
 					.singletonList(keyValue));
 		}
 		if (x509Certificate != null) {
-			List x509list = new ArrayList();
+			List x509list = new ArrayList<>();
 
 			x509list.add(x509Certificate);
 			X509Data x509Data = keyInfoFactory.newX509Data(x509list);
-			List items = new ArrayList();
+			List items = new ArrayList<>();
 
 			items.add(x509Data);
 			if (keyValue != null) {

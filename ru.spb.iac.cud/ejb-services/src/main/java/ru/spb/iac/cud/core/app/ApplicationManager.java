@@ -82,7 +82,7 @@ import ru.spb.iac.cud.util.TIDEncode;
 
 			utx.begin();
 
-			List results = em.createNativeQuery(
+			List<?> results = em.createNativeQuery(
 					"select JOURN_APP_SYSTEM_SEQ.nextval from dual ")
 					.getResultList();
 			Long number = ((BigDecimal) results.get(0)).longValue();
@@ -173,7 +173,7 @@ import ru.spb.iac.cud.util.TIDEncode;
 
 			utx.begin();
 
-			List results = em.createNativeQuery(
+			List<?> results = em.createNativeQuery(
 					"select JOURN_APP_USER_SEQ.nextval from dual ")
 					.getResultList();
 
@@ -372,7 +372,7 @@ import ru.spb.iac.cud.util.TIDEncode;
 				modeAcRs = 2;
 			}
 
-			List resultsAcRs = em.createNativeQuery(
+			List<?> resultsAcRs = em.createNativeQuery(
 					"select JOURN_APP_ACCESS_SEQ.nextval from dual ")
 					.getResultList();
 			Long number = ((BigDecimal) resultsAcRs.get(0)).longValue();
@@ -482,7 +482,7 @@ import ru.spb.iac.cud.util.TIDEncode;
 				mode = 2;
 			}
 
-			List results = em.createNativeQuery(
+			List<?> results = em.createNativeQuery(
 					"select JOURN_APP_ACCESS_GR_SEQ.nextval from dual ")
 					.getResultList();
 			Long number = ((BigDecimal) results.get(0)).longValue();
@@ -571,7 +571,7 @@ import ru.spb.iac.cud.util.TIDEncode;
 
 			utx.begin();
 
-			List results = em.createNativeQuery(
+			List<?> results = em.createNativeQuery(
 					"select JOURN_APP_BLOCK_SEQ.nextval from dual ")
 					.getResultList();
 			Long number = ((BigDecimal) results.get(0)).longValue();
@@ -676,7 +676,7 @@ import ru.spb.iac.cud.util.TIDEncode;
 
 			Long idSystemApp = system_exist(codeSystem);
 
-			List results = em.createNativeQuery(
+			List<?> results = em.createNativeQuery(
 					"select JOURN_APP_SYSTEM_MODIFY_SEQ.nextval from dual ")
 					.getResultList();
 			Long number = ((BigDecimal) results.get(0)).longValue();
@@ -814,7 +814,7 @@ import ru.spb.iac.cud.util.TIDEncode;
 
 			Long idUserApp = Long.valueOf(user_info[0].toString());// user_exist(loginUser);
 
-			List results = em.createNativeQuery(
+			List<?> results = em.createNativeQuery(
 					"select JOURN_APP_USER_MODIFY_SEQ.nextval from dual ")
 					.getResultList();
 			Long number = ((BigDecimal) results.get(0)).longValue();
@@ -1062,7 +1062,7 @@ import ru.spb.iac.cud.util.TIDEncode;
 
 			Long idUserApp = user_exist(loginUser);
 
-			List results = em.createNativeQuery(
+			List<?> results = em.createNativeQuery(
 					"select JOURN_APP_USER_ACCMODIFY_SEQ.nextval from dual ")
 					.getResultList();
 			Long number = ((BigDecimal) results.get(0)).longValue();
@@ -1163,7 +1163,7 @@ import ru.spb.iac.cud.util.TIDEncode;
 
 			Long idUserApp = user_exist(loginUser);
 
-			List results = em.createNativeQuery(
+			List<?> results = em.createNativeQuery(
 					"select JOURN_APP_USER_CERTADD_SEQ.nextval from dual ")
 					.getResultList();
 			Long number = ((BigDecimal) results.get(0)).longValue();
@@ -1256,7 +1256,7 @@ import ru.spb.iac.cud.util.TIDEncode;
 
 			Long idUserApp = user_exist(loginUser);
 
-			List results = em.createNativeQuery(
+			List<?> results = em.createNativeQuery(
 					"select JOURN_APP_USERDEP_MODIFY_SEQ.nextval from dual ")
 					.getResultList();
 			Long number = ((BigDecimal) results.get(0)).longValue();

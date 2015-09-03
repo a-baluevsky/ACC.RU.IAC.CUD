@@ -695,7 +695,7 @@ import org.xml.sax.SAXException;
 
 			x509list.add(x509Certificate);
 			X509Data x509Data = keyInfoFactory.newX509Data(x509list);
-			List items = new ArrayList();
+			List<Object> items = new ArrayList<Object>();
 
 			items.add(x509Data);
 			if (keyValue != null) {

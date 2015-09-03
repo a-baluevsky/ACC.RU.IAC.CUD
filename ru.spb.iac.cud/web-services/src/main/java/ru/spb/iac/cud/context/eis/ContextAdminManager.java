@@ -63,4 +63,7 @@ import ru.spb.iac.cud.exceptions.GeneralFailure;
 		aml.cert_change(codeSystem, newCert, idUserAuth, IPAddress);
 	}
 
+	public AdminManagerLocal getAdminManager() {
+		return aml;
+	}
 }

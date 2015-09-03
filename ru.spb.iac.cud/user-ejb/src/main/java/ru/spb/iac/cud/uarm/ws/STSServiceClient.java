@@ -135,7 +135,7 @@ import org.w3c.dom.NodeList;
 	
 		LOGGER.debug("STSServiceClient:sign_verify_soap_transform_2sign:01++");	  
 		
-		final ThreadLocal<Dispatch<SOAPMessage>> dispatchLocal = new InheritableThreadLocal(); 
+		final ThreadLocal<Dispatch<SOAPMessage>> dispatchLocal = new InheritableThreadLocal<Dispatch<SOAPMessage>>(); 
 		try{
 			
 			

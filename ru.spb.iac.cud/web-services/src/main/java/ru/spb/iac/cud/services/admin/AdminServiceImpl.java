@@ -1,10 +1,14 @@
 package ru.spb.iac.cud.services.admin;
 
+import iac.cud.data.eis.JPA_EisAdminManager;
+
+import java.util.Collection;
 import java.util.List;
 
 import javax.jws.HandlerChain;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
+import javax.jws.WebResult;
 import javax.jws.WebService;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.ws.BindingType;
@@ -14,18 +18,23 @@ import javax.xml.ws.soap.SOAPBinding;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import ru.spb.iac.cud.context.ContextSyncManager;
 import ru.spb.iac.cud.context.eis.ContextAdminManager;
 import ru.spb.iac.cud.exceptions.GeneralFailure;
+import ru.spb.iac.cud.items.Attribute;
 import ru.spb.iac.cud.items.Function;
 import ru.spb.iac.cud.items.Group;
+import ru.spb.iac.cud.items.OrganisationAttributes;
+import ru.spb.iac.cud.items.OrganisationAttribute;
 import ru.spb.iac.cud.items.Resource;
 import ru.spb.iac.cud.items.Role;
+import ru.spb.iac.cud.services.CUDService;
 
 @WebService(targetNamespace = AdminServiceImpl.NS)
 @HandlerChain(file = "/handlers.xml")
 @BindingType(SOAPBinding.SOAP12HTTP_BINDING)
- public class AdminServiceImpl implements AdminService {
+ public class AdminServiceImpl extends CUDService implements AdminService {
 
 	public static final String NS = "http://admin.services.cud.iac.spb.ru/";
 
@@ -133,67 +142,25 @@ import ru.spb.iac.cud.items.Role;
 
 	}
 
-	private String getIPAddress() {
-		MessageContext context = wsContext.getMessageContext();
-		HttpServletRequest request = (HttpServletRequest) context
-				.get(MessageContext.SERVLET_REQUEST);
 
-		String ipAddress = request.getRemoteAddr();
-		return ipAddress;
+	@WebMethod
+	public void store_organization_attributes(
+			@WebParam(name = "organizationCode", targetNamespace = NS) String organizationCode,
+			@WebParam(name = "organizationAttributes", targetNamespace = NS) List<Attribute> organizationAttributes)
+	throws GeneralFailure {		
+		LOGGER.debug("edit_organization_attributes");		
+		(new ContextAdminManager()).getAdminManager().store_organization_attributes(
+				JPA_EisAdminManager.MakeOrgAttrsFromOrgCode(organizationCode, organizationAttributes), 
+				getIDUser());
 	}
-
-	private String getIDSystem() {
-		MessageContext context = wsContext.getMessageContext();
-		HttpServletRequest request = (HttpServletRequest) context
-				.get(MessageContext.SERVLET_REQUEST);
-
-		String idSystem = (String) request.getSession().getAttribute(
-				"cud_sts_principal");
-
-		LOGGER.debug("getIDSystem:" + idSystem);
-
-		return idSystem;
-	}
-
-	private Long getIDUser() throws GeneralFailure {
-		MessageContext context = wsContext.getMessageContext();
-		HttpServletRequest request = (HttpServletRequest) context
-				.get(MessageContext.SERVLET_REQUEST);
-
-		Long idUser = null;
-		try {
-			// user из ApplicantToken_1
-			// это заявитель
-
-			// когда пользователя определяли по логину, то сначала в
-			// AppSOAPHandler
-			// вычисляли его ИД через authenticate_login_obo
-			// и в сессию клали уже Long idUser,
-			// поэтому при извлечении из сессии можно было делать привидение к
-			// Long
-			// сейчас же мы кладём в сессиию ид пользователя из текстового поля
-			// запроса
-			// Long idUs/er =
-			// (Long)req/uest.getSe/ssion(/).getAtt/ribute/("user_id_principal");
-
-			if (request.getSession().getAttribute("user_id_principal") != null
-					&& !request.getSession().getAttribute("user_id_principal")
-							.toString().isEmpty()) {
-
-				// это заявитель
-				idUser = Long.valueOf((String) request.getSession().getAttribute(
-						"user_id_principal"));
-
-				 
-
-			} else {
-				// анаоним
-				idUser = -1L;
-			}
-			return idUser;
-
-		} catch (Exception e) {
-			throw new GeneralFailure("USER UID IS NOT CORRECT");
-		}
-	}
+	
+	@WebMethod
+	public @WebResult(targetNamespace = NS) List<Attribute> fetch_organization_attributes(
+			@WebParam(name = "organizationCode", targetNamespace = NS) String organizationCode,
+			@WebParam(name = "organizationAttributes", targetNamespace = NS) List<Attribute> organizationAttributes)
+	throws GeneralFailure {		
+		LOGGER.debug("edit_organization_attributes");
+		return (new ContextAdminManager()).getAdminManager().fetch_organization_attributes(JPA_EisAdminManager.MakeOrgAttrsFromOrgCode(organizationCode, organizationAttributes));
+	}	
+	
 }

@@ -191,7 +191,7 @@ public class CommonUtilTest {
         AccessManager am = new AccessManager();
         boolean result = true;
         
-        List l1 =new ArrayList<AuditFunction>();
+        List<AuditFunction> l1 =new ArrayList<AuditFunction>();
         AuditFunction af = new AuditFunction();
         af.setCodeFunction("123");
        af.setDateFunction(new Date());
@@ -328,23 +328,23 @@ public class CommonUtilTest {
         SyncManager am = new SyncManager();
         boolean result = true;
         
-        List list1 =new ArrayList<Role>();
+        List<Role> list1 =new ArrayList<Role>();
         Role r1 = new Role();
         r1.setCode("123");
         r1.setName("123");
     	list1.add(r1);
     	
-    	 List list2 =new ArrayList<Function>();
+    	 List<Function> list2 =new ArrayList<Function>();
     	 Function f1 = new Function();
     	 f1.setCode("123");
     	 f1.setName("123");
      	list2.add(f1);
     	
-     	 List list3 =new ArrayList<Group>();
+     	 List<Group> list3 =new ArrayList<Group>();
      	Group g1 =new Group();
      	g1.setCode("123");
      	g1.setName("123");
-     	List list11 =new ArrayList<String>();
+     	List<String> list11 =new ArrayList<String>();
     	list11.add("urn:group-users:149");
     	list11.add("1");
      	g1.setCodesRoles(list11);

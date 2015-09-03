@@ -321,7 +321,7 @@ private static String alias_root = "σφροαγσο«ροαθΰφ».crt";
 			final Set trust = new HashSet(0);
 			trust.add(new TrustAnchor((X509Certificate) tr, null));
 
-			final List cert = new ArrayList(0);
+			final List cert = new ArrayList<>(0);
 			for (int i = 0; i < certs.length; i++) {
 				cert.add(certs[i]);
 			}

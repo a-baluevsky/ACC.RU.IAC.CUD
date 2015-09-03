@@ -49,7 +49,7 @@ import org.apache.openejb.jee.jba.cmp.Strategy;
 	
 	
 	public String toRON(String varName) {
-		return javaw.util.Strings.toRON(varName, this);
+		return javaw.lang.Strings.toRON(varName, this);
 	}
 
 	public void setDateFunction(Date dateFunction) {

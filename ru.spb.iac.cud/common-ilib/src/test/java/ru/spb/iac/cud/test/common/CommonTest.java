@@ -840,7 +840,7 @@ public class CommonTest {
         System.out.println("ArmManager:forViewCert");
         boolean expResult = false;
        
-        AuditTransferItem am = new AuditTransferItem();
+        AuditTransferItem<?> am = new AuditTransferItem<>();
         boolean result = true;
         am.getCount();
         am.getList();

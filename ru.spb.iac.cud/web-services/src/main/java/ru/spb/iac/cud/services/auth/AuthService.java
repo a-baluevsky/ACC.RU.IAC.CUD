@@ -33,6 +33,7 @@ import ru.spb.iac.cud.items.AuthMode;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.openejb.jee.jba.Jboss;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonWriteNullProperties;
@@ -45,15 +46,15 @@ public class AuthService {
 	private static class AuthResponse implements Serializable {
 		public enum AuthCode {
 			OK,
-			MISSING_REQUIRED_PARAMS,
-			INVALID_CREDENTIALS,
-			PROCESSING_ERROR;
+			invalid_request,	// The request is missing a required parameter, includes an unsupported parameter value, or is otherwise malformed
+			access_denied,		// Invalid credentials, account expired, etc
+			server_error;		// The authorization server encountered an unexpected condition that prevented it from fulfilling the request.
 			private static Map<AuthCode, String> getStrMsgMap1(){
 				Map<AuthCode, String> m = new EnumMap<AuthCode, String>(AuthCode.class);
 				m.put(OK, 						"");
-				m.put(MISSING_REQUIRED_PARAMS, 	"Отсутствуют необходимые параметры! Нужно указать логин, пароль, код системы");
-				m.put(INVALID_CREDENTIALS, 		"Учётные данные не верны");
-				m.put(PROCESSING_ERROR, 		"Ошибка при выполнении запроса! ");
+				m.put(invalid_request, 			"Отсутствуют необходимые параметры! Нужно указать логин, пароль, код системы");
+				m.put(access_denied, 			"Учётные данные не верны");
+				m.put(server_error, 			"Ошибка при выполнении запроса! ");
 				return m;
 			}
 			private static final Map<AuthCode, String> m_strMsgMap1 = getStrMsgMap1();		
@@ -84,7 +85,7 @@ public class AuthService {
     			|| Strings.isNullOrEmptyTrim(password)
     			|| Strings.isNullOrEmptyTrim(codeSys)) {
     		retVal = new AuthResponse();
-    		retVal.resultCode = AuthResponse.AuthCode.MISSING_REQUIRED_PARAMS;
+    		retVal.resultCode = AuthResponse.AuthCode.invalid_request;
     		retVal.message = retVal.resultCode.getMessage();
     	} else retVal = tryLogin(request, login, password, codeSys);
     	return retVal;
@@ -92,7 +93,7 @@ public class AuthService {
     
     private AuthResponse tryLogin(ServletRequest request, String login, String password, String codeSys) {
     	AuthResponse retVal = new AuthResponse();
-    	retVal.resultCode = AuthResponse.AuthCode.PROCESSING_ERROR;
+    	retVal.resultCode = AuthResponse.AuthCode.server_error;
     	retVal.message = retVal.resultCode.getMessage();
     	try {
 			retVal.login = getAml().authenticate_login(login, password, AuthMode.WEB_SERVICES, request.getRemoteAddr(), codeSys);
@@ -102,7 +103,7 @@ public class AuthService {
 			retVal.resultCode = AuthResponse.AuthCode.OK;
 			retVal.message = retVal.resultCode.getMessage();
 		} catch (InvalidCredentials e) {
-			retVal.resultCode = AuthResponse.AuthCode.INVALID_CREDENTIALS;
+			retVal.resultCode = AuthResponse.AuthCode.access_denied;
 			retVal.message = retVal.resultCode.getMessage();			
 		} catch (GeneralFailure e) {
 			retVal.message += e;

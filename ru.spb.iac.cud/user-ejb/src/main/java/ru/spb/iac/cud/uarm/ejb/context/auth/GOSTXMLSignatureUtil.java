@@ -607,11 +607,11 @@ private static final Logger LOGGERSLF4J = LoggerFactory.getLogger(GOSTXMLSignatu
             keyInfo = keyInfoFactory.newKeyInfo(Collections.singletonList(keyValue));
         }
         if(x509Certificate != null){
-            List x509list = new ArrayList();
+            List x509list = new ArrayList<>();
 
             x509list.add(x509Certificate);
             X509Data x509Data = keyInfoFactory.newX509Data(x509list);
-            List items = new ArrayList();
+            List items = new ArrayList<>();
 
             items.add(x509Data);
             if(keyValue != null){

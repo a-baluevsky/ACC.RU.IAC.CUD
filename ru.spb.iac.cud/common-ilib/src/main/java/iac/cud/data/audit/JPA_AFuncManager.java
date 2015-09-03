@@ -9,10 +9,11 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import javax.persistence.EntityManager;
-
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import ru.spb.iac.cud.core.data.DataField;
+import ru.spb.iac.cud.core.data.DataFieldType;
 import ru.spb.iac.cud.core.data.JPABuilder;
 
 public class JPA_AFuncManager extends JPABuilder {
@@ -63,16 +64,18 @@ public class JPA_AFuncManager extends JPABuilder {
         if(filter!=null){
    		 Set<Map.Entry<String, String>> setFilterAFunc = filter.entrySet();
              for (Map.Entry<String, String> me : setFilterAFunc) {  
-           	  String sKey=me.getKey();
+           	  String sKey=me.getKey();           	  
              //у нас act_dat_value переведена в строку уже в запросе	            	  
   		      if("arm_id".equals(sKey)){ 
   		    	 putWhereCondition("arm_id", "=", me.getValue());      	        		  
-	          } else if("act_dat_value".equals(sKey)) {
-	        	  putWhereCondition(Date.class, "act_dat", ">=", me.getValue());
+	          } else if("act_dat_value".equals(sKey)) {	        	  
+	        	  //putWhereCondition(new DataField<String>(DataFieldType.DATE, "act_dat"), ">=", me.getValue());
+	        	  putWhereCondition(new DataField<Date>(DataFieldType.DATE_YYYYMMDD, "act_dat"), ">=", (Date)DataFieldType.DATE_DDMMYY.fromString(me.getValue()));
 	          } else if("act_dat_value2".equals(sKey)) {
-	        	  putWhereCondition(Date.class, "act_dat", "<=", me.getValue());
+	        	  //putWhereCondition(new DataField<String>(DataFieldType.DATE, "act_dat"), "<=", me.getValue());
+	        	  putWhereCondition(new DataField<Date>(DataFieldType.DATE_YYYYMMDD, "act_dat"), "<=", (Date)DataFieldType.DATE_DDMMYY.fromString(me.getValue()));
 	          } else if("usr_id".equals(sKey)) {
-	        	  putWhereCondition(Long.class, "usr_id", "=", me.getValue());
+	        	  putWhereCondition(new DataField<Long>(DataFieldType.NUMBER_LONG, "usr_id"), "=", Long.valueOf(me.getValue()));
 	          } else { //делаем фильтр на начало текста
 	        	  putWhereCondition(sKey, "like", me.getValue());
 	          }

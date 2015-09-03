@@ -138,7 +138,7 @@ import javaw.util.ArrayList;
       		     }
                  log.info("invokeLocal:list:orderQueryOrg:"+orderQueryOrg);
                  
-				 auditList = new ArrayList(entityManager.createQuery("select o from AcOrganization o "+(orderQueryOrg!=null ? orderQueryOrg : ""))
+				 auditList = new ArrayList<>(entityManager.createQuery("select o from AcOrganization o "+(orderQueryOrg!=null ? orderQueryOrg : ""))
                        .setFirstResult(firstRow)
                        .setMaxResults(numberOfRows)
                        .getResultList());

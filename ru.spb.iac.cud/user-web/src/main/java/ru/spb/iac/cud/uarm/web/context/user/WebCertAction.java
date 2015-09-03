@@ -344,7 +344,7 @@ public static boolean chain_check(Certificate pcert) throws IOException {
 	
 	 
 	  
-	  Enumeration aliases = keyStore.aliases();
+	  Enumeration<?> aliases = keyStore.aliases();
 	 while (aliases.hasMoreElements()) {
 	  String alias = (String) aliases.nextElement();
 	 
@@ -366,7 +366,7 @@ public static boolean chain_check(Certificate pcert) throws IOException {
 	    final Set trust = new HashSet(0);
 	    trust.add(new TrustAnchor((X509Certificate) tr, null));
 
-	    final List cert = new ArrayList(0);
+	    final List cert = new ArrayList<>(0);
 	    for (int i = 0; i < certs.length; i++) {
 			cert.add(certs[i]);
 		}

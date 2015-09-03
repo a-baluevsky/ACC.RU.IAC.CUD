@@ -1,9 +1,12 @@
 package ru.spb.iac.cud.core.eis;
 
 import java.util.List;
+
 import javax.ejb.Local;
 
 import ru.spb.iac.cud.exceptions.GeneralFailure;
+import ru.spb.iac.cud.items.Attribute;
+import ru.spb.iac.cud.items.OrganisationAttributes;
 
 /**
  * @author bubnov
@@ -21,4 +24,12 @@ public interface AdminManagerLocal {
 
 	public void cert_change(String codeSystem, String newCert, Long idUserAuth,
 			String IPAddress) throws GeneralFailure;
+	
+	public void store_organization_attributes(
+			OrganisationAttributes orgAttrs, Long userId)
+			throws GeneralFailure;
+
+	public List<Attribute> fetch_organization_attributes(
+			OrganisationAttributes organization_attributes)
+			throws GeneralFailure;	
 }

@@ -55,7 +55,7 @@ import org.xml.sax.SAXException;
 		public static String errorMessage = null;
 		static HashMap<String, JcpXmlProcessor> hmProcs;
 		static {
-			Class[] procs = JcpXmlProcessor.class.getDeclaredClasses();
+			Class<JcpXmlProcessor>[] procs = (Class<JcpXmlProcessor>[]) JcpXmlProcessor.class.getDeclaredClasses();
 			hmProcs = new HashMap<String, JcpXmlProcessor>();
 			for(Class<JcpXmlProcessor> prc: procs) {
 				try {

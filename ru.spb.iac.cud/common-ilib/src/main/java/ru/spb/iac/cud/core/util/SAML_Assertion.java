@@ -1,18 +1,16 @@
 package ru.spb.iac.cud.core.util;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
 import java.util.Date;
 
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
 
 public class SAML_Assertion { 
 	private static String sts_assertion_file = "saml_asserion.xml";
@@ -99,5 +97,11 @@ public class SAML_Assertion {
 	}
 	public Document toDocument() {
 		return saml_assertion;
+	}
+	
+	public static String PackTokenId(String userUID, String lifetime, String main_auth_type) {
+        StringBuilder sb = new StringBuilder();        
+        sb.append(userUID).append("_").append(lifetime).append("_").append(main_auth_type);
+        return sb.toString();
 	}
 }

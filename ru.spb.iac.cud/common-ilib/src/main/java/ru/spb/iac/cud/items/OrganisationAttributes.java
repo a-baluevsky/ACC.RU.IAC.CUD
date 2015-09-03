@@ -1,44 +1,45 @@
 package ru.spb.iac.cud.items;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
- public class OrganisationAttributes {
-	private String uid;
-	private List<Attribute> attributes = new ArrayList<Attribute>();
+import ru.spb.iac.cud.core.data.XAttribute;
+import ru.spb.iac.cud.core.data.XAttributes;
 
-	private List<DepartamentAttributes> departamentAttributes = new ArrayList<DepartamentAttributes>();
-
-	public OrganisationAttributes() {
+public class OrganisationAttributes extends XAttributes<OrganisationAttribute> {
+	//private Map<String, Attribute> departamentAttributes = new Map<String, Attribute>();
+	//public Map<String, Attribute> getDepartamentAttributes() {	return departamentAttributes;	}
+	//public void setDepartamentAttributes(Map<String, Attribute> departamentAttributes) { this.departamentAttributes = departamentAttributes;	}
+	public OrganisationAttributes() { super(OrganisationAttribute.class); }	
+	public OrganisationAttributes(Iterable<? extends Attribute> listCopy) {
+		this();
+		for (Attribute attribute : listCopy) {
+			add(new OrganisationAttribute(attribute));
+		}
+	}
+	@Override public OrganisationAttributes clone() { return new OrganisationAttributes(this);	}
+	@Override public OrganisationAttribute add(OrganisationAttribute oa) {
+		if(oa.domain==null) oa.domain = getDomainByName(oa.getName());
+		final String oaDom = oa.domain!=null? oa.domain.toString(): null;
+		if("ISP_BSS_T.ID_SRV".equals(oaDom) || "ISP_EXT_BSS_T.ID_SRV".equals(oaDom)) {
+			oa.useCondition = true; // treat as condition in Where-clause and don't allow changing ID
+			putAttribute(oa);
+			return oa;
+		} else 
+			return super.add(oa);
 	}
 
-	public String getUid() {
-		return this.uid;
-	}
-
-	public void setUid(String uid) {
-		this.uid = uid;
-	}
-
-	public List<Attribute> getAttributes() {
-		return attributes;
-	}
-
-	public void setAttributes(List<Attribute> attributes) {
-		this.attributes = attributes;
-	}
-
-	public List<DepartamentAttributes> getDepartamentAttributes() {
-		return departamentAttributes;
-	}
-
-	public void setDepartamentAttributes(
-			List<DepartamentAttributes> departamentAttributes) {
-		this.departamentAttributes = departamentAttributes;
-	}
-
-	@Override
-	public String toString() {
-		return "{organisation " + attributes /* + " " + roles + "}" */;
-	}
+	private static XAttribute.Domain getDomainByName(String name) {
+		try {
+			if(XAttribute.Domain.isValidDomainSpec(name)) {
+				return new XAttribute.Domain(name);
+			} else {
+				final UUID uid = UUID.fromString(name);
+				return OrganisationAttribute.getDomainByID(uid);
+			}
+		} catch(Exception x) {
+			return null;
+		}
+	}	
 }

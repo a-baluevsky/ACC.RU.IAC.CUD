@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javaw.lang.Strings;
+
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -143,10 +145,7 @@ import ru.spb.iac.cud.util.CommonUtil;
 			
 			LOGGER.debug("users_data:idIS1:" + idIS);
 
-			String uidsLine = null;
-
-            uidsLine = CommonUtil.createLine(uidsUsers);
-			
+			String uidsLine = CommonUtil.createLine(uidsUsers);
 
 			if (CUDConstants.categorySYS.equals(category) && rolesCodes != null
 					&& !rolesCodes.isEmpty()) {
@@ -198,9 +197,8 @@ import ru.spb.iac.cud.util.CommonUtil;
 
 				// системы и подсистемы
 				// 1.пользователи
-
-				lo = em.createNativeQuery(
-						(new StringBuilder("select t1.t1_id, t1.t1_login, t1.t1_cert, t1.t1_usr_code, t1.t1_fio, t1.t1_tel, t1.t1_email,t1.t1_pos, t1.t1_dep_name, "))
+				
+				String sSQLQuery = (new StringBuilder("select t1.t1_id, t1.t1_login, t1.t1_cert, t1.t1_usr_code, t1.t1_fio, t1.t1_tel, t1.t1_email,t1.t1_pos, t1.t1_dep_name, "))
 						  .append("t1.t1_org_code, t1.t1_org_name, t1.t1_org_adr, t1.t1_org_tel, t1.t1_start, t1.t1_end, t1.t1_status, ")
 						  .append("t1.t1_crt_date, t1.t1_crt_usr_login, t1.t1_upd_date, t1.t1_upd_usr_login, ")
 						  .append("t1.t1_dep_code, t1.t1_org_status, t1.t1_usr_status, t1.t1_dep_status, t1.t1_org_okato, t1.t1_dep_adr ")
@@ -268,13 +266,13 @@ import ru.spb.iac.cud.util.CommonUtil;
 						  .append("and (ais.SIGN_OBJECT  = :idIS ")
 						  .append("or ais_group.SIGN_OBJECT = :idIS ")
 						  .append("or -1 = :onlyISUsers ) ")
-						  .append("and to_char(au_full.ID_SRV) in ("+ uidsLine + ") ")
+						  .append(!Strings.isNullOrEmptyTrim(uidsLine)? "and to_char(au_full.ID_SRV) in ("+ uidsLine + ") ": " ")
 						  .append(filterSt != null ? filterSt : " ")
 
 						  .append("order by t_core_id ")
 						  .append(")t_core ")
 						  .append("group by t_core_id ")
-						  .append("order by t_core.t_core_id ")
+						  .append("order by t_core.t_core_id) t4, ")
 								// core-2-
 								  .append("ISP_BSS_T cl_org_full, ")
 								  .append("ISP_BSS_T cl_usr_full, ")
@@ -294,16 +292,17 @@ import ru.spb.iac.cud.util.CommonUtil;
 								  .append(")t1 ")
 								  .append("where 1=1 ")
 								  .append(settingsMap.containsKey("FILTER_FIO") ? 
-										 " and upper(t1_fio) LIKE  upper('%"+settingsMap.get("FILTER_FIO")+"%')" : "")
+										 " and upper(t1_fio) LIKE  upper('%"+settingsMap.get("FILTER_FIO")+"%')" : " ")
 								  .append(settingsMap.containsKey("FILTER_ORG") ? 
-										 " and upper(t1_org_name) LIKE  upper('%"+settingsMap.get("FILTER_ORG")+"%')" : "")
-								.append("order by t1_fio ")
-								.toString())
+										 " and upper(t1_org_name) LIKE  upper('%"+settingsMap.get("FILTER_ORG")+"%')" : " ")
+								.append(" order by t1_fio ")
+								.toString();
+				// для отладки:				System.out.println(sSQLQuery);
+				lo = em.createNativeQuery(sSQLQuery)
 						.setParameter("idIS", idIS)
 						.setParameter(
 								"onlyISUsers",
-								CUDConstants.categorySYS.equals(category) ? 1
-										: -1)
+								CUDConstants.categorySYS.equals(category) ? 1: -1)
 						.setFirstResult(start.intValue())
 						.setMaxResults(count.intValue())
 						.getResultList();

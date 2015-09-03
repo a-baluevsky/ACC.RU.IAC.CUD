@@ -5,7 +5,7 @@ package ru.spb.iac.sts.core.plugins.saml;
 class SecurityActions {
 
   
-    static Class loadClass(final Class<?> theClass, final String fullQualifiedName) {
+    static Class<?> loadClass(final Class<?> theClass, final String fullQualifiedName) {
       
             ClassLoader classLoader = theClass.getClassLoader();
 
@@ -18,7 +18,7 @@ class SecurityActions {
        }
 
   
-    static Class loadClass(final ClassLoader classLoader, final String fullQualifiedName) {
+    static Class<?> loadClass(final ClassLoader classLoader, final String fullQualifiedName) {
       
             try {
                 return classLoader.loadClass(fullQualifiedName);

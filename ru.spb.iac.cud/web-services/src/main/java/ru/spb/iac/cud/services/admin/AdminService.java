@@ -1,15 +1,19 @@
 package ru.spb.iac.cud.services.admin;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
+import javax.jws.WebResult;
 import javax.jws.WebService;
+
 import ru.spb.iac.cud.exceptions.GeneralFailure;
 import ru.spb.iac.cud.items.Function;
 import ru.spb.iac.cud.items.Group;
 import ru.spb.iac.cud.items.Resource;
 import ru.spb.iac.cud.items.Role;
+import ru.spb.iac.cud.items.Attribute;
 
 @WebService(targetNamespace = AdminServiceImpl.NS)
 public interface AdminService {
@@ -72,5 +76,17 @@ public interface AdminService {
 			@WebParam(name = "codesRoles", targetNamespace = NS) List<String> codesRoles,
 			@WebParam(name = "modeExec", targetNamespace = NS) String modeExec)
 			throws GeneralFailure;
+
+	@WebMethod
+	public void store_organization_attributes(
+			@WebParam(name = "organizationCode", targetNamespace = NS) String organizationCode,
+			@WebParam(name = "organizationAttributes", targetNamespace = NS) List<Attribute> organizationAttributes)
+			throws GeneralFailure;
+	
+	@WebMethod
+	public @WebResult(targetNamespace = NS) List<Attribute> fetch_organization_attributes(
+			@WebParam(name = "organizationCode", targetNamespace = NS) String organizationCode,
+			@WebParam(name = "organizationAttributes", targetNamespace = NS) List<Attribute> organizationAttributes)
+			throws GeneralFailure;	
 
 }

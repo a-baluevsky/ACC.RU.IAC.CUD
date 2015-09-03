@@ -1,7 +1,10 @@
 package javaw.util;
 
+import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.List;
+
+import javax.swing.AbstractAction;
 
 // Wrapper to deal with SONAR CWE-594 issue.
 // http://cwe.mitre.org/data/definitions/594.html
@@ -25,7 +28,9 @@ public class ArrayList<K> extends java.util.ArrayList<K> implements Serializable
 	public ArrayList(List<K> list) {
 		super(list);
 	}
-	
+	public static boolean isNullOrEmpty(AbstractCollection<?> list) {
+		return list==null || list.isEmpty();
+	}
 	
 	
 };

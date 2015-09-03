@@ -63,6 +63,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import ru.spb.iac.cud.context.ContextIDPAccessManager;
+import ru.spb.iac.cud.core.util.SAML_Assertion;
 import ru.spb.iac.cud.idp.web.util.CUDStatementUtil;
 import ru.spb.iac.cud.idp.web.util.GOSTSignatureUtil;
 
@@ -70,7 +71,9 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import javax.xml.namespace.QName;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.Principal;
 import java.security.PrivateKey;
@@ -78,6 +81,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import static org.picketlink.common.util.StringUtil.*;
 
 
@@ -346,25 +350,13 @@ import static org.picketlink.common.util.StringUtil.*;
 				
                  LOGGERSLF4J.debug("getResponse:01:"+main_auth_type);
                  
-              
-                 StringBuilder sb = new StringBuilder();
-                 
-                 sb.append(userUID).append("_").append(lifetime).append("_").append(main_auth_type!=null?main_auth_type:auth_type_password);
-                 
-                 byte[] sigValue = GOSTSignatureUtil.sign(sb.toString(), keypair.getPrivate());
-                 
-                 String base64SigValue = Base64.encodeBytes(sigValue, Base64.DONT_BREAK_LINES);
-                 
-                 String tokenID = sb.toString()+"_"+base64SigValue;
-                 
-                 String base64tokenID = Base64.encodeBytes(tokenID.getBytes("utf-8"), Base64.DONT_BREAK_LINES);
-                 
+                 if(main_auth_type==null)
+                	 main_auth_type = auth_type_password;
+
+                 String base64tokenID = encodeTokenID(userUID, main_auth_type, lifetime, keypair);
+				 
                  attribs.put("TOKEN_ID", base64tokenID);
 
-                 LOGGERSLF4J.debug("getResponse:02:"+tokenID);
-				 LOGGERSLF4J.debug("getResponse:03:"+base64tokenID);
-                 
-				 
 				 (new ContextIDPAccessManager())
 				   .saveTokenID(base64tokenID, userUID);
 				 
@@ -419,6 +411,19 @@ import static org.picketlink.common.util.StringUtil.*;
 
             return samlResponseDocument;
         }
+
+		private String encodeTokenID(String userUID, String main_auth_type,
+				String lifetime, KeyPair keypair)
+		throws GeneralSecurityException, UnsupportedEncodingException {
+			 String sTokenIdPack = SAML_Assertion.PackTokenId(userUID, lifetime, main_auth_type);
+			byte[] sigValue = GOSTSignatureUtil.sign(sTokenIdPack, keypair.getPrivate());
+			 String base64SigValue = Base64.encodeBytes(sigValue, Base64.DONT_BREAK_LINES);
+			 String tokenID = sTokenIdPack+"_"+base64SigValue;        
+			 String base64tokenID =  Base64.encodeBytes(tokenID.getBytes("utf-8"), Base64.DONT_BREAK_LINES);
+			 LOGGERSLF4J.debug("encodeTokenID:02:"+tokenID);
+			 LOGGERSLF4J.debug("encodeTokenID:03:"+base64tokenID);
+			return base64tokenID;
+		}
 
         private String getParticipantURL(String destination, SAML2HandlerRequest request) {
             SPSSODescriptorType spMetadata = (SPSSODescriptorType) request.getOptions().get(

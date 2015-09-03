@@ -139,7 +139,7 @@ import javaw.util.SerializableList;
 	}
 
 	public void setAcRolesBssTs(List<AcRolesBssT> acRolesBssTs) {
-		this.acRolesBssTs = new ArrayList(acRolesBssTs);
+		this.acRolesBssTs = new ArrayList<AcRolesBssT>(acRolesBssTs);
 	}
 
 	public AcRolesBssT addAcRolesBssT(AcRolesBssT acRolesBssT) {

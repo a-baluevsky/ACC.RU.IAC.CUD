@@ -22,15 +22,15 @@ import java.security.PrivilegedAction;
      * @param fullQualifiedName
      * @return
      */
-    static Class loadClass(final Class theClass, final String fullQualifiedName) {
+    static Class<?> loadClass(final Class<?> theClass, final String fullQualifiedName) {
         SecurityManager sm = System.getSecurityManager();
         
         if (sm != null) {
-            return AccessController.doPrivileged(new PrivilegedAction<Class>() {
-                public Class run() {
+            return AccessController.doPrivileged(new PrivilegedAction<Class<?>>() {
+                public Class<?> run() {
                     ClassLoader classLoader = theClass.getClassLoader();
 
-                    Class clazz = loadClass(classLoader, fullQualifiedName);
+                    Class<?> clazz = loadClass(classLoader, fullQualifiedName);
                     if (clazz == null) {
                         classLoader = Thread.currentThread().getContextClassLoader();
                         clazz = loadClass(classLoader, fullQualifiedName);
@@ -41,7 +41,7 @@ import java.security.PrivilegedAction;
         } else {
             ClassLoader classLoader = theClass.getClassLoader();
 
-            Class clazz = loadClass(classLoader, fullQualifiedName);
+            Class<?> clazz = loadClass(classLoader, fullQualifiedName);
             if (clazz == null) {
                 classLoader = Thread.currentThread().getContextClassLoader();
                 clazz = loadClass(classLoader, fullQualifiedName);
@@ -59,12 +59,12 @@ import java.security.PrivilegedAction;
      * @param fullQualifiedName
      * @return
      */
-    static Class loadClass(final ClassLoader classLoader, final String fullQualifiedName) {
+    static Class<?> loadClass(final ClassLoader classLoader, final String fullQualifiedName) {
         SecurityManager sm = System.getSecurityManager();
         
         if (sm != null) {
             return AccessController.doPrivileged(new PrivilegedAction<Class<?>>() {
-                public Class run() {
+                public Class<?> run() {
                     try {
                         return classLoader.loadClass(fullQualifiedName);
                     } catch (ClassNotFoundException e) {
@@ -88,7 +88,7 @@ import java.security.PrivilegedAction;
      * @param resourceName
      * @return
      */
-    static URL loadResource(final Class clazz, final String resourceName) {
+    static URL loadResource(final Class<?> clazz, final String resourceName) {
         SecurityManager sm = System.getSecurityManager();
         
         if (sm != null) {

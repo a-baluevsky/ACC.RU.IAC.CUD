@@ -16,7 +16,6 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.UserTransaction;
 
-import org.apache.openjpa.util.GeneralException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1514,7 +1513,7 @@ import ru.spb.iac.cud.items.Role;
 													   
 						   }else{
 							   
-							 List results = em.createNativeQuery("select AC_IS_BSS_SEQ.nextval from dual ").getResultList();
+							 List<?> results = em.createNativeQuery("select AC_IS_BSS_SEQ.nextval from dual ").getResultList();
 					            
 					         Long newIdRes = ((BigDecimal)results.get(0)).longValue();
 					            

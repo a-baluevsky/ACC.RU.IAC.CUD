@@ -370,7 +370,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	    	     
 	    	     if(arList.size()>0){
 	    	 		//  @On/eTo/Many(map/pedBy="acHost", casc/ade=/{CascadeType.PE/RSIST, CascadeType/.REFRESH})
-	    	 	     rolBeanCrt.setAcLinkRoleAppPagePrmssns(new HashSet(arList));
+	    	 	     rolBeanCrt.setAcLinkRoleAppPagePrmssns(new HashSet<AcLinkRoleAppPagePrmssn>(arList));
 	    	 	 }
 	    	 	   
 	    	 	 entityManager.flush();
@@ -448,7 +448,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	    	  
 	       	  if(arList.size()>0){
 	    	 	//  @OneT/oMany(mapp/edBy="acHo/st", cascade={C/ascadeType./PERSIST,/ CascadeType.REFRE/SH})
-	    		  arm.setAcLinkRoleAppPagePrmssns(new HashSet(arList));
+	    		  arm.setAcLinkRoleAppPagePrmssns(new HashSet<AcLinkRoleAppPagePrmssn>(arList));
 	    	  }
 	    	 	   
 	    	 entityManager.flush();
@@ -800,7 +800,7 @@ import iac.grn.serviceitems.BaseTableItem;
 		   			 
 	        	if(aca.getAcLinkRoleAppPagePrmssns()!=null){ 
 	        		 log.info("RolManager:getListRolResEdit:03");
-	        	 Iterator it= aca.getAcLinkRoleAppPagePrmssns().iterator();
+	        	 Iterator<AcLinkRoleAppPagePrmssn> it= aca.getAcLinkRoleAppPagePrmssns().iterator();
 	        	 List<Long> ls = new ArrayList<Long>();
 	        	 log.info("RolManager:getListRolResEdit:04");
 	        	 while (it.hasNext()){
@@ -849,7 +849,7 @@ import iac.grn.serviceitems.BaseTableItem;
   public List<Long> getCheckboxPerm() throws Exception{
 	    log.info("getCheckboxPerm_01");
 	    if (checkboxPerm==null){
-	    	checkboxPerm = new ArrayList();
+	    	checkboxPerm = new ArrayList<>();
 	    	checkboxPerm.add(Long.valueOf(1));
 	    	checkboxPerm.add(Long.valueOf(3));
 	    	checkboxPerm.add(Long.valueOf(5));

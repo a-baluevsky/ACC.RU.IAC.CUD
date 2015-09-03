@@ -1587,16 +1587,16 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 				saved.addCookie(cookies[i]);
 			}
 		}
-		Enumeration names = request.getHeaderNames();
+		Enumeration<?> names = request.getHeaderNames();
 		while (names.hasMoreElements()) {
 			String name = (String) names.nextElement();
-			Enumeration values = request.getHeaders(name);
+			Enumeration<?> values = request.getHeaders(name);
 			while (values.hasMoreElements()) {
 				String value = (String) values.nextElement();
 				saved.addHeader(name, value);
 			}
 		}
-		Enumeration locales = request.getLocales();
+		Enumeration<?> locales = request.getLocales();
 		while (locales.hasMoreElements()) {
 			Locale locale = (Locale) locales.nextElement();
 			saved.addLocale(locale);
@@ -1617,7 +1617,7 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 			saved.setBody(body);
 
 			if (body.getLength() == 0) {
-				Enumeration e = request.getParameterNames();
+				Enumeration<?> e = request.getParameterNames();
 				while (e.hasMoreElements()) {
 					String name = (String) e.nextElement();
 					String[] val = request.getParameterValues(name);

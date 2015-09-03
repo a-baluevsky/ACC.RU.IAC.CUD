@@ -6,14 +6,14 @@ import java.security.PrivilegedAction;
 
 class SecurityActions {
 
-	static Class loadClass(final Class<?> theClass,
+	static Class<?> loadClass(final Class<?> theClass,
 			final String fullQualifiedName) {
 		SecurityManager sm = System.getSecurityManager();
 
 		if (sm != null) {
 			return AccessController
 					.doPrivileged(new PrivilegedAction<Class<?>>() {
-						public Class run() {
+						public Class<?> run() {
 							ClassLoader classLoader = theClass.getClassLoader();
 
 							Class<?> clazz = loadClass(classLoader,
@@ -39,14 +39,14 @@ class SecurityActions {
 		}
 	}
 
-	static Class loadClass(final ClassLoader classLoader,
+	static Class<?> loadClass(final ClassLoader classLoader,
 			final String fullQualifiedName) {
 		SecurityManager sm = System.getSecurityManager();
 
 		if (sm != null) {
 			return AccessController
 					.doPrivileged(new PrivilegedAction<Class<?>>() {
-						public Class run() {
+						public Class<?> run() {
 							try {
 								return classLoader.loadClass(fullQualifiedName);
 							} catch (ClassNotFoundException e) {

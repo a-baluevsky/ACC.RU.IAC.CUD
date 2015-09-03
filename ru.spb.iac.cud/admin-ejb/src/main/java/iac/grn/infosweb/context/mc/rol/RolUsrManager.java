@@ -318,7 +318,7 @@ import org.jboss.seam.log.Log;
  }
  
  public void setAuditItemsListSelect(List <BaseTableItem> auditItemsListSelect) {
-		    this.auditItemsListSelect=new ArrayList(auditItemsListSelect);
+		    this.auditItemsListSelect=new ArrayList<>(auditItemsListSelect);
  }
  
  public Boolean getEvaluteForList() {

@@ -9,6 +9,8 @@ import java.util.Set;
 
 import javax.persistence.EntityManager;
 
+import ru.spb.iac.cud.core.data.DataField;
+import ru.spb.iac.cud.core.data.DataFieldType;
 import ru.spb.iac.cud.core.data.JPABuilder;
 
 public class JPA_UsrManager extends JPABuilder {
@@ -23,12 +25,15 @@ public class JPA_UsrManager extends JPABuilder {
    		 Set<Map.Entry<String, String>> setFilterUser = filter.entrySet();
              for (Map.Entry<String, String> me : setFilterUser) {   	               
 	   		     if("t1_crt_date".equals(me.getKey())){  
-	   		    	 putWhereCondition(Date.class, "t1_crt_date", ">=", me.getValue());
+	   		    	 //putWhereCondition("DATE", "t1_crt_date", ">=", me.getValue());
+	   		    	putWhereCondition(new DataField<Date>(DataFieldType.DATE_YYYYMMDD, "t1_crt_date"), ">=", (Date)DataFieldType.DATE_DDMMYY.fromString(me.getValue()));
+	   		    	 
 	        	   //делаем фильтр на начало  
 	        	     //st=(st!=null?st+" and " :"")+" lower(to_char("+me.getKey()+",'DD.MM.YY HH24:MI:SS')) like lower('"+me.getValue()+"%') ";
 	    	     }
 	   		     else if ("t1_crt_date2".equals(me.getKey())) {
-	   		    	putWhereCondition(Date.class, "t1_crt_date", "<=", me.getValue());
+	   		    	//putWhereCondition(Date.class, "t1_crt_date", "<=", me.getValue());
+	   		    	putWhereCondition(new DataField<Date>(DataFieldType.DATE_YYYYMMDD, "t1_crt_date"), "<=", (Date)DataFieldType.DATE_DDMMYY.fromString(me.getValue()));   		    	
 	   		    	//System.out.println("invokeLocal: t1_crt_date2="+me.getValue());
 			 }
 	   		     else{

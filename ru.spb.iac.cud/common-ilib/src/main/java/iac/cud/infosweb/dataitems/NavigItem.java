@@ -2,7 +2,7 @@ package iac.cud.infosweb.dataitems;
 
 import java.util.List;
 
-import javaw.util.Strings;
+import javaw.lang.Strings;
 
  public class NavigItem {
 

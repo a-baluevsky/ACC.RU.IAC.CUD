@@ -336,7 +336,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 			 
 			 if(this.sumRoles==null){
 				 if(userSessionBean.getSumRoles()!=null){
-				   this.sumRoles= new ArrayList(userSessionBean.getSumRoles().values());
+				   this.sumRoles= new ArrayList<>(userSessionBean.getSumRoles().values());
 				
 				   Collections.sort(this.sumRoles, new Comparator<String>() {
                        public int compare(String o1, String o2) {
@@ -361,7 +361,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 			 
 			 if(this.sumGroups==null){
 				 if(userSessionBean.getSumGroups()!=null){
-				   this.sumGroups= new ArrayList(userSessionBean.getSumGroups().values());
+				   this.sumGroups= new ArrayList<>(userSessionBean.getSumGroups().values());
 				
 				   Collections.sort(this.sumGroups, new Comparator<String>() {
                        public int compare(String o1, String o2) {

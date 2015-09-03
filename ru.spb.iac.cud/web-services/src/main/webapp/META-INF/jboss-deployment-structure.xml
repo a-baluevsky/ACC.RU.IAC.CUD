@@ -25,6 +25,7 @@
 			<module name="com.sun.xml.messaging.saaj" />
 			<module name="org.apache.cxf.impl" />
 			<module name="org.jboss.xb" />
+			<module name="javax.ws.rs.api" />
 			
 			<module name="org.picketlink" />			
 			<module name="ru.spb.iac.cud" />

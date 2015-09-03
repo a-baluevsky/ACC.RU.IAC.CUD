@@ -17,7 +17,7 @@ import org.jboss.seam.log.Log;
 
 	 @Logger private static Log log;
 	 
-	 @In CacheProvider cacheProvider;
+	 @In CacheProvider<?> cacheProvider;
 	 
 	 public void removeCache(String regionName, String keyName) throws Exception{
 		 log.info("cacheManager:removeCache:01");

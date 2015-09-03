@@ -19,7 +19,7 @@ import ru.spb.iac.cud.items.User;
 				sbfResult.append(", '").append(uidValue).append("'");
 			}
 		}
-		return sbfResult.substring(2);
+		return (sbfResult.length()>2)?sbfResult.substring(2):null;
 	}
 
 	public static String createAttributes (List<Object[]> lo, List<User> result, Map<String, User> resultIds){
