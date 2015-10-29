@@ -1,7 +1,5 @@
 package ru.spb.iac.cud.services.auth;
 
-import iac.cud.data.app.JPA_AppAccessManager;
-
 import java.io.Serializable;
 import java.util.EnumMap;
 import java.util.List;
@@ -13,15 +11,20 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Path;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 
 import ru.spb.iac.cud.context.ContextAccessManager;
 import ru.spb.iac.cud.core.AccessManagerLocal;
@@ -29,14 +32,6 @@ import ru.spb.iac.cud.exceptions.GeneralFailure;
 import ru.spb.iac.cud.exceptions.InvalidCredentials;
 import ru.spb.iac.cud.idp.core.access.IDPAccessManagerLocal;
 import ru.spb.iac.cud.items.AuthMode;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import org.apache.openejb.jee.jba.Jboss;
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 
 @Path("/auth")
 public class AuthService {

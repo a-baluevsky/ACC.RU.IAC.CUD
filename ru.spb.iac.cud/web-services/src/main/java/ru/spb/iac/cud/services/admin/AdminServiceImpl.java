@@ -2,7 +2,10 @@ package ru.spb.iac.cud.services.admin;
 
 import iac.cud.data.eis.JPA_EisAdminManager;
 
+import java.lang.reflect.Array;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.jws.HandlerChain;
@@ -148,7 +151,8 @@ import ru.spb.iac.cud.services.CUDService;
 			@WebParam(name = "organizationCode", targetNamespace = NS) String organizationCode,
 			@WebParam(name = "organizationAttributes", targetNamespace = NS) List<Attribute> organizationAttributes)
 	throws GeneralFailure {		
-		LOGGER.debug("edit_organization_attributes");		
+		LOGGER.debug("edit_organization_attributes");
+		
 		(new ContextAdminManager()).getAdminManager().store_organization_attributes(
 				JPA_EisAdminManager.MakeOrgAttrsFromOrgCode(organizationCode, organizationAttributes), 
 				getIDUser());

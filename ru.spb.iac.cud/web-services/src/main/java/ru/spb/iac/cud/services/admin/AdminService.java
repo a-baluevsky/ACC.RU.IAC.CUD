@@ -88,5 +88,4 @@ public interface AdminService {
 			@WebParam(name = "organizationCode", targetNamespace = NS) String organizationCode,
 			@WebParam(name = "organizationAttributes", targetNamespace = NS) List<Attribute> organizationAttributes)
 			throws GeneralFailure;	
-
 }
