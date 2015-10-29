@@ -45,6 +45,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import ru.spb.iac.cud.context.ContextIDPUtilManager;
 import ru.spb.iac.cud.exceptions.GeneralFailure;
 import ru.spb.iac.cud.services.web.init.Configuration;
 
@@ -165,8 +166,12 @@ import ru.spb.iac.cud.services.web.init.Configuration;
 				 
 
 				// signature
-
-				if (signatureNode1 == null && Configuration.isSignRequired()) { //подписи нет, а требуется	
+				
+				boolean isSystemSignReq = (new ContextIDPUtilManager()).systemSignReq(
+						codeSystem);
+				
+				if (signatureNode1 == null 
+						&& (isSystemSignReq || Configuration.isSignRequired())) { //подписи нет, а требуется	
 					 
 					throw new GeneralFailure(
 							"This service requires <dsig:Signature>, which is missing!!!");

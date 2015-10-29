@@ -72,6 +72,9 @@ import java.util.List;
 	@Transient
 	private Boolean usrChecked=false;
 	
+    @Column(name="SIGN_REQ")
+    private Boolean isSignReq;
+	   
 	public AcApplication() {
     }
     
@@ -183,5 +186,12 @@ import java.util.List;
 	public void setLinks(String links) {
 		this.links = links;
 	}
-
+	
+    public Boolean getIsSignReq() {
+	   return isSignReq;
+    }	
+	public void setIsSignReq(Boolean isSignReq) {
+		this.isSignReq = isSignReq;
+	}
+		
 }

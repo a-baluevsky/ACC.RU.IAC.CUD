@@ -1186,6 +1186,8 @@ public abstract class CUDAbstractIDPValve extends ValveBase {
 			requestOptions.put(GeneralConstants.SUPPORTS_SIGNATURES,
 					this.idpConfiguration.isSupportsSignature());
 
+			requestOptions.put("SYSTEM_CODE", issuer);
+			
 			if (assertionID != null) {
 				requestOptions.put(GeneralConstants.ASSERTION_ID, assertionID);
 			}

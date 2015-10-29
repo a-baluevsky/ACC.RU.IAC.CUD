@@ -64,6 +64,9 @@ import java.util.List;
     @Transient
    	private String dateActionValue;
     
+    @Column(name="DETAILS_ACTION")
+    private String detailsAction;
+    
     public ActionsLogKnlT() {
     }
 
@@ -182,7 +185,15 @@ import java.util.List;
          al.setUserName(objectArray[2]!=null?objectArray[2].toString():"");
          al.setIsName(objectArray[3]!=null?objectArray[3].toString():"");
          al.setActName(objectArray[4]!=null?objectArray[4].toString():"");
+         al.setDetailsAction(objectArray[7]!=null?objectArray[7].toString():"");
 		return al;
+	}
+
+	public String getDetailsAction() {
+		return detailsAction;
+	}
+	public void setDetailsAction(String detailsAction) {
+		this.detailsAction = detailsAction;
 	}
 	
 }

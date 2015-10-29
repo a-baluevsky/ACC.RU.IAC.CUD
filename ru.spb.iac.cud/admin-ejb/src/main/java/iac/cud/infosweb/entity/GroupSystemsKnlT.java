@@ -60,6 +60,9 @@ import javaw.util.SerializableList;
    @Transient
    private Boolean isAllowedSys=true;
    
+   @Column(name="SIGN_REQ")
+   private Boolean isSignReq;
+   
    @Override
    public Long getBaseId() {
       return this.idSrv;
@@ -141,11 +144,11 @@ import javaw.util.SerializableList;
    }
    
    public List<LinkGroupSysSysKnlT> getLinkGroupSysSysKnlTs() {
-      return (this.linkGroupSysSysKnlTs==null)?null:new ArrayList<LinkGroupSysSysKnlT>(this.linkGroupSysSysKnlTs);
+      return linkGroupSysSysKnlTs;
    }
 
-   public void setLinkGroupSysSysKnlTs(/*Serializable*/List<LinkGroupSysSysKnlT> linkGroupSysSysKnlTs) {
-      this.linkGroupSysSysKnlTs = linkGroupSysSysKnlTs==null?null:new ArrayList<LinkGroupSysSysKnlT>(linkGroupSysSysKnlTs);
+   public void setLinkGroupSysSysKnlTs(List<LinkGroupSysSysKnlT> linkGroupSysSysKnlTs) {
+      this.linkGroupSysSysKnlTs = linkGroupSysSysKnlTs;
    }
 
    public LinkGroupSysSysKnlT addLinkGroupSysSysKnlT(LinkGroupSysSysKnlT linkGroupSysSysKnlT) {
@@ -169,4 +172,13 @@ import javaw.util.SerializableList;
    public void setIsAllowedSys(Boolean isAllowedSys) {
       this.isAllowedSys = isAllowedSys;
    }
+   
+   public Boolean getIsSignReq() {
+	   return isSignReq;
+   }
+	
+	public void setIsSignReq(Boolean isSignReq) {
+		this.isSignReq = isSignReq;
+	}
+
 }

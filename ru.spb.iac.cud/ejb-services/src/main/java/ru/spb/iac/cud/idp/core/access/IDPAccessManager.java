@@ -129,7 +129,7 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 					.append("               t1.CL_ORG_CODE t1_org_code,  ")
 					.append("    ")
 					.append("    DECODE ( org_ext.fullname, null,   CL_ORG_FULL.FULL_, org_ext.fullname)  t1_org_name,  ")
-					.append("        DECODE (  org_ext.address, null,   1||CL_ORG_FULL.PREFIX  ")
+					.append("        DECODE (  org_ext.address, null,   CL_ORG_FULL.PREFIX  ")
 					.append("               || DECODE (CL_ORG_FULL.HOUSE,  ")
 					.append("                          NULL, NULL,  ")
 					.append("                          ',' || CL_ORG_FULL.HOUSE)  , org_ext.address)")

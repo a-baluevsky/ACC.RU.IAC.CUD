@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
+import ru.spb.iac.cud.context.ContextIDPUtilManager;
 import ru.spb.iac.cud.idp.web.sig.GOSTSAML2Signature;
 import ru.spb.iac.cud.idp.web.util.GOSTRedirectBindingSignatureUtil;
 import ru.spb.iac.cud.services.web.init.Configuration;
@@ -143,8 +144,12 @@ import ru.spb.iac.cud.services.web.init.Configuration;
 	        if (nl != null && nl.getLength() > 0) {
 	        	isSign = true;
 	        }
+	        
+	        boolean isSystemSignReq = (new ContextIDPUtilManager()).systemSignReq(
+	        		(String)request.getOptions().get("SYSTEM_CODE"));
+	        
 	      //подписи нет, а требуется			
-			if (!isSign && Configuration.isSignRequired()) {
+			if (!isSign && (isSystemSignReq || Configuration.isSignRequired())) {
 				 throw logger.nullValueError("Cannot find Signature element");
 			}
 
@@ -186,8 +191,11 @@ import ru.spb.iac.cud.services.web.init.Configuration;
 			sigValue = GOSTRedirectBindingSignatureUtil
 					.getSignatureValueFromSignedURL(queryString);
 
+			boolean isSystemSignReq = (new ContextIDPUtilManager()).systemSignReq(
+	        		(String)request.getOptions().get("SYSTEM_CODE"));
+			
 			//подписи нет, а требуется			
-			if (sigValue == null && Configuration.isSignRequired()) {
+			if (sigValue == null && (isSystemSignReq || Configuration.isSignRequired())) {
 				throw logger.samlHandlerSignatureNotPresentError();
 			}
 

@@ -15,19 +15,20 @@ import ru.spb.iac.cud.idp.core.util.IDPUtilManagerLocal;
 	static Context ctx;
 	IDPUtilManagerLocal iml = null;
 
+	
+	
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(ContextIDPUtilManager.class);
 
-	
-	public static void initContext(String jboss_jndi_port) {
+	static {
 		try {
-			LOGGER.debug("initContext:jboss_jndi_port:" + jboss_jndi_port);
 			ctx = new InitialContext();
 
 		} catch (Exception e) {
-			LOGGER.error("initContext:error:", e);
+			LOGGER.error("initContext:error",e);
 		}
 	}
+
 
 	public ContextIDPUtilManager() {
 		try {
@@ -44,8 +45,10 @@ import ru.spb.iac.cud.idp.core.util.IDPUtilManagerLocal;
 		return iml.system_cert(domain_name);
 
 	}
-	
+
 	public boolean systemSignReq(String domainName) throws Exception {
+
 		return iml.systemSignReq(domainName);
+
 	}
 }

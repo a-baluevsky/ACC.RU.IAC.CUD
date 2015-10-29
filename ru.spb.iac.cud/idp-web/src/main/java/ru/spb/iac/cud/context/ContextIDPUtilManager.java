@@ -44,4 +44,11 @@ import ru.spb.iac.cud.idp.core.util.IDPUtilManagerLocal;
 		return iml.system_cert(domain_name);
 
 	}
+	
+	public boolean systemSignReq(String domainName) throws Exception {
+
+		return iml.systemSignReq(domainName);
+
+	}	
+	
 }

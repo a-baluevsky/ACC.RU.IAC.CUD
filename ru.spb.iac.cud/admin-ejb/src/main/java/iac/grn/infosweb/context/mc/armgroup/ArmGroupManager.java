@@ -390,13 +390,14 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 		  }else{
 			  aam.setDescription(null);
 		  }
-			  
+		  aam.setIsSignReq(armGroupBean.getIsSignReq());
+		  
 		  aam.setModificator(au.getIdUser());
 		  aam.setModified(new Date());
 		  
 		  entityManager.flush();
 	      entityManager.refresh(aam);
-	    	  
+
 	      Contexts.getEventContext().set("armGroupBean", aam);
 		
 	      audit(ResourcesMap.IS_GROUP, ActionsMap.UPDATE); 

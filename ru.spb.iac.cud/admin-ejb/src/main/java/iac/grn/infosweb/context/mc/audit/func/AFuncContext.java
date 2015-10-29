@@ -48,6 +48,8 @@ import java.util.List;
 	    auditItemsMap.put("userName",new BaseTableItem("Пользователь", "...", "userName", "usr_fio", "usr_fio", 2));
 	    auditItemsMap.put("isName",new BaseTableItem("ИС", "...", "isName", "arm_name", "arm_id", 3));
 		auditItemsMap.put("actName",new BaseTableItem("Действие", "...", "actName", "act_name", "act_name", 4));
+		auditItemsMap.put("detailsAction",new BaseTableItem("Дополнительно", "...", "detailsAction", "details_action", "details_action", 5));
+		
 		
 	}
 }
