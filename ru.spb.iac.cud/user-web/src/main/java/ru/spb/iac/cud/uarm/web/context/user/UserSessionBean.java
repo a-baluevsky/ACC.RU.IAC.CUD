@@ -23,11 +23,11 @@ import java.util.Map;
     private String userEmailReg;
     
     public Map<Long, String> getSumRoles() {
-		return (sumRoles==null)?null: new HashMap<Long, String>(sumRoles);
+		return sumRoles;
 	}
 
 	public void setSumRoles(SerializableMap<Long, String> sumRoles) {
-		this.sumRoles = (sumRoles==null)?null: new HashMap<Long, String>(sumRoles);
+		this.sumRoles = sumRoles;
 	}
 
 	public String getUserEmailReg() {
@@ -39,11 +39,11 @@ import java.util.Map;
 	}
 
 	public Map<Long, String> getSumGroups() {
-		return (sumGroups==null)?null: new HashMap<Long, String>(sumGroups);
+		return sumGroups;
 	}
 
-	public void setSumGroups(/*Serializable*/Map<Long, String> sumGroups) {
-		this.sumGroups = (sumGroups==null)?null: new HashMap<Long, String>(sumGroups);
+	public void setSumGroups(Map<Long, String> sumGroups) {
+		this.sumGroups = sumGroups;
 	}
 
 	

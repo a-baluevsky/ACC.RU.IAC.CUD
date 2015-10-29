@@ -3,8 +3,11 @@ package iac.grn.infosweb.context.mc.audit.func;
 import iac.cud.infosweb.dataitems.BaseItem;
 
 import java.io.Serializable;
+import java.util.List;
+
 import javaw.util.ArrayList;
 import javaw.util.SerializableList;
+
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -25,7 +28,7 @@ import org.jboss.seam.log.Log;
 	private AFuncManager aFuncManager;
 
 	
-	public SerializableList<BaseItem> getItemsByrange(int firstRow, int numberOfRows, String sortField, 
+	public List<BaseItem> getItemsByrange(int firstRow, int numberOfRows, String sortField, 
 			                                   boolean ascending) {
 		log.info("AuditDataProvider:getItemsByrange");
 		return aFuncManager.getAuditList(firstRow, numberOfRows);

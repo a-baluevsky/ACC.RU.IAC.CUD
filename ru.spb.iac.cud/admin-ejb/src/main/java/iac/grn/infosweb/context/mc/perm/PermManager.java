@@ -174,8 +174,8 @@ import java.util.Set;
 	  }
    }
    
-   public void setAuditList(List<BaseItem> auditList){
-		this.auditList=(auditList==null)?null:new ArrayList<BaseItem>(auditList);
+   public void setAuditList(List<BaseItem> auditList) {
+		this.auditList = auditList;
 	}
    
    private  AcPermissionsList searchBean(String sessionId){
@@ -340,7 +340,7 @@ import java.util.Set;
    }
    
    public void setAuditItemsListSelect(List <BaseTableItem> auditItemsListSelect) {
-		this.auditItemsListSelect=(auditItemsListSelect==null)?null:new ArrayList<BaseTableItem>(auditItemsListSelect);
+		this.auditItemsListSelect=auditItemsListSelect;
    }
    
    public List <BaseTableItem> getAuditItemsListContext() {

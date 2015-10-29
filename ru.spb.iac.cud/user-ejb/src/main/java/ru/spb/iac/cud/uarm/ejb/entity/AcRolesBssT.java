@@ -139,7 +139,7 @@ import javaw.util.SerializableList;
 	}
 
 	public List<AcUsersLinkKnlT> getAcUsersLinkKnlTs() {
-		return (this.acUsersLinkKnlTs==null)?null:new ArrayList<AcUsersLinkKnlT>(this.acUsersLinkKnlTs);
+		return acUsersLinkKnlTs;
 	}
 
 	public void setAcUsersLinkKnlTs(List<AcUsersLinkKnlT> acUsersLinkKnlTs) {
@@ -161,11 +161,11 @@ import javaw.util.SerializableList;
 	}
 
 	public List<LinkGroupUsersRolesKnlT> getLinkGroupUsersRolesKnlTs() {
-		return (this.linkGroupUsersRolesKnlTs==null)?null:new ArrayList<LinkGroupUsersRolesKnlT>(this.linkGroupUsersRolesKnlTs);
+		return linkGroupUsersRolesKnlTs;
 	}
 
 	public void setLinkGroupUsersRolesKnlTs(List<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs) {
-		this.linkGroupUsersRolesKnlTs = (linkGroupUsersRolesKnlTs==null)?null:new ArrayList<LinkGroupUsersRolesKnlT>(linkGroupUsersRolesKnlTs);
+		this.linkGroupUsersRolesKnlTs = linkGroupUsersRolesKnlTs;
 	}
 
 	public LinkGroupUsersRolesKnlT addLinkGroupUsersRolesKnlT(LinkGroupUsersRolesKnlT linkGroupUsersRolesKnlT) {
@@ -191,10 +191,10 @@ import javaw.util.SerializableList;
 	}
 
 	public List<RolesAppAccessBssT> getRolesAppAccessBssTs() {
-		return (rolesAppAccessBssTs==null)?null:new ArrayList<RolesAppAccessBssT>(rolesAppAccessBssTs);
+		return rolesAppAccessBssTs;
 	}
 
 	public void setRolesAppAccessBssTs(List<RolesAppAccessBssT> rolesAppAccessBssTs) {
-		this.rolesAppAccessBssTs = (rolesAppAccessBssTs==null)?null:new ArrayList<RolesAppAccessBssT>(rolesAppAccessBssTs);
+		this.rolesAppAccessBssTs = rolesAppAccessBssTs;
 	}
 }

@@ -430,7 +430,7 @@ import org.jboss.seam.faces.FacesMessages;
 	   return this.headerItemsListContext;
  }
   
-  public SerializableList<HeaderTableItem> getHeaderItemsListContextCREATE(String ids) {
+  public List<HeaderTableItem> getHeaderItemsListContextCREATE(String ids) {
 	  
 	 	AppMyUserCertModifyContext ac= new AppMyUserCertModifyContext();
 		
@@ -454,7 +454,7 @@ import org.jboss.seam.faces.FacesMessages;
 		   }
 
 	 	}
-	   return (this.headerItemsListContextCREATE==null)?null:new ArrayList<HeaderTableItem>(this.headerItemsListContextCREATE);
+	   return this.headerItemsListContextCREATE;
 }
 
 }

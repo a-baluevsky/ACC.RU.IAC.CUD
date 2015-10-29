@@ -134,9 +134,7 @@ import javaw.util.SerializableList;
 		this.signObject = signObject;
 	}
 
-	public SerializableList<AcRolesBssT> getAcRolesBssTs() {
-		return (this.acRolesBssTs==null)?null:new ArrayList<AcRolesBssT>(this.acRolesBssTs);
-	}
+	public List<AcRolesBssT> getAcRolesBssTs() { return this.acRolesBssTs; }
 
 	public void setAcRolesBssTs(List<AcRolesBssT> acRolesBssTs) {
 		this.acRolesBssTs = new ArrayList<AcRolesBssT>(acRolesBssTs);
@@ -155,9 +153,7 @@ import javaw.util.SerializableList;
 
 		return acRolesBssT;
 	}
-	public SerializableList<JournAppAccessBssT> getJournAppAccessBssTs() {
-		return (this.journAppAccessBssTs==null)?null:new ArrayList<JournAppAccessBssT>(this.journAppAccessBssTs);
-	}
+	public List<JournAppAccessBssT> getJournAppAccessBssTs() { return this.journAppAccessBssTs; }
 
 	public void setJournAppAccessBssTs(SerializableList<JournAppAccessBssT> journAppAccessBssTs) {
 		this.journAppAccessBssTs = journAppAccessBssTs;
@@ -208,8 +204,8 @@ import javaw.util.SerializableList;
 		return journAppAdminUserSysBssT;
 	}
 
-	public SerializableList<JournAppAccessGroupsBssT> getJournAppAccessGroupsBssTs() {
-		return (journAppAccessGroupsBssTs==null)?null:new ArrayList<JournAppAccessGroupsBssT>(journAppAccessGroupsBssTs);
+	public List<JournAppAccessGroupsBssT> getJournAppAccessGroupsBssTs() {
+		return journAppAccessGroupsBssTs;
 	}
 
 	public void setJournAppAccessGroupsBssTs(
@@ -217,11 +213,11 @@ import javaw.util.SerializableList;
 		this.journAppAccessGroupsBssTs = journAppAccessGroupsBssTs;
 	}
 
-	public SerializableList<GroupUsersKnlT> getGroups() {
-		return (groups==null)?null:new ArrayList<GroupUsersKnlT>(groups);
+	public List<GroupUsersKnlT> getGroups() {
+		return groups;
 	}
 
 	public void setGroups(List<GroupUsersKnlT> groups) {
-		this.groups = (groups==null)?null:new ArrayList<GroupUsersKnlT>(groups);
+		this.groups = groups;
 	}
 }

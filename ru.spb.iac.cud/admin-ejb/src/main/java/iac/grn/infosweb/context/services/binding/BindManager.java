@@ -1995,7 +1995,7 @@ import javax.persistence.NoResultException;
    }
   
    
-   public SerializableList<AcApplication> getListBindArmForView() throws Exception{
+   public List<AcApplication> getListBindArmForView() throws Exception{
 	    log.info("BindManager:getListBindArmForView:01");
 	   
 	    String sessionId = FacesContext.getCurrentInstance().getExternalContext()
@@ -2048,11 +2048,11 @@ import javax.persistence.NoResultException;
 	    	 log.error("BindManager:getListBindArmForView:ERROR:"+e);
 	         throw e;
 	     }
-	    return (listBindArmForView==null)?null:new ArrayList<AcApplication>(listBindArmForView);
+	    return listBindArmForView;
   }
   
    
-   public SerializableList<GroupUsersKnlT> getListBindGroupForView() throws Exception{
+   public List<GroupUsersKnlT> getListBindGroupForView() throws Exception{
 	    log.info("BindManager:getListBindGroupForView:01");
 	   
 	    List<Object[]> lo=null;
@@ -2118,7 +2118,7 @@ import javax.persistence.NoResultException;
 	    	 log.error("BindManager:getListBindGroupForView:ERROR:"+e);
 	         throw e;
 	     }
-	    return (listBindGroupForView==null)?null:new ArrayList<GroupUsersKnlT>(listBindGroupForView);
+	    return listBindGroupForView;
  }
    
    public SerializableList<BaseItem> getRoleList(){
@@ -2162,10 +2162,7 @@ import javax.persistence.NoResultException;
 	   this.roleList=roleList;
    }
    
-   public SerializableList<BaseItem> getApplicantList(){
-	
-	   return (this.applicantList==null)?null:new ArrayList<BaseItem>(this.applicantList);
-   }
+   public List<BaseItem> getApplicantList() { return this.applicantList; }
    
    public void setApplicantList(SerializableList<BaseItem> applicantList){
 	   this.applicantList=applicantList;

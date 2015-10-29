@@ -131,28 +131,24 @@ import javaw.util.SerializableList;
     }
     
 
-    public SerializableList<LinkGroupUsersRolesKnlT> getLinkGroupUsersRolesKnlTs() {
-        return (this.linkGroupUsersRolesKnlTs==null)?null:new ArrayList<LinkGroupUsersRolesKnlT>(this.linkGroupUsersRolesKnlTs);
-    }
+    public List<LinkGroupUsersRolesKnlT> getLinkGroupUsersRolesKnlTs() { return this.linkGroupUsersRolesKnlTs; }
     
     public void setLinkGroupUsersRolesKnlTs(List<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs) {
-        this.linkGroupUsersRolesKnlTs = linkGroupUsersRolesKnlTs==null?null:new ArrayList<LinkGroupUsersRolesKnlT>(linkGroupUsersRolesKnlTs);
+		this.linkGroupUsersRolesKnlTs = linkGroupUsersRolesKnlTs;
     }
 
 
-    public SerializableList<LinkGroupUsersUsersKnlT> getLinkGroupUsersUsersKnlTs() {
-        return (this.linkGroupUsersUsersKnlTs==null)?null:new ArrayList<LinkGroupUsersUsersKnlT>(this.linkGroupUsersUsersKnlTs);
-    }
+    public List<LinkGroupUsersUsersKnlT> getLinkGroupUsersUsersKnlTs() { return this.linkGroupUsersUsersKnlTs; }
 
     public void setLinkGroupUsersUsersKnlTs(List<LinkGroupUsersUsersKnlT> linkGroupUsersUsersKnlTs) {
-    	this.linkGroupUsersUsersKnlTs = (linkGroupUsersUsersKnlTs==null)?null:new ArrayList<LinkGroupUsersUsersKnlT>(linkGroupUsersUsersKnlTs);
+    	this.linkGroupUsersUsersKnlTs = linkGroupUsersUsersKnlTs;
     }
     
-    public SerializableList<AcApplication> getArmList() {
-        return (this.armList==null)?null:new ArrayList<AcApplication>(this.armList);
+    public List<AcApplication> getArmList() {
+    	return this.armList;
     }
     public void setArmList(List<AcApplication> armList) {
-        this.armList = (armList==null)?null:new ArrayList<AcApplication>(armList);
+    	this.armList = armList;
     }
     
     public Boolean getUsrChecked(){

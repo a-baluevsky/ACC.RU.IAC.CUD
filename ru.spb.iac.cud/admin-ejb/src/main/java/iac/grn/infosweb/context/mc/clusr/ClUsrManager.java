@@ -187,8 +187,8 @@ import javaw.util.SerializableList;
 		}
 	}
 	 
-	public void setAuditList(List<BaseItem> auditList){
-		this.auditList=(auditList==null)?null:new ArrayList<BaseItem>(auditList);
+	public void setAuditList(List<BaseItem> auditList) {
+		this.auditList = auditList;
 	}
    public void forView(String modelType) {
 	   String  clUsrId = FacesContext.getCurrentInstance().getExternalContext()
@@ -615,7 +615,7 @@ import javaw.util.SerializableList;
    }
     
     public void setAuditItemsListSelect(List <BaseTableItem> auditItemsListSelect) {
-	    this.auditItemsListSelect=(auditItemsListSelect==null)?null:new ArrayList<BaseTableItem>(auditItemsListSelect);
+	    this.auditItemsListSelect=auditItemsListSelect;
    }
    public List <BaseTableItem> getAuditItemsListSelect() {
 		   
@@ -914,7 +914,7 @@ public List<IspBssT> getListUsrAutocomplete() {
 	return listUsrAutocomplete;
 }
 public void setListUsrAutocomplete(List<IspBssT> listUsrAutocomplete) {
-	this.listUsrAutocomplete = (listUsrAutocomplete==null)?null:new ArrayList<IspBssT>(listUsrAutocomplete);
+		this.listUsrAutocomplete = listUsrAutocomplete;
 }
 
 public void audit(ResourcesMap resourcesMap, ActionsMap actionsMap){

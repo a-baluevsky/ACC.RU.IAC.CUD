@@ -114,8 +114,8 @@ import org.jboss.seam.log.Log;
 		}
 		return this.auditList;
 	}
-	public void setAuditList(List<BaseItem> auditList){
-		this.auditList=(auditList==null)?null:new ArrayList<BaseItem>(auditList);
+	public void setAuditList(List<BaseItem> auditList) {
+		this.auditList = auditList;
 	}
 	public void invokeLocal(String type, int firstRow, int numberOfRows,
 	           String sessionId) {
@@ -407,7 +407,7 @@ import org.jboss.seam.log.Log;
    }
    
    public void setAuditItemsListSelect(List <BaseTableItem> auditItemsListSelect) {
-		    this.auditItemsListSelect=(auditItemsListSelect==null)?null:new ArrayList<BaseTableItem>(auditItemsListSelect);
+		    this.auditItemsListSelect=auditItemsListSelect;
    }
    
    public List <BaseTableItem> getAuditItemsListContext() {

@@ -31,8 +31,8 @@ import java.util.List;
 	public List<BaseTableItem> getItems(){
 		return this.items;
 	}
-	public void setItems(List<BaseTableItem> items){
-		this.items=(items==null)?null:new ArrayList<BaseTableItem>(items);
+	public void setItems(List<BaseTableItem> items) {
+		this.items = items;
 	}
 	
 	public String getItemField(){

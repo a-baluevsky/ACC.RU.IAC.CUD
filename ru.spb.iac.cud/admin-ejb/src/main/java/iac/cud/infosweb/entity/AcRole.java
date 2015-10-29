@@ -185,20 +185,18 @@ import javaw.util.SerializableSet;
 		this.sign = sign;
 	}
 	
-	public SerializableSet<AcLinkRoleAppPagePrmssn> getAcLinkRoleAppPagePrmssns() {
-		return (this.acLinkRoleAppPagePrmssns==null)?null:new HashSet<AcLinkRoleAppPagePrmssn>(this.acLinkRoleAppPagePrmssns);
+	public Set<AcLinkRoleAppPagePrmssn> getAcLinkRoleAppPagePrmssns() {
+		return this.acLinkRoleAppPagePrmssns;
 	}
 
-	public void setAcLinkRoleAppPagePrmssns(SerializableSet<AcLinkRoleAppPagePrmssn> acLinkRoleAppPagePrmssns) {
+	public void setAcLinkRoleAppPagePrmssns(/*Serializable*/ Set<AcLinkRoleAppPagePrmssn> acLinkRoleAppPagePrmssns) {
 		this.acLinkRoleAppPagePrmssns = acLinkRoleAppPagePrmssns;
 	}
 	
-	public SerializableList<AcLinkUserToRoleToRaion> getAcLinkUserToRoleToRaions() {
-		return (this.acLinkUserToRoleToRaions==null)?null:new ArrayList<AcLinkUserToRoleToRaion>(this.acLinkUserToRoleToRaions);
-	}
+	public List<AcLinkUserToRoleToRaion> getAcLinkUserToRoleToRaions() { return this.acLinkUserToRoleToRaions; }
 
 	public void setAcLinkUserToRoleToRaions(List<AcLinkUserToRoleToRaion> acLinkUserToRoleToRaions) {
-		this.acLinkUserToRoleToRaions = acLinkUserToRoleToRaions==null?null:new ArrayList<AcLinkUserToRoleToRaion>(acLinkUserToRoleToRaions);
+		this.acLinkUserToRoleToRaions = acLinkUserToRoleToRaions;
 	}
 	public Boolean getUsrChecked(){
 		return this.usrChecked;
@@ -262,9 +260,7 @@ import javaw.util.SerializableSet;
 		this.isSysAdminRole = isSysAdminRole;
 	}
 
-	public SerializableList<LinkGroupUsersRolesKnlT> getLinkGroupUsersRolesKnlTs() {
-		return (this.linkGroupUsersRolesKnlTs==null)?null:new ArrayList<LinkGroupUsersRolesKnlT>(this.linkGroupUsersRolesKnlTs);
-	}
+	public List<LinkGroupUsersRolesKnlT> getLinkGroupUsersRolesKnlTs() { return this.linkGroupUsersRolesKnlTs; }
     public void setLinkGroupUsersRolesKnlTs(SerializableList<LinkGroupUsersRolesKnlT> linkGroupUsersRolesKnlTs) {
 		this.linkGroupUsersRolesKnlTs = linkGroupUsersRolesKnlTs;
 	}

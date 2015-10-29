@@ -330,7 +330,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 		}
 	}
 	
-	public SerializableList<String> getSumRoles() {
+	public List<String> getSumRoles() {
 		try{
 			 LOGGER.debug("UserManagerBean:getSumRoles:01");
 			 
@@ -348,14 +348,14 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 		}catch(Exception e){
 			 LOGGER.error("UserManagerBean:getSumRoles:error:"+e);
 		}
-		return (this.sumRoles==null)?null:new ArrayList<String>(this.sumRoles);
+		return sumRoles;
 	}
 	
 	public void setSumRoles(SerializableList<String> sumRoles) {
 		this.sumRoles = sumRoles;
 	}
 	
-	public SerializableList<String> getSumGroups() {
+	public List<String> getSumGroups() {
 		try{
 			 LOGGER.debug("UserManagerBean:getSumGroups:01");
 			 
@@ -373,7 +373,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 		}catch(Exception e){
 			 LOGGER.error("UserManagerBean:getSumGroups:error:"+e);
 		}
-		return (sumGroups==null)?null:new ArrayList<String>(sumGroups);
+		return sumGroups;
 	}
 	
 	public void setSumGroups(SerializableList<String> sumGroups) {
@@ -738,7 +738,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 		 return result;
 	 }
 
-	public SerializableList<GroupUsersKnlT> getUserGroups() {
+	public List<GroupUsersKnlT> getUserGroups() {
 		
 		if(userGroups==null){
 			
@@ -759,7 +759,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 	       }
 		}
 		
-		return (userGroups==null)?null:new ArrayList<GroupUsersKnlT>(userGroups);
+		return userGroups;
 	}
 
 	public void setUserGroups(SerializableList<GroupUsersKnlT> userGroups) {
@@ -767,7 +767,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 	}
 	
 
-	public SerializableList<BaseItem> getUserCertList() {
+	public List<BaseItem> getUserCertList() {
 		
 		if(this.userCertList==null){
 			
@@ -782,7 +782,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 			}
 		}
 		
-		return (userCertList==null)?null:new ArrayList<BaseItem>(userCertList);
+		return userCertList;
 	}
 
 	public void setUserCertList(SerializableList<BaseItem> userCertList) {

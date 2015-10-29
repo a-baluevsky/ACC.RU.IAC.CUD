@@ -105,7 +105,7 @@ import org.jboss.seam.log.Log;
 	
 	private Long archiveParamValue=null;
 	
-	public SerializableList<BaseItem> getAuditList(int firstRow, int numberOfRows){
+	public List<BaseItem> getAuditList(int firstRow, int numberOfRows){
 	  String remoteAudit = FacesContext.getCurrentInstance().getExternalContext()
 	             .getRequestParameterMap()
 	             .get("remoteAudit");
@@ -148,11 +148,11 @@ import org.jboss.seam.log.Log;
 				 }
 		    }
 		}
-		return (this.auditList==null)?null:new ArrayList<BaseItem>(this.auditList);
+		return this.auditList;
 	}
 	
 	
-	public SerializableList<BaseItem> getAuditReportList(){
+	public List<BaseItem> getAuditReportList(){
 		
 		  String date2 = FacesContext.getCurrentInstance().getExternalContext()
 			        .getRequestParameterMap()
@@ -184,11 +184,11 @@ import org.jboss.seam.log.Log;
 	  	    }
 		  
 		  }
-		  return (this.auditReportList==null)?null:new ArrayList<BaseItem>(this.auditReportList);
+		  return auditReportList;
 	}
 	
 
-	public SerializableList<AuditFuncItem> getAuditReportCubeList(){
+	public List<AuditFuncItem> getAuditReportCubeList(){
 		try{
 			if(this.auditReportCubeList==null){
 				 invokeLocal("listReportCube", 0, 0, null);
@@ -196,7 +196,7 @@ import org.jboss.seam.log.Log;
 		}catch(Exception e){
 			 log.error("aFuncManager:getAuditReportCubeList:Error:"+e);
 		}
-		return (auditReportCubeList==null)?null:new ArrayList<AuditFuncItem>(auditReportCubeList);
+		return auditReportCubeList;
 	}
 	
 	public void invokeLocal(String type, int firstRow, int numberOfRows,

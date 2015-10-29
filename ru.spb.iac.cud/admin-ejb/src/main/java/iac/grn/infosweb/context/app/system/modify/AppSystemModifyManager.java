@@ -540,24 +540,17 @@ import iac.grn.serviceitems.HeaderTableItem;
 	   return this.headerItemsListContext;
  }
   
-  public SerializableList<HeaderTableItem> getHeaderItemsListContextCREATE(String ids) {
-	  
-	 	AppSystemModifyContext ac= new AppSystemModifyContext();
-		
+  public List<HeaderTableItem> getHeaderItemsListContextCREATE(String ids) {
+	 	AppSystemModifyContext ac = new AppSystemModifyContext();
 	 	if(ids!=null) {
-	 		
-	 	
-	 		headerItemsListContextCREATE=new ArrayList<HeaderTableItem>();
+	 		this.headerItemsListContextCREATE=new ArrayList<HeaderTableItem>();
 	 	    List<String> idsList =  Arrays.asList(ids.split(","));
-	 	   
 	    	for(HeaderTableItem hti :ac.getHeaderItemsList()){
 			  if(idsList.contains(hti.getItemField())){
-				  headerItemsListContextCREATE.add(hti);
+				  this.headerItemsListContextCREATE.add(hti);
 			  }
-			  
 		   }
-
 	 	}
-	   return (this.headerItemsListContextCREATE==null)?null:new ArrayList<HeaderTableItem>(this.headerItemsListContextCREATE);
+	   return this.headerItemsListContextCREATE;
 }
 }

@@ -137,9 +137,7 @@ import javaw.util.SerializableSet;
 		this.acIsBssT2 = acIsBssT2;
 	}
 	
-	public SerializableSet<ActionsLogKnlT> getActionsLogKnlTs() {
-		return (this.actionsLogKnlTs==null)?null:new HashSet<ActionsLogKnlT>(this.actionsLogKnlTs);
-	}
+	public Set<ActionsLogKnlT> getActionsLogKnlTs() { return this.actionsLogKnlTs; }
 
 	public void setActionsLogKnlTs(SerializableSet<ActionsLogKnlT> actionsLogKnlTs) {
 		this.actionsLogKnlTs = actionsLogKnlTs;

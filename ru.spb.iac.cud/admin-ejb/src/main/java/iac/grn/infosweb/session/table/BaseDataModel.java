@@ -32,7 +32,7 @@ import org.richfaces.model.SortField2;
 	protected SerializableList<U> wrappedKeys = null;
 
 	
-	protected SerializableList<T> cachedItems=new ArrayList<T>();
+	protected List<T> cachedItems=new ArrayList<T>();
 	protected Integer rowCount;
 	
 	protected HashMap<String, String> filterColumnValues = new HashMap<String, String>();

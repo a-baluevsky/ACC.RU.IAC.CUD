@@ -399,7 +399,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	   return this.headerItemsListContext;
  }
   
-  public SerializableList<HeaderTableItem> getHeaderItemsListContextCREATE(String ids) {
+  public List<HeaderTableItem> getHeaderItemsListContextCREATE(String ids) {
 	  
 	 	AppMyUserModifyContext acMyUserMod= new AppMyUserModifyContext();
 		
@@ -421,6 +421,6 @@ import iac.grn.serviceitems.HeaderTableItem;
 		   }
 
 	 	}
-	   return (headerItemsListContextCREATE==null)?null:new ArrayList<HeaderTableItem>(headerItemsListContextCREATE);
+	   return headerItemsListContextCREATE;
 }
 }

@@ -136,8 +136,8 @@ import org.jboss.seam.transaction.Transaction;
 		}
 		return this.auditList;
 	}
-	public void setAuditList(List<BaseItem> auditList){
-		this.auditList=(auditList==null)?null:new ArrayList<BaseItem>(auditList);
+	public void setAuditList(List<BaseItem> auditList) { 
+		this.auditList = auditList; 
 	}
 	public void invokeLocal(String type, int firstRow, int numberOfRows,
 	           String sessionId) {
@@ -403,13 +403,12 @@ import org.jboss.seam.transaction.Transaction;
 		  }else{
 			  aam.setLinks(null);
 		  }
-		  
-		  
+		  aam.setIsSignReq(armBean.getIsSignReq());
 		  
 		  entityManager.flush();
 	      entityManager.refresh(aam);
-	    	  
-	       Contexts.getEventContext().set("armBean", aam);
+	      
+	      Contexts.getEventContext().set("armBean", aam);
 		  
 	      audit(ResourcesMap.IS, ActionsMap.UPDATE); 
 	      
@@ -728,8 +727,8 @@ import org.jboss.seam.transaction.Transaction;
 	    return listArm;
   }
    
-   public void setAuditItemsListSelect(List <BaseTableItem> auditItemsListSelect) {
-	    this.auditItemsListSelect=(auditItemsListSelect==null)?null:new ArrayList<BaseTableItem>(auditItemsListSelect);
+   public void setAuditItemsListSelect(List<BaseTableItem> auditItemsListSelect) {
+	    this.auditItemsListSelect=auditItemsListSelect;
 }
 
    
@@ -823,8 +822,8 @@ import org.jboss.seam.transaction.Transaction;
 	 		}
 	   return adminListForView;
 	}
-	public void setAdminListForView(List<AcUser> adminListForView) {
-		this.adminListForView = (adminListForView==null)?null:new ArrayList<AcUser>(adminListForView);
+	public void setAdminListForView(List<AcUser> adminListForView) { 
+		this.adminListForView = adminListForView;
 	}
 	
     

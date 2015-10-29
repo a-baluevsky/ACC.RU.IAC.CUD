@@ -300,11 +300,11 @@ import org.jboss.seam.annotations.Role;
 	}
 
 	public List<AcLinkUserToRoleToRaion> getAcLinkUserToRoleToRaions() {
-		return (this.acLinkUserToRoleToRaions==null)?null:new ArrayList<AcLinkUserToRoleToRaion>(this.acLinkUserToRoleToRaions);
+		return acLinkUserToRoleToRaions;
 	}
 
-	public void setAcLinkUserToRoleToRaions(/*Serializable*/List<AcLinkUserToRoleToRaion> acLinkUserToRoleToRaions) {
-		this.acLinkUserToRoleToRaions = acLinkUserToRoleToRaions==null?null:new ArrayList<AcLinkUserToRoleToRaion>(acLinkUserToRoleToRaions);
+	public void setAcLinkUserToRoleToRaions(List<AcLinkUserToRoleToRaion> acLinkUserToRoleToRaions) {
+		this.acLinkUserToRoleToRaions = acLinkUserToRoleToRaions;
 	}
 
 	public String getFio(){
@@ -381,10 +381,10 @@ import org.jboss.seam.annotations.Role;
 	}
 	
 	public List<LinkGroupUsersUsersKnlT> getLinkGroupUsersUsersKnlTs() {
-		return (this.linkGroupUsersUsersKnlTs==null)?null:new ArrayList<LinkGroupUsersUsersKnlT>(this.linkGroupUsersUsersKnlTs);
+		return linkGroupUsersUsersKnlTs;
 	}
-    public void setLinkGroupUsersUsersKnlTs(/*Serializable*/List<LinkGroupUsersUsersKnlT> linkGroupUsersUsersKnlTs) {
-		this.linkGroupUsersUsersKnlTs = linkGroupUsersUsersKnlTs==null?null:new ArrayList<LinkGroupUsersUsersKnlT>(linkGroupUsersUsersKnlTs);
+    public void setLinkGroupUsersUsersKnlTs(List<LinkGroupUsersUsersKnlT> linkGroupUsersUsersKnlTs) {
+		this.linkGroupUsersUsersKnlTs = linkGroupUsersUsersKnlTs;
 	}
 	
 	public Long getIsCudRole() {
@@ -441,12 +441,10 @@ import org.jboss.seam.annotations.Role;
 		this.statusValue = statusValue;
 	}
 	
-	public SerializableList<String> getRolesInfoList() {
-		return (this.rolesInfoList==null)?null:new ArrayList<String>(this.rolesInfoList);
-	}
+	public List<String> getRolesInfoList() { return this.rolesInfoList; }
 
 	public void setRolesInfoList(List<String> rolesInfoList) {
-		this.rolesInfoList = (rolesInfoList==null)?null:new ArrayList<String>(rolesInfoList);
+		this.rolesInfoList = rolesInfoList;
 	}
 	
 	public String getDepartment() {
@@ -497,63 +495,57 @@ import org.jboss.seam.annotations.Role;
 	}
 
 	public List<AcUsersCertBssT> getAcUsersCert() {
-		return (acUsersCert==null)?null:new ArrayList<AcUsersCertBssT>(acUsersCert);
+		return acUsersCert;
 	}
 	public void setAcUsersCert(SerializableList<AcUsersCertBssT> acUsersCert) {
-		this.acUsersCert = (acUsersCert==null)?null:new ArrayList<AcUsersCertBssT>(acUsersCert);
+		this.acUsersCert = acUsersCert;
 	}
 	
-	public SerializableList<BindingLogT> getBindingLogTs() {
-		return (this.bindingLogTs==null)?null:new ArrayList<BindingLogT>(this.bindingLogTs);
-	}
+	public List<BindingLogT> getBindingLogTs() { return this.bindingLogTs; }
 	public void setBindingLogTs(SerializableList<BindingLogT> bindingLogTs) {
 		this.bindingLogTs = bindingLogTs;
 	}
 	
-	public SerializableList<BindingAutoLinkBssT> getBindingAutoLinkBssTs() {
-		return (this.bindingAutoLinkBssTs==null)?null:new ArrayList<BindingAutoLinkBssT>(this.bindingAutoLinkBssTs);
-	}
-	public void setBindingAutoLinkBssTs(/*Serializable*/List<BindingAutoLinkBssT> bindingAutoLinkBssTs) {
-		this.bindingAutoLinkBssTs = bindingAutoLinkBssTs==null?null:new ArrayList<BindingAutoLinkBssT>(bindingAutoLinkBssTs);
+	public List<BindingAutoLinkBssT> getBindingAutoLinkBssTs() { return this.bindingAutoLinkBssTs; }
+	public void setBindingAutoLinkBssTs(List<BindingAutoLinkBssT> bindingAutoLinkBssTs) {
+		this.bindingAutoLinkBssTs = bindingAutoLinkBssTs;
 	}
 	
 	public List<ServicesLogKnlT> getServicesLogKnlTs() {
-		return (this.servicesLogKnlTs==null)?null:new ArrayList<ServicesLogKnlT>(this.servicesLogKnlTs);
+		return servicesLogKnlTs;
 	}
 	public void setServicesLogKnlTs(SerializableList<ServicesLogKnlT> servicesLogKnlTs) {
-		this.servicesLogKnlTs = servicesLogKnlTs==null?null:new ArrayList<ServicesLogKnlT>(servicesLogKnlTs);
+		this.servicesLogKnlTs = servicesLogKnlTs;
 	}
 
 	public List<LinkAdminUserSys> getLinkAdminUserSys() {
-		return (this.linkAdminUserSys==null)?null:new ArrayList<LinkAdminUserSys>(this.linkAdminUserSys);
+		return linkAdminUserSys;
 	}
-	public void setLinkAdminUserSys(/*Serializable*/List<LinkAdminUserSys> linkAdminUserSys) {
-		this.linkAdminUserSys = linkAdminUserSys==null?null:new ArrayList<LinkAdminUserSys>(linkAdminUserSys);
+	public void setLinkAdminUserSys(List<LinkAdminUserSys> linkAdminUserSys) {
+		this.linkAdminUserSys = linkAdminUserSys;
 	}
 	
 	public List<Long> getAllowedSys() {
-		return (allowedSys==null)?null:new ArrayList<Long>(allowedSys);
+		return allowedSys;
 	}
 
-	public void setAllowedSys(/*Serializable*/List<Long> allowedSys) {
-		this.allowedSys = (allowedSys==null)?null:new ArrayList<Long>(allowedSys);
+	public void setAllowedSys(List<Long> allowedSys) {
+		this.allowedSys = allowedSys;
 	}
 	
-	public boolean isAllowedSys(Long idSys) {
-		
+	public boolean isAllowedSys(Long idSys) {		
 		if(this.allowedSys==null||this.allowedSys.contains(idSys)){
 			return true;
-		}
-		
+		}		
 		return false;
 	}
 	
 	public List<String> getAllowedReestr() {
-		return this.allowedSys==null?null:new ArrayList<String>(allowedReestr);
+		return this.allowedReestr;
 	}
 
-	public void setAllowedReestr(/*Serializable*/List<String> allowedReestr) {
-		this.allowedReestr = (allowedReestr==null)?null:new ArrayList<String>(allowedReestr);
+	public void setAllowedReestr(List<String> allowedReestr) {
+		this.allowedReestr = allowedReestr;
 	}
 	
 	//проверка только для текущего (вошедшего) пользователя

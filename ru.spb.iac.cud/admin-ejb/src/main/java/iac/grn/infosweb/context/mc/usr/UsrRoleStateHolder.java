@@ -97,7 +97,7 @@ import org.jboss.seam.log.Log;
    	}
 
    	public void setAppRolesList(List<Long> appRolesList) {
-   		this.appRolesList = appRolesList==null?null: new ArrayList<Long>(appRolesList);
+		this.appRolesList = appRolesList;
    	}
    	
    	public void resetAppRolesList() {
