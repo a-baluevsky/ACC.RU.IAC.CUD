@@ -1,0 +1,70 @@
+--2) table
+
+
+--ALTER TABLE CUD_TEST.ISP_EXT_BSS_T DROP PRIMARY KEY CASCADE;
+
+--DROP TABLE CUD_TEST.ISP_EXT_BSS_T CASCADE CONSTRAINTS;
+
+CREATE TABLE CUD_TEST.ISP_EXT_BSS_T
+(
+  ID_SRV       NUMBER                           NOT NULL,
+  SIGN_OBJECT  VARCHAR2(1000 CHAR)              NOT NULL,
+  FULLNAME     VARCHAR2(4000 CHAR),
+  ADDRESS      VARCHAR2(4000 CHAR),
+  PHONE        VARCHAR2(50 CHAR),
+  EMAIL        VARCHAR2(50 CHAR),
+  SITE         VARCHAR2(100 CHAR),
+  OKPO         VARCHAR2(100 CHAR),
+  OKOGU        VARCHAR2(100 CHAR),
+  OGRN         VARCHAR2(100 CHAR),
+  INN          VARCHAR2(100 CHAR),
+  KPP          VARCHAR2(100 CHAR),
+  CREATOR      NUMBER                           NOT NULL,
+  CREATED      DATE                             DEFAULT sysdate               NOT NULL,
+  STATUS       NUMBER                           DEFAULT 1                     NOT NULL
+)
+
+TABLESPACE SIV_GO
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          80K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+commit;
+
+CREATE UNIQUE INDEX CUD_TEST.ISP_EXT_BSS_T_PK ON CUD_TEST.ISP_EXT_BSS_T
+(ID_SRV)
+LOGGING
+TABLESPACE SIV_GO
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          80K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+           )
+NOPARALLEL;
+
+
+ALTER TABLE CUD_TEST.ISP_EXT_BSS_T ADD (
+  CONSTRAINT ISP_EXT_BSS_T_PK
+  PRIMARY KEY
+  (ID_SRV)
+  USING INDEX CUD_TEST.ISP_EXT_BSS_T_PK);
