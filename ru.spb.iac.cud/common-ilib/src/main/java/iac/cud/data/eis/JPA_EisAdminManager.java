@@ -37,7 +37,7 @@ public class JPA_EisAdminManager {
 		return ((BigDecimal)em.createNativeQuery("select ISP_EXT_BSS_SEQ.NEXTVAL from dual").getResultList().get(0)).longValue();
 	}
 	public static boolean isAllowedAttribute(String attrName) {
-		return allowedFields_ISP_EXT_BSS_T.findByName(attrName, true, false).size()>0;
+		return true; //allowedFields_ISP_EXT_BSS_T.findByName(attrName, true, false).size()>0;
 	}	
 	private static abstract class IActorFixAttributes /* extends javaw.util.Actor<T> */ {
 		abstract public Collection<? extends OrganisationAttribute> fixAttribute(OrganisationAttribute source, UUID[] targetAttrNames);

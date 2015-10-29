@@ -245,7 +245,7 @@
 		</a4j:outputPanel>
 		<a4j:outputPanel id="outCBmpUpd">
 			<rich:modalPanel id="CBmpUpd" rendered="#{param['onUpdate']!=null}"
-				width="400" height="180">
+				width="400" height="200">
 				<f:facet name="header">
 					<h:panelGroup>
 						<h:outputText value="ИС" />
@@ -280,6 +280,11 @@
 							<td><h:inputTextarea value="#{armGroupBean.description}"
 									id="descr" cols="41" rows="3" /></td>
 						</tr>
+						<tr><td width="100px" height="25px" colspan="2">
+							<h:selectBooleanCheckbox value="#{armGroupBean.isSignReq}" id="chkRequireSign" />
+							<span style="cursor: default" onclick="document.getElementById('CBformUpd:chkRequireSign').click()">Требуется подпись</span>
+							</td>
+						</tr>						
 						<tr>
 							<td colspan="2" align="center" height="35px"><a4j:commandButton
 									value="Отмена"

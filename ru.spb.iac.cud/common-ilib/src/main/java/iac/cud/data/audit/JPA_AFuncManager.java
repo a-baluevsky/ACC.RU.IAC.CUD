@@ -28,7 +28,7 @@ public class JPA_AFuncManager extends JPABuilder {
 			   .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO) usr_fio")
 			   .append(", ARM.ID_SRV arm_id, ARM.FULL_ arm_name, ACT.FULL_ act_name")
 			   .append(", AU_FULL.ID_SRV usr_id") 
-			   .append(", CL_ORG_FULL.FULL_ org_name") 
+			   .append(", CL_ORG_FULL.FULL_ org_name, al.DETAILS_ACTION DETAILS_ACTION ") 
 			   .append(" from ACTIONS_LOG_KNL_T al")
 			   .append(", AC_IS_BSS_T arm")
 			   .append(", ACTIONS_BSS_T act")
@@ -91,7 +91,7 @@ public class JPA_AFuncManager extends JPABuilder {
 										long rowStartOffset, int numberOfRows) 
 	throws InvalidAlgorithmParameterException {	
         StringBuilder sQuerySql = new StringBuilder("select "); 
-        sQuerySql.append("t1.act_id, t1.act_dat_value, t1.usr_fio, t1.arm_name, t1.act_name, t1.usr_id, t1.org_name ")
+        sQuerySql.append("t1.act_id, t1.act_dat_value, t1.usr_fio, t1.arm_name, t1.act_name, t1.usr_id, t1.org_name, t1.DETAILS_ACTION ")
         	.append("")
         	.append(" from ")
         	.append(sQuerySqlT1());
