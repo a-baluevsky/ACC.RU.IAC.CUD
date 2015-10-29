@@ -143,21 +143,9 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 			if (Boolean.FALSE.equals(mc
 					.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY))) {
  
-               //здесь было создание провайдера и фабрики
+	               //здесь была проверка необходимости подписи
+					//перенесена ниже перед самой проверкой подписи
 				
-				// signature
-				NodeList signatureList = soapHeader.getElementsByTagNameNS(XMLSignature.XMLNS,
-						"Signature");
-
-				if (signatureList == null || signatureList.getLength() == 0) {
-					LOGGER.debug("handleMessage:02_1");
-					
-					
-					if(Configuration.isSignRequired()){ //подписи нет, а требуется	
-					   throw new GeneralFailure(
-							"This service requires <dsig:Signature>, which is missing!!!");
-					}
-				}
 
 				// исправление некорректной работы apache cxf
 				// ReadHeadersInterceptor с дублированием id
@@ -695,6 +683,27 @@ import ru.spb.iac.pl.sp.key.KeyStoreKeyManager;
 
 				http_session.setAttribute("system_principal", system_principal);
 
+				//проверка необходимости подписи перенесена сверху 
+				
+				// signature
+				NodeList signatureList = soapHeader.getElementsByTagNameNS(XMLSignature.XMLNS,
+						"Signature");
+
+				boolean isSystemSignReq = false;
+				
+				if (signatureList == null || signatureList.getLength() == 0) {
+					LOGGER.debug("handleMessage:02_1");
+					
+					  isSystemSignReq = (new ContextIDPUtilManager()).systemSignReq(
+							  system_principal);
+				     
+					
+					if(isSystemSignReq || Configuration.isSignRequired()){ //подписи нет, а требуется	
+					   throw new GeneralFailure(
+							"This service requires <dsig:Signature>, which is missing!!!");
+					}
+				}
+				
 			// if(Configuration.isSignRequired()){
 				//подпись есть, не важно требуется или нет
 			 if (signatureList != null  && signatureList.getLength() > 0) {

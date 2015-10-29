@@ -6,7 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javaw.lang.Strings;
-import javaw.util.ICloneable;
 import ru.spb.iac.cud.core.data.XAttribute.Domain.DomainType;
 import ru.spb.iac.cud.exceptions.GeneralFailure;
 import ru.spb.iac.cud.items.Attribute;

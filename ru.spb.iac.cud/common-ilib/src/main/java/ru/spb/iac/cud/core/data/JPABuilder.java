@@ -1,36 +1,24 @@
 package ru.spb.iac.cud.core.data;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
-import java.text.SimpleDateFormat;
+import java.util.BitSet;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
-import javaw.util.Actor;
+import javaw.lang.Strings;
 import javaw.util.ArrayList;
-import javaw.util.SerializableMap;
 import javaw.util.Tuple;
 import javaw.util.Tuple.T2;
 import javaw.util.Tuple.T4;
-import javaw.util.TypeConverter;
-
-import java.util.BitSet;
-import java.util.Date;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javaw.lang.Strings;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import ru.spb.iac.cud.core.AccessManagerLocal;
 import ru.spb.iac.cud.core.data.DataField.IDataFieldDescriptor;
 import ru.spb.iac.cud.exceptions.GeneralFailure;
 

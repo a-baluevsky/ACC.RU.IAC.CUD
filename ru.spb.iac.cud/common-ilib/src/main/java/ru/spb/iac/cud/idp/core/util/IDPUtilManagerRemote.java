@@ -10,4 +10,7 @@ import javax.ejb.Remote;
 public interface IDPUtilManagerRemote {
 
 	public X509Certificate system_cert(String domain_name) throws Exception;
+	
+	public boolean systemSignReq(String domainName) throws Exception;
+	
 }

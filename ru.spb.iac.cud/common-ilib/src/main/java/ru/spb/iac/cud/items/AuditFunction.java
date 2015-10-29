@@ -12,8 +12,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.openejb.jee.jba.cmp.Strategy;
-
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "userFunctions", propOrder = { "codeFunction", "dateFunction",
 		"detailsFunction", "userName", "actName", "usrId", "usrOrgName" })

@@ -32,14 +32,34 @@ public class OrganisationAttributes extends XAttributes<OrganisationAttribute> {
 
 	private static XAttribute.Domain getDomainByName(String name) {
 		try {
+			UUID uid = resolveBySymbolicName(name);
+			if(uid!=null)
+				return OrganisationAttribute.getDomainByID(uid);				
 			if(XAttribute.Domain.isValidDomainSpec(name)) {
 				return new XAttribute.Domain(name);
-			} else {
-				final UUID uid = UUID.fromString(name);
+			}
+			else {
+				uid = UUID.fromString(name);
 				return OrganisationAttribute.getDomainByID(uid);
 			}
 		} catch(Exception x) {
 			return null;
 		}
-	}	
+	}
+	
+	private static UUID resolveBySymbolicName(String s) {
+
+			if(s.equals("ORG_ADDRESS"))	return OrganisationAttribute.idAddress;
+			if(s.equals("ORG_NAME"))	return OrganisationAttribute.idFullName;
+			if(s.equals("ORG_PHONE"))	return OrganisationAttribute.idPhone;
+			if(s.equals("ORG_EMAIL"))	return OrganisationAttribute.idEmail;
+			if(s.equals("ORG_SITE"))	return OrganisationAttribute.idSite;
+			if(s.equals("ORG_OKPO"))	return OrganisationAttribute.idOKPO;
+			if(s.equals("ORG_OKOGU"))	return OrganisationAttribute.idOKOGU;
+			if(s.equals("ORG_OGRN"))	return OrganisationAttribute.idOGRN;
+			if(s.equals("ORG_INN"))		return OrganisationAttribute.idINN;
+			if(s.equals("ORG_KPP"))		return OrganisationAttribute.idKPP;
+			
+			return null;
+	}
 }

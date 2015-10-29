@@ -91,7 +91,7 @@ public class DataField<VALUETYPE> { // указание VALUETYPE позволяет обезопаситьс
 	final static String rxpFieldSpec = "(<(\\d+)>)?((\\w+)\\.(\\w+))";
 	final static Pattern rxpFieldSpecPattern = Pattern.compile(rxpFieldSpec);
 	static DataField<?> fromMatch(Matcher m, int groupOffset) {
-		return new DataField<>(JPABuilder.databaseFieldDescriptor, 
+		return new DataField<Object>(JPABuilder.databaseFieldDescriptor, 
 				(m.group(groupOffset+1)!=null)?Byte.valueOf(m.group(groupOffset+2)):0, 
 				m.group(groupOffset+4), 
 				m.group(groupOffset+5));

@@ -15,6 +15,8 @@ import javaw.util.Tuple;
 
 // 										table => attrs
 public class DataRecord extends HashMap<String, List<XAttribute>> { //<DRXA extends XAttribute>
+	private static final long serialVersionUID = 6290276737492474582L;
+
 	//protected final Map<String, List<XAttribute>> hmTblAtr = new HashMap<String, List<XAttribute>>();
 	public static abstract class IWalkDataRecord<DataType> extends Actor<DataType> {
 		public	 boolean walkAllAttributes;

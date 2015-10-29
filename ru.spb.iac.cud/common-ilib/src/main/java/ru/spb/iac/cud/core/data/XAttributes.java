@@ -1,7 +1,6 @@
 package ru.spb.iac.cud.core.data;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.security.InvalidAlgorithmParameterException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,14 +10,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
+import javaw.util.Tuple;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-
-import javaw.util.Tuple;
 import ru.spb.iac.cud.exceptions.GeneralFailure;
 import ru.spb.iac.cud.items.Attribute;
-import ru.spb.iac.cud.items.OrganisationAttribute;
 
 public class XAttributes<EXA extends XAttribute> implements Iterable<EXA> {
 	protected Class<EXA> itemClass;
@@ -30,7 +26,7 @@ public class XAttributes<EXA extends XAttribute> implements Iterable<EXA> {
 	public 	XAttributes(Iterable<? extends EXA> attributes)  { addAll(attributes); }
 	public 	void addAll(Iterable<? extends EXA> attributes)  { for (EXA oa : attributes) add(oa); }	
 	public 	EXA add(EXA oa) {
-		final List<XAttribute> alRegAttr = new ArrayList<>();
+		final List<XAttribute> alRegAttr = new ArrayList<XAttribute>();
 		if (XAttribute.Domain.DomainType.Defaulted.equals(oa.domain.domainType)) { 
 			if( lstDefaultedAttributes==null)
 				lstDefaultedAttributes = new ArrayList<EXA>();
