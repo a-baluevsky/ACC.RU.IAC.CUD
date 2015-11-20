@@ -6,11 +6,13 @@ import iac.cud.data.audit.JPA_AFuncManager;
 import iac.cud.infosweb.dataitems.AuditFuncItem;
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.dataitems.BaseParamItem;
+import iac.cud.infosweb.entity.AcApplication;
 import iac.cud.infosweb.entity.AcUser;
 import iac.cud.infosweb.entity.ActionsLogKnlT;
 import iac.cud.infosweb.local.service.ServiceReestrAction;
 import iac.cud.infosweb.local.service.ServiceReestrPro;
 import iac.cud.infosweb.remote.frontage.IRemoteFrontageLocal;
+import iac.grn.infosweb.context.mc.MCData;
 import iac.grn.infosweb.context.mc.QuerySvc;
 import iac.grn.infosweb.session.audit.actions.ActionsMap;
 import iac.grn.infosweb.session.audit.actions.ResourcesMap;
@@ -37,8 +39,8 @@ import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -60,10 +62,8 @@ import org.jboss.seam.log.Log;
 	private static final long serialVersionUID = 8518667742336776954L;
 
 	@Logger private static transient Log log;
+	@In	 transient EntityManager entityManager;
 	
-	 @In 
-	 transient EntityManager entityManager;
-	 
 	 private Long auditReportCubeCount;
 		
 	private Long auditCount;
@@ -98,9 +98,9 @@ import org.jboss.seam.log.Log;
 	private Boolean evaluteForBean;
 	
 	
-	private static String param_code="to_archive_audit_func";
+	private static final String param_code="to_archive_audit_func";
 	
-	private static String jndiBinding = "java:global/InfoS-ear/InfoS-ejb/IRemoteFrontage!iac.cud.infosweb.remote.frontage.IRemoteFrontageLocal";
+	private static final String jndiBinding = "java:global/InfoS-ear/InfoS-ejb/IRemoteFrontage!iac.cud.infosweb.remote.frontage.IRemoteFrontageLocal";
 	
 	
 	private Long archiveParamValue=null;
@@ -115,8 +115,7 @@ import org.jboss.seam.log.Log;
 	  log.info("getAuditList:firstRow:"+firstRow);
 	  log.info("getAuditList:numberOfRows:"+numberOfRows);
 	  
-	  List<BaseItem> aFuncListCached = (List<BaseItem>)
-			  Component.getInstance("aFuncListCached",ScopeType.SESSION);
+	  List<BaseItem> aFuncListCached = getSessionList("aFuncListCached");
 	  if(auditList==null){
 		  log.info("getAuditList:01");
 		 	if(("clRecAllFact".equals(remoteAudit)||
@@ -134,8 +133,7 @@ import org.jboss.seam.log.Log;
 			    log.info("getAuditList:03:"+auListSize);
 			}
 		 	
-		 	List<String>  selRecArmFunc = (List<String>)
-					  Component.getInstance("selRecaFunc",ScopeType.SESSION);
+		 	List<String>  selRecArmFunc = getSessionList("selRecaFunc");
 		 	
 		 	if(this.auditList!=null && selRecArmFunc!=null) {
 		 		 for(BaseItem it:this.auditList){
@@ -206,10 +204,9 @@ import org.jboss.seam.log.Log;
 			
 			 log.info("AFuncManager:invokeLocal");
 			 
-			 AFuncStateHolder aFuncStateHolder = (AFuncStateHolder)
-					  Component.getInstance("aFuncStateHolder",ScopeType.SESSION);
+			 AFuncStateHolder aFuncStateHolder = getSessionItem("aFuncStateHolder");
 
-			 AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
+			 AcUser au = getSessionItem("currentUser"); 
 			 jpaAFuncManager.listAllowedSys = au.getAllowedSys();
 			 jpaAFuncManager.IsAccOrgManagerValue = au.getIsAccOrgManagerValue();
 			 jpaAFuncManager.UpSign = au.getUpSign();
@@ -313,8 +310,7 @@ import org.jboss.seam.log.Log;
    private  ActionsLogKnlT searchBean(String sessionId){
     	
       if(sessionId!=null){
-    	 List<ActionsLogKnlT> aFuncListCached = (List<ActionsLogKnlT>)
-				  Component.getInstance("aFuncListCached",ScopeType.SESSION);
+    	 List<ActionsLogKnlT> aFuncListCached = getSessionList("aFuncListCached");
     	 
 		if(aFuncListCached!=null){
 			for(ActionsLogKnlT it : aFuncListCached){
@@ -402,8 +398,7 @@ import org.jboss.seam.log.Log;
 	    log.info("selectRecord:sessionIdAFunc="+sessionIdAFunc);
 	    
 	  
-	    List<String>  selRecFunc = (List<String>)
-				  Component.getInstance("selRecaFunc",ScopeType.SESSION);
+	    List<String>  selRecFunc = getSessionList("selRecaFunc");
 	    
 	    if(selRecFunc==null){
 	       selRecFunc = new ArrayList<String>();
@@ -503,7 +498,7 @@ public Long getArchiveParamValue() {
    
    public void audit(ResourcesMap resourcesMap, ActionsMap actionsMap){
 	   try{
-		   AuditExportData auditExportData = (AuditExportData)Component.getInstance("auditExportData",ScopeType.SESSION);
+		   AuditExportData auditExportData = getSessionItem("auditExportData");
 		   auditExportData.addFunc(resourcesMap.getCode()+":"+actionsMap.getCode());
 		   
 	   }catch(Exception e){
@@ -561,9 +556,7 @@ public Long getArchiveParamValue() {
 	       return evaluteForListFooter;
 	   }
    
-   public Boolean getEvaluteForBean() {
-		
-		  
+   		public Boolean getEvaluteForBean() {
 		   	if(evaluteForBean==null){
 		   		evaluteForBean=false;
 		    	String remoteAudit = FacesContext.getCurrentInstance().getExternalContext()
@@ -584,7 +577,7 @@ public Long getArchiveParamValue() {
 		    	}
 		   	 }
 		     return evaluteForBean;
-		   }
+		}
 
-}
+ }
 

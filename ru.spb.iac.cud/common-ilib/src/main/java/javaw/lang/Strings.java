@@ -90,7 +90,7 @@ public abstract class Strings {
 		}
 		
 		private static String fmtArray1(Stringer sg, Object o) {
-			ArrayList<Object> al = new ArrayList<>();
+			ArrayList<Object> al = new ArrayList<Object>();
 			for(int i=0; i<Array.getLength(o); ++i) {
 				al.add(Array.get(o, i));
 			}

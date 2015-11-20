@@ -2,21 +2,18 @@ package ru.spb.iac.cud.services.admin;
 
 import iac.cud.data.eis.JPA_EisAdminManager;
 
-import java.lang.reflect.Array;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.List;
+
+import javaw.lang.Strings;
 
 import javax.jws.HandlerChain;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.WebService;
-import javax.servlet.http.HttpServletRequest;
 import javax.xml.ws.BindingType;
 import javax.xml.ws.WebServiceContext;
-import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.soap.SOAPBinding;
 
 import org.slf4j.Logger;
@@ -28,8 +25,6 @@ import ru.spb.iac.cud.exceptions.GeneralFailure;
 import ru.spb.iac.cud.items.Attribute;
 import ru.spb.iac.cud.items.Function;
 import ru.spb.iac.cud.items.Group;
-import ru.spb.iac.cud.items.OrganisationAttributes;
-import ru.spb.iac.cud.items.OrganisationAttribute;
 import ru.spb.iac.cud.items.Resource;
 import ru.spb.iac.cud.items.Role;
 import ru.spb.iac.cud.services.CUDService;
@@ -151,8 +146,24 @@ import ru.spb.iac.cud.services.CUDService;
 			@WebParam(name = "organizationCode", targetNamespace = NS) String organizationCode,
 			@WebParam(name = "organizationAttributes", targetNamespace = NS) List<Attribute> organizationAttributes)
 	throws GeneralFailure {		
-		LOGGER.debug("edit_organization_attributes");
-		
+		LOGGER.debug("edit_organization_attributes");	
+		// check for allowed attributes' names
+		String[] arrValidNames = new String[]{
+				"ORG_ADDRESS", "ORG_NAME", "ORG_PHONE", "ORG_EMAIL", "ORG_SITE", 
+				"ORG_OKPO", "ORG_OKOGU", "ORG_OGRN", "ORG_INN", "ORG_KPP"
+		};
+		List<String> al = Arrays.asList(arrValidNames);
+		boolean bHasIllegalAttribute = false;
+		for(Attribute atr: organizationAttributes) {
+			String an = atr.getName();
+			if(Strings.isNullOrEmptyTrim(an) || !al.contains(an)) {
+				LOGGER.warn("store_organization_attributes: Illegal attribute passed: "+an);
+				bHasIllegalAttribute = true;
+			}
+		}
+		if(bHasIllegalAttribute)
+			throw new GeneralFailure("Illegal attribute(s) passed! Allowed values are "+Arrays.toString(arrValidNames));
+
 		(new ContextAdminManager()).getAdminManager().store_organization_attributes(
 				JPA_EisAdminManager.MakeOrgAttrsFromOrgCode(organizationCode, organizationAttributes), 
 				getIDUser());

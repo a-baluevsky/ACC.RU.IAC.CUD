@@ -25,6 +25,7 @@ import javaw.util.SerializableList;
 import javaw.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
 
 /**
  * ”правл€ющий Ѕин
@@ -74,8 +75,7 @@ import java.util.Set;
 	  log.info("getAuditList:firstRow:"+firstRow);
 	  log.info("getAuditList:numberOfRows:"+numberOfRows);
 	  
-	  List<BaseItem> permListCached = (List<BaseItem>)
-			  Component.getInstance("permListCached",ScopeType.SESSION);
+	  List<BaseItem> permListCached = getSessionList("permListCached");
 	  if(auditList==null){
 		  log.info("getAuditList:01");
 		 	if(("rowSelectFact".equals(remoteAudit)||
@@ -92,8 +92,7 @@ import java.util.Set;
 			    log.info("getAuditList:03:"+this.auditList.size());
 			}
 		 	
-		 	List<String>  selRecPerm = (ArrayList<String>)
-					  Component.getInstance("selRecPerm",ScopeType.SESSION);
+		 	List<String>  selRecPerm = getSessionList("selRecPerm");
 		 	if(this.auditList!=null && selRecPerm!=null) {
 		 		 for(BaseItem it:this.auditList){
 				   if(selRecPerm.contains(it.getBaseId().toString())){
@@ -117,8 +116,7 @@ import java.util.Set;
 			 if("list".equals(type)){
 				 log.info("Perm:invokeLocal:list:01");
 				 
-				 PermStateHolder permStateHolder = (PermStateHolder)
-						  Component.getInstance("permStateHolder",ScopeType.SESSION);
+				 PermStateHolder permStateHolder = getSessionItem("permStateHolder");
 				 Set<Map.Entry<String, String>> set = permStateHolder.getSortOrders().entrySet();
                  for (Map.Entry<String, String> me : set) {
       		       log.info("me.getKey+:"+me.getKey());
@@ -209,8 +207,7 @@ import java.util.Set;
    public void addPerm(){
 	   log.info("permManager:addPerm:01");
 	   
-	   AcPermissionsList permBeanCrt = (AcPermissionsList)
-				  Component.getInstance("permBeanCrt",ScopeType.CONVERSATION);
+	   AcPermissionsList permBeanCrt = getConversationItem("permBeanCrt");
 	   
 	   if(permBeanCrt==null){
 		   return;
@@ -233,8 +230,7 @@ import java.util.Set;
 	   
 	   log.info("permManager:updPerm:01");
 	   
-	   AcPermissionsList permBean = (AcPermissionsList)
-				  Component.getInstance("permBean",ScopeType.CONVERSATION);
+	   AcPermissionsList permBean = getConversationItem("permBean");
 	   
 	   String  sessionId = FacesContext.getCurrentInstance().getExternalContext()
 		        .getRequestParameterMap()
@@ -270,8 +266,7 @@ import java.util.Set;
 	 try{
 		log.info("permManager:delPerm:01");  
 		
-		AcPermissionsList armBean = (AcPermissionsList)
-				  Component.getInstance("permBean",ScopeType.CONVERSATION);
+		AcPermissionsList armBean = getConversationItem("permBean");
 		// <h:inputHidden value="#{armBean.idArm}"/>
 		
 		if(armBean==null){
@@ -361,8 +356,7 @@ import java.util.Set;
 	    log.info("selectRecord:sessionId="+sessionIdPerm);
 	    
 	   //!!!
-	    List<String>  selRecPerm = (ArrayList<String>)
-				  Component.getInstance("selRecPerm",ScopeType.SESSION);
+	    List<String>  selRecPerm = getSessionList("selRecPerm");
 	    
 	    if(selRecPerm==null){
 	       selRecPerm = new ArrayList<String>();

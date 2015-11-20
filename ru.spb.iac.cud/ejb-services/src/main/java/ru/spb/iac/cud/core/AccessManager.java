@@ -14,10 +14,10 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509CRL;
 import java.security.cert.X509CRLEntry;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap; import java.util.Map;
+import java.util.HashMap; 
+import java.util.Map;
 import java.util.List;
 import java.util.Properties;
 
@@ -25,6 +25,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TemporalType;
 
 import ru.spb.iac.cud.core.util.CUDConstants;
@@ -67,72 +68,52 @@ import org.slf4j.LoggerFactory;
 	public AccessManager() {
 	}
 
+	private String getOracleStrHash(String arg) {
+		return (new StringBuilder(" lower(rawtohex((SYS.DBMS_CRYPTO.HASH(utl_raw.cast_to_raw("))
+				.append(arg)
+				.append("),2)))) ").toString();
+	}
 /**
  * аутентификация пользователя по логин/паролю
  */
 public String authenticate_login(String login, String password,
 	AuthMode authMode, String IPAddress, String codeSys)
 	throws GeneralFailure, InvalidCredentials {
-		
+	
 	Long authModeValue = authMode.toAuditSvcValue();
 	LOGGER.debug("authenticate_login:login:" + login +", authModeValue: "+authModeValue);
 
 	Object[] dataUser = null;
 	Long idUser = null;
 	String loginUser = null;
+	
 	try {			
 		switch(authMode) {
+		case REST_AUTH_OPEN:
 		case WEB_SERVICES:
 		case HTTP_REDIRECT:	
 		case HTTP_REDIRECT_EXT_AUTH_OPEN:	
-		case HTTP_REDIRECT_EXT_AUTH_ENCRYPT:			
-				LOGGER.debug("authenticate:03");	
-				dataUser = (Object[]) em
-						.createNativeQuery(
-								(new StringBuilder("select AU.ID_SRV, AU.login "))
-								  .append("from ")
-								  .append("AC_USERS_KNL_T au ")
-								  .append("where AU.LOGIN=? ")
-								  .append("and AU.PASSWORD_=? ")
-								  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT <= sysdate) ")
-								  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT > sysdate) ")
-								  .append("and AU.STATUS = 1 ")
-						.toString())
-						.setParameter(1, login).setParameter(2, password)
-						.getSingleResult();	
-				idUser = ((java.math.BigDecimal) dataUser[0]).longValue();
-				loginUser = dataUser[1].toString();	
-				LOGGER.debug("authenticate:04");					
+		case HTTP_REDIRECT_EXT_AUTH_ENCRYPT:
+			dataUser = getAuthLoginPwdCheck("AU.LOGIN=? and AU.PASSWORD_=?", login, password);
 			break;
-		case HTTP_USE_HASHED_PASSWORD:
-				LOGGER.debug("authenticate:01");
-	
-				dataUser = (Object[]) em
-						.createNativeQuery(
-								(new StringBuilder("select AU.ID_SRV, AU.login, AU.PASSWORD_ "))
-								  .append("from ")
-								  .append("AC_USERS_KNL_T au ")
-								  .append("where AU.LOGIN=? ")
-								  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT <= sysdate) ")
-								  .append("and (AU.START_ACCOUNT is null or au.START_ACCOUNT > sysdate) ")
-								  .append("and AU.STATUS = 1 ")
-						.toString())
-						.setParameter(1, login).getSingleResult();
-	
+		case REST_AUTH_HASH:
+			dataUser = getAuthLoginPwdCheck("AU.LOGIN=? and "+getOracleStrHash("AU.PASSWORD_")+"=?", login, password);
+			break;			
+		case HTTP_USE_HASHED_PASSWORD:				
+				dataUser = getAuthLogin(login);
 				boolean matched = HashPassword.validatePassword(
 						(dataUser[2] != null ? dataUser[2].toString() : ""),
-						password);
-	
+						password);	
 				if (!matched) {
 					throw new NoResultException();
 				}
-				idUser = ((java.math.BigDecimal) dataUser[0]).longValue();
-				loginUser = dataUser[1].toString();
 				LOGGER.debug("authenticate:02");				
-			break;			
+			break;
 		default:
 			throw new IllegalArgumentException("Invalid AuthMode: "+authMode);
 		};
+		idUser = ((java.math.BigDecimal) dataUser[0]).longValue();
+		loginUser = dataUser[1].toString();		
 		sys_audit(authModeValue, "login:" + login + "; passw:***", "true",
 				IPAddress, idUser, codeSys);	
 		return loginUser;
@@ -150,6 +131,36 @@ public String authenticate_login(String login, String password,
 		throw new GeneralFailure(e.getMessage());
 	}
 }
+
+// table prefix: au.
+private Query getQueryUsers(String what, String where) {
+	return em.createNativeQuery(
+			(new StringBuilder("select ")).append(what)
+			  .append(" from ")
+			  .append("AC_USERS_KNL_T au ")
+			  .append(" where ").append(where)
+			  .append(" and (AU.START_ACCOUNT is null or au.START_ACCOUNT <= sysdate)")
+			  .append(" and (AU.START_ACCOUNT is null or au.START_ACCOUNT > sysdate)")
+			  .append(" and AU.STATUS = 1 ").toString());	
+}
+private Object[] getAuthLogin(String login) {
+	LOGGER.debug("getAuthLogin:01");
+	Object[] dataUser = (Object[]) getQueryUsers("AU.ID_SRV, AU.login, AU.PASSWORD_ ", "AU.LOGIN=?")
+			.setParameter(1, login).getSingleResult();
+	LOGGER.debug("getAuthLogin:10");	
+	return dataUser;
+}
+private Object[] getAuthLoginPwdCheck(String condLoginPw, String login, String password) {
+	LOGGER.debug("getAuthLoginPwdCheck:01: condLoginPw='"+condLoginPw+"'");
+	Object[] dataUser = (Object[]) getQueryUsers("AU.ID_SRV, AU.login"
+							+", "+getOracleStrHash("AU.PASSWORD_") // debug
+							, condLoginPw)
+			.setParameter(1, login).setParameter(2, password)
+			.getSingleResult();
+	LOGGER.debug("getAuthLoginPwdCheck:10");
+	return dataUser;
+}
+//private Object[] getAuthByLogin() 
 	
 	/**
 	 * аутентификация пользователя по токену от другой системы

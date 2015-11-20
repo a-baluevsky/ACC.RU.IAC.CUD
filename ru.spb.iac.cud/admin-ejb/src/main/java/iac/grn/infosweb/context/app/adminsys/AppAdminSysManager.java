@@ -22,8 +22,8 @@ import java.util.Set;
 
 import javax.faces.context.FacesContext;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.faces.FacesMessages;
@@ -43,8 +43,7 @@ import org.jboss.seam.faces.FacesMessages;
 			 String orderQueryAppAdmin=null;
 			 log.info("hostsManager:invokeLocal");
 			 
-			 AppAdminSysStateHolder appAdminSysStateHolder = (AppAdminSysStateHolder)
-					  Component.getInstance("appAdminSysStateHolder",ScopeType.SESSION);
+			 AppAdminSysStateHolder appAdminSysStateHolder = getSessionItem("appAdminSysStateHolder");
 			 Map<String, String> filterMap = appAdminSysStateHolder.getColumnFilterValues();
 			 String st=null;
 			  

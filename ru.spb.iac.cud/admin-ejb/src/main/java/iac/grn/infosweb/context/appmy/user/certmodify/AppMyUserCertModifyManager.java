@@ -1,6 +1,7 @@
 package iac.grn.infosweb.context.appmy.user.certmodify;
 
 import java.util.List;
+
 import iac.cud.infosweb.dataitems.AppUserCertModifyItem;
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.grn.infosweb.context.app.user.certmodify.AppUserCertModifyManager;
@@ -10,19 +11,22 @@ import iac.grn.serviceitems.HeaderTableItem;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
 import javaw.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 import java.util.List;
 import java.util.Set;
+
 import javaw.util.SerializableList;
 import javaw.util.SerializableMap;
 
 import javax.faces.context.FacesContext;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.faces.FacesMessages;
@@ -48,8 +52,7 @@ import org.jboss.seam.faces.FacesMessages;
 			 String orderQuery=null;
 			 log.info("AppMyCertManager:invokeLocal");
 			 
-			 AppMyUserCertModifyStateHolder appMyUserCertModifyStateHolder = (AppMyUserCertModifyStateHolder)
-					  Component.getInstance("appMyUserCertModifyStateHolder",ScopeType.SESSION);
+			 AppMyUserCertModifyStateHolder appMyUserCertModifyStateHolder = getSessionItem("appMyUserCertModifyStateHolder");
 			 Map<String, String> filterMap = appMyUserCertModifyStateHolder.getColumnFilterValues();
 			 String st=null;
 			  
@@ -307,8 +310,7 @@ import org.jboss.seam.faces.FacesMessages;
 	 private AppUserCertModifyItem getUserItem(Long idUser){
 		 
 		 
-		 AppUserCertModifyManager appUserCertModifyManager = (AppUserCertModifyManager)
-		          Component.getInstance("appUserCertModifyManager");
+		 AppUserCertModifyManager appUserCertModifyManager = getItem("appUserCertModifyManager");
 	   
 	    return appUserCertModifyManager.getUserItem(idUser);
 		 

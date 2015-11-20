@@ -1,19 +1,5 @@
 package iac.grn.infosweb.context.mc;
 
-import java.math.BigInteger;
-import java.security.InvalidAlgorithmParameterException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Date;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-
-
 public class QuerySvc implements java.io.Serializable {
 	/**
 	 * 
@@ -47,7 +33,8 @@ public class QuerySvc implements java.io.Serializable {
 			sResult = sb.toString(); 
 		}		
 		return sResult;
-	}	
+	}
+	
 	public String QueryStatsToString() {
 		StringBuffer sb = new StringBuffer("[");
 		sb.append(m_QueryStats[0]).append(", ")
@@ -55,6 +42,5 @@ public class QuerySvc implements java.io.Serializable {
 		.append(m_QueryStats[2]).append("]");
 		return sb.toString();
 	}
-	
 
 }

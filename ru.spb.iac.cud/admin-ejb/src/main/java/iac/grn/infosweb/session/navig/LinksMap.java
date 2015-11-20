@@ -34,7 +34,7 @@ import javax.faces.context.FacesContext;
 	/**
 	 * Список предоставляемых приложением ресурсов
 	 */
-	 private SerializableMap lm = new HashMap();
+	 private SerializableMap<String, String> lm = new HashMap();
 
 	 /**
 	  * Идентификационный код приложения
@@ -105,6 +105,7 @@ import javax.faces.context.FacesContext;
 	
 	
 	 private String confHosts="0033";
+	 private String auditAction="urn_auditaction";
 	 
 	 private String errorPerm="_errorPerm_";
 	 
@@ -175,6 +176,8 @@ import javax.faces.context.FacesContext;
 		 
 		 
 		 lm.put(confHosts, "/context_pro/conf/hosts.xhtml");
+		 
+		 lm.put(auditAction, "/context_pro/mc/auditaction/auditaction_list.xhtml");
 		 
 		 
 	 }

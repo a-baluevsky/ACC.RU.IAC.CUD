@@ -14,9 +14,8 @@ import java.util.Set;
 
 import javaw.util.SerializableMap;
 import javaw.util.SerializableList;
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.faces.FacesMessages;
 
@@ -47,8 +46,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 			 String orderQuery=null;
 			 log.info("hostsManager:invokeLocal");
 			 
-			 AppMyUserAccModifyStateHolder appMyUserAccModifyStateHolder = (AppMyUserAccModifyStateHolder)
-					  Component.getInstance("appMyUserAccModifyStateHolder",ScopeType.SESSION);
+			 AppMyUserAccModifyStateHolder appMyUserAccModifyStateHolder = getSessionItem("appMyUserAccModifyStateHolder");
 			 Map<String, String> filterMapMyUserAccMod = appMyUserAccModifyStateHolder.getColumnFilterValues();
 			 String st=null;
 			  

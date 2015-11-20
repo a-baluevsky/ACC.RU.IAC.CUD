@@ -1,5 +1,7 @@
 package iac.cud.infosweb.ws.classifierzip;
 
+import mypackage.Configuration;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -8,8 +10,6 @@ import javax.xml.ws.Service;
 import javax.xml.ws.WebEndpoint;
 import javax.xml.ws.WebServiceClient;
 import javax.xml.ws.WebServiceFeature;
-
-import mypackage.Configuration;
 
 import org.slf4j.LoggerFactory;
 

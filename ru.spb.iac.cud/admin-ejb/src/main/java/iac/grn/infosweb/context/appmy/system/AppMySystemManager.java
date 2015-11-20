@@ -2,16 +2,19 @@ package iac.grn.infosweb.context.appmy.system;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
 import javaw.util.ArrayList;
+
 import java.util.Date;
 import java.util.Map;
 import java.util.List;
 import java.util.Set;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.faces.FacesMessages;
+
 
 
 import iac.cud.infosweb.dataitems.AppSystemItem;
@@ -35,8 +38,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 			 String orderQuery=null;
 			 log.info("hostsManager:invokeLocal");
 			 
-			 AppMySystemStateHolder appMySystemStateHolder = (AppMySystemStateHolder)
-					  Component.getInstance("appMySystemStateHolder",ScopeType.SESSION);
+			 AppMySystemStateHolder appMySystemStateHolder = getSessionItem("appMySystemStateHolder");
 			 Map<String, String> filterMap = appMySystemStateHolder.getColumnFilterValues();
 			 String st=null;
 			  

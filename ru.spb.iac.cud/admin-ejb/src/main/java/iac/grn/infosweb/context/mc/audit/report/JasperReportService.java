@@ -38,8 +38,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.Name;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -198,7 +199,7 @@ public class JasperReportService implements Serializable {
 	}
 	
 	private static String getReportSvrRt() {
-		CparManager settings = (CparManager)Component.getInstance("cparManager", ScopeType.SESSION);
+		CparManager settings = getSessionItem("cparManager");
 		String jasperServer =  settings.getSettingValue("JASPER_SERVER");
 		if(Strings.isNullOrEmptyTrim(jasperServer)) {				
 			jasperServer = Configuration.getJasperServer();				

@@ -3,10 +3,7 @@ package iac.cud.infosweb.entity;
 import iac.cud.infosweb.dataitems.BaseItem;
 
 import java.io.Serializable;
-
 import javax.persistence.*;
-
-import org.apache.http.impl.client.AIMDBackoffManager;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

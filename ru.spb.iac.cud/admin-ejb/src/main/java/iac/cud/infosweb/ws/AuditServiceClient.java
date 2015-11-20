@@ -1,5 +1,7 @@
 package iac.cud.infosweb.ws;
 
+import mypackage.Configuration;
+
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -11,8 +13,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Service;
 import javax.xml.ws.handler.Handler;
-
-import mypackage.Configuration;
 
 import org.jboss.seam.annotations.Name;
 import org.picketlink.identity.federation.core.saml.v2.util.DocumentUtil;

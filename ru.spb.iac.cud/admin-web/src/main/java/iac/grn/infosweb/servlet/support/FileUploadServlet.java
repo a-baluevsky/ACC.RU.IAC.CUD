@@ -4,18 +4,20 @@ import iac.grn.infosweb.context.mc.arm.ArmManager;
 import iac.grn.infosweb.context.mc.armgroup.ArmGroupManager;
 import iac.grn.infosweb.context.mc.armsub.ArmSubManager;
 import iac.grn.infosweb.context.mc.usr.UsrManager;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+import static iac.cud.jboss.SeamComponentAdminWeb.*;
+
 import org.jboss.seam.servlet.ContextualHttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -128,20 +130,16 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 		LOGGER.debug("FileUploadServlet:doWork:01:" + type_sys);
 
 		if ("system".equals(type_sys)) {
-			ArmManager sm = (ArmManager) Component.getInstance("armManager",
-					ScopeType.EVENT);
+			ArmManager sm = getEventItem("armManager");
 			sm.saveArmCertificate(file_byte, id_sys);
 		} else if ("subsystem".equals(type_sys)) {
-			ArmSubManager sm = (ArmSubManager) Component.getInstance(
-					"armSubManager", ScopeType.EVENT);
+			ArmSubManager sm = getEventItem("armSubManager");
 			sm.saveArmSubCertificate(file_byte, id_sys);
 		} else if ("groupsystem".equals(type_sys)) {
-			ArmGroupManager sm = (ArmGroupManager) Component.getInstance(
-					"armGroupManager", ScopeType.EVENT);
+			ArmGroupManager sm = getEventItem("armGroupManager");
 			sm.saveArmGroupCertificate(file_byte, id_sys);
 		} else if ("user".equals(type_sys)) {
-			UsrManager um = (UsrManager) Component.getInstance("usrManager",
-					ScopeType.EVENT);
+			UsrManager um = getEventItem("usrManager");
 			boolean result = um.saveUserCertificate(file_byte, id_sys);
 
 			if (!result) {

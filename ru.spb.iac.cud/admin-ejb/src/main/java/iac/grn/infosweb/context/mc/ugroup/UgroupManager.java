@@ -1,6 +1,7 @@
 package iac.grn.infosweb.context.mc.ugroup;
 
 import java.util.List;
+
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.entity.AcApplication;
 import iac.cud.infosweb.entity.AcRole;
@@ -24,8 +25,8 @@ import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -93,8 +94,7 @@ import org.jboss.seam.log.Log;
 	  log.info("getAuditList:firstRow:"+firstRow);
 	  log.info("getAuditList:numberOfRows:"+numberOfRows);
 	  
-	  List<BaseItem> ugroupListCached = (List<BaseItem>)
-			  Component.getInstance("ugroupListCached",ScopeType.SESSION);
+	  List<BaseItem> ugroupListCached = getSessionList("ugroupListCached");
 	  if(auditList==null){
 		  log.info("getAuditList:01");
 		 	if(("rowSelectFact".equals(remoteAudit)||
@@ -111,8 +111,7 @@ import org.jboss.seam.log.Log;
 			    log.info("getAuditList:03:"+this.auditList.size());
 			}
 		 	
-		 	List<String>  selRecUgroup = (ArrayList<String>)
-					  Component.getInstance("selRecUgroup",ScopeType.SESSION);
+		 	List<String>  selRecUgroup = getSessionList("selRecUgroup");
 		 	if(this.auditList!=null && selRecUgroup!=null) {
 		 		 for(BaseItem it:this.auditList){
 				   if(selRecUgroup.contains(it.getBaseId().toString())){
@@ -137,8 +136,7 @@ import org.jboss.seam.log.Log;
 			 if("list".equals(type)){
 				 log.info("Ugroup:invokeLocal:list:01");
 				 
-				 UgroupStateHolder ugroupStateHolder = (UgroupStateHolder)
-						  Component.getInstance("ugroupStateHolder",ScopeType.SESSION);
+				 UgroupStateHolder ugroupStateHolder = getSessionItem("ugroupStateHolder");
 				 Set<Map.Entry<String, String>> set = ugroupStateHolder.getSortOrders().entrySet();
                  for (Map.Entry<String, String> me : set) {
       		        
@@ -211,7 +209,7 @@ import org.jboss.seam.log.Log;
 	   
 	   try {
 	   
-		  AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
+		  AcUser au = getSessionItem("currentUser"); 
   		 
    		  if(au.getAllowedSys()!=null){
    		   
@@ -255,8 +253,7 @@ import org.jboss.seam.log.Log;
    private  GroupUsersKnlT searchBean(String sessionId){
     	
       if(sessionId!=null){
-    	 List<GroupUsersKnlT> ugroupListCached = (List<GroupUsersKnlT>)
-				  Component.getInstance("ugroupListCached",ScopeType.SESSION);
+    	 List<GroupUsersKnlT> ugroupListCached = getSessionList("ugroupListCached");
     	 
 		if(ugroupListCached!=null){
 			for(GroupUsersKnlT it : ugroupListCached){
@@ -284,15 +281,14 @@ import org.jboss.seam.log.Log;
 	  log.info("ugroupManager:addugroup:01");
 	   
 	   
-	  GroupUsersKnlT ugroupBeanCrt = (GroupUsersKnlT)
-				  Component.getInstance("ugroupBeanCrt",ScopeType.CONVERSATION);
+	  GroupUsersKnlT ugroupBeanCrt = getConversationItem("ugroupBeanCrt");
 	   
 	   if(ugroupBeanCrt==null){
 		   return;
 	   }
 	 
 	   try {
-		  AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
+		  AcUser au = getSessionItem("currentUser"); 
 		   
 		  if(ugroupBeanCrt.getDescription()!=null&&!ugroupBeanCrt.getDescription().trim().equals("")){
 			  ugroupBeanCrt.setDescription(ugroupBeanCrt.getDescription().trim());
@@ -328,8 +324,7 @@ import org.jboss.seam.log.Log;
 	   log.info("ugroupManager:updugroup:01");
 	   
 	      
-	   GroupUsersKnlT ugroupBean = (GroupUsersKnlT)
-				  Component.getInstance("ugroupBean",ScopeType.CONVERSATION);
+	   GroupUsersKnlT ugroupBean = getConversationItem("ugroupBean");
 	   
 	   String  sessionId = FacesContext.getCurrentInstance().getExternalContext()
 		        .getRequestParameterMap()
@@ -341,7 +336,7 @@ import org.jboss.seam.log.Log;
 	   }
 	
 	   try {
-		  AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+		  AcUser au = getSessionItem("currentUser");
 		   
 		  GroupUsersKnlT aam = entityManager.find(GroupUsersKnlT.class, Long.valueOf(sessionId));
 		  
@@ -376,8 +371,7 @@ import org.jboss.seam.log.Log;
 	   log.info("ugroupManager:updUgroupRole:01");
 	   
 	   
-	   GroupUsersKnlT ugroupBean = (GroupUsersKnlT)
-				  Component.getInstance("ugroupBean",ScopeType.CONVERSATION);
+	   GroupUsersKnlT ugroupBean = getConversationItem("ugroupBean");
 	   
 	   String idArm = FacesContext.getCurrentInstance().getExternalContext()
 		        .getRequestParameterMap()
@@ -466,8 +460,7 @@ import org.jboss.seam.log.Log;
 	 try{
 		log.info("ugroupManager:delugroup:01");  
 		
-		GroupUsersKnlT armBean = (GroupUsersKnlT)
-				  Component.getInstance("ugroupBean",ScopeType.CONVERSATION);
+		GroupUsersKnlT armBean = getConversationItem("ugroupBean");
 		
 		
 		if(armBean==null){
@@ -498,8 +491,7 @@ import org.jboss.seam.log.Log;
 	    	 Contexts.getEventContext().set("ugroupBean", ao);
 	    	 
 	    	//устанавливаем на 1 страницу пагинатор в модальном окне
-	    	 UgroupStateHolder ugroupStateHolder = (UgroupStateHolder)
-					  Component.getInstance("ugroupStateHolder",ScopeType.SESSION);
+	    	 UgroupStateHolder ugroupStateHolder = getSessionItem("ugroupStateHolder");
 	    	 ugroupStateHolder.resetPageNumber();
 	    	 
 	   	 }
@@ -721,8 +713,7 @@ import org.jboss.seam.log.Log;
  		   
  		   String st=null;
  			 
- 		  UgroupRoleStateHolder ugroupRoleStateHolder = (UgroupRoleStateHolder)
- 					  Component.getInstance("ugroupRoleStateHolder",ScopeType.SESSION);
+ 		  UgroupRoleStateHolder ugroupRoleStateHolder = getSessionItem("ugroupRoleStateHolder");
  		   Map<String, String> filterMap = ugroupRoleStateHolder.getColumnFilterValues();
  		   
  		   
@@ -876,8 +867,7 @@ import org.jboss.seam.log.Log;
 	    log.info("selectRecord:sessionId="+sessionIdUgr);
 	    
 	   //!!!
-	    List<String>  selRecUgr = (ArrayList<String>)
-				  Component.getInstance("selRecUgroup",ScopeType.SESSION);
+	    List<String>  selRecUgr = getSessionList("selRecUgroup");
 	    
 	    if(selRecUgr==null){
 	       selRecUgr = new ArrayList<String>();
@@ -915,7 +905,7 @@ import org.jboss.seam.log.Log;
    
    public void audit(ResourcesMap resourcesMap, ActionsMap actionsMap){
 	   try{
-		   AuditExportData auditExportDataUgr = (AuditExportData)Component.getInstance("auditExportData",ScopeType.SESSION);
+		   AuditExportData auditExportDataUgr = getSessionItem("auditExportData");
 		   auditExportDataUgr.addFunc(resourcesMap.getCode()+":"+actionsMap.getCode());
 		   
 	   }catch(Exception eUgr){

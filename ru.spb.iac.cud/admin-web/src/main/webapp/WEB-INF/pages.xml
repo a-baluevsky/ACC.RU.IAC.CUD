@@ -61,8 +61,8 @@
 		<action execute="#{clUsrDataModel.filterAction}" />
 	</page>
 	<page view-id="/context_pro/mc/res/res_list.xhtml">
-		<restrict>#{authenticator.access('003') and
-			currentUser.idUser==linksMap.superUserCode}
+		<restrict>#{authenticator.access('003') 
+			and	currentUser.idUser==linksMap.superUserCode}
 		</restrict>
 	</page>
 	<page view-id="/context_pro/mc/arm/arm_list.xhtml">
@@ -77,6 +77,10 @@
 	<page view-id="/context_pro/mc/armgroup/list.xhtml">
 		<restrict>#{authenticator.access('urn_armgroup')}</restrict>
 		<action execute="#{armGroupDataModel.filterAction}" />
+	</page>
+	<page view-id="/context_pro/mc/auditaction/auditaction_list.xhtml">
+		<restrict>#{authenticator.access('urn_auditaction')}</restrict>
+		<action execute="#{auditActionDataModel.filterAction}" />
 	</page>
 	<page view-id="/context_pro/mc/rol/rol_list.xhtml">
 		<restrict>#{authenticator.access('005')}</restrict>

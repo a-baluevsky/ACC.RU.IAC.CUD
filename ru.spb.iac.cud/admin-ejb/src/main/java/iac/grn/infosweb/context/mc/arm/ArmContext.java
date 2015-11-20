@@ -1,5 +1,6 @@
 package iac.grn.infosweb.context.mc.arm;
 
+import iac.grn.infosweb.context.mc.MCBaseContext;
 import iac.grn.serviceitems.BaseTableItem;
 
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import java.util.Comparator;
 import java.util.HashMap; import java.util.Map;
 import java.util.List;
 
- public class ArmContext {
+ public class ArmContext extends MCBaseContext {
 
     private Map<String, BaseTableItem> auditItemsMap=new HashMap<String, BaseTableItem>();
 	

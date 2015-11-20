@@ -1,6 +1,7 @@
 package iac.grn.infosweb.context.mc.rol;
 
 import java.util.List;
+
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.dataitems.UserItem;
 import iac.cud.infosweb.entity.AcLinkUserToRoleToRaion;
@@ -13,8 +14,10 @@ import iac.grn.serviceitems.BaseTableItem;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
 import javaw.util.SerializableList;
 import javaw.util.ArrayList;
+
 import java.util.Date;
 import java.util.Map;
 import java.util.List;
@@ -23,8 +26,8 @@ import java.util.Set;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -68,8 +71,7 @@ import org.jboss.seam.log.Log;
 		   log.info("rolUsrManager:getAuditList:sessionId:"+sessionId);
 		   
 		  
-		  List<BaseItem> rolUsrListCached = (List<BaseItem>)
-				  Component.getInstance("rolUsrListCached",ScopeType.SESSION);
+		  List<BaseItem> rolUsrListCached = getSessionList("rolUsrListCached");
 		  if(auditList==null){
 			  log.info("rolUsrManager:getAuditList:01");
 			 	if(("rowSelectFact".equals(remoteAuditRolUsr)||
@@ -118,8 +120,7 @@ import org.jboss.seam.log.Log;
 				 String orderQuery=null;
 				 log.info("rolUsrManager:invokeLocal");
 				 
-				 RolUsrStateHolder rolUsrStateHolder = (RolUsrStateHolder)
-						  Component.getInstance("rolUsrStateHolder",ScopeType.SESSION);
+				 RolUsrStateHolder rolUsrStateHolder = getSessionItem("rolUsrStateHolder");
 				 
 				 Map<String, String> filterMapRolUsr = rolUsrStateHolder.getColumnFilterValues();
 				 String st=null;
@@ -156,7 +157,7 @@ import org.jboss.seam.log.Log;
 	                 
 	 	             
 	              
-	               AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+	               AcUser cau = getSessionItem("currentUser");
 	      		 
 	               if(cau.getIsAccOrgManagerValue()){
 	          	 	   st=(st!=null?st+" and ":" ")+" t1_org_code = '"+cau.getUpSign()+"' ";
@@ -179,7 +180,7 @@ import org.jboss.seam.log.Log;
 	    	              }
 	    	    	   }
 					 
-	                   AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+	                   AcUser cau = getSessionItem("currentUser");
 		      		 
 		               if(cau.getIsAccOrgManagerValue()){
 		          	 	   st=(st!=null?st+" and ":" ")+" t1_org_code = '"+cau.getUpSign()+"' ";
@@ -222,8 +223,7 @@ import org.jboss.seam.log.Log;
 			  
 			  
 			   
-			   AcRole rolBean = (AcRole)
-						  Component.getInstance("rolBean",ScopeType.CONVERSATION);
+			   AcRole rolBean = getConversationItem("rolBean");
 			   
 			   String  sessionId = FacesContext.getCurrentInstance().getExternalContext()
 				        .getRequestParameterMap()
@@ -237,7 +237,7 @@ import org.jboss.seam.log.Log;
 			
 			 	   
 			   try {
-				   AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+				   AcUser au = getSessionItem("currentUser");
 				   
 				   AcRole aum = entityManager.find(AcRole.class, Long.valueOf(sessionId));
 				   
@@ -285,7 +285,7 @@ import org.jboss.seam.log.Log;
 				    Contexts.getEventContext().set("rolBean", aum);
 			    	 
 				  //аудит!!!
-				    RolManager rolManager = (RolManager)Component.getInstance("rolManager", ScopeType.EVENT);
+				    RolManager rolManager = getEventItem("rolManager");
 					rolManager.audit(ResourcesMap.ROLE, ActionsMap.UPDATE_USER); 
 			    	
 			    	

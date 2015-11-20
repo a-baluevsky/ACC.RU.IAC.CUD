@@ -12,8 +12,8 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -52,7 +52,7 @@ import ru.spb.iac.cud.items.AuditFunction;
 		    try {
 		    	
 		    	
-		    	AuditServiceClient asc = (AuditServiceClient)Component.getInstance("auditServicesClient",ScopeType.EVENT);
+		    	AuditServiceClient asc = getEventItem("auditServicesClient");
 		    	
 		    
             	log.info("auditExportManager:export:funcList:"+(funcList!=null?funcList.size():"null"));

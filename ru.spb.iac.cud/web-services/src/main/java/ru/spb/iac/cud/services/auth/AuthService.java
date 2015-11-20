@@ -39,6 +39,7 @@ public class AuthService {
 	@XmlRootElement @JsonAutoDetect
 	@JsonWriteNullProperties(false)
 	private static class AuthResponse implements Serializable {
+		private static final long serialVersionUID = 21436L;
 		public enum AuthCode {
 			OK,
 			invalid_request,	// The request is missing a required parameter, includes an unsupported parameter value, or is otherwise malformed
@@ -73,25 +74,33 @@ public class AuthService {
      public AuthResponse login(@Context HttpServletRequest request, 
     			@FormParam("login") String login, 
     			@FormParam("password") String password, 
-    			@FormParam("codeSys")  String codeSys)	 
+    			@FormParam("passwordHash") String pwdHash, //@DefaultValue("") 
+    			@FormParam("codeSys")  String codeSys
+    		 )
 	{
     	AuthResponse retVal;
+    	boolean bPwdHashed = !Strings.isNullOrEmptyTrim(pwdHash), bPwdClear = !Strings.isNullOrEmptyTrim(password);
     	if(	Strings.isNullOrEmptyTrim(login)
-    			|| Strings.isNullOrEmptyTrim(password)
+    			|| !(bPwdClear || bPwdHashed)
     			|| Strings.isNullOrEmptyTrim(codeSys)) {
     		retVal = new AuthResponse();
     		retVal.resultCode = AuthResponse.AuthCode.invalid_request;
-    		retVal.message = retVal.resultCode.getMessage();
-    	} else retVal = tryLogin(request, login, password, codeSys);
+    		retVal.message = retVal.resultCode.getMessage();    		
+    	} else {
+    		if(bPwdHashed)
+    			retVal = tryLogin(request, login, pwdHash, AuthMode.REST_AUTH_HASH, codeSys);
+    		else
+    			retVal = tryLogin(request, login, password, AuthMode.REST_AUTH_OPEN, codeSys);
+    	}
     	return retVal;
     }
     
-    private AuthResponse tryLogin(ServletRequest request, String login, String password, String codeSys) {
+    private AuthResponse tryLogin(ServletRequest request, String login, String password, AuthMode authMode, String codeSys) {
     	AuthResponse retVal = new AuthResponse();
     	retVal.resultCode = AuthResponse.AuthCode.server_error;
     	retVal.message = retVal.resultCode.getMessage();
     	try {
-			retVal.login = getAml().authenticate_login(login, password, AuthMode.WEB_SERVICES, request.getRemoteAddr(), codeSys);
+    		retVal.login = getAml().authenticate_login(login, password, authMode, request.getRemoteAddr(), codeSys);
 			IDPAccessManagerLocal iml = getContextIDPAccessManager();
 			retVal.userRoles = iml.rolesCodes(login, codeSys);
 			retVal.userAttrs = iml.attributes(login);
@@ -137,14 +146,26 @@ public class AuthService {
     @Path("/form")
     @Produces(MediaType.TEXT_HTML)    
     public String getLoginForm(@Context HttpServletRequest request) {
-    	StringBuilder sb = new StringBuilder("<html><head>");
+    	return getFormHTML(request, "password");
+	}
+
+    @GET
+    @Path("/formHash")
+    @Produces(MediaType.TEXT_HTML)    
+    public String getLoginFormHash(@Context HttpServletRequest request) {
+    	return getFormHTML(request, "passwordHash");
+	}    
+    
+	private String getFormHTML(HttpServletRequest request, String pwdParName) {
+		String ctxPath = request.getContextPath();
+		StringBuilder sb = new StringBuilder("<html><head>");
     	//sb.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />");
     	sb.append("<title>Подсистема Аутентификации, Авторизации и Аудита</title>\n");
     	sb.append("</head>\n");
     	sb.append("<body>");
     	sb.append("	<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">");
     	sb.append("	  <tr> \n");
-    	sb.append("		<td align=\"center\" bgcolor=\"#000000\"><font color=\"#CCCCCC\">login</font></td>\n");
+    	sb.append("		<td align=\"center\" bgcolor=\"#000000\"><font color=\"#CCCCCC\">login by "+pwdParName+"</font></td>\n");
     	sb.append("		<td>&nbsp;</td>");
     	/*sb.append("		<td align=\"center\" bgcolor=\"#DEDECA\"><a href=\""+request.getContextPath()+"/rs/auth/test\">test</a></td>");
     	sb.append("		<td width=\"100%\">&nbsp;</td>");*/
@@ -152,7 +173,7 @@ public class AuthService {
     	sb.append("	  <tr> ");
     	sb.append("		<td colspan=\"6\" bgcolor=\"#000000\"> <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"8\">\n");
     	sb.append("			<tr> ");
-    	sb.append("			  <form name=\"auth\" action=\""+request.getContextPath()+"/rs/auth/action\" method=\"post\" onSubmit=\"if((login.value+password.value+codeSys.value).indexOf('[')>=0){alert('Не указан параметр!'); return false;}\">");
+    	sb.append("			  <form name=\"auth\" action=\""+ctxPath+"/rs/auth/action\" method=\"post\" onSubmit=\"if((login.value+"+pwdParName+".value+codeSys.value).indexOf('[')>=0){alert('Не указан параметр!'); return false;}\">");
     	sb.append("				<td width=\"100%\" bgcolor=\"#CCCCCC\" align=\"center\">\n");
     	sb.append("					<br>\n");
     	sb.append("	<script language=\"JavaScript\" type=\"text/javascript\">\n");
@@ -162,7 +183,7 @@ public class AuthService {
     	sb.append("		+'onBlur=\"if(this.value==\\'\\') this.value=\\''+fldHint+ '\\'\" >&nbsp;|&nbsp;'); \n");
     	sb.append("	}\n");
     	sb.append("	putField(\"Логин:\", \"text\", \"login\", \"[логин]\");\n");
-    	sb.append("	putField(\"Пароль:\", \"password\", \"password\", \"[\");\n");
+    	sb.append("	putField(\"Пароль:\", \"password\", \""+pwdParName+"\", \"[\");\n");
     	sb.append("	putField(\"Код системы:\", \"text\", \"codeSys\", \"[код системы]\");\n");
     	sb.append("	</script>\n");
     	sb.append("				  <input type=\"submit\" name=\"SubmitAuth\" value=\"Вход в систему\"> <p></p></td>");

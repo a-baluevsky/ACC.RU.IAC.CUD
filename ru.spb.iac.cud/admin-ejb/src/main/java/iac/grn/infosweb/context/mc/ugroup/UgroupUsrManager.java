@@ -1,6 +1,7 @@
 package iac.grn.infosweb.context.mc.ugroup;
 
 import java.util.List;
+
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.dataitems.UserItem;
 import iac.cud.infosweb.entity.AcUser;
@@ -13,9 +14,12 @@ import iac.grn.infosweb.session.audit.actions.ResourcesMap;
 import iac.grn.serviceitems.BaseTableItem;
 
 
+
 import java.util.Date;
+
 import javaw.util.SerializableList;
 import javaw.util.ArrayList;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,8 +27,8 @@ import java.util.Set;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -73,8 +77,7 @@ import org.jboss.seam.log.Log;
 		  log.info("ugroupUsrManager:getAuditList:firstRow:"+firstRow);
 		  log.info("ugroupUsrManager:getAuditList:numberOfRows:"+numberOfRows);
 		  
-		  List<BaseItem> ugroupUsrListCached = (List<BaseItem>)
-				  Component.getInstance("ugroupUsrListCached",ScopeType.SESSION);
+		  List<BaseItem> ugroupUsrListCached = getSessionList("ugroupUsrListCached");
 		  if(auditList==null){
 			  log.info("ugroupUsrManager:getAuditList:01");
 			 	if(("rowSelectFact".equals(remoteAuditUgroupUsr)||
@@ -126,14 +129,12 @@ import org.jboss.seam.log.Log;
 				 String orderQuery=null;
 				 log.info("ugroupUsrManager:invokeLocal");
 				 
-				 UgroupUsrStateHolder ugroupUsrStateHolder = (UgroupUsrStateHolder)
-						  Component.getInstance("ugroupUsrStateHolder",ScopeType.SESSION);
+				 UgroupUsrStateHolder ugroupUsrStateHolder = getSessionItem("ugroupUsrStateHolder");
 				 
 				 Map<String, String> filterMap = ugroupUsrStateHolder.getColumnFilterValues();
 				 String st=null;
 				 
-				  RolUsrManager rolUsrManager = (RolUsrManager)
-	     		          Component.getInstance("rolUsrManager");
+				  RolUsrManager rolUsrManager = getItem("rolUsrManager");
 				  
 				 if("list".equals(type)){
 					 log.info("ugroupUsrManager:list:01");
@@ -166,7 +167,7 @@ import org.jboss.seam.log.Log;
 	                 log.info("ugroupUsrManager:invokeLocal:list:filterQuery:"+st);
 	                 
 	 	        
-	               AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+	               AcUser cau = getSessionItem("currentUser");
 		      		 
 	               if(cau.getIsAccOrgManagerValue()){
 	          	 	   st=(st!=null?st+" and ":" ")+" t1_org_code = '"+cau.getUpSign()+"' ";
@@ -194,7 +195,7 @@ import org.jboss.seam.log.Log;
 	    	              }
 	    	    	   }
 					 
-	                 AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+	                 AcUser cau = getSessionItem("currentUser");
 		      		 
 		               if(cau.getIsAccOrgManagerValue()){
 		          	 	   st=(st!=null?st+" and ":" ")+" t1_org_code = '"+cau.getUpSign()+"' ";
@@ -222,8 +223,7 @@ import org.jboss.seam.log.Log;
 			   
 			   
 			   
-			   GroupUsersKnlT ugroupBean = (GroupUsersKnlT)
-						  Component.getInstance("ugroupBean",ScopeType.CONVERSATION);
+			   GroupUsersKnlT ugroupBean = getConversationItem("ugroupBean");
 			   
 				   String  sessionId = FacesContext.getCurrentInstance().getExternalContext()
 				        .getRequestParameterMap()
@@ -235,7 +235,7 @@ import org.jboss.seam.log.Log;
 			   }
 			 	   
 			   try {
-				   AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);				   
+				   AcUser au = getSessionItem("currentUser");				   
 				   GroupUsersKnlT aum = entityManager.find(GroupUsersKnlT.class, Long.valueOf(sessionId));				   
 				   List<LinkGroupUsersUsersKnlT> oldLinkList = aum.getLinkGroupUsersUsersKnlTs();
 				   
@@ -280,7 +280,7 @@ import org.jboss.seam.log.Log;
 				    	Contexts.getEventContext().set("ugroupBean", aum);					   
 				   }			    	 
 			    	//аудит!!!
-			    	UgroupManager ugroupManager = (UgroupManager)Component.getInstance("ugroupManager", ScopeType.EVENT);
+			    	UgroupManager ugroupManager = getEventItem("ugroupManager");
 				    ugroupManager.audit(ResourcesMap.UGROUP, ActionsMap.UPDATE_USER); 
 			     }catch (Exception e) {
 		       log.error("ugroupUsrManager:updUgroupUserAlf:ERROR:"+e);

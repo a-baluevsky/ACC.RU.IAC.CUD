@@ -2,7 +2,9 @@ package iac.grn.infosweb.context.app.block;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
 import javaw.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
@@ -11,11 +13,12 @@ import java.util.Set;
 
 import javax.faces.context.FacesContext;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.faces.FacesMessages;
+
 
 
 
@@ -45,8 +48,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 			 String orderQueryAppBlock=null;
 			 log.info("appBlockManager:invokeLocal");
 			 
-			 AppBlockStateHolder appBlockStateHolder = (AppBlockStateHolder)
-					  Component.getInstance("appBlockStateHolder",ScopeType.SESSION);
+			 AppBlockStateHolder appBlockStateHolder = getSessionItem("appBlockStateHolder");
 			 Map<String, String> filterMapBlock = appBlockStateHolder.getColumnFilterValues();
 			 String st=null;
 			  

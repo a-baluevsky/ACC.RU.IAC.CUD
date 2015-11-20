@@ -1,5 +1,7 @@
 package iac.grn.infosweb.context.services.binding;
 
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import java.util.List; 
 
 import org.jboss.seam.ScopeType;
@@ -148,8 +150,7 @@ import javax.persistence.NoResultException;
 	  log.info("getAuditList:firstRow:"+firstRow);
 	  log.info("getAuditList:numberOfRows:"+numberOfRows);
 	  
-	  List<BaseItem> bindListCached = (List<BaseItem>)
-			  Component.getInstance("bindListCached",ScopeType.SESSION);
+	  List<BaseItem> bindListCached = getSessionList("bindListCached");
 	  if(auditList==null){
 		  log.info("getAuditList:01");
 		 	if(("rowSelectFact".equals(remoteAudit)||
@@ -167,8 +168,7 @@ import javax.persistence.NoResultException;
 			    log.info("getAuditList:03:"+this.auditList.size());
 			}
 		 	
-		 	List<String>  selRecBind = (List<String>)
-					  Component.getInstance("selRecBind",ScopeType.SESSION);
+		 	List<String>  selRecBind = getSessionList("selRecBind");
 		 	if(this.auditList!=null && selRecBind!=null) {
 		 		 for(BaseItem it:this.auditList){
 				   if(selRecBind.contains(it.getBaseId().toString())){
@@ -195,8 +195,7 @@ import javax.persistence.NoResultException;
 			 String orderQuery=null;
 			 log.info("BindManager:invokeLocal");
 			 
-			 BindStateHolder bindStateHolder = (BindStateHolder)
-					  Component.getInstance("bindStateHolder",ScopeType.SESSION);
+			 BindStateHolder bindStateHolder = getSessionItem("bindStateHolder");
 			 Map<String, String> filterMap = bindStateHolder.getColumnFilterValues();
 			 String st=null;
 			  
@@ -617,8 +616,7 @@ import javax.persistence.NoResultException;
    private BaseItem searchBean(String sessionId){
     	
       if(sessionId!=null){
-    	 List<BaseItem> bindListCached = (List<BaseItem>)
-				  Component.getInstance("bindListCached",ScopeType.SESSION);
+    	 List<BaseItem> bindListCached = getSessionList("bindListCached");
 		if(bindListCached!=null){
 			for(BaseItem it : bindListCached){
 				 
@@ -642,14 +640,11 @@ import javax.persistence.NoResultException;
    public void addBind(){
 	   log.info("BindManager:addBind:01");
 	   
-	   AcUser bindBeanCrt = (AcUser)
-				  Component.getInstance("bindBeanCrt",ScopeType.CONVERSATION);
+	   AcUser bindBeanCrt = getConversationItem("bindBeanCrt");
 	   
-	   IspBssT clUsrBean = (IspBssT)
-				  Component.getInstance("clUsrBean",ScopeType.CONVERSATION);
+	   IspBssT clUsrBean = getConversationItem("clUsrBean");
 	 
-	   IspBssT clOrgBean = (IspBssT)
-				  Component.getInstance("clOrgBean",ScopeType.CONVERSATION);
+	   IspBssT clOrgBean = getConversationItem("clOrgBean");
 	   
 	   if(bindBeanCrt==null){
 		   return;
@@ -689,7 +684,7 @@ import javax.persistence.NoResultException;
 	          }
 	    	 
 	    	 
-	    	  AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
+	    	  AcUser cau = getSessionItem("currentUser"); 
 	    	   
 	    	  bindBeanCrt.setCreator(cau.getIdUser()); 
 	    	  bindBeanCrt.setCreated(new Date());
@@ -715,8 +710,7 @@ import javax.persistence.NoResultException;
 	   DateFormat df = new SimpleDateFormat ("dd.MM.yy");
 	   DateFormat dfTime = new SimpleDateFormat ("dd.MM.yy HH:mm:ss");
 	   
-	   AcUser bindBean = (AcUser)
-				  Component.getInstance("bindBean",ScopeType.CONVERSATION);
+	   AcUser bindBean = getConversationItem("bindBean");
 	   
 	   String  sessionId = FacesContext.getCurrentInstance().getExternalContext()
 		        .getRequestParameterMap()
@@ -729,7 +723,7 @@ import javax.persistence.NoResultException;
 	
 	   try {
 		   
-		  AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+		  AcUser cau = getSessionItem("currentUser");
 		  
 		  AcUser aum = entityManager.find(AcUser.class, Long.valueOf(sessionId));
 		  
@@ -837,8 +831,7 @@ import javax.persistence.NoResultException;
 	   
 	   log.info("BindManager:getUserItem:idUser:"+idUser);
 	   
-	   UsrManager usrManager = (UsrManager)
-		          Component.getInstance("usrManager");
+	   UsrManager usrManager = getItem("usrManager");
 	   
 	   return usrManager.getUserItem(idUser);
 	   
@@ -853,8 +846,7 @@ import javax.persistence.NoResultException;
 	   SerializableList<AcLinkUserToRoleToRaion> arList = new ArrayList<AcLinkUserToRoleToRaion>();
 	   SerializableList<AcLinkUserToRoleToRaion> arRemovedList = new ArrayList<AcLinkUserToRoleToRaion>();
 	   
-	   AcUser bindBean = (AcUser)
-				  Component.getInstance("bindBean",ScopeType.CONVERSATION);
+	   AcUser bindBean = getConversationItem("bindBean");
 	   
 	   String idArm = FacesContext.getCurrentInstance().getExternalContext()
 		        .getRequestParameterMap()
@@ -953,10 +945,9 @@ import javax.persistence.NoResultException;
 			return;
 		}
 		 
-	    AcUser usrBean = (AcUser)
-				  Component.getInstance("usrBean",ScopeType.CONVERSATION);
+	    AcUser usrBean = getConversationItem("usrBean");
 		
-		AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+		AcUser cau = getSessionItem("currentUser");
 	    
 		 
 	    if((cau.getAllowedSys()!=null || cau.getIsAccOrgManagerValue()) && !cau.isAllowedReestr("002", "3")){
@@ -1048,7 +1039,7 @@ import javax.persistence.NoResultException;
 				return;
 			}
 			 
-			AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+			AcUser cau = getSessionItem("currentUser");
 		    
 				 
 		       if((cau.getAllowedSys()!=null || cau.getIsAccOrgManagerValue()) && !cau.isAllowedReestr("002", "3")){
@@ -1285,7 +1276,7 @@ import javax.persistence.NoResultException;
 	    	   return;
 	       }
 	       
-	       AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+	       AcUser cau = getSessionItem("currentUser");
 	       
 	    	 
 	       if((cau.getAllowedSys()!=null || cau.getIsAccOrgManagerValue()) && !cau.isAllowedReestr("002", "3")){
@@ -1424,7 +1415,7 @@ import javax.persistence.NoResultException;
 		    	   return;
 		       }
 		       
-		       AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+		       AcUser cau = getSessionItem("currentUser");
 			     
 		    	 
 		       if((cau.getAllowedSys()!=null || cau.getIsAccOrgManagerValue()) && !cau.isAllowedReestr("002", "3")){
@@ -1477,8 +1468,7 @@ import javax.persistence.NoResultException;
      
        
 	   try{
-		   IspBssT clUsrBean = (IspBssT)
-					  Component.getInstance("clUsrBean",ScopeType.CONVERSATION);
+		   IspBssT clUsrBean = getConversationItem("clUsrBean");
 
 		   if(clUsrBean.getSignObject()!=null){
 			   
@@ -1815,8 +1805,7 @@ import javax.persistence.NoResultException;
 		
 	   if("rezim".equals(typeFilter)) {
 	   
-	      BindStateHolder bindStateHolder = (BindStateHolder)
-				  Component.getInstance("bindStateHolder",ScopeType.SESSION);
+	      BindStateHolder bindStateHolder = getSessionItem("bindStateHolder");
 	      Map<String, String> filterMap = bindStateHolder.getColumnFilterValues();
 	   
 	      if(filterMap!=null){
@@ -1907,9 +1896,9 @@ import javax.persistence.NoResultException;
 	    	
 	    		String query="select o from AcApplication o where o.acRoles IS NOT EMPTY ";
 	    		
-	      		AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
+	      		AcUser cau = getSessionItem("currentUser"); 
 	      		
-	      		LinksMap lm = (LinksMap)Component.getInstance("linksMap",ScopeType.APPLICATION);
+	      		LinksMap lm = getApplicationLinksMap();
 	      		Long appCode = lm.getAppCode();
 			
 	      		
@@ -2246,8 +2235,7 @@ import javax.persistence.NoResultException;
 	    log.info("selectRecord:sessionId="+sessionId);
 	    
 	   //  forView(); //!!!
-	    List<String>  selRecBind = (List<String>)
-				  Component.getInstance("selRecBind",ScopeType.SESSION);
+	    List<String>  selRecBind = getSessionList("selRecBind");
 	    
 	    if(selRecBind==null){
 	       selRecBind = new ArrayList<String>();
@@ -2304,14 +2292,14 @@ import javax.persistence.NoResultException;
    
    public AcUser getCurrentUser() {
 	   if(this.currentUser==null){
-		   currentUser= (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+		   currentUser= getSessionItem("currentUser");
 	   }
 	   return currentUser;
    }
    
    public LinksMap getLinksMap() {
 	   if(this.linksMap==null){
-		   linksMap= (LinksMap)Component.getInstance("linksMap",ScopeType.APPLICATION);
+		   linksMap= getApplicationLinksMap();
 	   }
 	   return linksMap;
    }
@@ -2319,7 +2307,7 @@ import javax.persistence.NoResultException;
    
    public void audit(ResourcesMap resourcesMap, ActionsMap actionsMap){
 	   try{
-		   AuditExportData auditExportDataBind = (AuditExportData)Component.getInstance("auditExportData",ScopeType.SESSION);
+		   AuditExportData auditExportDataBind = getSessionItem("auditExportData");
 		   auditExportDataBind.addFunc(resourcesMap.getCode()+":"+actionsMap.getCode());
 		   
 	   }catch(Exception e){

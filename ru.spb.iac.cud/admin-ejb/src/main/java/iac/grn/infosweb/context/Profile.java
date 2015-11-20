@@ -75,6 +75,7 @@ import org.jboss.seam.ScopeType;
 	 private Long rowsCountUgroup=Long.valueOf(10);
 	 
 	 private Long rowsCountArm=Long.valueOf(10);
+	 private Long rowsCountAuditAction=Long.valueOf(10);
 	 
 	 private Long rowsCountArmSub=Long.valueOf(10);
 	 
@@ -344,5 +345,11 @@ import org.jboss.seam.ScopeType;
 	}
 	public void setRowsCountAppOrgMan(Long rowsCountAppOrgMan) {
 		this.rowsCountAppOrgMan = rowsCountAppOrgMan;
+	}
+	public Long getRowsCountAuditAction() {
+		return rowsCountAuditAction;
+	}
+	public void setRowsCountAuditAction(Long rowsCountAuditAction) {
+		this.rowsCountAuditAction = rowsCountAuditAction;
 	}
 }

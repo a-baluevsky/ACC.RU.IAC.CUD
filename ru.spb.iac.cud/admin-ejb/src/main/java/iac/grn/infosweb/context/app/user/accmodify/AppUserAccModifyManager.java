@@ -18,8 +18,8 @@ import javaw.util.SerializableList;
 import javax.faces.context.FacesContext;
 import javax.persistence.NoResultException;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.faces.FacesMessages;
@@ -55,8 +55,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 			 String orderQueryAppUserAcc=null;
 			 log.info("hostsManager:invokeLocal");
 			 
-			 AppUserAccModifyStateHolder appUserAccModifyStateHolder = (AppUserAccModifyStateHolder)
-					  Component.getInstance("appUserAccModifyStateHolder",ScopeType.SESSION);
+			 AppUserAccModifyStateHolder appUserAccModifyStateHolder = getSessionItem("appUserAccModifyStateHolder");
 			 Map<String, String> filterMap = appUserAccModifyStateHolder.getColumnFilterValues();
 			 String st=null;
 			  

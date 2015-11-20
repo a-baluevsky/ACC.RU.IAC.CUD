@@ -1,6 +1,7 @@
 package iac.grn.infosweb.context.mc.clusr;
 
 import java.util.List;
+
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.dataitems.BaseParamItem;
 import iac.cud.infosweb.entity.AcLegalEntityType;
@@ -17,8 +18,8 @@ import iac.grn.infosweb.session.audit.actions.ActionsMap;
 import iac.grn.infosweb.session.audit.actions.ResourcesMap;
 import iac.grn.infosweb.session.audit.export.AuditExportData;
 import iac.grn.serviceitems.BaseTableItem;
-
 import javaw.util.ArrayList;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -30,14 +31,15 @@ import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
+
 import javaw.util.SerializableList;
 
 /**
@@ -105,8 +107,7 @@ import javaw.util.SerializableList;
 	  log.info("getAuditList:firstRow:"+firstRow);
 	  log.info("getAuditList:numberOfRows:"+numberOfRows);
 	  
-	  List<BaseItem> clUsrListCached = (List<BaseItem>)
-			  Component.getInstance("clUsrListCached",ScopeType.SESSION);
+	  List<BaseItem> clUsrListCached = getSessionList("clUsrListCached");
 	  if(auditList==null){
 		  log.info("getAuditList:01");
 		 	if(("rowSelectFact".equals(remoteAudit)||
@@ -123,8 +124,7 @@ import javaw.util.SerializableList;
 			    log.info("getAuditList:03:"+this.auditList.size());
 			}
 		 	
-		 	List<String>  selRecOrgClUsr = (ArrayList<String>)
-					  Component.getInstance("selRecOrg",ScopeType.SESSION);
+		 	List<String>  selRecOrgClUsr = getSessionList("selRecOrg");
 		 	if(this.auditList!=null && selRecOrgClUsr!=null) {
 		 		 for(BaseItem it:this.auditList){
 				   if(selRecOrgClUsr.contains(it.getBaseId().toString())){
@@ -148,8 +148,7 @@ import javaw.util.SerializableList;
 			 if("list".equals(type)){
 				 log.info("CLUser:invokeLocal:list:01");
 				 
-				 ClUsrStateHolder clUsrStateHolder = (ClUsrStateHolder)
-						  Component.getInstance("clUsrStateHolder",ScopeType.SESSION);
+				 ClUsrStateHolder clUsrStateHolder = getSessionItem("clUsrStateHolder");
 				 Set<Map.Entry<String, String>> set = clUsrStateHolder.getSortOrders().entrySet();
                  for (Map.Entry<String, String> me : set) {
       		       log.info("me.getKey+:"+me.getKey());
@@ -211,8 +210,7 @@ import javaw.util.SerializableList;
    private IspTempBssT searchBean(String sessionId){
     	
       if(sessionId!=null){
-    	 List<IspTempBssT> clUsrListCached = (List<IspTempBssT>)
-				  Component.getInstance("clUsrListCached",ScopeType.SESSION);
+    	 List<IspTempBssT> clUsrListCached = getSessionList("clUsrListCached");
 		if(clUsrListCached!=null){
 			for(IspTempBssT itClUsr : clUsrListCached){
 				 
@@ -231,8 +229,7 @@ import javaw.util.SerializableList;
    public void addOrg(){
 	   log.info("clUsrManager:addOrg:01");
 	   
-	   IspTempBssT clUsrBeanCrt = (IspTempBssT)
-				  Component.getInstance("clUsrBeanCrt",ScopeType.CONVERSATION);
+	   IspTempBssT clUsrBeanCrt = getConversationItem("clUsrBeanCrt");
 	   
 	   if(clUsrBeanCrt==null){
 		   return;
@@ -276,7 +273,7 @@ import javaw.util.SerializableList;
 		 
 		  
 		   
-		   AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+		   AcUser au = getSessionItem("currentUser");
 		 
 		   
 		   String idSess =(String) this. entityManager.createNativeQuery("select to_char(JOURN_ISP_LOAD_SEQ.nextval) sgnc from dual").getSingleResult();
@@ -373,8 +370,7 @@ import javaw.util.SerializableList;
 	   
 	   log.info("clUsrManager:updOrg:01");
 	   
-	   IspTempBssT clUsrBean = (IspTempBssT)
-				  Component.getInstance("clUsrBean",ScopeType.CONVERSATION);
+	   IspTempBssT clUsrBean = getConversationItem("clUsrBean");
 	   
 	   String  sessionId = FacesContext.getCurrentInstance().getExternalContext()
 		        .getRequestParameterMap()
@@ -408,8 +404,7 @@ import javaw.util.SerializableList;
 	 try{
 		log.info("clUsrManager:delOrg:01");  
 		
-		IspTempBssT clUsrBean = (IspTempBssT)
-				  Component.getInstance("clUsrBean",ScopeType.CONVERSATION);
+		IspTempBssT clUsrBean = getConversationItem("clUsrBean");
 		// <h:inputHidden value="#{usrBean.idUser}"/>
 		
 		if(clUsrBean==null){
@@ -657,8 +652,7 @@ import javaw.util.SerializableList;
 	    log.info("selectRecord:sessionId="+sessionIdClUsr);
 	    
 	   //  for/View(); //!!!
-	    List<String>  selRecOrgClUsr = (ArrayList<String>)
-				  Component.getInstance("selRecOrg",ScopeType.SESSION);
+	    List<String>  selRecOrgClUsr = getSessionList("selRecOrg");
 	    
 	    if(selRecOrgClUsr==null){
 	       selRecOrgClUsr = new ArrayList<String>();
@@ -919,7 +913,7 @@ public void setListUsrAutocomplete(List<IspBssT> listUsrAutocomplete) {
 
 public void audit(ResourcesMap resourcesMap, ActionsMap actionsMap){
 	   try{
-		   AuditExportData auditExportData = (AuditExportData)Component.getInstance("auditExportData",ScopeType.SESSION);
+		   AuditExportData auditExportData = getSessionItem("auditExportData");
 		   auditExportData.addFunc(resourcesMap.getCode()+":"+actionsMap.getCode());
 		   
 	   }catch(Exception e){

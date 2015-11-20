@@ -1,36 +1,28 @@
 package iac.grn.infosweb.session.table;
 
-import java.util.List;
-
-import org.jboss.seam.annotations.Name;
-
-
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
-import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.log.Log;
-
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.entity.AcUser;
 import iac.grn.infosweb.session.audit.actions.ActionsMap;
 import iac.grn.infosweb.session.audit.actions.ResourcesMap;
 import iac.grn.infosweb.session.audit.export.AuditExportData;
 import iac.grn.infosweb.session.navig.LinksMap;
-import javaw.util.SerializableList;
+import iac.grn.serviceitems.BaseTableItem;
+import iac.grn.serviceitems.HeaderTableItem;
+
+import java.util.List;
+
 import javaw.util.ArrayList;
 import javaw.util.SerializableList;
-
-
-
-import org.jboss.seam.Component;
 
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 
-import iac.grn.serviceitems.BaseTableItem;
-import iac.grn.serviceitems.HeaderTableItem;
-
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.log.Log;
 	/**
 	 * ”правл€ющий Ѕин
 	 * @author bubnov
@@ -83,8 +75,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 		  log.info("baseManager:getAuditList:firstRow:"+firstRow);
 		  log.info("baseManager:getAuditList:numberOfRows:"+numberOfRows);
 		  
-		  List<BaseItem> contextListCached = (List<BaseItem>)
-				  Component.getInstance("contextListCached",ScopeType.SESSION);
+		  List<BaseItem> contextListCached = getSessionList("contextListCached");
 		  if(auditList==null){
 			  log.info("baseManager:getAuditList:01");
 			 	if(("rowSelectFact".equals(remoteAudit)||
@@ -102,8 +93,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 				    log.info("baseManager:getAuditList:03:"+this.auditList.size());
 				}
 			 	
-			 	List<String> contextSelRec = (List<String>)
-						  Component.getInstance("contextSelRec",ScopeType.SESSION);
+			 	List<String> contextSelRec = getSessionList("contextSelRec");
 			 	if(this.auditList!=null && contextSelRec!=null) {
 			 		 for(BaseItem it:this.auditList){
 					   if(contextSelRec.contains(it.getBaseId().toString())){
@@ -151,8 +141,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	   protected BaseItem searchBean(String sessionId){
 	    	
 	      if(sessionId!=null){
-	    	 List<BaseItem> contextListCached = (List<BaseItem>)
-					  Component.getInstance("contextListCached",ScopeType.SESSION);
+	    	 List<BaseItem> contextListCached = getSessionList("contextListCached");
 			if(contextListCached!=null){
 				for(BaseItem it : contextListCached){
 					 
@@ -219,8 +208,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 		   
 		    
 		   //  forView(); //!!!
-		    List<String> contextSelRec = (List<String>)
-					  Component.getInstance("contextSelRec",ScopeType.SESSION);
+		    List<String> contextSelRec = getSessionList("contextSelRec");
 		    
 		    if(contextSelRec==null){
 		    	contextSelRec = new ArrayList<String>();
@@ -257,8 +245,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 				        .get("sessionId");
 			    log.info("BaseManager:isSelect:sessionId="+sessionId);
 
-			 	ArrayList<String> contextSelRec = (ArrayList<String>)
-						  Component.getInstance("contextSelRec",ScopeType.SESSION);
+			 	List<String> contextSelRec = getSessionList("contextSelRec");
 			 	if(contextSelRec!=null) {
 			 		if(contextSelRec.contains(sessionId)){
 			 			result=true;
@@ -273,14 +260,14 @@ import iac.grn.serviceitems.HeaderTableItem;
 	   }
 	   public LinksMap getLinksMap() {
 		   if(this.linksMap==null){
-			   linksMap= (LinksMap)Component.getInstance("linksMap",ScopeType.APPLICATION);
+			   linksMap= getApplicationLinksMap();
 		   }
 		   return linksMap;
 	   }
 	   
 	   public AcUser getCurrentUser() {
 		   if(this.currentUser==null){
-			   currentUser= (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+			   currentUser= getSessionItem("currentUser");
 		   }
 		   return currentUser;
 	   }
@@ -294,7 +281,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 	   
 	   public void audit(ResourcesMap resourcesMap, ActionsMap actionsMap){
 		   try{
-			   AuditExportData auditExportData = (AuditExportData)Component.getInstance("auditExportData",ScopeType.SESSION);
+			   AuditExportData auditExportData = getSessionItem("auditExportData");
 			   auditExportData.addFunc(resourcesMap.getCode()+":"+actionsMap.getCode());
 			   
 		   }catch(Exception e){

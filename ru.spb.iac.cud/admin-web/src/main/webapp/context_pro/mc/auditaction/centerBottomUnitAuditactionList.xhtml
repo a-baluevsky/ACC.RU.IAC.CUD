@@ -1,0 +1,329 @@
+<?xml version='1.0' encoding='windows-1251' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core">
+
+	<h3 class="ui-widget-header">Подробно</h3>
+	<div class="ui-layout-content">
+		<a4j:outputPanel id="outCenterBottom">
+			<table style="width: 100%;" border="0">
+				<tr>
+					<td width="90%">
+						<div style="margin: 5px;">
+							<!--c:if test="#{auditActionManager.evaluteForBean}"-->
+							<s:div rendered="#{auditActionManager.evaluteForBean}">
+								<h:form>
+									<a4j:outputPanel id="outCenterBottom_onlyFields">
+										<h:messages style="color:red" globalOnly="false" />
+										<table style="width: 100%; font-size: 12px;" border="0">
+											<c:forEach items="#{auditActionManager.auditItemsListContext}"
+												var="field">
+												<tr>
+													<td width="150px" height="25px" class="table_left_header">
+														<h:outputText value="#{field.itemLabel}" />
+													</td>
+													<td><h:outputText value="#{auditActionBean[field.itemField]}" />
+													</td>
+												</tr>
+											</c:forEach>
+										</table>
+									</a4j:outputPanel>
+								</h:form>
+							</s:div>
+							<!--/c:if-->
+						</div>
+					</td>
+					<td width="90px" valign="top">						
+					</td>
+				</tr>
+			</table>
+		</a4j:outputPanel>
+	</div>
+	<div class="ui-widget-footer" style="background: #E6E6E6;">
+		<a4j:outputPanel id="outCBmpCrt">
+			<rich:modalPanel id="CBmpCrt" rendered="#{param['onCreate']!=null}"
+				width="400" height="235">
+				<f:facet name="header">
+					<h:panelGroup>
+						<h:outputText value="Создать функцию аудита"></h:outputText>
+					</h:panelGroup>
+				</f:facet>
+				<f:facet name="controls">
+					<h:panelGroup>
+						<h:graphicImage onclick="#{rich:component('CBmpCrt')}.hide();"
+							value="/img/icons/close.gif" />
+					</h:panelGroup>
+				</f:facet>
+				<h:form id="CBformCrt">
+					<table style="width: 100%;">
+						<tr>
+							<td width="100px" height="25px"><h:outputText
+									value="Название" /></td>
+							<td><h:inputText value="#{auditActionBeanCrt.full}" id="full"
+									maxlength="100" size="45" /></td>
+						</tr>
+						<tr>
+							<td width="100px" height="25px"><h:outputText value="Код" /></td>
+							<td><h:inputText value="#{auditActionBeanCrt.sign}" id="sign"
+									maxlength="240" size="45" /></td>
+						</tr>
+						<tr>
+							<td width="100px" valign="top" height="25px"><h:outputText
+									value="ИС" /></td>
+							<td style="padding-top: 5px; padding-bottom: 5px;"><h:selectOneMenu
+									style="width:252px;" id="appl"
+									value="#{auditActionBeanCrt.acIsBssT}" immediate="true">
+									<f:selectItem itemLabel="-------" itemValue="-1" />
+									<s:selectItems value="#{auditActionManager.listArm}" var="n"
+										label="#{n.name}" itemValue="#{n.idArm}" />
+								</h:selectOneMenu></td>
+						</tr>						
+						<tr>
+							<td width="100px" height="25px"><h:outputText
+									value="Описание" /></td>
+							<td><h:inputTextarea value="#{auditActionBeanCrt.descriptions}"
+									id="descr" cols="47" rows="3" /></td>
+						</tr>
+						<tr>
+							<td colspan="2" align="center" height="35px">
+									<a4j:commandButton
+										value="Отмена"
+										onclick="#{rich:component('CBmpCrt')}.hide();return false;"
+										styleClass="but_class" 
+									/> 
+									<a4j:commandButton 
+										value="Сохранить"
+										action="#{auditActionManager.addAuditAction}"
+										reRender="outCenterCenter, outCenterCenterFooter"
+										oncomplete="hideMPCrt();"
+										onclick="if(check('CBformCrt')){return false;}"
+										styleClass="but_class">
+											<f:param name="onCreate" value="1" />
+											<f:param name="remoteAudit" value="CrtFact" />
+											<f:param
+												name="#{param['sessionId']!=null ? 'sessionId' : 'xxx1'}"
+												value="#{param['sessionId']}" />
+									</a4j:commandButton> 
+							</td>
+						</tr>
+					</table>
+				</h:form>
+			</rich:modalPanel>
+		</a4j:outputPanel>
+		<a4j:outputPanel id="outCBmpUpd">
+			<rich:modalPanel id="CBmpUpd" rendered="#{param['onUpdate']!=null}"
+				width="400" height="235">
+				<f:facet name="header">
+					<h:panelGroup>
+						<h:outputText value="Редактировать функцию аудита" />
+					</h:panelGroup>
+				</f:facet>
+				<f:facet name="controls">
+					<h:panelGroup>
+						<h:graphicImage onclick="#{rich:component('CBmpUpd')}.hide();"
+							value="/img/icons/close.gif" />
+					</h:panelGroup>
+				</f:facet>
+				<h:form id="CBformUpd">
+					<h:inputHidden value="#{auditActionBean.idSrv}"/>
+					<table style="width: 100%;">
+						<c:if
+							test="#{(empty currentUser.allowedSys and currentUser.isAccOrgManager!=1) or currentUser.isAllowedReestr('004', '2')}">
+							<tr>
+								<td width="100px" height="25px"><h:outputText value="ID" /></td>
+								<td><h:inputText value="#{auditActionBean.idSrv}" id="idSrv" disabled="true"
+										maxlength="240" size="45" /></td>
+							</tr>
+						</c:if>
+						<tr>
+							<td width="100px" height="25px"><h:outputText
+									value="Название" /></td>
+							<td><h:inputText value="#{auditActionBean.full}" id="full"
+									maxlength="100" size="45" /></td>
+						</tr>
+						<tr>
+							<td width="100px" height="25px"><h:outputText value="Код" /></td>
+							<td><h:inputText value="#{auditActionBean.sign}" id="sign"
+									maxlength="240" size="45" /></td>
+						</tr>
+						<tr>
+							<td width="100px" valign="top" height="25px"><h:outputText
+									value="ИС" /></td>
+							<td style="padding-top: 5px; padding-bottom: 5px;"><h:selectOneMenu
+									style="width:252px;" id="appl"
+									value="#{auditActionBean.acIsBssT}" immediate="true">
+									<f:selectItem itemLabel="-------" itemValue="-1" />
+									<s:selectItems value="#{auditActionManager.listArm}" var="n"
+										label="#{n.name}" itemValue="#{n.idArm}" />
+								</h:selectOneMenu></td>
+						</tr>						
+						<tr>
+							<td width="100px" height="25px"><h:outputText
+									value="Описание" /></td>
+							<td><h:inputTextarea value="#{auditActionBean.descriptions}"
+									id="descr" cols="47" rows="3" /></td>
+						</tr>
+						
+						<tr>
+							<td colspan="2" align="center" height="35px">
+									<a4j:commandButton
+										value="Отмена"
+										onclick="#{rich:component('CBmpUpd')}.hide();return false;"
+										styleClass="but_class" />
+									<a4j:commandButton value="Сохранить"
+										action="#{auditActionManager.updAuditAction}"
+										reRender="outCenterCenter, outCenterBottom_onlyFields"
+										oncomplete="hideMPUpd();"
+										onclick="if(check('CBformUpd')){return false;}"
+										styleClass="but_class">
+											<f:param name="onUpdate" value="1" />
+											<f:param name="remoteAudit" value="UpdFact" />
+											<f:param name="sessionId" value="#{param['sessionId']}" />
+									</a4j:commandButton>
+							</td>
+						</tr>
+					</table>
+				</h:form>
+			</rich:modalPanel>
+		</a4j:outputPanel>
+
+		<a4j:outputPanel id="outCBmpDel">
+			<rich:modalPanel id="CBmpDel" rendered="#{param['onDelete']!=null}"
+				width="300" autosized="true">
+				<f:facet name="header">
+					<h:panelGroup>
+						<h:outputText value="Функция аудита" />
+					</h:panelGroup>
+				</f:facet>
+				<f:facet name="controls">
+					<h:panelGroup>
+						<h:graphicImage onclick="#{rich:component('CBmpDel')}.hide();"
+							value="/img/icons/close.gif" />
+					</h:panelGroup>
+				</f:facet>
+				<h:form>
+					<h:inputHidden value="#{auditActionBean.idSrv}" />
+
+					<h:outputText style="color:red;display:block;margin-bottom:7px;"
+						value="#{auditActionManager.dellMessage}" escape="false" />
+
+					<c:if test="#{auditActionManager.delNot==0}">
+						<h:outputText style="display:block;margin-bottom:7px;"
+							value="Удалить '#{auditActionBean.sign} (#{auditActionBean.full})'?" />
+					</c:if>
+
+					<div style="white-space: nowrap; text-align: center;">
+						<a4j:commandButton value="Отмена"
+							onclick="#{rich:component('CBmpDel')}.hide();return false;"
+							styleClass="but_class" />
+						<c:if test="#{auditActionManager.delNot==0}">
+							<a4j:commandButton value="Удалить" action="#{auditActionManager.delAuditAction}"
+								reRender="outCenterCenter, outCenterCenterFooter, outCenterBottom, outCenterCenterHeader"
+								oncomplete=" #{rich:component('CBmpDel')}.hide();"
+								styleClass="but_class">
+								<f:param name="onDelete" value="1" />
+								<f:param name="remoteAudit" value="DelFact" />
+							</a4j:commandButton>
+						</c:if>
+					</div>
+				</h:form>
+			</rich:modalPanel>
+		</a4j:outputPanel>
+	</div>
+
+	<script>
+//<![CDATA[
+
+var iframeLoadFlag=0;          
+           
+function check(tform){
+ var msg="";
+ if (jQuery.trim(document.getElementById(tform+":full").value)==""){
+	  msg+="Нет Наименования !\n";
+ }
+
+ if(#{(empty currentUser.allowedSys and currentUser.isAccOrgManager!=1) or currentUser.isAllowedReestr('004', '2')}){
+		
+	 if (jQuery.trim(document.getElementById(tform+":sign").value)==""){
+		  msg+="Нет Кода !\n";
+	 }else{
+		 if( jQuery.trim(document.getElementById(tform+":sign").value).search(new RegExp(/[А-яёЁ]/g)) !=-1){
+			 msg+="В Коде недопустима кириллица !\n";
+	     }
+	 }
+
+	 if (document.getElementById(tform+":appl").value=="-1"){
+		 msg+="Не выбрана ИС!\n";
+	 }
+ 
+ }
+ 
+ if (jQuery.trim(document.getElementById(tform+":descr").value)==""){
+	 // msg+="Нет Описания !\n";
+ }else{
+	 if(jQuery.trim(document.getElementById(tform+":descr").value).length>500){
+		    msg+="Превышена длина поля Описание!\n";
+	 }
+  }
+		 
+ 
+ if(msg!=""){
+  alert(msg);
+  return true;
+ }else{
+  return false;
+}
+}
+
+ function setHDiv(hdiv){
+		jQuery('#'+hdiv).height(Math.floor(jQuery(window).height()*(2/3)));
+ }
+ function setMPTop(){
+		jQuery('#CBmpCrtCDiv').css('top',Math.floor(jQuery(window).height()*(1/6)))
+ }
+ 
+function hideMPCrt(){
+	#{rich:component('CBmpCrt')}.hide();
+}
+function hideMPUpd(){
+	#{rich:component('CBmpUpd')}.hide();
+}
+
+function setHDiv_min_proSoft_top_rmp(hdiv, cdiv, size){
+	//!!! reset to small
+	resetHDiv_min(hdiv);
+
+   	if(jQuery('#'+hdiv).height()>Math.floor(jQuery(window).height()*(3/4)-size)){
+	   jQuery('#'+hdiv).height(Math.floor(jQuery(window).height()*(3/4)-size));
+	} 
+     //!!! set top always
+	jQuery('#'+cdiv).css('top',Math.floor(jQuery(window).height()*(1/2)-jQuery('#'+hdiv).height()*(1/2)));
+ 	
+}
+function resetHDiv_min(hdiv){
+	   jQuery('#'+hdiv).height('auto');
+}
+
+function setHDiv_min_proSoft_top(hdiv, cdiv, size){
+
+	//alert("1:"+jQuery('#'+hdiv).height());
+	//alert("2:"+Math.floor(jQuery(window).height()*(3/4)-size));
+	
+   	if(jQuery('#'+hdiv).height()>Math.floor(jQuery(window).height()*(3/4)-size)){
+	   jQuery('#'+hdiv).height(Math.floor(jQuery(window).height()*(3/4)-size));
+
+	   //alert("2:"+Math.floor(jQuery(window).height()*(1/2)-jQuery('#'+hdiv).height()*(1/2)));
+	   
+	   //!!! set top only haight>
+       jQuery('#'+cdiv).css('top', Math.floor(jQuery(window).height()*(1/2)-jQuery('#'+hdiv).height()*(1/2)));
+	} 
+}
+
+//]]>
+</script>
+</ui:composition>

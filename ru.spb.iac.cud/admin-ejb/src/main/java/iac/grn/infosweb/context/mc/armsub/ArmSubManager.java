@@ -10,9 +10,7 @@ import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.transaction.Transaction;
  
-
-
-
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
 
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.dataitems.SystemCertItem;
@@ -90,8 +88,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	  log.info("getAuditList:firstRow:"+firstRow);
 	  log.info("getAuditList:numberOfRows:"+numberOfRows);
 	  
-	  List<BaseItem> armSubListCached = (List<BaseItem>)
-			  Component.getInstance("armSubListCached",ScopeType.SESSION);
+	  List<BaseItem> armSubListCached = getSessionList("armSubListCached");
 	  if(auditList==null){
 		  log.info("getAuditList:01");
 		 	if(("rowSelectFact".equals(remoteAudit)||
@@ -108,8 +105,7 @@ import iac.grn.serviceitems.BaseTableItem;
 			    log.info("getAuditList:03:"+this.auditList.size());
 			}
 		 	
-		 	List<String>  selRecArmSub = (ArrayList<String>)
-					  Component.getInstance("selRecArmSub",ScopeType.SESSION);
+		 	List<String>  selRecArmSub = getSessionList("selRecArmSub");
 		 	if(this.auditList!=null && selRecArmSub!=null) {
 		 		 for(BaseItem it:this.auditList){
 				   if(selRecArmSub.contains(it.getBaseId().toString())){
@@ -130,8 +126,7 @@ import iac.grn.serviceitems.BaseTableItem;
 			 String orderQuery=null;
 			 log.info("ArmSubManager:invokeLocal");
 			 
-			 ArmSubStateHolder orgStateHolder = (ArmSubStateHolder)
-					  Component.getInstance("armSubStateHolder",ScopeType.SESSION);
+			 ArmSubStateHolder orgStateHolder = getSessionItem("armSubStateHolder");
 			 
 			 Map<String, String> filterMapArmSub = orgStateHolder.getColumnFilterValues();
 			 String st=null;
@@ -246,7 +241,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	   
 	   try {
 	   
-		  AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
+		  AcUser au = getSessionItem("currentUser"); 
   		 
    		  if(au.getAllowedSys()!=null){
    		   
@@ -287,8 +282,7 @@ import iac.grn.serviceitems.BaseTableItem;
    private AcSubsystemCertBssT searchBean(String sessionId){
     	
       if(sessionId!=null){
-    	 List<AcSubsystemCertBssT> armSubListCached = (List<AcSubsystemCertBssT>)
-				  Component.getInstance("armSubListCached",ScopeType.SESSION);
+    	 List<AcSubsystemCertBssT> armSubListCached = getSessionList("armSubListCached");
 		if(armSubListCached!=null){
 			for(AcSubsystemCertBssT it : armSubListCached){
 				 
@@ -313,8 +307,7 @@ import iac.grn.serviceitems.BaseTableItem;
    public void addArmSub(){
 	   log.info("armSubManager:addOrg:01");
 	   
-	   AcSubsystemCertBssT armSubBeanCrt = (AcSubsystemCertBssT)
-				  Component.getInstance("armSubBeanCrt",ScopeType.CONVERSATION);
+	   AcSubsystemCertBssT armSubBeanCrt = getConversationItem("armSubBeanCrt");
 	   
 	   if(armSubBeanCrt==null){
 		   return;
@@ -324,7 +317,7 @@ import iac.grn.serviceitems.BaseTableItem;
 		  
 		 if(!armSubCodeExistCrt(armSubBeanCrt.getAcIsBssTLong(), armSubBeanCrt.getSubsystemCode().trim())){
 		   
-		  AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
+		  AcUser au = getSessionItem("currentUser"); 
 		  
 		  armSubBeanCrt.setSubsystemName(armSubBeanCrt.getSubsystemName().trim());
 		  armSubBeanCrt.setSubsystemCode(armSubBeanCrt.getSubsystemCode().trim());
@@ -362,7 +355,7 @@ import iac.grn.serviceitems.BaseTableItem;
 		   
 		 if(!armSubCodeExistUpd(armSubBean.getAcIsBssTLong(), armSubBean.getSubsystemCode().trim(), Long.valueOf(sessionId))){  
 		
-		 AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+		 AcUser au = getSessionItem("currentUser");
 		   
 		  AcSubsystemCertBssT aam = entityManager.find(AcSubsystemCertBssT.class, Long.valueOf(sessionId));
 		  
@@ -452,8 +445,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	 try{
 		log.info("armSubManager:delArmSub:01");  
 		
-		AcSubsystemCertBssT armSubBean = (AcSubsystemCertBssT)
-				  Component.getInstance("armSubBean",ScopeType.CONVERSATION);
+		AcSubsystemCertBssT armSubBean = getConversationItem("armSubBean");
 		// <h:inputHidden value="#{armSubBean.idArmSub}"/>
 		
 		if(armSubBean==null){
@@ -610,8 +602,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	    log.info("selectRecord:sessionId="+sessionId);
 	    
 	  //!!!
-	    List<String>  selRecArmSub = (ArrayList<String>)
-				  Component.getInstance("selRecArmSub",ScopeType.SESSION);
+	    List<String>  selRecArmSub = getSessionList("selRecArmSub");
 	    
 	    if(selRecArmSub==null){
 	       selRecArmSub = new ArrayList<String>();
@@ -739,7 +730,7 @@ import iac.grn.serviceitems.BaseTableItem;
   
   public void audit(ResourcesMap resourcesMap, ActionsMap actionsMap){
 	   try{
-		   AuditExportData auditExportDataArmSub = (AuditExportData)Component.getInstance("auditExportData",ScopeType.SESSION);
+		   AuditExportData auditExportDataArmSub = getSessionItem("auditExportData");
 		   auditExportDataArmSub.addFunc(resourcesMap.getCode()+":"+actionsMap.getCode());
 		   
 	   }catch(Exception e){

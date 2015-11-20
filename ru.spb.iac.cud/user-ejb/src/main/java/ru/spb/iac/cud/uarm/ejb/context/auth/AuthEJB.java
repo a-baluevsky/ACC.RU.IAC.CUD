@@ -1,6 +1,8 @@
 package ru.spb.iac.cud.uarm.ejb.context.auth;
 
 
+import mypackage.Configuration;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,8 +56,6 @@ import javax.xml.crypto.dsig.keyinfo.KeyInfoFactory;
 import javax.xml.crypto.dsig.keyinfo.KeyValue;
 import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
 import javax.xml.namespace.QName;
-
-import mypackage.Configuration;
 
 import org.apache.xml.security.encryption.EncryptedData;
 import org.apache.xml.security.encryption.EncryptedKey;

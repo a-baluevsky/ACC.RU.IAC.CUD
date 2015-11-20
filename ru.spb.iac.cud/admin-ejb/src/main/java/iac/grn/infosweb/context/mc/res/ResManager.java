@@ -1,7 +1,7 @@
 package iac.grn.infosweb.context.mc.res;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -15,6 +15,7 @@ import iac.grn.infosweb.session.navig.LinksMap;
 
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
+
 import iac.grn.infosweb.session.audit.actions.ActionsMap;
 import iac.grn.infosweb.session.audit.actions.ResourcesMap;
 import iac.grn.infosweb.session.audit.export.AuditExportData;
@@ -155,7 +156,7 @@ import iac.grn.infosweb.session.audit.export.AuditExportData;
 			  
 			  
 			  
-		      	String ac = ((LinksMap)Component.getInstance("linksMap",ScopeType.APPLICATION)).getAppCode().toString();
+		      	String ac = getApplicationLinksMap().getAppCode().toString();
 				if(pappCode.equals(ac)){
 				  cache();
 				}
@@ -213,7 +214,7 @@ import iac.grn.infosweb.session.audit.export.AuditExportData;
 		    	  
 		    	  acResBean=apm;
 		    	  
-		    	  String ac = ((LinksMap)Component.getInstance("linksMap",ScopeType.APPLICATION)).getAppCode().toString();
+		    	  String ac = getApplicationLinksMap().getAppCode().toString();
 				  if(pappCode.equals(ac)){
 					  cache();
 				  }
@@ -256,7 +257,7 @@ import iac.grn.infosweb.session.audit.export.AuditExportData;
 		    	 // [Вариант -2-]
 		    	 /* if/(par/ent!=null && parent.getI/dResCollecti/on()!=null /&& parent.getIdResCollection().contains(ap)){
 		    		   /pare/nt.getIdResColle/ction().rem/ove(ap);/}*/
-		    	  String ac = ((LinksMap)Component.getInstance("linksMap",ScopeType.APPLICATION)).getAppCode().toString();
+		    	  String ac = getApplicationLinksMap().getAppCode().toString();
 				  if(ap.getAcApplication().toString().equals(ac)){
 					cache();
 				  }
@@ -312,7 +313,7 @@ import iac.grn.infosweb.session.audit.export.AuditExportData;
 	 
 	 public void audit(ResourcesMap resourcesMap, ActionsMap actionsMap){
 		   try{
-			   AuditExportData auditExportData = (AuditExportData)Component.getInstance("auditExportData",ScopeType.SESSION);
+			   AuditExportData auditExportData = getSessionItem("auditExportData");
 			   auditExportData.addFunc(resourcesMap.getCode()+":"+actionsMap.getCode());
 			   
 		   }catch(Exception e){

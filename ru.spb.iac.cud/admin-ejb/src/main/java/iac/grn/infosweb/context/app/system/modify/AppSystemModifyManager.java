@@ -3,19 +3,25 @@ package iac.grn.infosweb.context.app.system.modify;
 import java.util.List;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
 import javaw.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
+
 import javaw.util.SerializableMap;
 import javaw.util.SerializableList;
+
 import javax.faces.context.FacesContext;
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.faces.FacesMessages;
+
 import iac.cud.infosweb.dataitems.AppSystemModifyItem;
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.entity.AcApplication;
@@ -44,8 +50,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 			 String orderQueryAppSys=null;
 			 log.info("hostsManager:invokeLocal");
 			 
-			 AppSystemModifyStateHolder appSystemModifyStateHolder = (AppSystemModifyStateHolder)
-					  Component.getInstance("appSystemModifyStateHolder",ScopeType.SESSION);
+			 AppSystemModifyStateHolder appSystemModifyStateHolder = getSessionItem("appSystemModifyStateHolder");
 			 Map<String, String> filterMap = appSystemModifyStateHolder.getColumnFilterValues();
 			 String st=null;
 			  

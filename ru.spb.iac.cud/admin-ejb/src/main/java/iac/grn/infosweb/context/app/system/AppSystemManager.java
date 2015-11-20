@@ -12,7 +12,9 @@ import iac.grn.serviceitems.HeaderTableItem;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
 import javaw.util.ArrayList;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -20,8 +22,8 @@ import java.util.Set;
 
 import javax.faces.context.FacesContext;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.faces.FacesMessages;
@@ -41,8 +43,7 @@ import org.jboss.seam.faces.FacesMessages;
 			 String orderQueryAppSystem=null;
 			 log.info("hostsManager:invokeLocal");
 			 
-			 AppSystemStateHolder appSystemStateHolder = (AppSystemStateHolder)
-					  Component.getInstance("appSystemStateHolder",ScopeType.SESSION);
+			 AppSystemStateHolder appSystemStateHolder = getSessionItem("appSystemStateHolder");
 			 Map<String, String> filterMapAppSys = appSystemStateHolder.getColumnFilterValues();
 			 String st=null;
 			  
@@ -305,13 +306,11 @@ import org.jboss.seam.faces.FacesMessages;
 		   try{
 			   
 			
-			 ArmManager armManager = (ArmManager)
-			          Component.getInstance("armManager", ScopeType.EVENT);
+			 ArmManager armManager = getEventItem("armManager");
 		   
 		     armManager.addArm();
 		   
-		     AcApplication armBeanCrt = (AcApplication)
-					  Component.getInstance("armBeanCrt", ScopeType.CONVERSATION);   
+		     AcApplication armBeanCrt = getConversationItem("armBeanCrt");   
 		     
 		     entityManager.createNativeQuery(
 	 	     		   "update JOURN_APP_SYSTEM_BSS_T t1 " 

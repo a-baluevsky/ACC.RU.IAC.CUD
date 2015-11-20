@@ -1,5 +1,6 @@
 package iac.cud.infosweb.session.archive;
 
+import mypackage.Configuration;
 import iac.cud.infosweb.dataitems.BaseParamItem;
 import iac.cud.infosweb.local.service.IHLocal;
 
@@ -27,8 +28,8 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.UserTransaction;
 import javax.ejb.TransactionManagementType;
 
-import mypackage.Configuration;
 import iac.grn.infosweb.context.proc.TaskProcessor;
+
 import org.apache.log4j.Logger;
 
 @Stateless

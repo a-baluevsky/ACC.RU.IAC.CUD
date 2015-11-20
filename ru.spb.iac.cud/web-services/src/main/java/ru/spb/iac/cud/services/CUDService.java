@@ -24,7 +24,7 @@ import com.sun.xml.messaging.saaj.soap.ver1_2.HeaderElement1_2Impl;
 
 // base class for all ru.spb.iac.cud services 
 public class CUDService {
-	protected Logger LOGGER;
+	private static final Logger LOGGER = LoggerFactory.getLogger(CUDService.class);
     @Resource(name="wsContext")
     protected WebServiceContext wsContext;
 

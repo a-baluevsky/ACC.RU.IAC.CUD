@@ -4,8 +4,9 @@ import iac.cud.infosweb.dataitems.BaseItem;
 import iac.grn.infosweb.session.table.BaseDataModel;
 
 import java.util.List;
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
  
@@ -45,7 +46,7 @@ import org.jboss.seam.annotations.Name;
 		 log.info("appMyUserCertModifyDataModel:filterAction");
 	     super.filterAction();
 		 
-	     AppMyUserCertModifyStateHolder appMyUserCertModifyStateHolder = (AppMyUserCertModifyStateHolder)Component.getInstance("appMyUserCertModifyStateHolder", ScopeType.SESSION);
+	     AppMyUserCertModifyStateHolder appMyUserCertModifyStateHolder = getSessionItem("appMyUserCertModifyStateHolder");
 		 appMyUserCertModifyStateHolder.clearFilters();
 	}
 

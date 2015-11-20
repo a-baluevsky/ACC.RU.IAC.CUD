@@ -7,12 +7,15 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
 import javaw.util.ArrayList;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Arrays;
 import java.util.Date;
+
 import javaw.util.SerializableMap;
 import javaw.util.SerializableList;
 
@@ -22,11 +25,13 @@ import javax.naming.ldap.Rdn;
 import javax.persistence.NoResultException;
 
 import org.apache.xml.security.utils.Base64;
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.faces.FacesMessages;
+
 import iac.cud.infosweb.dataitems.AppUserCertModifyItem;
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.entity.AcUsersCertBssT;
@@ -57,8 +62,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 			 String orderQuery=null;
 			 log.info("hostsManager:invokeLocal");
 			 
-			 AppUserCertModifyStateHolder appUserCertModifyStateHolder = (AppUserCertModifyStateHolder)
-					  Component.getInstance("appUserCertModifyStateHolder",ScopeType.SESSION);
+			 AppUserCertModifyStateHolder appUserCertModifyStateHolder = getSessionItem("appUserCertModifyStateHolder");
 			 Map<String, String> filterMapUserCert = appUserCertModifyStateHolder.getColumnFilterValues();
 			 String st=null;
 			  

@@ -20,8 +20,8 @@ import java.util.Set;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -81,8 +81,7 @@ import org.jboss.seam.log.Log;
 	  log.info("getAuditList:firstRow:"+firstRow);
 	  log.info("getAuditList:numberOfRows:"+numberOfRows);
 	  
-	  List<BaseItem> clOrgListCached = (List<BaseItem>)
-			  Component.getInstance("clOrgListCached",ScopeType.SESSION);
+	  List<BaseItem> clOrgListCached = getSessionList("clOrgListCached");
 	  if(auditList==null){
 		  log.info("getAuditList:01");
 		 	if(("rowSelectFact".equals(remoteAudit)||
@@ -99,8 +98,7 @@ import org.jboss.seam.log.Log;
 			    log.info("getAuditList:03:"+this.auditList.size());
 			}
 		 	
-		 	List<String>  selRecClOrg = (ArrayList<String>)
-					  Component.getInstance("selRecOrg",ScopeType.SESSION);
+		 	List<String>  selRecClOrg = getSessionList("selRecOrg");
 		 	if(this.auditList!=null && selRecClOrg!=null) {
 		 		 for(BaseItem it:this.auditList){
 				   if(selRecClOrg.contains(it.getBaseId().toString())){
@@ -126,8 +124,7 @@ import org.jboss.seam.log.Log;
 			 if("list".equals(type)){
 				 log.info("ClOrg:invokeLocal:list:01");
 				 
-				 ClOrgStateHolder clOrgStateHolder = (ClOrgStateHolder)
-						  Component.getInstance("clOrgStateHolder",ScopeType.SESSION);
+				 ClOrgStateHolder clOrgStateHolder = getSessionItem("clOrgStateHolder");
 				 Set<Map.Entry<String, String>> set = clOrgStateHolder.getSortOrders().entrySet();
                  for (Map.Entry<String, String> me : set) {
       		       
@@ -186,8 +183,7 @@ import org.jboss.seam.log.Log;
    private IspBssT searchBean(String sessionId){
     	
       if(sessionId!=null){
-    	 List<IspBssT> clOrgListCached = (List<IspBssT>)
-				  Component.getInstance("clOrgListCached",ScopeType.SESSION);
+    	 List<IspBssT> clOrgListCached = getSessionList("clOrgListCached");
 		if(clOrgListCached!=null){
 			for(IspBssT it : clOrgListCached){
 				 
@@ -206,15 +202,14 @@ import org.jboss.seam.log.Log;
    public void addOrg(){
 	   log.info("clOrgManager:addOrg:01");
 	   
-	   IspBssT clOrgBeanCrt = (IspBssT)
-				  Component.getInstance("clOrgBeanCrt",ScopeType.CONVERSATION);
+	   IspBssT clOrgBeanCrt = getConversationItem("clOrgBeanCrt");
 	   
 	   if(clOrgBeanCrt==null){
 		   return;
 	   }
 	 
 	   try {
-		  AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
+		  AcUser au = getSessionItem("currentUser"); 
 		   
 	      clOrgBeanCrt.setCreator(au.getIdUser());
 		  clOrgBeanCrt.setCreated(new Date());
@@ -242,8 +237,7 @@ import org.jboss.seam.log.Log;
 	   
 	   log.info("clOrgManager:updOrg:01");
 	   
-	   IspBssT clOrgBean = (IspBssT)
-				  Component.getInstance("clOrgBean",ScopeType.CONVERSATION);
+	   IspBssT clOrgBean = getConversationItem("clOrgBean");
 	   
 	   String  sessionId = FacesContext.getCurrentInstance().getExternalContext()
 		        .getRequestParameterMap()
@@ -255,7 +249,7 @@ import org.jboss.seam.log.Log;
 	   }
 	
 	   try {
-		   AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+		   AcUser au = getSessionItem("currentUser");
 		   
 		 
 		  IspBssT aomClOrg = entityManager.find(IspBssT.class, Long.valueOf(sessionId));
@@ -279,8 +273,7 @@ import org.jboss.seam.log.Log;
 	 try{
 		log.info("clOrgManager:delOrg:01");  
 		
-		IspBssT clOrgBean = (IspBssT)
-				  Component.getInstance("clOrgBean",ScopeType.CONVERSATION);
+		IspBssT clOrgBean = getConversationItem("clOrgBean");
 		// <h:inputHidden value="#{usrBean.idUser}"/>
 		
 		if(clOrgBean==null){
@@ -358,7 +351,7 @@ import org.jboss.seam.log.Log;
 	    		
 	    		log.info("autocomplete:02");
 	    		
-	    		AcUser  cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+	    		AcUser  cau = getSessionItem("currentUser");
 	    		boolean bFltr = pref.length()<3;
 	    		StringBuilder sbRequest = new StringBuilder("select o");
 	    		sbRequest.append(" from IspBssT o where o.status='A' ");
@@ -428,8 +421,7 @@ import org.jboss.seam.log.Log;
 	    log.info("selectRecord:sessionId="+sessionIdClOrg);
 	    
 	   //  forV/ew(); //!!!
-	    List<String>  selRecClOrg = (ArrayList<String>)
-				  Component.getInstance("selRecOrg",ScopeType.SESSION);
+	    List<String>  selRecClOrg = getSessionList("selRecOrg");
 	    
 	    if(selRecClOrg==null){
 	       selRecClOrg = new ArrayList<String>();

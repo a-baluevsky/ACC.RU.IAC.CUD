@@ -4,13 +4,15 @@ import java.util.EnumMap;
 import java.util.Map;
 
 public enum AuthMode {
-	WEB_SERVICES_CERT, HTTP_REDIRECT_CERT,
+	WEB_SERVICES_CERT, HTTP_REDIRECT_CERT, REST_AUTH_OPEN, REST_AUTH_HASH, 
 	WEB_SERVICES, HTTP_REDIRECT, HTTP_REDIRECT_EXT_AUTH_OPEN, HTTP_REDIRECT_EXT_AUTH_ENCRYPT, HTTP_USE_HASHED_PASSWORD;
 	
 	private static EnumMap<AuthMode, Long> getMapAuditSvcValue() {
 		EnumMap<AuthMode, Long> m = new EnumMap<AuthMode, Long>(AuthMode.class); 
 		
 		m.put(WEB_SERVICES, 						2L);
+		m.put(REST_AUTH_OPEN, 						102L);
+		m.put(REST_AUTH_HASH, 						103L);
 		m.put(HTTP_REDIRECT, 						97L);
 		m.put(HTTP_REDIRECT_EXT_AUTH_OPEN, 			99L);
 		m.put(HTTP_REDIRECT_EXT_AUTH_ENCRYPT, 		79L);

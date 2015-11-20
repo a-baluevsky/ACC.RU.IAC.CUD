@@ -6,8 +6,8 @@ import iac.grn.infosweb.session.navig.LinksMap;
 
 import javax.persistence.EntityManager;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -30,8 +30,7 @@ import org.jboss.seam.transaction.Transaction;
 	
 	public void sendMail(String helpFio, String helpPost, String helpMail, String helpText,  String helpTel){
 		log.info("supportManager:sendMail:01");
-		SupportMail sm = (SupportMail)
-				Component.getInstance("supportMail", ScopeType.EVENT);
+		SupportMail sm = getEventItem("supportMail");
 		
 		sm.init(helpFio, helpPost, helpMail, helpText, helpTel);
 		
@@ -46,14 +45,13 @@ import org.jboss.seam.transaction.Transaction;
 		  log.info("supportManager:logMail:01");
 		  
 		  try{
-			AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);   
+			AcUser au = getSessionItem("currentUser");   
 			
 			Transaction.instance().begin();
 			
 			 Transaction.instance().enlist(entityManager);
 			 
-			 LinksMap linksMap = (LinksMap)
-					  Component.getInstance("linksMap",ScopeType.APPLICATION);
+			 LinksMap linksMap = getApplicationLinksMap();
 			 
 			 entityManager.createNativeQuery("insert into HELP_DESK_PROTOTYPE( "
 	          + "ID_HELP, AUTHOR, POSITION,  PHONE,  EMAIL, MESSAGE, CREATOR, ID_APP) values( "

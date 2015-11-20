@@ -33,8 +33,8 @@ import javaw.util.SerializableSet;
 
 import javax.faces.context.FacesContext;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.faces.FacesMessages;
@@ -57,8 +57,7 @@ import org.jboss.seam.faces.FacesMessages;
 			 
 			 log.info("hostsManager:invokeLocal");
 			 
-			 AppUserStateHolder appUserStateHolder = (AppUserStateHolder)
-					  Component.getInstance("appUserStateHolder",ScopeType.SESSION);
+			 AppUserStateHolder appUserStateHolder = getSessionItem("appUserStateHolder");
 			 Map<String, String> filterMap = appUserStateHolder.getColumnFilterValues();
 			 
 			 if("list".equals(type)){
@@ -112,8 +111,7 @@ import org.jboss.seam.faces.FacesMessages;
 	     
 		   try{
 			   
-			 UsrManager usrManager = (UsrManager)
-			          Component.getInstance("usrManager", ScopeType.EVENT);
+			 UsrManager usrManager = getEventItem("usrManager");
 		   
 		     usrManager.addUsr();
 		   
@@ -134,8 +132,7 @@ import org.jboss.seam.faces.FacesMessages;
 		    		 
 		    		 
 		    		 
-		     AcUser usrBeanCrt = (AcUser)
-					  Component.getInstance("usrBeanCrt",ScopeType.CONVERSATION);  
+		     AcUser usrBeanCrt = getConversationItem("usrBeanCrt");  
 		     
 		     entityManager.createNativeQuery(
 	 	     		   "update JOURN_APP_USER_BSS_T t1 " 
@@ -226,11 +223,9 @@ import org.jboss.seam.faces.FacesMessages;
 		     
 		     AppUserItem ui = getUserItem(Long.valueOf(sessionId));
 	    
-		     ClUsrManager clUsrManager = (ClUsrManager)
-                    Component.getInstance("clUsrManager", ScopeType.EVENT);
+		     ClUsrManager clUsrManager = getEventItem("clUsrManager");
 	    
-		     ClOrgManager clOrgManager = (ClOrgManager)
-                    Component.getInstance("clOrgManager", ScopeType.EVENT);
+		     ClOrgManager clOrgManager = getEventItem("clOrgManager");
 	    
 		    
 		     log.info("AppUserManager:forViewCrt:01:"+(ui==null));
@@ -244,8 +239,7 @@ import org.jboss.seam.faces.FacesMessages;
 		      //берём из него код организации
 		      clOrgManager.forViewAutocomplete(ui.getIogvCodeUser().substring(0, 3)+"00000");
 		    	 
-		      clOrgBean = (IspBssT)
-		                    Component.getInstance("clOrgBean", ScopeType.EVENT);
+		      clOrgBean = getEventItem("clOrgBean");
 				    
 			  if(clOrgBean.getBaseId()!=null){ //нашли действующую организацию
 					
@@ -256,8 +250,7 @@ import org.jboss.seam.faces.FacesMessages;
 				    //проводим поиск действующего пользователя
 				    clUsrManager.forViewAutocomplete(ui.getIogvCodeUser());
 				      
-				    clUsrBean = (IspBssT)
-			                    Component.getInstance("clUsrBean", ScopeType.EVENT);
+				    clUsrBean = getEventItem("clUsrBean");
 					    
 					   
 					    
@@ -293,8 +286,7 @@ import org.jboss.seam.faces.FacesMessages;
 		      clOrgManager.forViewAutocomplete(ui.getIogvCodeOrg());
 		   
 		    
-		      clOrgBean = (IspBssT)
-                    Component.getInstance("clOrgBean", ScopeType.EVENT);
+		      clOrgBean = getEventItem("clOrgBean");
 		    
 		   
 		    

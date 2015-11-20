@@ -1,8 +1,13 @@
 package iac.cud.infosweb.entity;
 
+import iac.cud.infosweb.dataitems.BaseItem;
+
 import java.io.Serializable;
 
 import javax.persistence.*;
+
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Role;
 
 import java.util.Date;
 import java.util.Set;
@@ -17,7 +22,9 @@ import javaw.util.SerializableSet;
  */
 @Entity
 @Table(name="ACTIONS_BSS_T")
- public class ActionsBssT implements Serializable {
+@Name("auditActionBean")
+@Role(name="auditActionBeanCrt")
+ public class ActionsBssT extends BaseItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -44,13 +51,26 @@ import javaw.util.SerializableSet;
 	@Column(name="SIGN_OBJECT")
 	private String sign;
 
-    @ManyToOne
-	@JoinColumn(name="UP_IS")
-	private AcApplication acIsBssT;
+	@Transient private String armName;
+	public String getArmName() {
+		if(this.armName==null && this.acIsBssT2!=null) {
+ 		   this.armName = this.acIsBssT2.getName();
+		}
+		return this.armName;
+	}
+	public void setArmName(String armName) {
+		this.armName = armName;
+	}	
+	
+    //@ManyToOne
+	//@JoinColumn(name="UP_IS") //, insertable=false, updatable=false
+	@Column(name="UP_IS")
+	private Long /*AcApplication*/ acIsBssT;
 
     @ManyToOne
 	@JoinColumn(name="UP_IS", insertable=false, updatable=false)
 	private AcApplication acIsBssT2;
+    
     
 	@OneToMany(mappedBy="actionsBssT")
     private /*Serializable*/ Set<ActionsLogKnlT> actionsLogKnlTs;	
@@ -123,6 +143,7 @@ import javaw.util.SerializableSet;
 		this.sign = sign;
 	}
 
+	/*
 	public AcApplication getAcIsBssT() {
 		return this.acIsBssT;
 	}
@@ -136,6 +157,7 @@ import javaw.util.SerializableSet;
 	public void setAcIsBssT2(AcApplication acIsBssT2) {
 		this.acIsBssT2 = acIsBssT2;
 	}
+	*/
 	
 	public Set<ActionsLogKnlT> getActionsLogKnlTs() { return this.actionsLogKnlTs; }
 
@@ -143,4 +165,12 @@ import javaw.util.SerializableSet;
 		this.actionsLogKnlTs = actionsLogKnlTs;
 	}
 	
+	public Long getBaseId() {
+		   return this.idSrv;
+	}
+
+	public Long /*AcApplication*/ getAcIsBssT() 			 {		return acIsBssT;	}
+	public void setAcIsBssT(Long /*AcApplication*/ acIsBssT) {		this.acIsBssT = acIsBssT;	}
+	//public void setAppId(long armId) {		this.upIS = armId;	}
+
 }

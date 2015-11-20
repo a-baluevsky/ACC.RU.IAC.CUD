@@ -14,9 +14,8 @@ import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 
 import iac.grn.infosweb.session.navig.LinksMap;
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -106,10 +105,10 @@ import org.omg.CORBA.INTF_REPOS;
 		static boolean isAccOrgManager;
 		static Map<String, PageItem> mpPageList;
 		static {
-			AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+			AcUser cau = getSessionItem("currentUser");
 			isAccOrgManager = cau.getIsAccOrgManagerValue();
 			if(isAccOrgManager) {
-				AuthItem ai=(AuthItem)Component.getInstance("authItem", ScopeType.SESSION);
+				AuthItem ai=getSessionItem("authItem");
 				mpPageList = ai.getPageList();
 			}
 		}
@@ -167,8 +166,7 @@ import org.omg.CORBA.INTF_REPOS;
 
 	
 	private List<NavigItem> getNavigList() {
-		List<NavigItem> navigList = (List<NavigItem>) Component
-				.getInstance("navigList", ScopeType.SESSION);
+		List<NavigItem> navigList = getSessionList("navigList");
 
 		if (navigList == null) {
 			navigList = new ArrayList<NavigItem>();

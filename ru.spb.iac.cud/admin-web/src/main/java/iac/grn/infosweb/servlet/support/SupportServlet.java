@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+import static iac.cud.jboss.SeamComponentAdminWeb.*;
+
 import org.jboss.seam.servlet.ContextualHttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,8 +82,7 @@ import org.slf4j.LoggerFactory;
 	}
 
 	private void doWork(HttpServletRequest request, HttpServletResponse response) {
-		SupportManager sm = (SupportManager) Component.getInstance(
-				"supportManager", ScopeType.EVENT);
+		SupportManager sm = getEventItem("supportManager");
 		sm.sendMail(helpFio, helpPost, helpMail, helpText, helpTel);
 
 	}

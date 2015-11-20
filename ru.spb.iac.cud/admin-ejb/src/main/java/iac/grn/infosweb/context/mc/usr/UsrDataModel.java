@@ -4,6 +4,7 @@ import iac.cud.infosweb.dataitems.BaseItem;
 import iac.grn.infosweb.session.table.BaseDataModel;
 
 import java.io.IOException;
+
 import javaw.util.ArrayList;
 import javaw.util.HashMap;
 import javaw.util.SerializableMap;
@@ -13,8 +14,9 @@ import javax.faces.context.FacesContext;
 import org.ajax4jsf.model.DataVisitor;
 import org.ajax4jsf.model.Range;
 import org.ajax4jsf.model.SequenceRange;
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -119,7 +121,7 @@ import org.jboss.seam.log.Log;
 		 this.rowCount=null;
 		 this.flagAction=1;
 		 
-		 UsrStateHolder usrStateHolder = (UsrStateHolder)Component.getInstance("usrStateHolder", ScopeType.SESSION);
+		 UsrStateHolder usrStateHolder = getSessionItem("usrStateHolder");
 		 usrStateHolder.clearFilters();
 	}
 		

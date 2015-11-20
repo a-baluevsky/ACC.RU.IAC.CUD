@@ -7,11 +7,12 @@ import iac.grn.infosweb.session.audit.export.AuditExportData;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
+
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -133,7 +134,7 @@ import org.jboss.seam.log.Log;
 	}     
 	 public void audit(ResourcesMap resourcesMap, ActionsMap actionsMap){
 		   try{
-			   AuditExportData auditExportDataBindUnBind = (AuditExportData)Component.getInstance("auditExportData",ScopeType.SESSION);
+			   AuditExportData auditExportDataBindUnBind = getSessionItem("auditExportData");
 			   auditExportDataBindUnBind.addFunc(resourcesMap.getCode()+":"+actionsMap.getCode());
 			   
 		   }catch(Exception eBindUnBind){

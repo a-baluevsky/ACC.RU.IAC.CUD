@@ -37,7 +37,7 @@ import iac.grn.serviceitems.BaseTableItem;
 import javax.servlet.http.HttpServletResponse;
 
 import iac.cud.data.audit.JPA_ASysManager;
-
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
 /**
  * ”правл€ющий Ѕин
  * @author bubnov
@@ -104,8 +104,7 @@ import iac.cud.data.audit.JPA_ASysManager;
 	  log.info("getAuditList:firstRow:"+firstRow);
 	  log.info("getAuditList:numberOfRows:"+numberOfRows);
 	  
-	  List<BaseItem> aFuncListCached = (List<BaseItem>)
-			  Component.getInstance("aFuncListCached",ScopeType.SESSION);
+	  List<BaseItem> aFuncListCached = getSessionList("aFuncListCached");
 	  if(auditList==null){
 		  log.info("getAuditList:01");
 		 	if(("rowSelectFact".equals(remoteAuditSys)||
@@ -122,8 +121,7 @@ import iac.cud.data.audit.JPA_ASysManager;
 			    log.info("getAuditList:03:"+this.auditList.size());
 			}
 		 	
-		 	List<String>  selRecSys = (ArrayList<String>)
-					  Component.getInstance("selRecaFunc",ScopeType.SESSION);
+		 	List<String>  selRecSys = getSessionList("selRecaFunc");
 		 	if(this.auditList!=null && selRecSys!=null) {
 		 		 for(BaseItem it:this.auditList){
 				   if(selRecSys.contains(it.getBaseId().toString())){
@@ -176,8 +174,7 @@ import iac.cud.data.audit.JPA_ASysManager;
 		try{
 			 log.info("ASysManager:invokeLocal");
 			 
-			 ASysStateHolder aSysStateHolder = (ASysStateHolder)
-					  Component.getInstance("aSysStateHolder",ScopeType.SESSION);
+			 ASysStateHolder aSysStateHolder = getSessionItem("aSysStateHolder");
 
 			 String st=null;			 
 			 if("list".equals(type)){
@@ -224,8 +221,7 @@ import iac.cud.data.audit.JPA_ASysManager;
    private  ServicesLogKnlT searchBean(String sessionId){
     	
       if(sessionId!=null){
-    	 List<ServicesLogKnlT> aFuncListCached = (List<ServicesLogKnlT>)
-				  Component.getInstance("aFuncListCached",ScopeType.SESSION);
+    	 List<ServicesLogKnlT> aFuncListCached = getSessionList("aFuncListCached");
     	 
 		if(aFuncListCached!=null){
 			for(ServicesLogKnlT it : aFuncListCached){
@@ -336,8 +332,7 @@ import iac.cud.data.audit.JPA_ASysManager;
 	    log.info("selectRecord:sessionId="+sessionId);
 	    
 	   //  forVi/ew(/); //!!!
-	    List<String>  selRecSys = (ArrayList<String>)
-				  Component.getInstance("selRecaFunc",ScopeType.SESSION);
+	    List<String>  selRecSys = getSessionList("selRecaFunc");
 	    
 	    if(selRecSys==null){
 	       selRecSys = new ArrayList<String>();
@@ -444,7 +439,7 @@ import iac.cud.data.audit.JPA_ASysManager;
    
    public void audit(ResourcesMap resourcesMap, ActionsMap actionsMap){
 	   try{
-		   AuditExportData auditExportDataSys = (AuditExportData)Component.getInstance("auditExportData",ScopeType.SESSION);
+		   AuditExportData auditExportDataSys = getSessionItem("auditExportData");
 		   auditExportDataSys.addFunc(resourcesMap.getCode()+":"+actionsMap.getCode());
 		   
 	   }catch(Exception e){

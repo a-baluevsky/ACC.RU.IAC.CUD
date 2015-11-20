@@ -1,11 +1,11 @@
 package ru.spb.iac.cud.infosweb.web.init;
 
+import mypackage.Configuration;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
-
-import mypackage.Configuration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

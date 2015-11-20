@@ -1,12 +1,12 @@
 package iac.cud.infosweb.ws.classifierzip.clientsample;
 
+import mypackage.Configuration;
+
 import java.math.BigInteger;
 import java.security.MessageDigest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import mypackage.Configuration;
 
  public class CUDWSSMEVConstants {
 

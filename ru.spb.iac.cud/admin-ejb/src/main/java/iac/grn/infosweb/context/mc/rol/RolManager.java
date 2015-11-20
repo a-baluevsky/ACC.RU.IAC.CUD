@@ -1,6 +1,7 @@
 package iac.grn.infosweb.context.mc.rol;
 
 import java.util.List;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -17,6 +18,7 @@ import iac.cud.infosweb.entity.AcLinkUserToRoleToRaion;
 import iac.cud.infosweb.entity.AcPermissionsList;
 import iac.cud.infosweb.entity.AcRole;
 import iac.cud.infosweb.entity.AcUser;
+import iac.grn.infosweb.context.mc.MCData;
 import iac.grn.infosweb.context.mc.QuerySvc;
 import iac.grn.infosweb.session.audit.actions.ActionsMap;
 import iac.grn.infosweb.session.audit.actions.ResourcesMap;
@@ -38,6 +40,7 @@ import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 
 import iac.grn.serviceitems.BaseTableItem;
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
 
 /**
  * ”правл€ющий Ѕин
@@ -53,21 +56,15 @@ import iac.grn.serviceitems.BaseTableItem;
 	private static final long serialVersionUID = 704073514369787337L;
 
 	@Logger private static transient Log log;
+	@In	transient EntityManager entityManager;
+	private MCData.ArmList armList = new MCData.ArmList(log);
+	public List<AcApplication> getListArm() throws Exception { return armList.getListArm(entityManager); } 
 	
-	 @In 
-	 transient EntityManager entityManager;
-	 
-	
-	 private /*Serializable*/ List <BaseTableItem> auditItemsListSelect;
-		
+	private /*Serializable*/ List <BaseTableItem> auditItemsListSelect;
 	private /*Serializable*/ List <BaseTableItem> auditItemsListContext;
-		
-		
 	private /*Serializable*/ List<BaseItem> auditList; 
 	
 	private Long auditCount;
-	
-	
 	
 	private /*Serializable*/ List<AcApplication> listRolArm = null;
 	private /*Serializable*/ List<AcAppPage> listRolRes = null;
@@ -80,8 +77,6 @@ import iac.grn.serviceitems.BaseTableItem;
 	private Boolean evaluteForListFooter;  
 	private Boolean evaluteForBean;
 
-	
-	private /*Serializable*/ List<AcApplication> listArm = null;
 	
 	
 	private /*Serializable*/ List<AcApplication> listArmUgroup = null;
@@ -107,8 +102,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	  log.info("getAuditList:firstRow:"+firstRow);
 	  log.info("getAuditList:numberOfRows:"+numberOfRows);
 	  
-	  List<BaseItem> rolListCached = (List<BaseItem>)
-			  Component.getInstance("rolListCached",ScopeType.SESSION);
+	  List<BaseItem> rolListCached = getSessionList("rolListCached");
 	  if(auditList==null){
 		  log.info("getAuditList:01");
 		 	if(("rowSelectFact".equals(remoteAudit)||
@@ -126,8 +120,7 @@ import iac.grn.serviceitems.BaseTableItem;
 			    log.info("getAuditList:03:"+this.auditList.size());
 			}
 		 	
-		 	List<String>  selRecRol = (ArrayList<String>)
-					  Component.getInstance("selRecRol",ScopeType.SESSION);
+		 	List<String>  selRecRol = getSessionList("selRecRol");
 		 	if(this.auditList!=null && selRecRol!=null) {
 		 		 for(BaseItem it:this.auditList){
 				   if(selRecRol.contains(it.getBaseId().toString())){
@@ -148,8 +141,7 @@ import iac.grn.serviceitems.BaseTableItem;
 			 String orderQueryRol=null;
 			 log.info("RolManager:invokeLocal");
 			 
-			 RolStateHolder rolStateHolder = (RolStateHolder)
-					  Component.getInstance("rolStateHolder",ScopeType.SESSION);
+			 RolStateHolder rolStateHolder = getSessionItem("rolStateHolder");
 			 
 			 Map<String, String> filterMapRol = rolStateHolder.getColumnFilterValues();
 			 String st=null;
@@ -185,7 +177,7 @@ import iac.grn.serviceitems.BaseTableItem;
                  log.info("Rol:invokeLocal:list:filterQuery:"+st);
                  
 				
-                AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
+                AcUser au = getSessionItem("currentUser"); 
 	    		 
  	    		if(au.getAllowedSys()!=null){
  	    			 auditList = new ArrayList<BaseItem>( entityManager.createQuery("select o from AcRole o "
@@ -230,7 +222,7 @@ import iac.grn.serviceitems.BaseTableItem;
     	    	   }
                  log.info("Rol:invokeLocal:count:filterQuery:"+st);
 				 
-                 AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
+                 AcUser au = getSessionItem("currentUser"); 
 	    		 
   	    		 if(au.getAllowedSys()!=null){
 					 auditCount = (Long)entityManager.createQuery(
@@ -281,7 +273,7 @@ import iac.grn.serviceitems.BaseTableItem;
 			
 		 AcRole ar = searchBean(rolId);
 		 
-		 Long appCode = ((LinksMap)Component.getInstance("linksMap",ScopeType.APPLICATION)).getAppCode();
+		 Long appCode = getApplicationLinksMap().getAppCode();
 			
 		 if(ar.getAcApplication().equals(appCode)){
 	    		log.info("forView:setCudRole");
@@ -300,8 +292,7 @@ import iac.grn.serviceitems.BaseTableItem;
    private AcRole searchBean(String sessionId){
     	
       if(sessionId!=null){
-    	 List<AcRole> rolListCached = (List<AcRole>)
-				  Component.getInstance("rolListCached",ScopeType.SESSION);
+    	 List<AcRole> rolListCached = getSessionList("rolListCached");
 		if(rolListCached!=null){
 			for(AcRole it : rolListCached){
 				 
@@ -328,8 +319,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	   log.info("hostsManager:addUsr:01");
 	   
 	   List<AcLinkRoleAppPagePrmssn> arList = new ArrayList<AcLinkRoleAppPagePrmssn>();
-	   AcRole rolBeanCrt = (AcRole)
-				  Component.getInstance("rolBeanCrt",ScopeType.CONVERSATION);
+	   AcRole rolBeanCrt = getConversationItem("rolBeanCrt");
 	   
 	   if(rolBeanCrt==null){
 		   return;
@@ -340,7 +330,7 @@ import iac.grn.serviceitems.BaseTableItem;
 		   if(!roleCodeExistCrt(rolBeanCrt.getAcApplication(), rolBeanCrt.getSign().trim())){
 				 
 		   
-		      AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+		      AcUser au = getSessionItem("currentUser");
 		   
 		      rolBeanCrt.setRoleTitle(rolBeanCrt.getRoleTitle().trim());
 		      rolBeanCrt.setSign(rolBeanCrt.getSign().trim());
@@ -391,8 +381,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	   log.info("hostsManager:updHosts:01");
 	   
 	   List<AcLinkRoleAppPagePrmssn> arList = new ArrayList<AcLinkRoleAppPagePrmssn>();
-	   AcRole rolBean = (AcRole)
-				  Component.getInstance("rolBean",ScopeType.CONVERSATION);
+	   AcRole rolBean = getConversationItem("rolBean");
 	   
 	   String  sessionId = FacesContext.getCurrentInstance().getExternalContext()
 		        .getRequestParameterMap()
@@ -407,7 +396,7 @@ import iac.grn.serviceitems.BaseTableItem;
 		 
 		 if(!roleCodeExistUpd(rolBean.getAcApplication(), rolBean.getSign().trim(), Long.valueOf(sessionId))){
 		   
-		  AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+		  AcUser au = getSessionItem("currentUser");
 		   
 		 
 		  AcRole arm = entityManager.find(AcRole.class, Long.valueOf(sessionId));
@@ -471,8 +460,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	   
 	   AcLinkUserToRoleToRaion lguu=null;
 	   
-	   AcRole roleBean = (AcRole)
-				  Component.getInstance("rolBean",ScopeType.CONVERSATION);
+	   AcRole roleBean = getConversationItem("rolBean");
 	   
 	    String  sessionId = FacesContext.getCurrentInstance().getExternalContext()
 		        .getRequestParameterMap()
@@ -485,7 +473,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	
 	 	   
 	   try {
-		   AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+		   AcUser au = getSessionItem("currentUser");
 		   
 		   AcRole aum = entityManager.find(AcRole.class, Long.valueOf(sessionId));
 		   
@@ -561,8 +549,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	 try{
 		log.info("rorManager:delRols:01");  
 		
-		AcRole rolBean = (AcRole)
-				  Component.getInstance("rolBean",ScopeType.CONVERSATION);
+		AcRole rolBean = getConversationItem("rolBean");
 		// <h:inputHidden value="#{usrBean.idUser}"/>
 		
 		if(rolBean==null){
@@ -593,8 +580,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	    	 Contexts.getEventContext().set("rolBean", ar);
 	    	 
 	    	//устанавливаем на 1 страницу пагинатор в модальном окне
-	    	 RolStateHolder rolStateHolder = (RolStateHolder)
-					  Component.getInstance("rolStateHolder",ScopeType.SESSION);
+	    	 RolStateHolder rolStateHolder = getSessionItem("rolStateHolder");
 	    	 rolStateHolder.resetPageNumber();
 	   	 }
 	   }catch(Exception e){
@@ -670,8 +656,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	    	//acRolBeanCrt будет null
 	    	String pidArm=null;
 	    	
-	    	AcRole rolBeanCrt = (AcRole)
-					  Component.getInstance("rolBeanCrt",ScopeType.CONVERSATION);
+	    	AcRole rolBeanCrt = getConversationItem("rolBeanCrt");
 		   
 	    	if(rolBeanCrt!=null){
 	    	
@@ -743,8 +728,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	    	//pidRol -global переменна€!!!
 	    	String pidArm=null, saveEditFlag,idForAjax;
 	    	
-	    	AcRole rolBean = (AcRole)
-					  Component.getInstance("rolBean", ScopeType.EVENT);
+	    	AcRole rolBean = getEventItem("rolBean");
 	    	
 	    	 
 	    	
@@ -963,44 +947,7 @@ import iac.grn.serviceitems.BaseTableItem;
    }
  
    
-   public List<AcApplication> getListArm() throws Exception{
-	    log.info("roleManager:getListArm:01");
-	    try {
-	    	if(listArm==null){
-	    		
-	    		String query = null;
-	    		
-	    		AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
-	    		Long appCode = ((LinksMap)Component.getInstance("linksMap",ScopeType.APPLICATION)).getAppCode();
-				
-	    		if(!cau.getIsSysAdmin().equals(1L)){
-	    			query=" o.idArm!="+appCode;
-	    		}
-	    		
-	    		if(cau.getAllowedSys()!=null){
-	    			listArm=new ArrayList<AcApplication>(
-	    					entityManager.createQuery(
-	    					"select o from AcApplication o "
-	    				    + "where o.idArm in (:idsArm) " +
-	    				    (query!=null?" and "+query:" ")+" order by o.name ")
-	       				    .setParameter("idsArm", cau.getAllowedSys())
-	    					.getResultList()
-	    					);
-	    		}else{
-	    			listArm=new ArrayList<AcApplication>(
-	    					entityManager.createQuery(
-	    					"select o from AcApplication o "+
-	    					(query!=null?" where "+query:" ")+" order by o.name ")
-	    					.getResultList());
-	    		}
-	    		
-	      	}
-	     } catch (Exception e) {
-	    	 log.error("roleManager:getListArm:ERROR:"+e);
-	         throw e;
-	     }
-	    return listArm;
- }
+
   
    
     
@@ -1015,8 +962,8 @@ import iac.grn.serviceitems.BaseTableItem;
 	    try {
 	    	if(listArmUgroup==null){
 	    		
-	    		AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
-	    		Long appCode = ((LinksMap)Component.getInstance("linksMap",ScopeType.APPLICATION)).getAppCode();
+	    		AcUser cau = getSessionItem("currentUser"); 
+	    		Long appCode = getApplicationLinksMap().getAppCode();
 				
 	    		String query="select o from AcApplication o where o.idArm!="+appCode+" ";
 	    		
@@ -1256,8 +1203,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	    log.info("selectRecord:sessionId="+sessionId);
 	    
 	   //  forV/iew/(/); //!!!
-	    List<String>  selRecRol = (ArrayList<String>)
-				  Component.getInstance("selRecRol",ScopeType.SESSION);
+	    List<String>  selRecRol = getSessionList("selRecRol");
 	    
 	    if(selRecRol==null){
 	       selRecRol = new ArrayList<String>();
@@ -1286,7 +1232,7 @@ import iac.grn.serviceitems.BaseTableItem;
    
    public void audit(ResourcesMap resourcesMap, ActionsMap actionsMap){
 	   try{
-		   AuditExportData auditExportDataRol = (AuditExportData)Component.getInstance("auditExportData",ScopeType.SESSION);
+		   AuditExportData auditExportDataRol = getSessionItem("auditExportData");
 		   auditExportDataRol.addFunc(resourcesMap.getCode()+":"+actionsMap.getCode());
 		   
 	   }catch(Exception e){
@@ -1342,9 +1288,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	       return evaluteForListFooter;
 	   }
    
-   public Boolean getEvaluteForBean() {
-		
-		  
+   		public Boolean getEvaluteForBean() {
 		   	if(evaluteForBean==null){
 		   		evaluteForBean=false;
 		    	String remoteAuditRol = FacesContext.getCurrentInstance().getExternalContext()
@@ -1365,5 +1309,6 @@ import iac.grn.serviceitems.BaseTableItem;
 		     return evaluteForBean;
 		   }
 
+   		
 }
 

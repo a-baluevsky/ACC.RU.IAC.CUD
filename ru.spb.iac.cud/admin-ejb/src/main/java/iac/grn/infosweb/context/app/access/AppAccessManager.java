@@ -10,16 +10,16 @@ import javaw.util.SerializableList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
-import java.util.List;
 import java.util.Set;
 
 import javax.faces.context.FacesContext;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.faces.FacesMessages;
+
 
 
 
@@ -49,8 +49,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 			 String orderQueryAppAccess=null;
 			 log.info("appAccessManager:invokeLocal");
 			 
-			 AppAccessStateHolder appAccessStateHolder = (AppAccessStateHolder)
-					  Component.getInstance("appAccessStateHolder",ScopeType.SESSION);
+			 AppAccessStateHolder appAccessStateHolder = getSessionItem("appAccessStateHolder");
 			 Map<String, String> filterMapAppAccess = appAccessStateHolder.getColumnFilterValues();
 			 String stAppAccess=null;
 			  

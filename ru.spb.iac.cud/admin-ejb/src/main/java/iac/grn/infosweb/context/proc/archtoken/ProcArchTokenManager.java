@@ -26,8 +26,8 @@ import javax.faces.context.FacesContext;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -397,7 +397,7 @@ import org.jboss.seam.log.Log;
 	
 	public void audit(ResourcesMap resourcesMap, ActionsMap actionsMap){
 		   try{
-			   AuditExportData auditExportData = (AuditExportData)Component.getInstance("auditExportData",ScopeType.SESSION);
+			   AuditExportData auditExportData = getSessionItem("auditExportData");
 			   auditExportData.addFunc(resourcesMap.getCode()+":"+actionsMap.getCode());
 			   
 		   }catch(Exception e){

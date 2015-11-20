@@ -21,8 +21,8 @@ import java.util.Set;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -67,8 +67,7 @@ import org.jboss.seam.log.Log;
 		   
 		  
 		   
-		  List<BaseItem> armUsrListCached = (List<BaseItem>)
-				  Component.getInstance("armUsrListCached",ScopeType.SESSION);
+		  List<BaseItem> armUsrListCached = getSessionList("armUsrListCached");
 		  if(auditList==null){
 			  log.info("armUsrManager:getAuditList:01");
 			 	if(("rowSelectFact".equals(remoteAudit)||
@@ -121,8 +120,7 @@ import org.jboss.seam.log.Log;
 				 String orderQuery=null;
 				 log.info("armUsrManager:invokeLocal");
 				 
-				 ArmUsrStateHolder armUsrStateHolder = (ArmUsrStateHolder)
-						  Component.getInstance("armUsrStateHolder",ScopeType.SESSION);
+				 ArmUsrStateHolder armUsrStateHolder = getSessionItem("armUsrStateHolder");
 				 
 				 Map<String, String> filterMap = armUsrStateHolder.getColumnFilterValues();
 				 String st=null;
@@ -380,7 +378,7 @@ import org.jboss.seam.log.Log;
 			
 			 	   
 			   try {
-				   AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+				   AcUser au = getSessionItem("currentUser");
 				   
 				   AcApplication aum = entityManager.find(AcApplication.class, Long.valueOf(sessionId));
 				   
@@ -434,7 +432,7 @@ import org.jboss.seam.log.Log;
 				    Contexts.getEventContext().set("armBean", aum);
 			    	 
 				  //аудит!!!
-				    ArmManager armManager = (ArmManager)Component.getInstance("armManager", ScopeType.EVENT);
+				    ArmManager armManager = getEventItem("armManager");
 					armManager.audit(ResourcesMap.IS, ActionsMap.UPDATE_USER); 
 			    	
 			    	

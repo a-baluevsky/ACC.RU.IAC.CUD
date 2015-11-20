@@ -34,7 +34,7 @@ public class SAML_Document {
 	static {
 		docFactory = DocumentBuilderFactory.newInstance();
 		docFactory.setNamespaceAware(true);
-		docFactory.setXIncludeAware(true);
+		//docFactory.setXIncludeAware(true);
 		try {
 			docBuilder = docFactory.newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
@@ -103,7 +103,7 @@ public class SAML_Document {
 				Node n = user_attributes.item(i);
 
 				if (attributeName.equals(((Element) n).getAttribute("Name"))) {
-					result = n.getFirstChild().getTextContent();
+					result = n.getFirstChild().getTextContent(); // .getNodeValue(); //
 					if(firstMatch) return result;
 				}
 			}

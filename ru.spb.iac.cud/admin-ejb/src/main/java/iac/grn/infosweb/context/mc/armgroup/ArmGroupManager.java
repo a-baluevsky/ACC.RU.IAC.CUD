@@ -29,8 +29,9 @@ import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 
 import org.apache.xml.security.utils.Base64;
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -100,8 +101,7 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 	  log.info("getAuditList:firstRow:"+firstRow);
 	  log.info("getAuditList:numberOfRows:"+numberOfRows);
 	  
-	  List<BaseItem> armGroupListCached = (List<BaseItem>)
-			  Component.getInstance("armGroupListCached",ScopeType.SESSION);
+	  List<BaseItem> armGroupListCached = getSessionList("armGroupListCached");
 	  if(auditList==null){
 		  log.info("getAuditList:01");
 		 	if(("rowSelectFact".equals(remoteAudit)||
@@ -118,8 +118,7 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 			    log.info("getAuditList:03:"+this.auditList.size());
 			}
 		 	
-		 	List<String>  selRecArmGroup = (ArrayList<String>)
-					  Component.getInstance("selRecArmGroup",ScopeType.SESSION);
+		 	List<String>  selRecArmGroup = getSessionList("selRecArmGroup");
 		 	if(this.auditList!=null && selRecArmGroup!=null) {
 		 		 for(BaseItem it:this.auditList){
 				   if(selRecArmGroup.contains(it.getBaseId().toString())){
@@ -142,8 +141,7 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 			 String orderQuery=null;
 			 log.info("hostsManager:invokeLocal");
 			 
-			 ArmGroupStateHolder orgStateHolder = (ArmGroupStateHolder)
-					  Component.getInstance("armGroupStateHolder",ScopeType.SESSION);
+			 ArmGroupStateHolder orgStateHolder = getSessionItem("armGroupStateHolder");
 			 
 			 Map<String, String> filterMapArmGroup = orgStateHolder.getColumnFilterValues();
 			 String st=null;
@@ -248,7 +246,7 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 	   
 	   try {
 	   
-		  AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
+		  AcUser au = getSessionItem("currentUser"); 
   		 
    		  if(au.getAllowedSys()!=null){
    		   
@@ -289,8 +287,7 @@ import ru.spb.iac.cud.core.util.CUDConstants;
    private GroupSystemsKnlT searchBean(String sessionId){
     	
       if(sessionId!=null){
-    	 List<GroupSystemsKnlT> armGroupListCached = (List<GroupSystemsKnlT>)
-				  Component.getInstance("armGroupListCached",ScopeType.SESSION);
+    	 List<GroupSystemsKnlT> armGroupListCached = getSessionList("armGroupListCached");
 		if(armGroupListCached!=null){
 			for(GroupSystemsKnlT it : armGroupListCached){
 				 
@@ -315,8 +312,7 @@ import ru.spb.iac.cud.core.util.CUDConstants;
    public void addArmGroup(){
 	   log.info("armGroupManager:addOrg:01");
 	   
-	   GroupSystemsKnlT armGroupBeanCrt = (GroupSystemsKnlT)
-				  Component.getInstance("armGroupBeanCrt",ScopeType.CONVERSATION);
+	   GroupSystemsKnlT armGroupBeanCrt = getConversationItem("armGroupBeanCrt");
 	   
 	   if(armGroupBeanCrt==null){
 		   return;
@@ -327,7 +323,7 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 		 if(!armGroupCodeExistCrt( 
 				 CUDConstants.groupArmPrefix+armGroupBeanCrt.getGroupCode().trim())){
 		   
-		  AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
+		  AcUser au = getSessionItem("currentUser"); 
 		  
 		  armGroupBeanCrt.setGroupName(armGroupBeanCrt.getGroupName().trim());
 		  armGroupBeanCrt.setGroupCode(CUDConstants.groupArmPrefix+armGroupBeanCrt.getGroupCode().trim());
@@ -361,8 +357,7 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 	   
 	   log.info("armGroupManager:updArmGroup:01");
 	   
-	   GroupSystemsKnlT armGroupBean = (GroupSystemsKnlT)
-				  Component.getInstance("armGroupBean",ScopeType.CONVERSATION);
+	   GroupSystemsKnlT armGroupBean = getConversationItem("armGroupBean");
 	   
 	   String  sessionId = FacesContext.getCurrentInstance().getExternalContext()
 		        .getRequestParameterMap()
@@ -378,7 +373,7 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 		 if(!armGroupCodeExistUpd(
 				 armGroupBean.getGroupCode().trim(), Long.valueOf(sessionId))){  
 		
-		 AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+		 AcUser au = getSessionItem("currentUser");
 		   
 		 GroupSystemsKnlT aam = entityManager.find(GroupSystemsKnlT.class, Long.valueOf(sessionId));
 		  
@@ -423,7 +418,7 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 		   return;
 	   }
 	
-	   AcUser currentUser = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+	   AcUser currentUser = getSessionItem("currentUser");
 	   
 	   try {
 		   
@@ -603,8 +598,7 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 	 try{
 		log.info("armGroupManager:delArmGroup:01");  
 		
-		GroupSystemsKnlT armGroupBean = (GroupSystemsKnlT)
-				  Component.getInstance("armGroupBean",ScopeType.CONVERSATION);
+		GroupSystemsKnlT armGroupBean = getConversationItem("armGroupBean");
 	
 		
 		if(armGroupBean==null){
@@ -639,8 +633,7 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 	    	 Contexts.getEventContext().set("armGroupBean", ao);
 	    	 
 	    	//устанавливаем на 1 страницу пагинатор в модальном окне
-	    	 ArmGroupStateHolder armGroupStateHolder = (ArmGroupStateHolder)
-					  Component.getInstance("armGroupStateHolder",ScopeType.SESSION);
+	    	 ArmGroupStateHolder armGroupStateHolder = getSessionItem("armGroupStateHolder");
 	    	 armGroupStateHolder.resetPageNumber();
 	    	 
 	   	 }
@@ -768,8 +761,7 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 	    log.info("selectRecord:sessionId="+sessionId);
 	    
 	   //  forView(); //!!!
-	    List<String>  selRecArmGroup = (ArrayList<String>)
-				  Component.getInstance("selRecArmGroup",ScopeType.SESSION);
+	    List<String>  selRecArmGroup = getSessionList("selRecArmGroup");
 	    
 	    if(selRecArmGroup==null){
 	       selRecArmGroup = new ArrayList<String>();
@@ -892,8 +884,7 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 		   
 		   String st=null;
 		 
-		   ArmGroupISStateHolder armGroupISStateHolder = (ArmGroupISStateHolder)
-					  Component.getInstance("armGroupISStateHolder",ScopeType.SESSION);
+		   ArmGroupISStateHolder armGroupISStateHolder = getSessionItem("armGroupISStateHolder");
 		   Map<String, String> filterMap = armGroupISStateHolder.getColumnFilterValues();
 		   
 		   
@@ -911,7 +902,7 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 	      }
 		   log.info("ArmGroupManager:getGroupList:st:"+st);
 		   
-		   AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
+		   AcUser au = getSessionItem("currentUser"); 
   		 
    		  if(au.getAllowedSys()!=null){
 		   
@@ -1021,7 +1012,7 @@ import ru.spb.iac.cud.core.util.CUDConstants;
   
   public void audit(ResourcesMap resourcesMap, ActionsMap actionsMap){
 	   try{
-		   AuditExportData auditExportDataArmGroup = (AuditExportData)Component.getInstance("auditExportData",ScopeType.SESSION);
+		   AuditExportData auditExportDataArmGroup = getSessionItem("auditExportData");
 		   auditExportDataArmGroup.addFunc(resourcesMap.getCode()+":"+actionsMap.getCode());
 		   
 	   }catch(Exception e){

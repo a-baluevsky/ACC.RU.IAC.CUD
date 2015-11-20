@@ -2,7 +2,9 @@ package iac.grn.infosweb.context.app.orgman;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
 import javaw.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
@@ -11,11 +13,12 @@ import java.util.Set;
 
 import javax.faces.context.FacesContext;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.faces.FacesMessages;
+
 
 
 
@@ -49,8 +52,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 			 String orderQueryAppOrgMan=null;
 			 log.info("AppOrgMan:invokeLocal");
 			 
-			 AppOrgManStateHolder appOrgManStateHolder = (AppOrgManStateHolder)
-					  Component.getInstance("appOrgManStateHolder",ScopeType.SESSION);
+			 AppOrgManStateHolder appOrgManStateHolder = getSessionItem("appOrgManStateHolder");
 			 Map<String, String> filterMap = appOrgManStateHolder.getColumnFilterValues();
 			 String st=null;
 			  

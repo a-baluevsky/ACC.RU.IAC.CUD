@@ -5,11 +5,12 @@ import iac.cud.infosweb.entity.AcUser;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.Name;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +45,7 @@ import ru.spb.iac.cud.items.AuditFunction;
 		 
 		 try{
 			 
-			 AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+			 AcUser cau = getSessionItem("currentUser");
 			 
 			 
 		 if( FacesContext.getCurrentInstance()!=null) {

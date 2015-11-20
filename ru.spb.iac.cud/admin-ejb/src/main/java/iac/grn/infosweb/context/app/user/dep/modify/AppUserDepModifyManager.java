@@ -17,11 +17,12 @@ import javaw.util.SerializableList;
 
 import javax.faces.context.FacesContext;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.faces.FacesMessages;
+
 
 
 
@@ -54,8 +55,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 			 String orderQuery=null;
 			 log.info("AppUserDepModManager:invokeLocal");
 			 
-			 AppUserDepModifyStateHolder appUserDepModifyStateHolder = (AppUserDepModifyStateHolder)
-					  Component.getInstance("appUserDepModifyStateHolder",ScopeType.SESSION);
+			 AppUserDepModifyStateHolder appUserDepModifyStateHolder = getSessionItem("appUserDepModifyStateHolder");
 			 Map<String, String> filterMap = appUserDepModifyStateHolder.getColumnFilterValues();
 			 String st=null;
 			  

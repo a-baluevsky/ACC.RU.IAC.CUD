@@ -1,6 +1,7 @@
 package iac.grn.infosweb.context.mc.arm;
 
 import java.util.List;
+
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.dataitems.SystemCertItem;
 import iac.cud.infosweb.entity.AcAppPage;
@@ -33,8 +34,9 @@ import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 
 import org.apache.xml.security.utils.Base64;
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -106,7 +108,7 @@ import org.jboss.seam.transaction.Transaction;
 	  log.info("ArmManager:getAuditList:firstRow:"+firstRow);
 	  log.info("ArmManager:getAuditList:numberOfRows:"+numberOfRows);
 	  
-	  List<BaseItem> armListCached = (List<BaseItem>)Component.getInstance("armListCached",ScopeType.SESSION);
+	  List<BaseItem> armListCached = getSessionList("armListCached");
 	  if(auditList==null){
 		  log.info("getAuditList:01");
 		 	if(("rowSelectFact".equals(remoteAudit)||
@@ -122,8 +124,7 @@ import org.jboss.seam.transaction.Transaction;
 			    log.info("getAuditList:03:"+this.auditList.size());
 			}
 		 	
-		 	List<String>  selRecArm = (List<String>)
-					  Component.getInstance("selRecArm",ScopeType.SESSION);
+		 	List<String>  selRecArm = getSessionList("selRecArm");
 		 	if(this.auditList!=null && selRecArm!=null) {
 		 		 for(BaseItem it:this.auditList){
 				   if(selRecArm.contains(it.getBaseId().toString())){
@@ -145,8 +146,7 @@ import org.jboss.seam.transaction.Transaction;
 			 String orderQueryArm=null;
 			 log.info("hostsManager:invokeLocal");
 			 
-			 ArmStateHolder orgStateHolder = (ArmStateHolder)
-					  Component.getInstance("armStateHolder",ScopeType.SESSION);
+			 ArmStateHolder orgStateHolder = getSessionItem("armStateHolder");
 			 
 			 Map<String, String> filterMapArm = orgStateHolder.getColumnFilterValues();
 			 String st=null;
@@ -242,8 +242,7 @@ import org.jboss.seam.transaction.Transaction;
    private AcApplication searchBean(String sessionId){
     	
       if(sessionId!=null){
-    	 List<AcApplication> armListCached = (List<AcApplication>)
-				  Component.getInstance("armListCached",ScopeType.SESSION);
+    	 List<AcApplication> armListCached = getSessionList("armListCached");
 		if(armListCached!=null){
 			for(AcApplication it : armListCached){
 				 
@@ -269,8 +268,7 @@ import org.jboss.seam.transaction.Transaction;
    public void addArm(){
 	   log.info("armManager:addArm:01");
 	   
-	   AcApplication armBeanCrt = (AcApplication)
-				  Component.getInstance("armBeanCrt",ScopeType.CONVERSATION);
+	   AcApplication armBeanCrt = getConversationItem("armBeanCrt");
 	   
 	   if(armBeanCrt==null){
 		   return;
@@ -278,7 +276,7 @@ import org.jboss.seam.transaction.Transaction;
 	 
 	   try {
 		  
-		   AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
+		   AcUser au = getSessionItem("currentUser"); 
 			 
 		   
 		 if(((au.getAllowedSys()!=null || au.getIsAccOrgManagerValue()) && !au.isAllowedReestr("004", "2"))||!armCodeExistCrt(armBeanCrt.getCode().trim())){
@@ -371,8 +369,7 @@ import org.jboss.seam.transaction.Transaction;
 	   
 	   log.info("armManager:updArm:01");
 	   
-	   AcApplication armBean = (AcApplication)
-				  Component.getInstance("armBean",ScopeType.CONVERSATION);
+	   AcApplication armBean = getConversationItem("armBean");
 	   
 	   String  sessionId = FacesContext.getCurrentInstance().getExternalContext()
 		        .getRequestParameterMap()
@@ -526,8 +523,7 @@ import org.jboss.seam.transaction.Transaction;
 	 try{
 		log.info("armManager:delArm:01");  
 		
-		AcApplication armBean = (AcApplication)
-				  Component.getInstance("armBean",ScopeType.CONVERSATION);
+		AcApplication armBean = getConversationItem("armBean");
 		// <h:inputHidden value="#{armBean.idArm}"/>
 		
 		if(armBean==null){
@@ -558,8 +554,7 @@ import org.jboss.seam.transaction.Transaction;
 	    	 Contexts.getEventContext().set("armBean", ao);
 	    	 
 	    	//устанавливаем на 1 страницу пагинатор в модальном окне
-	    	 ArmStateHolder armStateHolder = (ArmStateHolder)
-					  Component.getInstance("armStateHolder",ScopeType.SESSION);
+	    	 ArmStateHolder armStateHolder = getSessionItem("armStateHolder");
 	    	 armStateHolder.resetPageNumber();
 	    	 
 	   	 }
@@ -706,7 +701,7 @@ import org.jboss.seam.transaction.Transaction;
 	    try {
 	    	if(listArm==null){
 	    		
-	    		AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
+	    		AcUser au = getSessionItem("currentUser"); 
 	    		 
 	    		if(au.getAllowedSys()!=null){
 	    			listArm=new ArrayList<AcApplication>(entityManager.createQuery(
@@ -834,8 +829,7 @@ import org.jboss.seam.transaction.Transaction;
 	    log.info("selectRecord:sessionId="+sessionIdArm);
 	    
 	   //  forView; //!!!
-	    List<String>  selRecArm = (ArrayList<String>)
-				  Component.getInstance("selRecArm",ScopeType.SESSION);
+	    List<String>  selRecArm = getSessionList("selRecArm");
 	    
 	    if(selRecArm==null){
 	       selRecArm = new ArrayList<String>();
@@ -933,7 +927,7 @@ import org.jboss.seam.transaction.Transaction;
   
   public void audit(ResourcesMap resourcesMap, ActionsMap actionsMap){
 	   try{
-		   AuditExportData auditExportDataArm = (AuditExportData)Component.getInstance("auditExportData",ScopeType.SESSION);
+		   AuditExportData auditExportDataArm = getSessionItem("auditExportData");
 		   auditExportDataArm.addFunc(resourcesMap.getCode()+":"+actionsMap.getCode());
 		   
 	   }catch(Exception e){

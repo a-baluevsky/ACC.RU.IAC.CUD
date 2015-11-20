@@ -1,6 +1,8 @@
 package ru.spb.iac.cud.uarm.ws;
 
 
+import mypackage.Configuration;
+
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -12,8 +14,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Service;
 import javax.xml.ws.handler.Handler;
-
-import mypackage.Configuration;
 
 import org.picketlink.identity.federation.core.saml.v2.util.DocumentUtil;
 import org.picketlink.trust.jbossws.SAML2Constants;

@@ -9,8 +9,9 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
 import org.apache.log4j.Logger;
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.contexts.Lifecycle;
 
 import ru.spb.iac.cud.items.AuditFunction;
@@ -60,7 +61,7 @@ import ru.spb.iac.cud.items.AuditFunction;
 			
 				 Lifecycle.beginCall();
 				 
-				 AuditExportManager auditExportManager = (AuditExportManager)Component.getInstance("auditExportManager",ScopeType.EVENT);
+				 AuditExportManager auditExportManager = getEventItem("auditExportManager");
 				 
 				 auditExportManager.export(funcList, uid);
 				   

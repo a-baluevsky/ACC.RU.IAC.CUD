@@ -48,8 +48,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
 import org.apache.xml.security.utils.Base64;
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -179,8 +180,7 @@ import org.slf4j.LoggerFactory;
 	  log.info("getAuditList:firstRow:"+firstRow);
 	  log.info("getAuditList:numberOfRows:"+numberOfRows);
 	  
-	  List<BaseItem> usrListCached = (List<BaseItem>)
-			  Component.getInstance("usrListCached",ScopeType.SESSION);
+	  List<BaseItem> usrListCached = getSessionList("usrListCached");
 	  if(auditList==null){
 		  log.info("getAuditList:01");
 		 	if(("rowSelectFact".equals(remoteAudit)||
@@ -198,8 +198,7 @@ import org.slf4j.LoggerFactory;
 			    log.info("getAuditList:03:"+this.auditList.size());
 			}
 		 	
-		 	List<String>  selRecUsr = (ArrayList<String>)
-					  Component.getInstance("selRecUsr",ScopeType.SESSION);
+		 	List<String>  selRecUsr = getSessionList("selRecUsr");
 		 	if(this.auditList!=null && selRecUsr!=null) {
 		 		 for(BaseItem it:this.auditList){
 				   if(selRecUsr.contains(it.getBaseId().toString())){
@@ -222,7 +221,7 @@ import org.slf4j.LoggerFactory;
 			 log.info("UserManager:invokeLocal");			 
 			 JPA_UsrManager jpaUsrManager = new JPA_UsrManager();
              // 13.02.15: ab 
-			 AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+			 AcUser cau = getSessionItem("currentUser");
 			 if(cau!=null && cau.getIsAccOrgManagerValue()) {
 				String curUserName = cau.getName1();
 				String sCurUserOrg = cau.getUpSign();
@@ -230,8 +229,7 @@ import org.slf4j.LoggerFactory;
 				jpaUsrManager.IsAccOrgManagerValue = true;
 				jpaUsrManager.UpSign = sCurUserOrg;
 			 }
-			 UsrStateHolder usrStateHolder = (UsrStateHolder)
-					  Component.getInstance("usrStateHolder",ScopeType.SESSION);			 
+			 UsrStateHolder usrStateHolder = getSessionItem("usrStateHolder");			 
 			 Map<String, String> filterMap = usrStateHolder.getColumnFilterValues();
 			 jpaUsrManager.setFilter(filterMap);                
 			 log.info("User:invokeLocal:list:filterQuery: "+jpaUsrManager.getWhereAndClause());
@@ -290,7 +288,7 @@ import org.slf4j.LoggerFactory;
 		 }
 		 
 		 
-		 Long appCode = ((LinksMap)Component.getInstance("linksMap",ScopeType.APPLICATION)).getAppCode();
+		 Long appCode = getApplicationLinksMap().getAppCode();
     	 
 	     List<AcRole> rlist = (List<AcRole>)JPA_AppUserManager.getAcRoleList(entityManager, Long.valueOf(usrId), appCode);
 	     
@@ -315,8 +313,7 @@ import org.slf4j.LoggerFactory;
    private BaseItem searchBean(String sessionId){
     	
       if(!Strings.isNullOrEmpty(sessionId)){
-    	 List<BaseItem> usrListCached = (List<BaseItem>)
-				  Component.getInstance("usrListCached",ScopeType.SESSION);
+    	 List<BaseItem> usrListCached = getSessionList("usrListCached");
 		if(usrListCached!=null){
 			for(BaseItem it : usrListCached){
 				 
@@ -353,14 +350,11 @@ import org.slf4j.LoggerFactory;
 	   
 	  
 	   
-	   AcUser usrBeanCrt = (AcUser)
-				  Component.getInstance("usrBeanCrt",ScopeType.CONVERSATION);
+	   AcUser usrBeanCrt = getConversationItem("usrBeanCrt");
 	   
-	   IspBssT clUsrBean = (IspBssT)
-				  Component.getInstance("clUsrBean",ScopeType.CONVERSATION);
+	   IspBssT clUsrBean = getConversationItem("clUsrBean");
 	 
-	   IspBssT clOrgBean = (IspBssT)
-				  Component.getInstance("clOrgBean",ScopeType.CONVERSATION);
+	   IspBssT clOrgBean = getConversationItem("clOrgBean");
 	   
 	   if(usrBeanCrt==null){
 		   return;
@@ -371,7 +365,7 @@ import org.slf4j.LoggerFactory;
 		   log.info("usrManager:addUsr:clUsrBean:SignObject:"+clUsrBean.getSignObject());
 		   log.info("usrManager:addUsr:clUsrBean:Name1:"+usrBeanCrt.getName1());
 		   
-		   AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+		   AcUser cau = getSessionItem("currentUser");
 		    
 		   
 	      if((!isPowerUser2(cau)|| !loginExist(usrBeanCrt.getLogin().trim()))&&!certNumExistCrt(usrBeanCrt.getCertificate())) {
@@ -470,8 +464,7 @@ import org.slf4j.LoggerFactory;
  	     		   .executeUpdate();
 			
 		   
-		   UsrRoleStateHolder usrRoleStateHolder = (UsrRoleStateHolder)
-					  Component.getInstance("usrRoleStateHolder",ScopeType.SESSION);
+		   UsrRoleStateHolder usrRoleStateHolder = getSessionItem("usrRoleStateHolder");
 			
 			
 			List<Long> guuExistList =  usrRoleStateHolder.getAppRolesList();
@@ -505,8 +498,7 @@ import org.slf4j.LoggerFactory;
 	   DateFormat df = new SimpleDateFormat ("dd.MM.yy");
 	   DateFormat dfTime = new SimpleDateFormat ("dd.MM.yy HH:mm:ss");
 	   
-	   AcUser usrBean = (AcUser)
-				  Component.getInstance("usrBean",ScopeType.CONVERSATION);
+	   AcUser usrBean = getConversationItem("usrBean");
 	   
 	   String  sessionId = FacesContext.getCurrentInstance().getExternalContext()
 		        .getRequestParameterMap()
@@ -520,7 +512,7 @@ import org.slf4j.LoggerFactory;
 	   try {
 		 
 		   
-		   AcUser  cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+		   AcUser  cau = getSessionItem("currentUser");
 		  
 		   AcUser aum = entityManager.find(AcUser.class, Long.valueOf(sessionId));
 		  
@@ -721,8 +713,7 @@ import org.slf4j.LoggerFactory;
 	   
 	   log.info("UsrManager:updUsrAppAcc:01");
 	   
-	   AcUser usrBean = (AcUser)
-				  Component.getInstance("usrBean",ScopeType.CONVERSATION);
+	   AcUser usrBean = getConversationItem("usrBean");
 	   
 	   String  sessionId = FacesContext.getCurrentInstance().getExternalContext()
 		        .getRequestParameterMap()
@@ -736,7 +727,7 @@ import org.slf4j.LoggerFactory;
 	   try {
 		 
 		   
-		   AcUser  cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+		   AcUser  cau = getSessionItem("currentUser");
 		  
 		  
 		if(!loginExistUpd(usrBean.getLogin().trim(), Long.valueOf(sessionId))&&!certNumExistUpd(usrBean.getCertificate(), Long.valueOf(sessionId))){
@@ -805,8 +796,7 @@ import org.slf4j.LoggerFactory;
 	   
 	   log.info("UsrManager:updUsrAppBlock:01");
 	   
-	     AcUser usrBean = (AcUser)
-				  Component.getInstance("usrBean",ScopeType.CONVERSATION);
+	     AcUser usrBean = getConversationItem("usrBean");
 	   
 	   String  sessionId = FacesContext.getCurrentInstance().getExternalContext()
 		        .getRequestParameterMap()
@@ -820,7 +810,7 @@ import org.slf4j.LoggerFactory;
 	   try {
 		 
 		   
-		   AcUser  cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+		   AcUser  cau = getSessionItem("currentUser");
 		  
 		  
 		 //для UP_USER_APP - субъекта заявки
@@ -998,8 +988,7 @@ import org.slf4j.LoggerFactory;
 	   log.info("usrManager:updUsrRole:01");
 	   
 	   
-	   AcUser usrBean = (AcUser)
-				  Component.getInstance("usrBean",ScopeType.CONVERSATION);
+	   AcUser usrBean = getConversationItem("usrBean");
 	   
 	   String idArm = FacesContext.getCurrentInstance().getExternalContext()
 		        .getRequestParameterMap()
@@ -1110,8 +1099,7 @@ import org.slf4j.LoggerFactory;
 	   try {
 		   
 		
-		  UsrRoleStateHolder usrRoleStateHolder = (UsrRoleStateHolder)
-				  Component.getInstance("usrRoleStateHolder",ScopeType.SESSION);
+		  UsrRoleStateHolder usrRoleStateHolder = getSessionItem("usrRoleStateHolder");
 		
 		
 		  List<Long> guuExistList =  usrRoleStateHolder.getAppRolesList();
@@ -1165,8 +1153,7 @@ import org.slf4j.LoggerFactory;
 	   log.info("usrManager:updUsrRole:01");
 	   
 	    
-	   AcUser usrBean = (AcUser)
-				  Component.getInstance("usrBean",ScopeType.CONVERSATION);
+	   AcUser usrBean = getConversationItem("usrBean");
 	   
 	   String sessionId = FacesContext.getCurrentInstance().getExternalContext()
 		        .getRequestParameterMap()
@@ -1263,8 +1250,7 @@ import org.slf4j.LoggerFactory;
 	   
 	   log.info("usrManager:updUsrAdminIS:01");
 	   
-	    AcUser usrBean = (AcUser)
-				  Component.getInstance("usrBean",ScopeType.CONVERSATION);
+	    AcUser usrBean = getConversationItem("usrBean");
 	   
 	   String sessionId = FacesContext.getCurrentInstance().getExternalContext()
 		        .getRequestParameterMap()
@@ -1277,7 +1263,7 @@ import org.slf4j.LoggerFactory;
 	
 	   try {
 		 
-		  AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
+		  AcUser cau = getSessionItem("currentUser"); 
 		   
 		  AcUser aum = entityManager.find(AcUser.class, Long.valueOf(sessionId));
 		
@@ -1376,9 +1362,9 @@ import org.slf4j.LoggerFactory;
 	
 	   try {
 		 
-		  LinksMap linksMap2= (LinksMap)Component.getInstance("linksMap",ScopeType.APPLICATION);
+		  LinksMap linksMap2= getApplicationLinksMap();
 		   
-		  AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
+		  AcUser cau = getSessionItem("currentUser"); 
 		   
 		  //имеющиеся у пользователя разрешения
 		  
@@ -1575,10 +1561,9 @@ import org.slf4j.LoggerFactory;
 	 try{
 		log.info("usrManager:delUsr:01");  
 		
-		AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
+		AcUser cau = getSessionItem("currentUser"); 
 	  	 
-		AcUser usrBean = (AcUser)
-				  Component.getInstance("usrBean",ScopeType.CONVERSATION);
+		AcUser usrBean = getConversationItem("usrBean");
 		
 		
 		if(usrBean==null){
@@ -1637,8 +1622,7 @@ import org.slf4j.LoggerFactory;
 	    	 Contexts.getEventContext().set("usrBean", ahUm);
 	    	 
 	    	 //устанавливаем на 1 страницу пагинатор в модальном окне
-	    	 UsrStateHolder usrStateHolder = (UsrStateHolder)
-					  Component.getInstance("usrStateHolder",ScopeType.SESSION);
+	    	 UsrStateHolder usrStateHolder = getSessionItem("usrStateHolder");
 	    	 usrStateHolder.resetPageNumber();
 	    	 
 	     }
@@ -1700,9 +1684,9 @@ import org.slf4j.LoggerFactory;
 	    	if(listUsrArm==null){
 	    		String query="select o from AcApplication o where o.acRoles IS NOT EMPTY ";
 	    		
-	      		AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
+	      		AcUser cau = getSessionItem("currentUser"); 
 	      		
-	      		LinksMap lm = (LinksMap)Component.getInstance("linksMap",ScopeType.APPLICATION);
+	      		LinksMap lm = getApplicationLinksMap();
 	      		Long appCode = lm.getAppCode();
 			
 	      		
@@ -1858,8 +1842,7 @@ import org.slf4j.LoggerFactory;
 	      	
 	    		 log.info("AppUsrManager:getListUsrArmForViewRolesApp:02");
 	    		 
-	    		UsrRoleStateHolder usrRoleStateHolder = (UsrRoleStateHolder)
-						  Component.getInstance("usrRoleStateHolder",ScopeType.SESSION);
+	    		UsrRoleStateHolder usrRoleStateHolder = getSessionItem("usrRoleStateHolder");
 				
 				
 				List<Long> guuExistList =  usrRoleStateHolder.getAppRolesList();
@@ -2020,8 +2003,7 @@ import org.slf4j.LoggerFactory;
 		   
 		   String stUm=null;
 			 
-		   UsrRoleStateHolder usrRoleStateHolder = (UsrRoleStateHolder)
-					  Component.getInstance("usrRoleStateHolder",ScopeType.SESSION);
+		   UsrRoleStateHolder usrRoleStateHolder = getSessionItem("usrRoleStateHolder");
 		   Map<String, String> filterMap = usrRoleStateHolder.getColumnFilterValues();
 		   
 		   
@@ -2088,8 +2070,7 @@ import org.slf4j.LoggerFactory;
                    .getResultList();
 		   
 		  
-		   UsrRoleStateHolder usrRoleStateHolder = (UsrRoleStateHolder)
-					  Component.getInstance("usrRoleStateHolder",ScopeType.SESSION);
+		   UsrRoleStateHolder usrRoleStateHolder = getSessionItem("usrRoleStateHolder");
 			
 			
 		   List<Long> guuExistList =  usrRoleStateHolder.getAppRolesList();
@@ -2130,8 +2111,7 @@ import org.slf4j.LoggerFactory;
 		   String stOracle=null;
 		   GroupUsersKnlT group_obj = null;
 		   
-		   UsrGroupStateHolder usrGroupStateHolder = (UsrGroupStateHolder)
-					  Component.getInstance("usrGroupStateHolder",ScopeType.SESSION);
+		   UsrGroupStateHolder usrGroupStateHolder = getSessionItem("usrGroupStateHolder");
 		   Map<String, String> filterMap = usrGroupStateHolder.getColumnFilterValues();
 		   
 		   
@@ -2162,7 +2142,7 @@ import org.slf4j.LoggerFactory;
 		   log.info("UsrManager:getGroupList:st:"+st);
 		   log.info("UsrManager:getGroupList:stOracle:"+stOracle);
 		   
-		   AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
+		   AcUser au = getSessionItem("currentUser"); 
 	  		 
 		   if(au.getAllowedSys()!=null){
 		   
@@ -2259,8 +2239,7 @@ import org.slf4j.LoggerFactory;
 		   
 		   String st=null;
 		 
-		   UsrISStateHolder usrISStateHolder = (UsrISStateHolder)
-					  Component.getInstance("usrISStateHolder",ScopeType.SESSION);
+		   UsrISStateHolder usrISStateHolder = getSessionItem("usrISStateHolder");
 		   Map<String, String> filterMap = usrISStateHolder.getColumnFilterValues();
 		   
 		   
@@ -2279,7 +2258,7 @@ import org.slf4j.LoggerFactory;
 	      }
 		   log.info("UsrManager:getGroupList:st:"+st);
 		   
-		   Long appCode = ((LinksMap)Component.getInstance("linksMap",ScopeType.APPLICATION)).getAppCode();
+		   Long appCode = getApplicationLinksMap().getAppCode();
 			
 		   this.ISList = entityManager.createQuery(
   				   "select o from AcApplication o " 
@@ -2783,7 +2762,7 @@ import org.slf4j.LoggerFactory;
 		       reestrCert = entityManager.find(UcCertReestr.class , Long.valueOf(idReestr));
 	    	   
 	    	  
-	    	   AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+	    	   AcUser cau = getSessionItem("currentUser");
 			   
 	           if((cau.getAllowedSys()!=null || cau.getIsAccOrgManagerValue()) && !cau.isAllowedReestr("002", "3")){
 		    		  //пользователь имеет право только создать заявку 
@@ -2912,7 +2891,7 @@ import org.slf4j.LoggerFactory;
 		    	   return;
 		       }
 		       
-               AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+               AcUser cau = getSessionItem("currentUser");
 			   
 	           if((cau.getAllowedSys()!=null || cau.getIsAccOrgManagerValue()) && !cau.isAllowedReestr("002", "3")){
 		    		  //пользователь имеет право только создать заявку 
@@ -3013,7 +2992,7 @@ import org.slf4j.LoggerFactory;
         	   return false;
            }
            
-            AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+            AcUser cau = getSessionItem("currentUser");
 		   
            
            Transaction.instance().begin();
@@ -3164,8 +3143,7 @@ import org.slf4j.LoggerFactory;
 	    log.info("selectRecord:sessionId="+sessionId);
 	    
 	   //  for/View/(); //!!!
-	    List<String>  selRecUsr = (ArrayList<String>)
-				  Component.getInstance("selRecUsr",ScopeType.SESSION);
+	    List<String>  selRecUsr = getSessionList("selRecUsr");
 	    
 	    if(selRecUsr==null){
 	       selRecUsr = new ArrayList<String>();
@@ -3248,7 +3226,7 @@ import org.slf4j.LoggerFactory;
 	
    public LinksMap getLinksMap() {
 	   if(this.linksMap==null){
-		   linksMap= (LinksMap)Component.getInstance("linksMap",ScopeType.APPLICATION);
+		   linksMap= getApplicationLinksMap();
 	   }
 	   return linksMap;
    }
@@ -3262,7 +3240,7 @@ import org.slf4j.LoggerFactory;
    
    public AcUser getCurrentUser() {
 	   if(this.currentUser==null){
-		   currentUser= (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+		   currentUser= getSessionItem("currentUser");
 	   }
 	   return currentUser;
    }
@@ -3278,7 +3256,7 @@ import org.slf4j.LoggerFactory;
   
    public void audit(ResourcesMap resourcesMap, ActionsMap actionsMap){
 	   try{
-		   AuditExportData auditExportDataUm = (AuditExportData)Component.getInstance("auditExportData",ScopeType.SESSION);
+		   AuditExportData auditExportDataUm = getSessionItem("auditExportData");
 		   auditExportDataUm.addFunc(resourcesMap.getCode()+":"+actionsMap.getCode());
 		   
 	   }catch(Exception e){

@@ -27,7 +27,7 @@ import javax.persistence.EntityManager;
 import iac.grn.serviceitems.BaseTableItem;
 import javaw.util.SerializableList;
 import javaw.util.ArrayList;
-
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
 /**
  * ”правл€ющий Ѕин
  * @author bubnov
@@ -80,8 +80,7 @@ import javaw.util.ArrayList;
 	  log.info("getAuditList:firstRow:"+firstRow);
 	  log.info("getAuditList:numberOfRows:"+numberOfRows);
 	  
-	  List<BaseItem> orgListCached = (List<BaseItem>)
-			  Component.getInstance("orgListCached",ScopeType.SESSION);
+	  List<BaseItem> orgListCached = getSessionList("orgListCached");
 	  if(auditList==null){
 		  log.info("getAuditList:01");
 		 	if(("rowSelectFact".equals(remoteAudit)||
@@ -98,8 +97,7 @@ import javaw.util.ArrayList;
 			    log.info("getAuditList:03:"+this.auditList.size());
 			}
 		 	
-		 	List<String>  selRecOrg = (ArrayList<String>)
-					  Component.getInstance("selRecOrg",ScopeType.SESSION);
+		 	List<String>  selRecOrg = getSessionList("selRecOrg");
 		 	if(this.auditList!=null && selRecOrg!=null) {
 		 		 for(BaseItem it:this.auditList){
 				   if(selRecOrg.contains(it.getBaseId().toString())){
@@ -125,8 +123,7 @@ import javaw.util.ArrayList;
 			 if("list".equals(type)){
 				 log.info("Org:invokeLocal:list:01");
 				 
-				 OrgStateHolder orgStateHolder = (OrgStateHolder)
-						  Component.getInstance("orgStateHolder",ScopeType.SESSION);
+				 OrgStateHolder orgStateHolder = getSessionItem("orgStateHolder");
 				 Set<Map.Entry<String, String>> set = orgStateHolder.getSortOrders().entrySet();
                  for (Map.Entry<String, String> me : set) {
       		       
@@ -182,8 +179,7 @@ import javaw.util.ArrayList;
    private AcOrganization searchBean(String sessionId){
     	
       if(sessionId!=null){
-    	 List<AcOrganization> orgListCached = (List<AcOrganization>)
-				  Component.getInstance("orgListCached",ScopeType.SESSION);
+    	 List<AcOrganization> orgListCached = getSessionList("orgListCached");
 		if(orgListCached!=null){
 			for(AcOrganization it : orgListCached){
 				 
@@ -209,15 +205,14 @@ import javaw.util.ArrayList;
    public void addOrg(){
 	   log.info("orgManager:addOrg:01");
 	   
-	   AcOrganization orgBeanCrt = (AcOrganization)
-				  Component.getInstance("orgBeanCrt",ScopeType.CONVERSATION);
+	   AcOrganization orgBeanCrt = getConversationItem("orgBeanCrt");
 	   
 	   if(orgBeanCrt==null){
 		   return;
 	   }
 	 
 	   try {
-		  AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION); 
+		  AcUser au = getSessionItem("currentUser"); 
 		   
 	      orgBeanCrt.setCreator(au.getIdUser());
 		  orgBeanCrt.setCreated(new Date());
@@ -236,8 +231,7 @@ import javaw.util.ArrayList;
 	   
 	   log.info("orgManager:updOrg:01");
 	   
-	   AcOrganization orgBean = (AcOrganization)
-				  Component.getInstance("orgBean",ScopeType.CONVERSATION);
+	   AcOrganization orgBean = getConversationItem("orgBean");
 	   
 	   String  sessionId = FacesContext.getCurrentInstance().getExternalContext()
 		        .getRequestParameterMap()
@@ -249,7 +243,7 @@ import javaw.util.ArrayList;
 	   }
 	
 	   try {
-		   AcUser au = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+		   AcUser au = getSessionItem("currentUser");
 		   
 		 
 		  AcOrganization aom = entityManager.find(AcOrganization.class, Long.valueOf(sessionId));
@@ -279,8 +273,7 @@ import javaw.util.ArrayList;
 	 try{
 		log.info("orgManager:delOrg:01");  
 		
-		AcOrganization orgBean = (AcOrganization)
-				  Component.getInstance("orgBean",ScopeType.CONVERSATION);
+		AcOrganization orgBean = getConversationItem("orgBean");
 		// <h:inputHidden value="#{usrBean.idUser}"/>
 		
 		if(orgBean==null){
@@ -406,8 +399,7 @@ import javaw.util.ArrayList;
 	    log.info("selectRecord:sessionId="+sessionId);
 	    
 	   //  for/View(/); //!!!
-	    List<String>  selRecOrg = (ArrayList<String>)
-				  Component.getInstance("selRecOrg",ScopeType.SESSION);
+	    List<String>  selRecOrg = getSessionList("selRecOrg");
 	    
 	    if(selRecOrg==null){
 	       selRecOrg = new ArrayList<String>();

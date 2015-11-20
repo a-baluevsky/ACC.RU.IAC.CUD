@@ -1,6 +1,7 @@
 package iac.grn.infosweb.context.mc.audit.report;
 
 import java.util.List;
+
 import iac.grn.infosweb.context.mc.audit.report.JasperReportService;
 import iac.grn.infosweb.context.mc.audit.report.JasperReportService.REPORTSTATUS;
 import iac.cud.infosweb.entity.AcUser;
@@ -24,8 +25,9 @@ import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.iterators.EntrySetMapIterator;
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -92,7 +94,7 @@ import org.jboss.seam.log.Log;
    private SerializableMap<String, JasperReportService> getReporters(){
       SerializableMap<String, JasperReportService> reporters = null;
       try { 
-         Object o = Component.getInstance("reporters",ScopeType.SESSION);
+         Object o = getSessionItem("reporters");
          if(o instanceof SerializableMap) {
             reporters = (SerializableMap<String, JasperReportService>)o;
          }
@@ -220,7 +222,7 @@ import org.jboss.seam.log.Log;
    
    private String getOrgCode() {
       String orgCode="*";
-      AcUser cau = (AcUser) Component.getInstance("currentUser",ScopeType.SESSION);
+      AcUser cau = getSessionItem("currentUser");
       if(cau!=null && cau.getIsAccOrgManagerValue()) {
          orgCode = cau.getUpSign();
       }
@@ -255,10 +257,10 @@ import org.jboss.seam.log.Log;
    // global prop (for all reports) 
    public boolean  getEnabledPollReportReady() {
       try {
-         Object oe=Component.getInstance("enabledPollReportReady",ScopeType.SESSION);
+         Object oe= getSessionItem("enabledPollReportReady");
          boolean bUpdateReportStatus=oe==null;
          if(!bUpdateReportStatus) { // really?
-            Object ot=Component.getInstance("lastPollReportReadyTime",ScopeType.SESSION); // use cached value for improved performance
+            Object ot= getSessionItem("lastPollReportReadyTime"); // use cached value for improved performance
             bUpdateReportStatus=(ot==null)?true:Math.abs((new Date()).getTime()-((Long)ot))>1000;
          }
          if(bUpdateReportStatus) {

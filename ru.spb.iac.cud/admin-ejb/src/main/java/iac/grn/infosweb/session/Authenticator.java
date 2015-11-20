@@ -1,6 +1,7 @@
 package iac.grn.infosweb.session;
 
 
+import mypackage.Configuration;
 import iac.cud.authmodule.dataitem.AuthItem;
 import iac.cud.authmodule.dataitem.PageItem;
 import iac.cud.authmodule.session.AutzManagerLocal;
@@ -63,14 +64,14 @@ import javax.xml.crypto.dsig.keyinfo.KeyValue;
 import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
 import javax.xml.namespace.QName;
 
-import mypackage.Configuration;
-
 import org.apache.xml.security.encryption.EncryptedData;
 import org.apache.xml.security.encryption.EncryptedKey;
 import org.apache.xml.security.encryption.XMLCipher;
 import org.apache.xml.security.encryption.XMLEncryptionException;
 import org.apache.xml.security.transforms.Transforms;
-import org.jboss.seam.Component;
+
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -181,7 +182,7 @@ import ru.spb.iac.crypto.export.Crypto15Init;
     
     public boolean access(String pageCode) throws Exception{
     	try{
-    		AuthItem ai=(AuthItem)Component.getInstance("authItem", ScopeType.SESSION);
+    		AuthItem ai=getSessionItem("authItem");
     		return ai.getPageList().containsKey(pageCode);
     	}catch(Exception e){
     	 LOGGER.error("authenticator:access:error:"+e);
@@ -229,7 +230,7 @@ import ru.spb.iac.crypto.export.Crypto15Init;
 	 
 	 
 	  try{
-   		AuthItem ai=(AuthItem)Component.getInstance("authItem",ScopeType.SESSION);
+   		AuthItem ai=getSessionItem("authItem");
    		PageItem pi = ai.getPageList().get(pageCode);
    		if(pi==null){
    			return false;
@@ -1700,7 +1701,7 @@ import ru.spb.iac.crypto.export.Crypto15Init;
 	
 	 public void audit(ResourcesMap resourcesMap, ActionsMap actionsMap){
 		   try{
-			   AuditExportData auditExportData = (AuditExportData)Component.getInstance("auditExportData",ScopeType.SESSION);
+			   AuditExportData auditExportData = getSessionItem("auditExportData");
 			   auditExportData.addFunc(resourcesMap.getCode()+":"+actionsMap.getCode());
 			   
 		   }catch(Exception e){

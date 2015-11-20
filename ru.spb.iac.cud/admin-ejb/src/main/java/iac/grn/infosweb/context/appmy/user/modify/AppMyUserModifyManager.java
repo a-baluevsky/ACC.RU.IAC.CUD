@@ -3,7 +3,9 @@ package iac.grn.infosweb.context.appmy.user.modify;
 import java.util.List;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
 import javaw.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -12,9 +14,8 @@ import java.util.Set;
 
 import javaw.util.SerializableMap;
 import javaw.util.SerializableList;
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.faces.FacesMessages;
 
@@ -45,8 +46,7 @@ import iac.grn.serviceitems.HeaderTableItem;
 			 String orderQuery=null;
 			 log.info("hostsManager:invokeLocal");
 			 
-			 AppMyUserModifyStateHolder appMyUserModifyStateHolder = (AppMyUserModifyStateHolder)
-					  Component.getInstance("appMyUserModifyStateHolder",ScopeType.SESSION);
+			 AppMyUserModifyStateHolder appMyUserModifyStateHolder = getSessionItem("appMyUserModifyStateHolder");
 			 Map<String, String> filterMapMyUserMod = appMyUserModifyStateHolder.getColumnFilterValues();
 			 String st=null;
 			  

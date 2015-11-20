@@ -25,6 +25,8 @@ import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import iac.grn.serviceitems.BaseTableItem;
 
+import static iac.cud.jboss.SeamComponentAdminEjb.*;
+
 /**
  * ”правл€ющий Ѕин
  * @author bubnov
@@ -73,8 +75,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	  log.info("getAuditList:firstRow:"+firstRow);
 	  log.info("getAuditList:numberOfRows:"+numberOfRows);
 	  
-	  List<BaseItem> cparListCached = (List<BaseItem>)
-			  Component.getInstance("cparListCached",ScopeType.SESSION);
+	  List<BaseItem> cparListCached = getSessionList("cparListCached");
 	  if(auditList==null){
 		  log.info("getAuditList:01");
 		 	if(("rowSelectFact".equals(remoteAudit)||
@@ -91,8 +92,7 @@ import iac.grn.serviceitems.BaseTableItem;
 			    log.info("getAuditList:03:"+this.auditList.size());
 			}
 		 	
-		 	List<String>  selRecCpar = (ArrayList<String>)
-					  Component.getInstance("selRecCpar",ScopeType.SESSION);
+		 	List<String>  selRecCpar = getSessionList("selRecCpar");
 		 	if(this.auditList!=null && selRecCpar!=null) {
 		 		 for(BaseItem it:this.auditList){
 				   if(selRecCpar.contains(it.getBaseId().toString())){
@@ -117,8 +117,7 @@ import iac.grn.serviceitems.BaseTableItem;
 			 
 			 if("list".equals(type)){
 				 log.info("CPar:invokeLocal:list:01");				 
-				 CparStateHolder orgStateHolder = (CparStateHolder)
-						  Component.getInstance("cparStateHolder",ScopeType.SESSION);
+				 CparStateHolder orgStateHolder = getSessionItem("cparStateHolder");
 				 Set<Map.Entry<String, String>> set = orgStateHolder.getSortOrders().entrySet();
 				 StringBuilder sbOrderQueryCPar = new StringBuilder();
                  for (Map.Entry<String, String> me : set) {
@@ -181,8 +180,7 @@ import iac.grn.serviceitems.BaseTableItem;
    private SettingsKnlT searchBean(String sessionId){
     	
       if(sessionId!=null){
-    	 List<SettingsKnlT> cparListCached = (List<SettingsKnlT>)
-				  Component.getInstance("cparListCached",ScopeType.SESSION);
+    	 List<SettingsKnlT> cparListCached = getSessionList("cparListCached");
 		if(cparListCached!=null){
 			for(SettingsKnlT it : cparListCached){
 				 
@@ -210,8 +208,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	   
 	   log.info("cparManager:updCpar:01");
 	   
-	   SettingsKnlT cparBean = (SettingsKnlT)
-				  Component.getInstance("cparBean",ScopeType.CONVERSATION);
+	   SettingsKnlT cparBean = getConversationItem("cparBean");
 	   
 	   String  sessionId = FacesContext.getCurrentInstance().getExternalContext()
 		        .getRequestParameterMap()
@@ -343,8 +340,7 @@ import iac.grn.serviceitems.BaseTableItem;
 	    log.info("selectRecord:sessionId="+sessionId);
 	    
 	   //  for/View(/); //!!!
-	    List<String>  selRecCpar = (ArrayList<String>)
-				  Component.getInstance("selRecCpar",ScopeType.SESSION);
+	    List<String>  selRecCpar = getSessionList("selRecCpar");
 	    
 	    if(selRecCpar==null){
 	       selRecCpar = new ArrayList<String>();
@@ -374,7 +370,7 @@ import iac.grn.serviceitems.BaseTableItem;
   
    public void audit(ResourcesMap resourcesMap, ActionsMap actionsMap){
 	   try{
-		   AuditExportData auditExportDataCpar = (AuditExportData)Component.getInstance("auditExportData",ScopeType.SESSION);
+		   AuditExportData auditExportDataCpar = getSessionItem("auditExportData");
 		   auditExportDataCpar.addFunc(resourcesMap.getCode()+":"+actionsMap.getCode());
 		   
 	   }catch(Exception eCpar){

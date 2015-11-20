@@ -193,5 +193,4 @@ import java.util.List;
 	public void setIsSignReq(Boolean isSignReq) {
 		this.isSignReq = isSignReq;
 	}
-		
 }
