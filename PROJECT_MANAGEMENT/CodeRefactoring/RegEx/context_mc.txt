@@ -1,0 +1,24 @@
+\((Array)?List<\w+>\)\s*Component\s*\.\s*getInstance\s*\("(\S+)",\s*ScopeType\.SESSION\s*\)
+getSessionList("$2")
+
+\(\w+\)\s*Component\s*\.\s*getInstance\s*\("(\S+)",\s*ScopeType\.CONVERSATION\s*\)
+getConversationItem("$1")
+
+\(\w+\)\s*Component\s*\.\s*getInstance\s*\("(\S+)",\s*ScopeType\.SESSION\s*\)
+getSessionItem("$1")
+
+\(\w+\)\s*Component\s*\.\s*getInstance\s*\(\s*"(\S+)",\s*ScopeType\.EVENT\s*\)
+getEventItem("$1")
+
+\(\w+\)\s*Component\s*\.\s*getInstance\s*\("(\S+)"\s*\)
+getItem("$1")
+
+=\s*Component\s*\.\s*getInstance\s*\("(\S+)",\s*ScopeType\.SESSION\s*\)
+getSessionItem("$1")
+
+=\s*Component\s*\.\s*getInstance\s*\("(\S+)"\s*\)
+= getItem("$1")
+
+(\()?\(\s*LinksMap\s*\)\s*Component\s*\.\s*getInstance\s*\(\s*"linksMap"\s*,\s*ScopeType\s*\.\s*APPLICATION\s*(\()?\)
+getApplicationLinksMap()
+
