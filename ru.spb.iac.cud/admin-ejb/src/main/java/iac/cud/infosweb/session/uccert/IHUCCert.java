@@ -1,6 +1,5 @@
 package iac.cud.infosweb.session.uccert;
 
-import mypackage.Configuration;
 import iac.cud.infosweb.dataitems.BaseParamItem;
 import iac.cud.infosweb.entity.UcCertReestr;
 import iac.cud.infosweb.local.service.IHLocal;
@@ -37,6 +36,8 @@ import javax.ejb.TransactionManagementType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.UserTransaction;
+
+import mypackage.Configuration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

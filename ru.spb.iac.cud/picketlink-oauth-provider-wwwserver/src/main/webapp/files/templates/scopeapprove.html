@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html><!-- http://cuddevelop1:8080/picketlink-oauth-provider-wwwserver/auth/scope -->
+  <head>  
+    <meta charset="utf-8">
+	<base href="/picketlink-oauth-provider-wwwserver/files/" />
+    <title>ТОРИС ПААА: Сервер Авторизации OAuth</title>
+	
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.min.css" rel="stylesheet">	
+ </head>
+  <body class="gray-bg">
+  
+	<div align="center"><center>
+	<FORM action="<%redirect_uri%>" <%form_target%> method="get" id="frmApprove" name="frmApprove">
+		<table border="0" width="800" height="224" style="border-spacing: 12px; border-collapse: inherit">
+		  <tr> 
+		    <td colspan="2" height="24"><h2>Разрешить клиентскому приложению (информационной системе)<br/>
+				<center><b><%client_name%></b></center>
+				доступ к защищённым данным?				
+			</h2></td>
+		  </tr>
+		  <!--tr> 
+		    <td height="19" width="240"> <p align="right"><b>Name:</b></td>
+		    <td height="19" width="663"><pre><%client_name%></pre></td>
+		  </tr-->
+		  <tr> 
+		    <td height="19"> <p align="right"><b>Код приложения (ИС):</b></td>
+		    <td height="19" width="600"><pre><%client_id%></pre></td>
+		  </tr>
+		  <tr> 
+		    <td height="19"> <p align="right"><b>Адрес приложения (ИС):</b></td>
+		    <td height="19" width="600"><pre><%redirect_uri%></pre></td>
+		  </tr>
+		  <!--tr> 
+		    <td height="19" width="240"> <p align="right"><b>logo:</b></td>
+		    <td height="19" width="663">
+		      <img src="<%logo_url%>" />
+		      <i>&lt;not provided&gt;</i></td>
+		  </tr-->
+		  <tr> 
+		    <td height="19" width="200"><strong>Запрашиваемая область полномочий:</strong></td>
+		    <td height="19" width="600"><pre><%scope%></pre></td>
+		  </tr>
+		  <tr> 
+		    <td height="59" width="200"></td>
+		    <td width="600" height="59" align="center" valign="middle"><div align="center">
+		        <input type="submit" class="btn btn-success" name="approve" value="Разрешить" id=approve LANGUAGE=javascript>
+		        <input type="submit" class="btn btn-danger"  name="deny" value="Отклонить" id=deny LANGUAGE=javascript onclick="return deny_onclick()">
+		      </div></td>
+		  </tr>
+		</table>
+		<INPUT type="hidden" id=state name=state value="<%state%>">
+		<INPUT type="hidden" id=client_id name=client_id value="<%client_id%>">
+		<INPUT type="hidden" id=scope name=scope value="<%scope%>">
+		<INPUT type="hidden" id=response_type name=response_type value="<%response_type%>">
+		
+		<INPUT type="hidden" id=client_name name=client_name value="<%client_name%>">
+		<INPUT type="hidden" id=redirect_uri name=redirect_uri value="<%redirect_uri%>">
+		
+		<INPUT type="hidden" id=code  name=code>
+		<INPUT type="hidden" id=error name=error>		
+		<INPUT type="hidden" id=error_description name=error_description>		
+	</FORM>
+	</center></div>
+	
+	<SCRIPT ID=clientEventHandlersJS LANGUAGE=javascript>
+		//function approve_onclick() { onclick="return approve_onclick()"
+			// request pre and only then do submit
+			//this.form.action = error_uri;
+		//}
+		function deny_onclick() {
+			frmApprove.error.value = "access_denied";
+			frmApprove.error_description.value = "Пользователь отклонил разрешение на доступ!";
+		}
+	</SCRIPT>
+
+
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->	
+    <!--script src="jquery.min.js"></script -->
+	<script src="jsp/twitter-bootstrap-v2/docs/assets/js/jquery.js"></script>
+	<script id="locale.ru.js" src="js/locale.ru.js"></script>
+	<script id="scopeapprove.js" src="js/scopeapprove.js"></script>
+	
+  </body>
+</html>

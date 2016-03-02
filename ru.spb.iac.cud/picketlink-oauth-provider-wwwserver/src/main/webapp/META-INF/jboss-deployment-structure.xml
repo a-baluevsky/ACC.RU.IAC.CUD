@@ -1,0 +1,11 @@
+<jboss-deployment-structure>
+	<deployment>
+		<dependencies>
+			<module name="javax.ws.rs.api" />			
+			<module name="org.picketlink" />			
+			<module name="ru.spb.iac.cud" />
+			<module name="ru.spb.iac.cud.sts" />
+		</dependencies>
+	</deployment>
+</jboss-deployment-structure>
+

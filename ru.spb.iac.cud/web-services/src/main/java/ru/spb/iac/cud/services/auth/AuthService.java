@@ -27,6 +27,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 
 import ru.spb.iac.cud.context.ContextAccessManager;
+import ru.spb.iac.cud.context.ContextProxy;
 import ru.spb.iac.cud.core.AccessManagerLocal;
 import ru.spb.iac.cud.exceptions.GeneralFailure;
 import ru.spb.iac.cud.exceptions.InvalidCredentials;
@@ -35,6 +36,8 @@ import ru.spb.iac.cud.items.AuthMode;
 
 @Path("/auth")
 public class AuthService {
+	private static final String JSON_UTF8 = MediaType.APPLICATION_JSON + "; charset=UTF-8";
+	private static final String HTML_UTF8 = MediaType.TEXT_HTML + "; charset=UTF-8";
 	
 	@XmlRootElement @JsonAutoDetect
 	@JsonWriteNullProperties(false)
@@ -66,11 +69,13 @@ public class AuthService {
 		@XmlElement @JsonProperty	List<String> userRoles;
 		@XmlElement @JsonProperty	Map<String, String> userAttrs;
 	}
+
+	
 	
 	 @POST
 	 @Path("/action")
 	 @Consumes("application/x-www-form-urlencoded")
-	 @Produces(MediaType.APPLICATION_JSON)
+	 @Produces(JSON_UTF8)
      public AuthResponse login(@Context HttpServletRequest request, 
     			@FormParam("login") String login, 
     			@FormParam("password") String password, 
@@ -119,19 +124,21 @@ public class AuthService {
     
     private AccessManagerLocal aml = null;
 	private AccessManagerLocal getAml() {
-		if(aml == null) aml = (new ContextAccessManager()).aml;
+		if(aml == null) aml = (new ContextAccessManager())._;
 		return aml;
 	}
 	
+	private IDPAccessManagerLocal idpaml = null;	
 	public IDPAccessManagerLocal getContextIDPAccessManager() throws NamingException {
-		return (IDPAccessManagerLocal) ((new InitialContext())
-					.lookup("java:global/AuthServices/IDPAccessManager!ru.spb.iac.cud.idp.core.access.IDPAccessManagerLocal"));
+		return  idpaml==null? 
+				idpaml=ContextProxy.get("java:global/AuthServices/IDPAccessManager!ru.spb.iac.cud.idp.core.access.IDPAccessManagerLocal")
+			   :idpaml;
 	}	
 	
 	/* // активируй для отладки
     @GET
     @Path("/test")
-    @Produces(MediaType.TEXT_HTML)     
+    @Produces(HTML_UTF8)     
     public String testlogin(@Context HttpServletRequest request)  {
     	AuthResponse retVal = tryLogin(request, "baluevsky", "baluevsky", "urn:sub-eis:web:test");
     	if(retVal.resultCode.equals(AuthResponse.AuthCode.OK)) {
@@ -142,16 +149,14 @@ public class AuthService {
     }
     */
     
-    @GET
-    @Path("/form")
-    @Produces(MediaType.TEXT_HTML)    
+    @GET @Path("/form")
+    @Produces(HTML_UTF8)    
     public String getLoginForm(@Context HttpServletRequest request) {
     	return getFormHTML(request, "password");
 	}
 
-    @GET
-    @Path("/formHash")
-    @Produces(MediaType.TEXT_HTML)    
+    @GET @Path("/formHash")
+    @Produces(HTML_UTF8)    
     public String getLoginFormHash(@Context HttpServletRequest request) {
     	return getFormHTML(request, "passwordHash");
 	}    

@@ -24,8 +24,8 @@ import ru.spb.iac.cud.services.CUDService;
 @HandlerChain(file = "/handlers_anonym.xml")
 @BindingType(SOAPBinding.SOAP12HTTP_BINDING)
  public class AuditServiceImpl extends CUDService implements AuditService{
-
 	 private static final Logger LOGGER = LoggerFactory.getLogger(AuditServiceImpl.class);
+	 private static final ContextAccessManager cam  = new ContextAccessManager();
      public static final String NS = "http://audit.services.cud.iac.spb.ru/";
 
      //@Resource(name="wsContext")
@@ -37,11 +37,8 @@ import ru.spb.iac.cud.services.CUDService;
 			    @WebParam(name = "userFunctions", targetNamespace = NS) List<AuditFunction> userFunctions) throws GeneralFailure{
     	 
     	 LOGGER.debug("audit");
-			(new ContextAccessManager()).audit(
-					getIDSystem(), uidUser, userFunctions, getIDUser(), getIPAddress());
+		 cam.audit(getIDSystem(), uidUser, userFunctions, getIDUser(), getIPAddress());
 	 }
-  
-
      
 	@Override
 	@WebResult(targetNamespace = NS)
@@ -57,7 +54,7 @@ import ru.spb.iac.cud.services.CUDService;
 		try {
 			String sysCode = getIDSystem(); //LoadAssertionFromMessageContext(wsContext.getMessageContext()).getSubjectNameID();
 			LOGGER.debug("getAuditDataISByPeriod");
-			adp = (new ContextAccessManager()).getAuditDataISByPeriod(sysCode, date1, date2, rowsCount, rowStartOffset, filterUser);
+			adp = cam.getAuditDataISByPeriod(sysCode, date1, date2, rowsCount, rowStartOffset, filterUser);
 		} catch (Exception e) {		
 			e.printStackTrace();
 		}

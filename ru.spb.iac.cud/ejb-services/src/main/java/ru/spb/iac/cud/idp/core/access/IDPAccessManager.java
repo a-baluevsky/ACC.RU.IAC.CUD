@@ -206,14 +206,9 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 					lo = query.getResultList();
 
 			for (Object[] objectArray : lo) {
-
 				String name = null;
-
 				for (int i = 0; i < objectArray.length; i++) {
-
-			
 					if (attributesList.get(i) != null) {
-
 						result.put(
 								attributesList.get(i),
 								objectArray[i] != null ? objectArray[i]

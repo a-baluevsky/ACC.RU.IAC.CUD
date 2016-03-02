@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Запрос ПААА выполнен</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<base href="/picketlink-oauth-provider-wwwserver/files/" />
+	
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.min.css" rel="stylesheet">	
+</head>
+<body class="gray-bg">
+	<h2 align=center><FONT color=darkgreen>Доступ получен!</FONT> </h2>
+	<TABLE WIDTH="75%" BORDER=1 CELLSPACING=1 CELLPADDING=1 align=center>
+	<TR>
+		<TD>code</TD>
+		<TD><%code%></TD>
+	</TR>	
+	<TR>
+		<TD>state</TD>
+		<TD><%state%></TD>
+	</TR>	</TR>	
+	<TR>
+		<TD colspan=2>дополнительные сведения для разработчиков:</TD>
+	</TR>
+	<!--TR>
+		<TD>response_type</TD>
+		<TD><%response_type%></TD>
+	</TR>
+	<TR>
+		<TD>scope</TD>
+		<TD><%scope%></TD>
+	</TR>
+	<TR>
+		<TD>token (usually hidden from user)</TD>
+		<TD><%token%></TD>
+	</TR-->	
+	</TABLE>
+	<hr/>
+	<h2>Test: authorization_code -> access_token</h2>
+	<form action="/picketlink-oauth-provider-wwwserver/token" method=post> <br/>
+		code: <INPUT type="text" id=code name=code value="<%code%>"> <br/>
+		redirect_uri: <input type="text" id="redirect_uri" name="redirect_uri" value="<%redirect_uri%>" /> <br/>
+		grant_type: <INPUT type="text" id=grant_type name=grant_type value="authorization_code"> <br/>
+		Authorization: <INPUT type="text" id=authorization name=authorization value="<%authorization%>"> <br/>	
+
+		client_id: 		<INPUT type="text" id=client_id name=client_id value="<%client_id%>"> <br/>
+		client_secret: 	<INPUT type="text" id=client_secret name=client_secret value="<%client_secret%>"> <br/>
+
+		<input type="submit" id=gettoken name="gettoken" value="Get token!">
+	</form>
+	<hr/>
+	<h2>Protected resource (JWT) test</h2>
+	<form action="/picketlink-oauth-provider-wwwserver/test/resource" method=get>
+			access token:<input type="text" id="access_token" name="access_token" /> <br/>
+			<input type="submit" />
+	</form>
+	
+</body>
+</html>

@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+<html><!-- http://cuddevelop1:8080/picketlink-oauth-provider-wwwserver/test -->
+  <head>
+    <meta charset="utf-8">
+	<base href="/picketlink-oauth-provider-wwwserver/" />	
+    <title>ТОРИС ПААА OAuth: тестовый запрос клиентского приложения</title>
+
+    <link href="files/css/bootstrap.min.css" rel="stylesheet">
+    <link href="files/font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <link href="files/css/animate.css" rel="stylesheet">
+    <link href="files/css/style.min.css" rel="stylesheet">
+	
+  </head>
+	<body class="gray-bg">
+	
+	<div class="middle-box text-center loginscreen animated fadeInDown">  
+		<h3>Параметры запроса клиентского приложения:</h3>
+		<FORM action="auth" method="get">
+		  <table border="0" width="425">
+			<tr>
+			  <td width="120">client_id:</td><td><input type="text" id="client_id" name="client_id" value="<%client_id%>" size="36" /></td>
+			</tr>
+			<tr>
+			  <td>client_name:</td><td><input type="text" id="client_name" name="client_name" value="Тестовый запрос от <%client_name%>" size="36" /></td>
+			</tr>
+			<tr>
+			  <td>redirect_uri:</td><td><input type="text" id="redirect_uri" name="redirect_uri" value="<%redirect_uri%>"  size="36" /></td>
+			</tr>
+			<tr>
+			  <td>response_type:</td><td><input type="text" id="response_type" name="response_type" value="code" size="36" /></td>
+			</tr>
+			<tr>
+			  <td>scope:</td><td><input type="text" id="scope" name="scope" value="openid profile" size="36" /></td>
+			</tr>
+			<tr>
+			  <td>state:</td><td><input type="text" id="state" name="state" value="<%state%>" size="36" /></td>
+			</tr>
+			<tr>
+			  <td colspan="2" valign="middle" align="center" height="60"><input type="submit" /></td>
+			</tr>			
+		  </table>			
+		</FORM>
+		<hr/>
+	</div>
+	</body>
+</html>  

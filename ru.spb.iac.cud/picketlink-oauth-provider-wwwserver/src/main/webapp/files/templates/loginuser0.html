@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Authz: Login user</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<base href="/picketlink-oauth-provider-wwwserver/files/" />
+    </head>
+
+    <body>
+        <form action="">
+            <div align="center">
+              <center>
+              <table border="2" width="473">
+                <tr>
+                  <td colspan="3" width="461" bgcolor="#99CCFF">
+                    <p align="center">Login user</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="19">&nbsp;</td>
+                  <td width="165"><b>Name:</b></td>
+                  <td width="265"><input type="text" id="username"  name="username" size="38"></td>
+                </tr>
+                <tr>
+                  <td width="19">&nbsp;</td>
+                  <td width="165"><b>Password:</b></td>
+                  <td width="265"><input type="password" id="password" name="password" size="38"></td>
+                </tr>
+                <tr>
+                  <td width="19">&nbsp;</td>
+                  <td colspan=2 width="436">
+                  <p align="center"><div id="login-msg" style="color: red"></div></p>
+                        <p align="center">
+                          <input type="submit" value="Login" id="login-btn">
+                        </p>
+                </td>
+                </tr>
+              </table>
+              </center>
+            </div>
+            <INPUT type="hidden" id="response_type" name="response_type" value="<%response_type%>" />
+            <INPUT type="hidden" id="scope_list" name="scope_list" value="<%scope_list%>" />
+            <INPUT type="hidden" id="state" name="state" value="<%state%>" />
+            <INPUT type="hidden" id="framed" name="framed" value="1" />
+        </form>
+
+
+
+        <script id="jquery.min.js" type="text/javascript" src="/picketlink-oauth-provider-wwwserver/files/js/jquery.min.js">
+        </script>
+
+        <script id="loginuser.js" type="text/javascript"  src="/picketlink-oauth-provider-wwwserver/files/js/loginuser.js">
+        </script>
+
+    </body>
+
+</html>

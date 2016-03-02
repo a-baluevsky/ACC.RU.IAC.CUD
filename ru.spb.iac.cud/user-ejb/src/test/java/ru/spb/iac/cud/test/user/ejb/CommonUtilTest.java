@@ -1,9 +1,9 @@
 package ru.spb.iac.cud.test.user.ejb;
 
 
-import mypackage.Configuration;
-
 import java.util.ArrayList;
+
+import mypackage.Configuration;
 
 import org.junit.After;
 import org.junit.AfterClass;

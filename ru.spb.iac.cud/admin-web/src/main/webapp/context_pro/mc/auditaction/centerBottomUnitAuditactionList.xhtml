@@ -100,7 +100,7 @@
 										value="Сохранить"
 										action="#{auditActionManager.addAuditAction}"
 										reRender="outCenterCenter, outCenterCenterFooter"
-										oncomplete="hideMPCrt();"
+										oncomplete="#{auditActionManager.auditActionCodeExist ? 'alert(\'Такой код функции аудита уже существует!\')' : 'hideMPCrt();' }"
 										onclick="if(check('CBformCrt')){return false;}"
 										styleClass="but_class">
 											<f:param name="onCreate" value="1" />
@@ -178,7 +178,7 @@
 									<a4j:commandButton value="Сохранить"
 										action="#{auditActionManager.updAuditAction}"
 										reRender="outCenterCenter, outCenterBottom_onlyFields"
-										oncomplete="hideMPUpd();"
+										oncomplete="#{auditActionManager.auditActionCodeExist ? 'alert(\'Такой код функции аудита уже существует!\')' : 'hideMPUpd();' }"
 										onclick="if(check('CBformUpd')){return false;}"
 										styleClass="but_class">
 											<f:param name="onUpdate" value="1" />

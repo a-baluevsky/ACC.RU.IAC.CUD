@@ -1,5 +1,6 @@
 package ru.spb.iac.cud.core;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -47,4 +48,7 @@ public interface UtilManagerLocal {
 
 	
 	public void is_exist(String idIS) throws GeneralFailure;
+	
+	// optional attributes (if NULL, all attributes returned)
+	public Map<String,String> getEISAttributes(String idIS, Collection<String> attributes) throws GeneralFailure;
 }

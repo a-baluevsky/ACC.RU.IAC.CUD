@@ -73,7 +73,7 @@ import java.util.List;
 	private Boolean usrChecked=false;
 	
     @Column(name="SIGN_REQ")
-    private Boolean isSignReq;
+    private Boolean isSignReq = true;
 	   
 	public AcApplication() {
     }

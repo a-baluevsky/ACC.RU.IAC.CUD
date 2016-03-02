@@ -2,7 +2,9 @@ package ru.spb.iac.cud.core.eis;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +16,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,14 +115,11 @@ import ru.spb.iac.cud.util.CommonUtil;
 		String usersIdsLine = null;
 	
 		try {
-
 			Map<String,String> settingsMap = getSettingsMap(settings);
-			
 			if (idIS == null) {
 				LOGGER.debug("users_data:return:1");
 				throw new GeneralFailure("idIS is null!");
 			}
-
 			if (count == null ) {				
 				count = MAX_CONT_USERS;				
 				if("TRUE".equals(settingsMap.get("ACCOUNTS_ONLY"))){
@@ -129,7 +129,6 @@ import ru.spb.iac.cud.util.CommonUtil;
 			if (start == null) {
 				start = 0;
 			}
-
 			if (MAX_CONT_USERS < count
 					&& !"TRUE".equals(settingsMap.get("ACCOUNTS_ONLY"))) {
 				LOGGER.debug("users_data:return:2");
@@ -144,31 +143,21 @@ import ru.spb.iac.cud.util.CommonUtil;
 			}
 			
 			LOGGER.debug("users_data:idIS1:" + idIS);
-
 			String uidsLine = CommonUtil.createLine(uidsUsers);
-
 			if (CUDConstants.categorySYS.equals(category) && rolesCodes != null
 					&& !rolesCodes.isEmpty()) {
-
 				rolesLine = CommonUtil.createLine(rolesCodes);
-			
 			}
 
 			if (
 			groupsCodes != null && !groupsCodes.isEmpty()) {
-
 				groupsLine = CommonUtil.createLine(groupsCodes);
-				
-			
 			}
 
 			if (idIS.startsWith(CUDConstants.armPrefix)
 					|| idIS.startsWith(CUDConstants.subArmPrefix)) {
-
-				
 				// !!!
 				idIS = getCodeIs(idIS);
-
 				LOGGER.debug("is_users:idIS2:" + idIS);
 
 				String filterSt = null;
@@ -2424,7 +2413,92 @@ import ru.spb.iac.cud.util.CommonUtil;
 		}
 		return settingsMap;
 	}
+	private static String[] eisAttributes = {
+		"ID_SRV", "SIGN_OBJECT", "FULL_", 	"DESCRIPTION", 
+		"CREATOR", "CREATED", "DATE_EVENT_SRV", "ATTEMPT_SRV", 
+		"CERT_ALIAS", /*"CERT_DATE",*/ "LINKS", "SIGN_REQ"
+	};
 	
+	private static Map<Integer,String> mapEisAttributesList = getEisAttributesList();
+	private static Map<Integer, String> getEisAttributesList() {
+		Map<Integer,String> attributesList = new HashMap<Integer,String>();
+		attributesList.put(0, "ID_SRV");
+		attributesList.put(1, "SIGN_OBJECT");
+		attributesList.put(2, "FULL_");
+		attributesList.put(3, "DESCRIPTION");
+		attributesList.put(4, "CREATOR");
+		attributesList.put(5, "CREATED");
+		attributesList.put(6, "DATE_EVENT_SRV");
+		attributesList.put(7, "ATTEMPT_SRV");
+		attributesList.put(8, "CERT_ALIAS");
+		attributesList.put(9, "CERT_DATE");
+		attributesList.put(10, "LINKS");
+		attributesList.put(11, "SIGN_REQ");
+		return attributesList;
+	}
+	/*
+	private static Map<String, String> fetchNamedRowFields(List<Object[]> lo, Map<Integer,String> rowNamesMap) {
+		Map<String, String> result = new HashMap<String, String>();
+		for (Object[] objectArray : lo)
+			for (int i = 0; i < objectArray.length; i++) {
+				String fldName = rowNamesMap.get(i);
+				if (fldName != null)
+					result.put(fldName, objectArray[i] != null ? objectArray[i].toString() : "");
+			}
+		return result;
+	}
+	*/
+	
+	private static Map<String, String> fetchNamedRowFields(List<Object[]> lo, Collection<String> rowNamesMap) {
+		Map<String, String> result = new HashMap<String, String>();
+		for (Object[] objectArray : lo) {
+			int i = 0;
+			for (Iterator<String> itNames = rowNamesMap.iterator(); 
+				 itNames.hasNext() && i<objectArray.length;
+				 ++i) {
+				String fldName = (String) itNames.next();
+				if (fldName != null)
+					result.put(fldName, objectArray[i] != null ? objectArray[i].toString() : "");
+			}			
+		}
+		return result;
+	}
+	
+	@Override
+	public Map<String, String> getEISAttributes(String codeSys,
+			Collection<String> attributes) throws GeneralFailure {
+		Map<String, String> result = null;
+		if(attributes==null || attributes.size()==0)
+			attributes = Arrays.asList(eisAttributes);
+			
+		try {
+			StringBuilder sqlQueryBuilder = new StringBuilder("select ");
+			for (String atrName : attributes)
+				sqlQueryBuilder.append("SYS.").append(atrName).append(", ");
+			sqlQueryBuilder.delete(sqlQueryBuilder.length()-2, sqlQueryBuilder.length()-1);
+			sqlQueryBuilder.append("from  AC_IS_BSS_T sys, ")
+			  .append("AC_SUBSYSTEM_CERT_BSS_T subsys ")
+			  .append("where (SYS.SIGN_OBJECT= :codeSys or  SUBSYS.SUBSYSTEM_CODE= :codeSys) ")
+			  .append("and  SUBSYS.UP_IS(+) =SYS.ID_SRV ");
+			  //.append("group by SYS.SIGN_OBJECT ");			
+			final Query query = em.createNativeQuery(sqlQueryBuilder.toString())
+					.setParameter("codeSys", codeSys)
+					.setHint("org.hibernate.readOnly", true);
+			final List<Object[]> lo = query.getResultList();
+			result = fetchNamedRowFields(lo, Arrays.asList(eisAttributes));
+		} catch (NoResultException ex) {
+			LOGGER.error("getEISAttributes:NoResultException");
+			throw new GeneralFailure("System is not defined");
+		} catch (Exception e) {
+			throw new GeneralFailure(e.getMessage());
+		}
+		return result;		
+
+	}
+
+	
+	
+
 	
 	
 }

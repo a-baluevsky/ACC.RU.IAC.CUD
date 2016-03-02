@@ -4,8 +4,6 @@ import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.List;
 
-import javax.swing.AbstractAction;
-
 // Wrapper to deal with SONAR CWE-594 issue.
 // http://cwe.mitre.org/data/definitions/594.html
 // Use SerializableList<K> in Serializable classes instead of just SerializableList<K>.

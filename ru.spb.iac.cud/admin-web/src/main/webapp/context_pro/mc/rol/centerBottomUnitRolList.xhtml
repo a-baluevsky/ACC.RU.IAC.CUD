@@ -511,7 +511,8 @@
 																<h:inputText
 																	value="#{rolUsrStateHolder.columnFilterValues[field.itemSortField]}"
 																	immediate="true" id="iaf#{index}"
-																	onkeypress="if(event.keyCode==13){invokeMyStartRolUsr();}">
+																	onkeypress="if(event.keyCode==13){invokeMyStartRolUsr();}"
+																	>
 																</h:inputText>
 															</c:otherwise>
 														</c:choose>
@@ -538,7 +539,7 @@
 										</rich:dataTable>
 										</div>
 										<a4j:jsFunction name="invokeMyStartRolUsr"
-											reRender="outCBmpUpdUserAlfList"
+											reRender="outCBmpUpdUserAlfList,outCenterCenterFooterDscr"
 											oncomplete="setHDiv_min_proSoft_top_rmp('CBmpUpdUsrAlfHDiv', 'CBmpUpdUserAlfCDiv', 10); setCaretToEnd(event);">
 											<!--f:param name="#{param['sessionId']!=null ? 'sessionId' : 'xxx1'}" value="#{param['sessionId']}"/-->
 											<f:param name="sessionId" value="#{param['sessionId']}" />

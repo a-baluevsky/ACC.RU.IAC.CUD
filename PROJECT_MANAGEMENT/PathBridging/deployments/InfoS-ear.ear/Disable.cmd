@@ -14,4 +14,4 @@ if exist "%TargetDir%.undeployed" del /F /Q "%TargetDir%.undeployed"
 if exist "%TargetDir%.dodeploy"   del /F /Q "%TargetDir%.dodeploy"
 call unmountBridge.cmd "%BridgeDir%"
 
-pause
+rem pause

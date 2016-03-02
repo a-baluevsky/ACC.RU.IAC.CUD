@@ -1,0 +1,15 @@
+﻿<html><body>
+
+	<FORM action="<%redirect_uri%>" <%form_target%> method=get id=frmRedirect name=frmRedirect>
+	<INPUT type="hidden" id=code  name=code value="<%code%>">
+	
+	<INPUT type="hidden" id=state name=state value="<%state%>">
+	<INPUT type="hidden" id=client_id name=client_id value="<%client_id%>">
+	<INPUT type="hidden" id=scope name=scope value="<%scope%>">
+	<INPUT type="hidden" id=response_type name=response_type value="<%response_type%>">
+
+	<INPUT type="hidden" id=client_name name=client_name value="<%client_name%>">
+	<INPUT type="hidden" id=redirect_uri name=redirect_uri value="<%redirect_uri%>">
+
+</FORM>
+<SCRIPT>frmRedirect.submit();</SCRIPT></body></html>

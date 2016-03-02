@@ -17,6 +17,13 @@
         <sonar.jacoco.itReportPath>${coverage.reports.dir}/jacoco-it.exec</sonar.jacoco.itReportPath>
         <sonar.jacoco.jar>${basedir}/lib/jacocoagent.jar</sonar.jacoco.jar>
 
+       <!-- PicketLink dependency versions -->
+	   <jboss.bom.version>1.0.7.Final</jboss.bom.version>
+       <version.picketlink.javaee.bom>2.6.0.CR1</version.picketlink.javaee.bom>		
+      <!-- Explicitly declaring the source encoding eliminates the following
+         message: [WARNING] Using platform encoding (UTF-8 actually) to copy filtered
+         resources, i.e. build is platform dependent! -->
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>	   
     </properties>
     
     <dependencies>
@@ -100,6 +107,21 @@
                 <scope>test</scope>  
             </dependency>  
             
+			<!-- picketlink-oauth-provider --> 
+            <dependency>
+                <groupId>org.jboss.bom</groupId>
+                <artifactId>jboss-javaee-6.0-with-hibernate</artifactId>
+                <version>${jboss.bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency> <!-- Dependency Management for PicketLink and Java EE 6.0. -->
+            <dependency>
+                <groupId>org.picketlink</groupId>
+                <artifactId>picketlink-javaee-6.0</artifactId>
+                <version>${version.picketlink.javaee.bom}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>			
             
           <!-- for test -->  
             
@@ -186,32 +208,45 @@
                     <encoding>cp1251</encoding>
                 </configuration>
             </plugin>
+
+			 <!-- The JBoss AS plugin deploys your apps to a local JBoss AS container -->
+			 <!-- Disabling it here means that we don't try to deploy this POM! -->
+			<plugin>
+				<groupId>org.jboss.as.plugins</groupId>
+				<artifactId>jboss-as-maven-plugin</artifactId>
+				<version>7.1.0.Beta1b</version>
+				<inherited>true</inherited>
+				<configuration>
+				   <skip>true</skip>
+				</configuration>
+			</plugin>
+	
         </plugins>
         </pluginManagement>
     </build>
   
   
-  <modules>
-  	<module>admin-web</module>
-  	<module>admin-ejb</module>
-  	<module>admin-ear</module>
-  	<module>common-ilib</module>
-  	<module>crypto-15export</module>
-  	<module>ejb-services</module>
-  	<module>authz-module</module>
-  	<module>idp-lib</module>
-  	<module>sts-lib</module>
-  	<module>idp-web</module>
-  	<module>sts-web</module>
-  	<module>sp-lib</module>
-  	<module>web-services</module>
-  	<module>schedule-services</module>
-  	<module>user-ear</module>
-  	<module>user-ejb</module>
-  	<module>user-web</module>
-  	<module>report-services</module>
-    </modules>
-    
-           
+	<modules>
+		<module>admin-web</module>
+		<module>admin-ejb</module>
+		<module>admin-ear</module>
+		<module>common-ilib</module>
+		<module>crypto-15export</module>
+		<module>ejb-services</module>
+		<module>authz-module</module>
+		<module>idp-lib</module>
+		<module>sts-lib</module>
+		<module>idp-web</module>
+		<module>sts-web</module>
+		<module>sp-lib</module>
+		<module>web-services</module>
+		<module>schedule-services</module>
+		<module>user-ear</module>
+		<module>user-ejb</module>
+		<module>user-web</module>
+		<module>report-services</module>
+		<module>picketlink-oauth-provider</module>	
+		<module>picketlink-oauth-provider-wwwserver</module>	
+	</modules>
     
 </project>

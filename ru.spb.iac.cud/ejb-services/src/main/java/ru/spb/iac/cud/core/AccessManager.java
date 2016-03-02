@@ -9,6 +9,7 @@ import iac.cud.infosweb.dataitems.AppUserItem;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509CRL;
@@ -160,7 +161,17 @@ private Object[] getAuthLoginPwdCheck(String condLoginPw, String login, String p
 	LOGGER.debug("getAuthLoginPwdCheck:10");
 	return dataUser;
 }
-//private Object[] getAuthByLogin() 
+
+@Override
+public Long getUserIdByLogin(String login) {
+	try {
+		return ((BigDecimal)getQueryUsers("AU.ID_SRV", "AU.LOGIN=?")
+				.setParameter(1, login).getSingleResult()).longValue();
+	} catch (Exception e) {
+		e.printStackTrace();
+		return 0L;
+	}
+}
 	
 	/**
 	 * аутентификация пользователя по токену от другой системы
@@ -576,17 +587,33 @@ private Object[] getAuthLoginPwdCheck(String condLoginPw, String login, String p
 	/**
 	 * проверка корректности ид системы
 	 */
-	public void is_exist(String idIS) throws GeneralFailure {
-
-		LOGGER.debug("AuthManager:is_exist:idIS:" + idIS);
-
+	// TODO: introduce a new method with a new behavior: 
+	public boolean is_exist(String idIS) throws GeneralFailure { //isEIS_exist
+		LOGGER.debug("AuthManager:isEIS_exist:idIS:" + idIS);
 		try {
-
 			em.createNativeQuery(
 					"select APP.ID_SRV " + "from AC_IS_BSS_T app "
 							+ "where APP.SIGN_OBJECT=?").setParameter(1, idIS)
 					.getSingleResult();
+			return true;
+		} catch (NoResultException ex) {
+			LOGGER.debug("createAuth:NoResultException: Информационная система не определёна!");
+			return false; // <------ !!! 
+		} catch (Exception e) {
+			LOGGER.debug("isEIS_exist:", e);
+			throw new GeneralFailure(e.getMessage());
+		}
+	}
 
+	// TODO: test/debug after move from original behavior:
+	public boolean is_exist2(String idIS) throws GeneralFailure {
+		LOGGER.debug("AuthManager:is_exist:idIS:" + idIS);
+		try {
+			em.createNativeQuery(
+					"select APP.ID_SRV " + "from AC_IS_BSS_T app "
+							+ "where APP.SIGN_OBJECT=?").setParameter(1, idIS)
+					.getSingleResult();
+			return true;
 		} catch (NoResultException ex) {
 			LOGGER.debug("createAuth:NoResultException");
 			throw new GeneralFailure("Информационная система не определёна!");
@@ -924,4 +951,51 @@ private Object[] getAuthLoginPwdCheck(String condLoginPw, String login, String p
 		 }
 	}	
 
+	// AB: used in OAuth Provider
+	// return null, if app not found, so use this to check whether app exists
+	@Override
+	public String getOAuthClientAppSecret(String clientAppId) {
+		String appSecret = null;
+		String tblName = null, fldName = null;
+		if(clientAppId!=null) {// clientAppId - это код системы или код подсистемы
+			if (clientAppId.startsWith(CUDConstants.armPrefix)) {
+				tblName = "AC_IS_BSS_T";// ищем код в системах
+				fldName = "SIGN_OBJECT";	
+			}
+			else if (clientAppId.startsWith(CUDConstants.subArmPrefix)) {
+				tblName = "AC_SUBSYSTEM_CERT_BSS_T";// подсистемы
+				fldName = "SUBSYSTEM_CODE";		
+			}
+			else if (clientAppId.startsWith(CUDConstants.groupArmPrefix)) {
+				tblName = "GROUP_SYSTEMS_KNL_T";// группы систем
+				fldName = "GROUP_CODE";
+			}
+			if(tblName!=null)
+			try {
+				String sSQL = (new StringBuilder("select ")).append(fldName)
+							  .append(" from ").append(tblName).append(" t1")
+							  .append(" where T1.").append(fldName).append("=?")
+							  .toString();
+				appSecret = (String) em
+					.createNativeQuery(sSQL)
+					.setParameter(1, clientAppId).getSingleResult();				
+			} catch(Exception e) {
+				System.out.println(e.toString());
+			}
+		}
+		return appSecret;
+	}
+
+	@Override
+	public boolean isValidLoginPassword(String login, String password) {
+		try {
+			Object[] dataUser = getAuthLoginPwdCheck("AU.LOGIN=? and AU.PASSWORD_=?", login, password);
+			Long idUser = ((java.math.BigDecimal) dataUser[0]).longValue();
+			LOGGER.info("AccessManager:isValidLoginPassword:success: "+login+" => "+idUser);
+			return true;
+		} catch(Exception e) {
+			LOGGER.error("AccessManager:isValidLoginPassword:error:"+e);
+		}
+		return false;
+	}
 }

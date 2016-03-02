@@ -74,7 +74,13 @@
 			<scope>provided</scope>
 			<!--exclusions> <exclusion> <groupId>*</groupId> <artifactId>*</artifactId> 
 				</exclusion> </exclusions -->
-		</dependency>					
+		</dependency>
+		<dependency>
+         <groupId>org.jboss.resteasy</groupId>
+         <artifactId>resteasy-jaxrs</artifactId>
+         <version>2.3.3.Final</version>
+         <scope>provided</scope>
+      </dependency>
 	</dependencies>
 
 	<build>

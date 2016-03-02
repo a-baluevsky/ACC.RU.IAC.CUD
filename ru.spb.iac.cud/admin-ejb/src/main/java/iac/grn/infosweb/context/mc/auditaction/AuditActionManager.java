@@ -154,7 +154,7 @@ import org.jboss.seam.log.Log;
     	    		 Set<Map.Entry<String, String>> setFilterAuditActionManager = filterMapAuditAction.entrySet();
     	              for (Map.Entry<String, String> me : setFilterAuditActionManager) {
     	            	      		//делаем фильтр на начало
-    	            	  st=(st!=null?st+" and " :"")+" lower("+me.getKey()+") like lower('%"+me.getValue()+"%') ";
+    	            	  st=(st!=null?st+" and " :"")+" lower("+me.getKey()+") like lower('"+me.getValue()+"%') ";
     	           
     	              }
     	    	   }

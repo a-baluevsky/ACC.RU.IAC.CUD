@@ -1,0 +1,12 @@
+<jboss-deployment-structure>
+	<deployment>
+		<exclusions>
+			<module name="org.apache.log4j" />
+		</exclusions>
+	</deployment>
+	<sub-deployment name="picketlink-oauth-provider-wwwserver.war">
+		<dependencies>
+			<module name="ru.spb.iac.cud" export="true" />
+		</dependencies>
+	</sub-deployment>
+</jboss-deployment-structure>

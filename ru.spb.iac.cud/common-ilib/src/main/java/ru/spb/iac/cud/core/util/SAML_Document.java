@@ -103,7 +103,7 @@ public class SAML_Document {
 				Node n = user_attributes.item(i);
 
 				if (attributeName.equals(((Element) n).getAttribute("Name"))) {
-					result = n.getFirstChild().getTextContent(); // .getNodeValue(); //
+					result = n.getFirstChild().getNodeValue(); // .getTextContent();
 					if(firstMatch) return result;
 				}
 			}

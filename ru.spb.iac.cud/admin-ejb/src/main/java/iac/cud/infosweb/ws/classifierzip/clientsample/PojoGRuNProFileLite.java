@@ -1,7 +1,5 @@
 package iac.cud.infosweb.ws.classifierzip.clientsample;
 
-import mypackage.Configuration;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -23,6 +21,8 @@ import javaw.io.Closeable;
 
 import javax.persistence.EntityManager;
 import javax.transaction.UserTransaction;
+
+import mypackage.Configuration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

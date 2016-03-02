@@ -11,6 +11,7 @@ public class CUDRsApp  extends Application {
     public Set<Class<?>> getClasses() {
         Set<Class<?>> resources = new java.util.HashSet<>();
         addRestResourceClasses(resources);
+        addProviderClasses(resources);
         return resources;
     }
     
@@ -20,5 +21,12 @@ public class CUDRsApp  extends Application {
         resources.add(org.codehaus.jackson.jaxrs.JsonMappingExceptionMapper.class);
         resources.add(org.codehaus.jackson.jaxrs.JsonParseExceptionMapper.class);*/
         resources.add(ru.spb.iac.cud.services.auth.AuthService.class);
-    }    
+        resources.add(ru.spb.iac.cud.services.audit.AuditServiceREST.class);
+    }
+
+    private void addProviderClasses(Set<Class<?>> resources) {
+		resources.add(ru.spb.iac.cud.services.handlers.OAuthHandler.class);
+		resources.add(ru.spb.iac.cud.services.handlers.ExceptionHandler.GeneralFailureMapper.class);
+		resources.add(ru.spb.iac.cud.services.handlers.ExceptionHandler.SecurityExceptions_ClientAuthExceptionMapper.class);
+	}
 }

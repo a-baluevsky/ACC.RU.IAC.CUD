@@ -62,15 +62,13 @@ import javaw.util.SerializableSet;
 		this.armName = armName;
 	}	
 	
-    //@ManyToOne
-	//@JoinColumn(name="UP_IS") //, insertable=false, updatable=false
+
 	@Column(name="UP_IS")
-	private Long /*AcApplication*/ acIsBssT;
+	private Long acIsBssT;
 
     @ManyToOne
 	@JoinColumn(name="UP_IS", insertable=false, updatable=false)
 	private AcApplication acIsBssT2;
-    
     
 	@OneToMany(mappedBy="actionsBssT")
     private /*Serializable*/ Set<ActionsLogKnlT> actionsLogKnlTs;	
@@ -143,22 +141,6 @@ import javaw.util.SerializableSet;
 		this.sign = sign;
 	}
 
-	/*
-	public AcApplication getAcIsBssT() {
-		return this.acIsBssT;
-	}
-	public void setAcIsBssT(AcApplication acIsBssT) {
-		this.acIsBssT = acIsBssT;
-	}
-	
-	public AcApplication getAcIsBssT2() {
-		return this.acIsBssT;
-	}
-	public void setAcIsBssT2(AcApplication acIsBssT2) {
-		this.acIsBssT2 = acIsBssT2;
-	}
-	*/
-	
 	public Set<ActionsLogKnlT> getActionsLogKnlTs() { return this.actionsLogKnlTs; }
 
 	public void setActionsLogKnlTs(SerializableSet<ActionsLogKnlT> actionsLogKnlTs) {
@@ -169,8 +151,6 @@ import javaw.util.SerializableSet;
 		   return this.idSrv;
 	}
 
-	public Long /*AcApplication*/ getAcIsBssT() 			 {		return acIsBssT;	}
-	public void setAcIsBssT(Long /*AcApplication*/ acIsBssT) {		this.acIsBssT = acIsBssT;	}
-	//public void setAppId(long armId) {		this.upIS = armId;	}
-
+	public Long getAcIsBssT() 			 {		return acIsBssT;	}
+	public void setAcIsBssT(Long acIsBssT) {		this.acIsBssT = acIsBssT;	}
 }

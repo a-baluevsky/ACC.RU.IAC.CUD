@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+	<base href="/picketlink-oauth-provider-wwwserver/files/" />
+    <title>ТОРИС ПААА: Сервер Авторизации OAuth</title>
+	
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.min.css" rel="stylesheet">	
+  </head>
+  <body class="gray-bg">
+  
+	  <div align="center"><center>
+	  
+    <table border="0" width="700" height="224" style="border-spacing: 12px; border-collapse: inherit">
+      <!--tr> 
+        <td colspan="2" height="24"><h2>Invalid client data specified</h2></td>
+      </tr-->
+	  
+		<TR>
+			<TD  colspan="2" height="24"><h2><%error%>:<br/><%error_description%></h2></TD>
+		</TR>
+	
+      <tr> 
+        <td height="19" width="119"><p align="right"><b>Name:</b></td>
+        <td height="19" width="663"><pre><font color="<%color_client_name%>"><%client_name%></font></pre></td>
+      </tr>
+      <tr> 
+        <td height="19" width="119"> <p align="right"><b>ID:</b></td>
+        <td height="19" width="663"><pre><font color="<%color_client_id%>"><%client_id%></font></pre></td>
+      </tr>
+      <tr> 
+        <td height="19" width="119"> <p align="right"><b>URL:</b></td>
+        <td height="19" width="663"><pre><font color="<%color_redirect_uri%>"><%redirect_uri%></font></pre></td>
+      </tr>
+      <tr> 
+        <td height="19" width="119"><strong>Scope list:</strong></td>
+        <td height="19" width="663"><pre><font color="<%color_scope%>"><%scope%></font></pre></td>
+      </tr>
+      <tr> 
+        <td height="19" width="119"><strong>state:</strong></td>
+        <td height="19" width="663"><pre><font color="<%color_state%>"><%state%></font></pre></td>
+      </tr>
+	  
+    </table>
+	</center></div>
+
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="js/jquery.min.js"></script>
+  </body>
+</html>

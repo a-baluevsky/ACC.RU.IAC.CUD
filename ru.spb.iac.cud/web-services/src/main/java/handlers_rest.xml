@@ -1,0 +1,8 @@
+<handler-chains xmlns="http://java.sun.com/xml/ns/javaee">
+	<handler-chain>
+		<handler>
+			<handler-name>OAuthHandler</handler-name>
+			<handler-class>ru.spb.iac.cud.services.handlers.OAuthHandler</handler-class>
+		</handler>
+	</handler-chain>
+</handler-chains>

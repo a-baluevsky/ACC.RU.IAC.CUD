@@ -310,7 +310,7 @@ import org.jboss.seam.faces.FacesMessages;
 		   
 		     armManager.addArm();
 		   
-		     AcApplication armBeanCrt = getConversationItem("armBeanCrt");   
+		     AcApplication armBeanCrt = getConversationItem("armBeanCrt");
 		     
 		     entityManager.createNativeQuery(
 	 	     		   "update JOURN_APP_SYSTEM_BSS_T t1 " 

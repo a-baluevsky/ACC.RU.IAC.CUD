@@ -36,7 +36,7 @@ public interface AccessManagerLocal {
 			List<AuditFunction> userFunctions, Long idUserAuth, String IPAddress)
 			throws GeneralFailure;
 
-	public void is_exist(String idIS) throws GeneralFailure;
+	public boolean is_exist(String idIS) throws GeneralFailure;
 
 	public void change_password(String login, String password,
 			String new_password, String IPAddress) throws GeneralFailure,
@@ -51,4 +51,11 @@ public interface AccessManagerLocal {
 	public List<String> getUserRolesArm(String codeSys, String login) throws GeneralFailure;
 	
 	public Map<String, Object> getAppUserAttrs(String login);
+
+	// used in OAuth Provider
+	public String getOAuthClientAppSecret(String clientAppId);
+	// used in OAuth Provider, shortcut of authenticate_login for simplified PW check
+	public boolean isValidLoginPassword(String login, String password);
+	
+	public Long getUserIdByLogin(String userLogin);
 }

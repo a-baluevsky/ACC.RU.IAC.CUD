@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsap10="http://www.w3.org/2006/05/addressing/wsdl" xmlns:tns="urn:picketlink:identity-federation:sts" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" name="PicketLinkSTS" targetNamespace="urn:picketlink:identity-federation:sts">
+  <wsdl:types>
+<xs:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsap10="http://www.w3.org/2006/05/addressing/wsdl" xmlns:tns="urn:picketlink:identity-federation:sts" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" elementFormDefault="qualified" targetNamespace="urn:picketlink:identity-federation:sts" version="1.0">
+      <xs:element name="MessageBody">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:any maxOccurs="unbounded" minOccurs="0" namespace="##any"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="RequestSecurityTokenResponse">
+    <wsdl:part element="tns:MessageBody" name="rstrMessage">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="RequestSecurityToken">
+    <wsdl:part element="tns:MessageBody" name="rstMessage">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="SecureTokenService">
+    <wsdl:operation name="IssueToken">
+      <wsdl:input message="tns:RequestSecurityToken" wsap10:Action="http://docs.oasis-open.org/ws-sx/ws-trust/200512/RST/Issue">
+    </wsdl:input>
+      <wsdl:output message="tns:RequestSecurityTokenResponse" wsap10:Action="http://docs.oasis-open.org/ws-sx/ws-trust/200512/RSTR/Issue">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="STSBinding" type="tns:SecureTokenService">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="IssueToken">
+      <soap12:operation soapAction="http://docs.oasis-open.org/ws-sx/ws-trust/200512/RST/Issue" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="PicketLinkSTS">
+    <wsdl:port binding="tns:STSBinding" name="PicketLinkSTSPort">
+      <soap12:address location="http://jbossws.undefined.host:8080/picketlink-sts"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
