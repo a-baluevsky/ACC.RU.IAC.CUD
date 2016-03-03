@@ -198,11 +198,16 @@ public class TokenInfo implements Cloneable {
 		mpTokenToTokenInfo.put(Token.RefreshToken.class, TokenInfo.RefreshTokenInfo.class);
 		mpTokenToTokenInfo.put(Token.IClientAppAccessToken.class, TokenInfo.ClientAppTokenInfo.class);
 		mpTokenToTokenInfo.put(Token.IUserAccessToken.class, TokenInfo.UserTokenInfo.class);
+		
 		//mpTokenToTokenInfo.put((Class<? extends IGetTokenInfo<? extends TokenInfo>>) Token.IAccessToken.class, TokenInfo.class);
-		mpTokenToTokenInfo.put((Class<? extends IGetTokenInfo<? extends TokenInfo>>) Token.IAccessToken.class, 
+		//mpTokenToTokenInfo.put((Class<? extends IGetTokenInfo<? extends TokenInfo>>) Token.IAccessToken.class, 
+		//		(Class<? extends TokenInfo>)TokenInfo.class);
+		mpTokenToTokenInfo.put(
+				(Class<? extends IGetTokenInfo<? extends TokenInfo>>) (Class<?>)Token.IAccessToken.class,				
 				(Class<? extends TokenInfo>)TokenInfo.class);
+		
 		//mpTokenToTokenInfo.put(Token..class, TokenInfo..class);
-		//mpTokenToTokenInfo.put(Token..class, TokenInfo..class);
+		
 		final Set<Entry<Class<? extends IGetTokenInfo<? extends TokenInfo>>, Class<? extends TokenInfo>>> eSet = mpTokenToTokenInfo.entrySet();
 		for (Entry<Class<? extends IGetTokenInfo<? extends TokenInfo>>, Class<? extends TokenInfo>> eMp : eSet) {
 			mpTokenInfoToToken.put(eMp.getValue(), eMp.getKey());
