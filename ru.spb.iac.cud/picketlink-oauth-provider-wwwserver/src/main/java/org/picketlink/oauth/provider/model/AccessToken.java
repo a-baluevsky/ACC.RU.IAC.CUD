@@ -14,6 +14,8 @@ import javaw.util.Tuple;
 import org.apache.oltu.oauth2.as.issuer.OAuthIssuer;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.jwt.io.JWTUtil;
+import org.picketlink.oauth.provider.model.exceptions.OAuthProviderException.OAPE;
+import org.picketlink.oauth.provider.model.exceptions.OAuthProviderException.OAuthProviderExceptionCode;
 import org.picketlink.oauth.provider.services.OAuthRegister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -246,13 +248,13 @@ extends Token.AbstractAccessToken<TOKENINFO>
 	}
 
 	public static <TOKENINFO extends TokenInfo, ACCESSTOKEN extends IAccessToken<TOKENINFO>>
-	boolean check(String tokenTokenTypeString, Class<ACCESSTOKEN> clsAccessToken) throws InvalidTokenException {
+	boolean check(String tokenTokenTypeString, Class<ACCESSTOKEN> clsAccessToken) throws InvalidTokenException, GeneralFailure {
 		final Tuple.T2<AccessTokenType, String> tkn = parseTokenTypeString(tokenTokenTypeString);
 		return check(tkn.item1, tkn.item2, clsAccessToken, null);
 	}
 	
 	public static <TOKENINFO extends TokenInfo, ACCESSTOKEN extends IAccessToken<TOKENINFO>>
-	boolean check(AccessTokenType tokenType, String tokenString, Class<ACCESSTOKEN> clsAccessToken, PassBy.reference<ACCESSTOKEN> outAccToken) {
+	boolean check(AccessTokenType tokenType, String tokenString, Class<ACCESSTOKEN> clsAccessToken, PassBy.reference<ACCESSTOKEN> outAccToken) throws GeneralFailure {
 		boolean isAllowed = false;
 		try {			
 			//final String tokenId = getTokenId(tokenType, tokenString);			
@@ -262,8 +264,10 @@ extends Token.AbstractAccessToken<TOKENINFO>
 				isAllowed = ((Token<TOKENINFO>)authTkn).isValidToken();
 			if(outAccToken!=null)
 				outAccToken.setValue(authTkn);
-		} catch(Exception e) {			
-			LOGGER.error("AccessToken.check: "+e.toString());
+		} catch(Exception e) {
+			final String errMsg = "AccessToken.check: "+e.toString();
+			LOGGER.error(errMsg);
+			OAPE.ServerException.throwIt(errMsg);
 		} // anything went wrong => FORBIDDEN
 		return isAllowed;	
 	}

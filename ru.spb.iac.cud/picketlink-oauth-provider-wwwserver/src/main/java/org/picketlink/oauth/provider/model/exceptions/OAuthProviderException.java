@@ -117,6 +117,9 @@ public class OAuthProviderException extends GeneralFailure {
 			}),
 			OAuthRegisterException(new OAuthProviderException() {
 				@Override public void throwIt(String msg) throws GeneralFailure { throwIt(OAuthRegisterException.toString(), msg, null); }
+			}),
+			ServerException(new OAuthProviderException() {
+				@Override public void throwIt(String msg) throws GeneralFailure { throwIt(OAuthProviderExceptionCode.server_error.toString(), msg, null); }
 			})
 		;
 		private OAuthProviderException x;
@@ -125,7 +128,9 @@ public class OAuthProviderException extends GeneralFailure {
 		public void throwIt(Enum<?> code) throws GeneralFailure {
 			if(code instanceof OAuthProviderExceptionCode) {				
 				final OAuthProviderExceptionCode aeCode = (OAuthProviderExceptionCode)code;
-				this.x.throwIt(aeCode.name(), aeCode.error_description, "/error_description/"+this.x.rm.error+"/"+aeCode.name());
+				final String aeCodeName = aeCode.name();
+				String errorUrl = this.x.rm == null? null: "/error_description/"+this.x.rm.error+"/"+aeCodeName;
+				this.x.throwIt(aeCodeName, aeCode.error_description, errorUrl);
 			} else {
 				throwIt(code.toString());
 			}

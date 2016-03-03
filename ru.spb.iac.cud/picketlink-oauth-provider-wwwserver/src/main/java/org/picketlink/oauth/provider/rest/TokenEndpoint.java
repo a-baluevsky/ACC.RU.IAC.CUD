@@ -116,14 +116,17 @@ public class TokenEndpoint {
 	        			LOGGER.error("invalid AUTHORIZATION_CODE: "+code);
 	        			OAPE.TokenException.throwIt(OAuthProviderExceptionCode.invalid_grant);
 	        		}
-	        		else {
+	        		else try {
 	        			authCodeInfo = authCode.getTokenInfo();
 	        			tknScope = authCodeInfo.scope;
 	        			final TokenInfo.AuthCodeTokenInfo tokenInfo = new TokenInfo.AuthCodeTokenInfo(Token.DefaultTokenLifeTime, 
 	        					authCodeInfo.client_id, authCodeInfo.userLogin, authCode.getTokenId(), authCode, tknScope);
 	        			tokenInfo.amr = authCodeInfo.amr;
 						issuedToken = oauthRegister.issueAccessToken(tokenInfo, token_type);
-	        		}	
+	        		} catch(Exception e) {
+	        			LOGGER.error("Failed processing grant_type: "+e.getMessage());
+	        			OAPE.TokenException.throwIt(OAuthProviderExceptionCode.server_error);	    			
+	        		}
 	        		break;
 	        	case PASSWORD:
 	        		// obtain permission (scope) from oauthRegister
@@ -131,12 +134,15 @@ public class TokenEndpoint {
 	        		if(!aml.isValidLoginPassword(tokenRequest.getUsername(), tokenRequest.getPassword())) {
 	        			LOGGER.error("invalid username or password for user: "+tokenRequest.getUsername());
 	        			OAPE.TokenException.throwIt(OAuthProviderExceptionCode.invalid_grant);
-	        		} else {
+	        		} else try {
 						final TokenInfo.UserTokenInfo tokenInfo = new TokenInfo.UserTokenInfo(Token.DefaultTokenLifeTime, 
 	        					tokenRequest.getClient_id(), tokenRequest.getUsername(), tknScope);
 						tokenInfo.amr = AuthMethod.PWD;
 						issuedToken = oauthRegister.issueAccessToken(tokenInfo, token_type);
-					}
+					} catch(Exception e) {
+	        			LOGGER.error("Failed processing grant_type: "+e.getMessage());
+	        			OAPE.TokenException.throwIt(OAuthProviderExceptionCode.server_error);	    			
+	        		}
 	        		break;
 	        	case CLIENT_CREDENTIALS: 
 	        		tknScope = "defaultClientAppScope";
@@ -183,9 +189,6 @@ public class TokenEndpoint {
 		} catch (InvalidTokenException e) {
 			LOGGER.error("InvalidTokenException: for "+tt);
 			OAPE.TokenException.throwIt(OAuthProviderExceptionCode.invalid_token);
-		} catch(Exception e) {
-			LOGGER.error("Failed processing grant_type: "+e.getMessage());
-			OAPE.TokenException.throwIt(OAuthProviderExceptionCode.server_error);
 		}
 		
         if(issuedToken!=null) {        	

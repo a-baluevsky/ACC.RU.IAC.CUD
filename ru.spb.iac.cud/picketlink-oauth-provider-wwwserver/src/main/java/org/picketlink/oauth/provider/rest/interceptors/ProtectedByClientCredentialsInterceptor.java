@@ -10,6 +10,8 @@ import javax.interceptor.InvocationContext;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.picketlink.oauth.provider.model.ClientAppAuth;
 import org.picketlink.oauth.provider.model.IClientAppAuth;
+import org.picketlink.oauth.provider.model.exceptions.OAuthProviderException.OAPE;
+import org.picketlink.oauth.provider.model.exceptions.OAuthProviderException.OAuthProviderExceptionCode;
 import org.picketlink.oauth.provider.services.ClientApp;
 import org.picketlink.oauth.provider.services.ClientAppManager;
 
@@ -60,8 +62,9 @@ public class ProtectedByClientCredentialsInterceptor {
     	if(validated) { // stronger validation by checking if ClientApp is really registered IS
     		return ctx.proceed();
     	} else {
-			throw new Exception("ClientApp Validation failed!");
-		}		
+    		OAPE.AuthorizationException.throwIt(OAuthProviderExceptionCode.invalid_client);
+		}
+		return null;		
 		
 	}
 }
