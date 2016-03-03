@@ -188,6 +188,11 @@ public class TokenInfo implements Cloneable {
 		}
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private static void unsafeput(Map hm, Object key, Object value) {
+		hm.put(key, value);
+	}
+	
 	private static Map<Class<? extends IGetTokenInfo<? extends TokenInfo>>, Class<? extends TokenInfo>> mpTokenToTokenInfo;
 	private static Map<Class<? extends TokenInfo>, Class<? extends IGetTokenInfo<? extends TokenInfo>>> mpTokenInfoToToken;
 	static {
@@ -202,9 +207,8 @@ public class TokenInfo implements Cloneable {
 		//mpTokenToTokenInfo.put((Class<? extends IGetTokenInfo<? extends TokenInfo>>) Token.IAccessToken.class, TokenInfo.class);
 		//mpTokenToTokenInfo.put((Class<? extends IGetTokenInfo<? extends TokenInfo>>) Token.IAccessToken.class, 
 		//		(Class<? extends TokenInfo>)TokenInfo.class);
-		mpTokenToTokenInfo.put(
-				(Class<? extends IGetTokenInfo<? extends TokenInfo>>) (Class<?>)Token.IAccessToken.class,				
-				(Class<? extends TokenInfo>)TokenInfo.class);
+		unsafeput(mpTokenToTokenInfo, Token.IAccessToken.class, TokenInfo.class);
+		
 		
 		//mpTokenToTokenInfo.put(Token..class, TokenInfo..class);
 		
