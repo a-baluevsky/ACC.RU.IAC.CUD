@@ -103,21 +103,23 @@ public class SecurityInterceptor extends org.jboss.resteasy.plugins.interceptors
      * org.jboss.resteasy.core.ResourceMethod)
      */
     @Override
+    
     public ServerResponse preProcess(HttpRequest request, ResourceMethod method) throws Failure, WebApplicationException {
         //HttpSession session = httpServletRequest.getSession();
         //ServerResponse response = null;
         boolean isAllowed = false;
         final PassBy.reference<ProtectedByAccessToken> 	refProtByAccTknPost = PassBy.reference(null); // post-process: Around-invoke interceptor
         final PassBy.reference<ProtectedBy.AccessToken> refProtByAccTknPre  = PassBy.reference(null); // pre-process: SecurityInterceptor-only (put Context-only)
+        final Class<? extends IAccessToken<? extends TokenInfo>> accessTokenSubjectType;
         if(protectedByClientCredentials(method)) {
         	// This step: we only extractClientCredentials, since clientApp creds can be passed as JSON params.  
         	// So checkClientCredentials performed later with org.picketlink.oauth.provider.rest.interceptors.ProtectedByClientCredentialsInterceptor
-        	isAllowed = extractClientCredentials(request);        	
+        	isAllowed = extractClientCredentials(request);
         } else if(SecurityCheck.getAnnotation(LOGGER, method, ProtectedByAccessToken.class, refProtByAccTknPost)) { // advanced scheme
-        	final Class<? extends IAccessToken<?>> accessTokenSubjectType = (Class<? extends IAccessToken<?>>) refProtByAccTknPost.getValue().value();        	
+        	accessTokenSubjectType = (Class<? extends IAccessToken<?>>) refProtByAccTknPost.getValue().value();        	
 			isAllowed = preprocessProtectedByAccessToken(request, accessTokenSubjectType);
          } else if(SecurityCheck.getAnnotation(LOGGER, method, ProtectedBy.AccessToken.class, refProtByAccTknPre)) { // simpler scheme
-        	  final Class<? extends IAccessToken<?>> accessTokenSubjectType = (Class<? extends IAccessToken<?>>) refProtByAccTknPre.getValue().value().clsAccessTokenType;
+        	  accessTokenSubjectType = (Class<? extends IAccessToken<?>>) refProtByAccTknPre.getValue().value().clsAccessTokenType;
         	  isAllowed = preprocessProtectedByAccessToken(request, accessTokenSubjectType);
          }
         else if (requiresAuthentication(method)) {        	
