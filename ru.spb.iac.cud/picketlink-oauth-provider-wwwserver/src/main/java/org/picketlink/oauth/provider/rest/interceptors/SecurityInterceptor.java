@@ -117,10 +117,10 @@ public class SecurityInterceptor extends org.jboss.resteasy.plugins.interceptors
         	isAllowed = extractClientCredentials(request);
         } else if(SecurityCheck.getAnnotation(LOGGER, method, ProtectedByAccessToken.class, refProtByAccTknPost)) { // advanced scheme
         	accessTokenSubjectType = (Class<? extends IAccessToken<? extends TokenInfo>>) refProtByAccTknPost.getValue().value();        	
-			isAllowed = preprocessProtectedByAccessToken(request, accessTokenSubjectType);
+			isAllowed = preprocessProtectedByAccessToken_unsafe(request, accessTokenSubjectType);
          } else if(SecurityCheck.getAnnotation(LOGGER, method, ProtectedBy.AccessToken.class, refProtByAccTknPre)) { // simpler scheme
         	  accessTokenSubjectType = (Class<? extends IAccessToken<? extends TokenInfo>>) refProtByAccTknPre.getValue().value().clsAccessTokenType;
-        	  isAllowed = preprocessProtectedByAccessToken(request, accessTokenSubjectType);
+        	  isAllowed = preprocessProtectedByAccessToken_unsafe(request, accessTokenSubjectType);
          }
         else if (requiresAuthentication(method)) {        	
         	BasicAuthorization ba = basicAuthParseHeader(request);
@@ -144,6 +144,49 @@ public class SecurityInterceptor extends org.jboss.resteasy.plugins.interceptors
         return isAllowed? super.preProcess(request, method) // null -> OK, by-pass
         	   :getForbiddenResponse(); 
     }
+
+    /*
+ 	made this method to overcome a weird compiler failure connected with generics
+     */
+	private boolean preprocessProtectedByAccessToken_unsafe(
+			HttpRequest request,
+			Class accessTokenSubjectType) {
+		final String tokenTypeString = getAuthorizationHeader(request);		
+		boolean isAllowed = false;
+		try {
+			final Tuple.T2<AccessTokenType, String> typeStr = AccessToken.parseTokenTypeString(tokenTypeString);
+			final String tokenId = AccessToken.getTokenId(typeStr.item1, typeStr.item2);
+			final RefreshToken refreshToken = oauthRegister.getRefreshToken(tokenId);
+			IAccessToken accToken = null;
+			if(refreshToken!=null) {
+				isAllowed = ((Token)refreshToken).isValidToken();
+				if(!isAllowed) {
+					LOGGER.error("invalid refreshToken: "+refreshToken.getTokenId());
+					OAPE.TokenException.throwIt(OAuthProviderExceptionCode.invalid_token);
+				}
+				final Token<? extends TokenInfo> sourceToken = refreshToken.getSourceToken();
+				final Class<? extends Token> clsSrcToken;
+				if(sourceToken!=null && (clsSrcToken=sourceToken.getClass())!=null) {
+					if(Token.IAuthCodeToken.class.isAssignableFrom(clsSrcToken)) {
+						final Token.IAuthCodeToken authCodeTkn = (Token.IAuthCodeToken)sourceToken;
+						accToken = (IAccessToken)authCodeTkn;
+						isAllowed = refreshToken.isValidToken();
+					} else if(clsSrcToken.isInstance(accessTokenSubjectType)) {
+						accToken = (IAccessToken) sourceToken;
+					}
+				} // if(sourceToken!=null...				
+			} else {
+				final PassBy.reference<IAccessToken> outAccToken = PassBy.reference(null);
+				isAllowed = AccessToken.check(typeStr.item1, typeStr.item2, accessTokenSubjectType, outAccToken);
+				accToken = outAccToken.getValue();
+			}
+			if(isAllowed)
+				ResteasyProviderFactory.pushContext((Class<IAccessToken<?>>)accessTokenSubjectType, accToken);
+		} catch (Exception e) {
+			LOGGER.debug("preProcess: "+e.toString());
+		}
+		return isAllowed;
+	}
 
 	private <TOKENINFO extends TokenInfo, ACCESSTOKEN extends IAccessToken<TOKENINFO>>
 	boolean preprocessProtectedByAccessToken(HttpRequest request, Class<ACCESSTOKEN> accessTokenSubjectType) {
