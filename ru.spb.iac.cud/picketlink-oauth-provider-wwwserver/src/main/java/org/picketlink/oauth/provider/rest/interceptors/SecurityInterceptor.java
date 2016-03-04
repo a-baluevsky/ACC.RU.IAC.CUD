@@ -116,10 +116,10 @@ public class SecurityInterceptor extends org.jboss.resteasy.plugins.interceptors
         	// So checkClientCredentials performed later with org.picketlink.oauth.provider.rest.interceptors.ProtectedByClientCredentialsInterceptor
         	isAllowed = extractClientCredentials(request);
         } else if(SecurityCheck.getAnnotation(LOGGER, method, ProtectedByAccessToken.class, refProtByAccTknPost)) { // advanced scheme
-        	accessTokenSubjectType = (Class<? extends IAccessToken<?>>) refProtByAccTknPost.getValue().value();        	
+        	accessTokenSubjectType = (Class<? extends IAccessToken<? extends TokenInfo>>) refProtByAccTknPost.getValue().value();        	
 			isAllowed = preprocessProtectedByAccessToken(request, accessTokenSubjectType);
          } else if(SecurityCheck.getAnnotation(LOGGER, method, ProtectedBy.AccessToken.class, refProtByAccTknPre)) { // simpler scheme
-        	  accessTokenSubjectType = (Class<? extends IAccessToken<?>>) refProtByAccTknPre.getValue().value().clsAccessTokenType;
+        	  accessTokenSubjectType = (Class<? extends IAccessToken<? extends TokenInfo>>) refProtByAccTknPre.getValue().value().clsAccessTokenType;
         	  isAllowed = preprocessProtectedByAccessToken(request, accessTokenSubjectType);
          }
         else if (requiresAuthentication(method)) {        	
