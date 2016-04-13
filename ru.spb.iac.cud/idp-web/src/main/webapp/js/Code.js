@@ -1,3 +1,8 @@
+function isIE() {
+    var retVal = (("Microsoft Internet Explorer" == navigator.appName) || // IE < 11
+        navigator.userAgent.match(/Trident\/./i)); // IE 11
+    return retVal;
+}
 
 
 
@@ -13,19 +18,16 @@ alert('setPage');
 function ObjCreator(name, BrowserName) {
 
 //alert('ObjCreator');
-
-    switch (document.getElementById(BrowserName).value) {
-        case 'Microsoft Internet Explorer':
-            return new ActiveXObject(name);           
-        default:
+	if(isIE()) {
+		return new ActiveXObject(name); 
+	} else {
 	    var userAgent = navigator.userAgent;
             if(userAgent.match(/ipod/i) ||userAgent.match(/ipad/i) || userAgent.match(/iphone/i)) {
              return call_ru_cryptopro_npcades_10_native_bridge("CreateObject", [name]);
             }
             var cadesobject = document.getElementById('cadesplugin');
-            return cadesobject.CreateObject(name);
-            
-    }
+            return cadesobject.CreateObject(name);	
+	}
 }
 
 function SignBtn_Click(lstid, browserName, dataID, TSPid, SignId, SignTypeId) {
@@ -163,31 +165,41 @@ function SignatureTypeBtnClick(value, txtBoxID) {
             alert("Radio button unknown value");
     }*/
 }
+function updatePlugInStatus(PlugInEnabled) {
+	function updatePlugInStatus2(EnabledTxt, EnabledColor, EnabledTxtDownloadDisplay) { //, imgDot
+       // document.getElementById('PluginEnabledImg').setAttribute("src", imgDot);
+        var PlugInEnabledTxt = document.getElementById('PlugInEnabledTxt');
+		PlugInEnabledTxt.innerHTML = EnabledTxt; PlugInEnabledTxt.style.color = EnabledColor;
+		var PlugInEnabledTxtDownload = document.getElementById('PlugInEnabledTxtDownload');
+        PlugInEnabledTxtDownload.style.display = "none";	
+	}
+	if(PlugInEnabled)
+		updatePlugInStatus2("Плагин загружен", "green", "none"); //"Img/green_dot.png"
+	else
+		updatePlugInStatus2("Плагин не загружен", "red", "inline"); // "Img/red_dot.png" 
+}
 
 function CheckForPlugIn(id1, id2) {
-
 // alert('CheckForPlugIn');
-
     document.getElementById(id1).setAttribute("value", "0");
     document.getElementById(id2).setAttribute("value", navigator.appName);
-    switch (navigator.appName) {
-        case 'Microsoft Internet Explorer':
-            try {
-                var obj = new ActiveXObject("CAdESCOM.CPSigner");
-                document.getElementById(id1).setAttribute("value", "1");
-            }
-            catch (err) {
-            }
-            break;
-        //case 'Netscape':    
-        default:
-	    var userAgent = navigator.userAgent;
+	
+	var obj = null;
+	if(isIE()) {
+		try {
+			obj = new ActiveXObject("CAdESCOM.CPSigner");
+			document.getElementById(id1).setAttribute("value", "1");
+		}
+		catch (err) {
+		}
+	}
+	if(!obj) {
+		var userAgent = navigator.userAgent;
 	    if(userAgent.match(/ipod/i) ||userAgent.match(/ipad/i) || userAgent.match(/iphone/i)) {
-		document.getElementById(id1).setAttribute("value", "1");
-                document.write("<object id=\"cadesplugin\" type=\"application/x-cades\" class=\"hiddenObject\"></object>");
-		//alert(userAgent);
-		break;
-            }
+			document.getElementById(id1).setAttribute("value", "1");
+					document.write("<object id=\"cadesplugin\" type=\"application/x-cades\" class=\"hiddenObject\"></object>");
+			//alert(userAgent);
+        } else {
             var cadesobject = document.getElementById('FFembeded');
             var mimetype = navigator.mimeTypes["application/x-cades"];
             if (mimetype) {
@@ -196,21 +208,10 @@ function CheckForPlugIn(id1, id2) {
                     document.getElementById(id1).setAttribute("value", "1");
                    document.write("<object id=\"cadesplugin\" type=\"application/x-cades\" class=\"hiddenObject\"></object>");                    
                 }
-            }
-    }
-
-    if (document.getElementById(id1).value == "1") {
-       // document.getElementById('PluginEnabledImg').setAttribute("src", "Img/green_dot.png");
-        document.getElementById('PlugInEnabledTxt').innerHTML = "Плагин загружен";
-        document.getElementById('PlugInEnabledTxt').style.color = "green";
-        document.getElementById('PlugInEnabledTxtDownload').style.display = "none";
-    } else {
-       // document.getElementById('PluginEnabledImg').setAttribute("src", "Img/red_dot.png");
-        document.getElementById('PlugInEnabledTxt').innerHTML = "Плагин не загружен";
-        document.getElementById('PlugInEnabledTxt').style.color = "red";
-        document.getElementById('PlugInEnabledTxtDownload').style.display = "inline";
-        
-    }
+            }			
+		}
+	}
+	updatePlugInStatus(document.getElementById(id1).value=='1');
 }
 
 function CheckServerResponce(signVal) {
