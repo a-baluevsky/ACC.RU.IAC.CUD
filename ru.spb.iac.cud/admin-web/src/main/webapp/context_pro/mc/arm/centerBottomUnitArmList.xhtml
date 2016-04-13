@@ -242,7 +242,11 @@
 											id="comment_app" cols="41" rows="3" /></td>
 								</tr>
 							</c:if>
-
+						<tr><td width="100px" height="25px" colspan="2">
+							<h:selectBooleanCheckbox value="#{armBean.isSignReq}" id="chkRequireSign" />
+							<span style="cursor: default" onclick="document.getElementById('CBformUpd:chkRequireSign').click()">Требуется подпись</span>
+							</td>
+						</tr>
 							<td colspan="2" align="center" height="35px"><a4j:commandButton
 									value="Отмена"
 									onclick="#{rich:component('CBmpCrt')}.hide();return false;"
@@ -362,7 +366,7 @@
 							value="/img/icons/close.gif" />
 					</h:panelGroup>
 				</f:facet>
-				<div id="CBmpUpdUsrAlfHDiv" style="width: 100%; overflow: auto;">
+				<div id="CBmpUpdUsrAlfHDiv" style="width: 100%; overflow: auto;height: 500px">
 					<h:form id="CBformUpdUserAlf">
 
 
@@ -439,7 +443,7 @@
 
 										</rich:dataTable>
 										<a4j:jsFunction name="invokeMyStartArmUsr"
-											reRender="outCBmpUpdUserAlfList"
+											reRender="outCenterCenterFooterDscr,outCBmpUpdUserAlfList"
 											oncomplete="setHDiv_min_proSoft_top_rmp('CBmpUpdUsrAlfHDiv', 'CBmpUpdUserAlfCDiv', 10); setCaretToEnd(event);">
 											<!--f:param name="#{param['sessionId']!=null ? 'sessionId' : 'xxx1'}" value="#{param['sessionId']}"/-->
 											<f:param name="sessionId" value="#{param['sessionId']}" />

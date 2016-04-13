@@ -149,7 +149,7 @@
 							value="/img/icons/close.gif" />
 					</h:panelGroup>
 				</f:facet>
-				<div id="CBmpCrtHDiv" style="width: 100%; overflow: auto;">
+				<div id="CBmpCrtHDiv" style="width: 100%; overflow: auto; height: 500px">
 					<h:form id="CBformCrt">
 						<table style="width: 90%;">
 							<tr>
@@ -474,7 +474,7 @@
                     </rich:column>
                 </rich:dataTable-->
 
-										<div id="CBmpUpdUsrAlfHDiv" style="overflow: auto;"> 
+										<div id="CBmpUpdUsrAlfHDiv" style="overflow: auto; height: 500px">	
 										<rich:dataTable id="rolUsr_dt" style="width:100%" var="it"
 											value="#{rolUsrDataModel}" rows="15" reRender="rolUsr_dscr">
 
@@ -511,8 +511,7 @@
 																<h:inputText
 																	value="#{rolUsrStateHolder.columnFilterValues[field.itemSortField]}"
 																	immediate="true" id="iaf#{index}"
-																	onkeypress="if(event.keyCode==13){invokeMyStartRolUsr();}"
-																	>
+																	onkeypress="if(event.keyCode==13){invokeMyStartRolUsr();}">
 																</h:inputText>
 															</c:otherwise>
 														</c:choose>
@@ -539,7 +538,7 @@
 										</rich:dataTable>
 										</div>
 										<a4j:jsFunction name="invokeMyStartRolUsr"
-											reRender="outCBmpUpdUserAlfList,outCenterCenterFooterDscr"
+											reRender="outCenterCenterFooterDscr,outCBmpUpdUserAlfList"
 											oncomplete="setHDiv_min_proSoft_top_rmp('CBmpUpdUsrAlfHDiv', 'CBmpUpdUserAlfCDiv', 10); setCaretToEnd(event);">
 											<!--f:param name="#{param['sessionId']!=null ? 'sessionId' : 'xxx1'}" value="#{param['sessionId']}"/-->
 											<f:param name="sessionId" value="#{param['sessionId']}" />

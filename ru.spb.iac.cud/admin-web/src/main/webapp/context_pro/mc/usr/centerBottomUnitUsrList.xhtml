@@ -147,6 +147,8 @@
 											<td style="padding-top: 10px;" valign="top"><h:outputText
 													value="#{usrManager.note}" /></td>
 										</tr>
+
+										
 										<!--tr>
             <td width="150px" height="25px" class="table_left_header">
               <h:outputText value="Создал"/>
@@ -627,7 +629,11 @@
 										<!--f:selectItem itemLabel="Не активен" itemValue="0"/-->
 										<f:selectItem itemLabel="Активен" itemValue="1" />
 										<f:selectItem itemLabel="Заблокирован" itemValue="2" />
-									</h:selectOneMenu></td>
+									</h:selectOneMenu>									
+								<span>СНИЛС:<h:inputText value="#{usrBeanCrt.snils}" id="snils"
+										maxlength="20" size="20" />
+								</span>
+								</td>
 							</tr>
 
 						</c:if>
@@ -873,7 +879,9 @@
 											<!--f:selectItem itemLabel="Не активен" itemValue="0"/-->
 											<f:selectItem itemLabel="Активен" itemValue="1" />
 											<f:selectItem itemLabel="Заблокирован" itemValue="2" />
-										</h:selectOneMenu></td>
+										</h:selectOneMenu>
+									<span>СНИЛС:<h:inputText value="#{usrBean.snils}" id="snils"	maxlength="20" size="20" /></span>
+									</td>
 								</tr>
 
 							</c:if>
@@ -1133,7 +1141,7 @@
 								<td width="100px" valign="top"><h:outputText value="Роли:" />
 								</td>
 								<td><a4j:outputPanel id="outCBmpUpdRoleList" layout="block">
-									<div id="CBmpUpdRoleHDiv" style="width:100%; overflow: auto;">
+									<div id="CBmpUpdRoleHDiv" style="width:100%; overflow: auto; height: 500px">
 										<rich:dataTable id="CBdtUpdArmRole" style="width:100%"
 											rowKeyVar="rkv" var="it_rl" value="#{usrManager.roleList}"
 											rows="15">
@@ -1184,7 +1192,7 @@
 										</div>
 		
 										<a4j:jsFunction name="invokeMyStart_usrRole"
-											reRender="outCBmpUpdRoleList"
+											reRender="CBdtUpdArmRole_dscr,outCBmpUpdRoleList"
 											oncomplete="setHDiv_min_proSoft_top_rmp('CBmpUpdRoleHDiv', 'CBmpUpdRoleCDiv', 25); setCaretToEnd(event);"
 											action="#{usrManager.usrRoleReset}">
 											<f:param name="sessionId" value="#{param['sessionId']}" />
@@ -1300,7 +1308,7 @@
 							value="/img/icons/close.gif" />
 					</h:panelGroup>
 				</f:facet>
-				<div id="CBmpUpdRoleAppHDiv" style="width: 100%; overflow: auto;">
+				<div id="CBmpUpdRoleAppHDiv" style="width: 100%; overflow: auto; height: 500px">
 					<h:form id="CBformUpdRoleApp">
 
 						
@@ -1466,7 +1474,7 @@
 							value="/img/icons/close.gif" />
 					</h:panelGroup>
 				</f:facet>
-				<div id="CBmpUpdGroupHDiv" style="width: 100%; overflow: auto;">
+				<div id="CBmpUpdGroupHDiv" style="width: 100%; overflow: auto; height: 500px">
 					<h:form id="CBformUpdGroup">
 
 						<!--h:inputHidden id ="uorgid" value="#{usrBean.acClOrganization}"/>
@@ -1889,7 +1897,7 @@
 						style="font-style: italic" />
 				</div>
 
-				<div id="CBmpSearchResultsHDiv" style="width: 100%; overflow: auto;">
+				<div id="CBmpSearchResultsHDiv" style="width: 100%; overflow: auto; height: 500px">
 
 					<a4j:outputPanel id="outCBmpSearchResults">
 
@@ -2106,7 +2114,7 @@
 							value="/img/icons/close.gif" />
 					</h:panelGroup>
 				</f:facet>
-				<div id="CBmpUpdISHDiv" style="width: 100%; overflow: auto;">
+				<div id="CBmpUpdISHDiv" style="width: 100%; overflow: auto; height: 500px">
 
 					<table style="width: 90%;">
 

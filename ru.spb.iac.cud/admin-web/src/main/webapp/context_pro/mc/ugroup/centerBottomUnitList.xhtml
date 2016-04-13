@@ -204,7 +204,7 @@ input {
 					</h:panelGroup>
 				</f:facet>
 				<h:form id="CBformCrt">
-					<div id="CBmpCrtUsrHDiv" style="width: 100%; overflow: auto;">
+					<div id="CBmpCrtUsrHDiv" style="width: 100%; overflow: auto; height: 500px">
 
 						<table style="width: 95%;">
 							<tr>
@@ -275,7 +275,7 @@ input {
 				</f:facet>
 				<h:form id="CBformUpd">
 
-					<div id="CBmpUpdUsrHDiv" style="width: 100%; overflow: auto;">
+					<div id="CBmpUpdUsrHDiv" style="width: 100%; overflow: auto; height: 500px">
 
 						<table style="width: 95%;">
 							<tr>
@@ -345,7 +345,7 @@ input {
 							value="/img/icons/close.gif" />
 					</h:panelGroup>
 				</f:facet>
-				<div id="CBmpUpdRoleHDiv" style="width: 100%; overflow: auto;">
+				<div id="CBmpUpdRoleHDiv" style="width: 100%; overflow: auto; height: 500px">
 					<h:form id="CBformUpdRole">
 
 						<!--h:inputHidden id ="uorgid" value="#{usrBean.acClOrganization}"/>
@@ -493,7 +493,7 @@ input {
 							value="/img/icons/close.gif" />
 					</h:panelGroup>
 				</f:facet>
-				<div id="CBmpUpdUsrAlfHDiv" style="width: 100%; overflow: auto;">
+				<div id="CBmpUpdUsrAlfHDiv" style="width: 100%; overflow: auto; height: 500px">
 					<h:form id="CBformUpdUserAlf">
 
 
@@ -619,7 +619,7 @@ input {
 
 										</rich:dataTable>
 										<a4j:jsFunction name="invokeMyStartUgroupUsr"
-											reRender="outCBmpUpdUserAlfList"
+											reRender="outCenterCenterFooterDscr,outCBmpUpdUserAlfList"
 											oncomplete="setHDiv_min_proSoft_top_rmp('CBmpUpdUsrAlfHDiv', 'CBmpUpdUserAlfCDiv', 10); setCaretToEnd(event);">
 											<!--f:param name="#{param['sessionId']!=null ? 'sessionId' : 'xxx1'}" value="#{param['sessionId']}"/-->
 											<f:param name="sessionId" value="#{param['sessionId']}" />
