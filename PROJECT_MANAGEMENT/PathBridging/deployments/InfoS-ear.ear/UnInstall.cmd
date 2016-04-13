@@ -6,13 +6,13 @@ SET BridgeDir=C:\jboss-as-7.1.3.Final-fighting-mvn\standalone\deployments_devtst
 
 if exist "%TargetDir%.deployed" del /F /Q "%TargetDir%.deployed"
 if not exist "%TargetDir%" GOTO CLNFLAGGILES
-rd "%TargetDir%" > null
+rd "%TargetDir%" > nul
 if exist "%TargetDir%"  del /F /Q "%TargetDir%"
+
 echo Wait for undeployment ends. Then delete 'undeployed' file
 %sleep% 5s
 :CLNFLAGGILES
 if exist "%TargetDir%.undeployed" del /F /Q "%TargetDir%.undeployed"
 if exist "%TargetDir%.dodeploy"   del /F /Q "%TargetDir%.dodeploy"
-call unmountBridge.cmd "%BridgeDir%"
 
 rem pause
