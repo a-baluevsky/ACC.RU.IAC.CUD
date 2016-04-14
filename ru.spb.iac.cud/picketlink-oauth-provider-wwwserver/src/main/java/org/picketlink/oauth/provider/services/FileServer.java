@@ -38,7 +38,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 
-import org.hsqldb.lib.ArrayCounter;
 import org.picketlink.oauth.provider.rest.PageTemplate;
 import org.picketlink.oauth.provider.rest._Endpoint;
 import org.picketlink.oauth.provider.setup.RESTActivation;
