@@ -16,8 +16,10 @@ import javax.ejb.TransactionAttribute;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -36,9 +38,11 @@ import ru.spb.iac.cud.exceptions.GeneralFailure;
 //import ru.spb.iac.cud.core.oauth.Token.AbstractAccessToken.AccessTokenSubjectType;
 import static ru.spb.iac.cud.core.oauth.Token.AbstractAccessToken.AccessTokenSubjectType.*;
 
+import org.picketlink.oauth.provider.model.AuthenticationRequest;
 import org.picketlink.oauth.provider.model.exceptions.OAuthProviderException;
 import org.picketlink.oauth.provider.services.ClientApp;
 import org.picketlink.oauth.provider.services.ClientAppManager;
+import org.picketlink.oauth.provider.services.FileServer;
 import org.picketlink.oauth.provider.services.OAuthRegister;
 import org.picketlink.oauth.provider.setup.RESTActivation;
 
@@ -47,7 +51,7 @@ import org.picketlink.oauth.provider.setup.RESTActivation;
 @Stateless
 @Path("/test")
 @TransactionAttribute
-public class TestEndpoint {
+public class TestEndpoint extends _Endpoint {
 	public static final String RESOURCE_SERVER_NAME = "Example OAuth Resource Server";
 	@Inject private OAuthRegister database;
 	
@@ -62,6 +66,7 @@ public class TestEndpoint {
 	@Context ServletContext servletContext;
 	@Context UriInfo uriInfo;
 	
+		
 	@GET @Produces(RESTActivation.MediaHTML)
 	public Response test() {
 		StringBuilder sb = watchGetters(servletContext, new StringBuilder());
@@ -117,18 +122,22 @@ public class TestEndpoint {
     }
 	 */
 	
+    @PermitAll @OPTIONS @Path("resource") public Response resourceOpts(@Context HttpServletRequest request) { return getOKResponse(); }
+    
     @GET @Path("resource") @ProtectedBy.AccessToken(UserAccessToken) 
     public Response userProtectedResource(@Context HttpServletRequest request) 
     throws OAuthSystemException {
     	return Response.status(Response.Status.OK).entity("User got protectedResource at TestEndpoint!").build();
     }
     
+    @PermitAll @OPTIONS @Path("secured_app_method") public Response secured_app_methodOpts(@Context HttpServletRequest request) { return getOKResponse();}
+    
     @GET @Path("secured_app_method") @ProtectedBy.AccessToken(ClientAppAccessToken)
     public Response clientAppProtectedResource(@Context HttpServletRequest request) 
     throws OAuthSystemException {
     	return Response.status(Response.Status.OK).entity("ClientApp got protectedResource at TestEndpoint!").build();
     }
-    
+
     @PermitAll @GET @Path("exception/{exception}")
     @Produces(RESTActivation.MediaJSON)
 	public Response testExceptionGET(@PathParam("exception") String exceptionId, @QueryParam("error_description") String error_description) throws GeneralFailure {

@@ -32,6 +32,7 @@ import org.picketlink.Identity;
 import org.picketlink.idm.model.basic.User;
 import org.picketlink.oauth.provider.model.ApplicationRegistrationRequest;
 import org.picketlink.oauth.provider.model.ApplicationRegistrationResponse;
+import org.picketlink.oauth.provider.rest._Endpoint;
 import org.picketlink.oauth.provider.security.UserLoggedIn;
 import org.picketlink.oauth.provider.setup.RESTActivation;
 
@@ -45,7 +46,7 @@ import org.picketlink.oauth.provider.setup.RESTActivation;
 @Stateless
 @Path("/appregister")
 @TransactionAttribute
-public class ApplicationRegistrationEndpoint //implements IClientAppManagerLocal 
+public class ApplicationRegistrationEndpoint extends _Endpoint //implements IClientAppManagerLocal 
 {
 
     @Inject private Identity identity;

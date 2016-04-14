@@ -37,6 +37,7 @@ import org.picketlink.idm.model.basic.Agent;
 import org.picketlink.idm.model.basic.User;
 import org.picketlink.idm.query.IdentityQuery;
 import org.picketlink.oauth.provider.model.ApplicationDetailResponse;
+import org.picketlink.oauth.provider.rest._Endpoint;
 import org.picketlink.oauth.provider.security.UserLoggedIn;
 import org.picketlink.oauth.provider.setup.RESTActivation;
 
@@ -49,7 +50,7 @@ import org.picketlink.oauth.provider.setup.RESTActivation;
 @Stateless
 @Path("/appdetail")
 @TransactionAttribute
-public class ApplicationDetailEndpoint {
+public class ApplicationDetailEndpoint  extends _Endpoint {
 
     @Inject    private Identity identity;
 

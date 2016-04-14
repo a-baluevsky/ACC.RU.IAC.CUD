@@ -1,6 +1,9 @@
 package org.picketlink.oauth.provider.model;
 
+import javaw.lang.Strings;
+
 import javax.xml.bind.annotation.XmlRootElement;
+
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 @XmlRootElement @JsonSerialize
@@ -15,4 +18,6 @@ public class ClientAppAuth implements IClientAppAuth {
 	@Override public void setClient_id(String client_id) {		this.client_id = client_id;	}
 	@Override public String getClient_secret() {		return client_secret;	}
 	@Override public void setClient_secret(String client_secret) {		this.client_secret = client_secret;	}
+	
+	@Override public String toString() { return Strings.toRON("this.toString", this); }
 }

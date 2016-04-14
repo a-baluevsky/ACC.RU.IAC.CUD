@@ -2,12 +2,14 @@ package org.picketlink.oauth.provider.model.exceptions;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.Provider;
 
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.picketlink.oauth.provider.rest.interceptors.HeadersFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +17,7 @@ import ru.spb.iac.cud.exceptions.GeneralFailure;
 
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.ws.rs.WebApplicationException;
 
 public class OAuthProviderException extends GeneralFailure {
 	@XmlRootElement @JsonSerialize
@@ -118,12 +121,17 @@ public class OAuthProviderException extends GeneralFailure {
 			OAuthRegisterException(new OAuthProviderException() {
 				@Override public void throwIt(String msg) throws GeneralFailure { throwIt(OAuthRegisterException.toString(), msg, null); }
 			}),
+			WebApplicationException(new OAuthProviderException() {
+				
+			}),
 			ServerException(new OAuthProviderException() {
 				@Override public void throwIt(String msg) throws GeneralFailure { throwIt(OAuthProviderExceptionCode.server_error.toString(), msg, null); }
 			})
 		;
+		
 		private OAuthProviderException x;
 		private <E extends OAuthProviderException>OAPE(E x) { this.x = x; }
+		public<X extends Throwable> void throwIt(X x) throws X { throw x; }
 		public void throwIt(String error_description) throws GeneralFailure { this.x.throwIt(error_description); }
 		public void throwIt(Enum<?> code) throws GeneralFailure {
 			if(code instanceof OAuthProviderExceptionCode) {				
@@ -141,15 +149,19 @@ public class OAuthProviderException extends GeneralFailure {
 	implements ExceptionMapper<OAuthProviderException> {
 		@Override
 		public Response toResponse(OAuthProviderException exception) {	
-			return Response.status(Status.BAD_REQUEST).entity(exception.rm).build();
+			final ResponseBuilder entity = Response.status(Status.BAD_REQUEST).entity(exception.rm);
+			HeadersFilter.setHeaderAccCtlAllowOrigin(entity);
+			return entity.build();
 		}
 	}
 	
 	private static Response serverErrorResponse(Exception exception) {
-		return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ResultMessage(
+		final ResponseBuilder entity = Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ResultMessage(
 			OAuthProviderExceptionCode.server_error.toString(),
 			exception.getMessage(), null
-		)).build();
+		));
+		HeadersFilter.setHeaderAccCtlAllowOrigin(entity);
+		return entity.build();
 	};
 
 	public static @Provider class OAuthProblemExceptionHandler
@@ -159,5 +171,11 @@ public class OAuthProviderException extends GeneralFailure {
 	public static @Provider class OAuthSystemExceptionHandler
 	implements ExceptionMapper<OAuthSystemException> {
 		@Override public Response toResponse(OAuthSystemException exception) { return serverErrorResponse(exception); }
-	}	
+	}
+	
+	public static @Provider class WebApplicationExceptionHandler
+	implements ExceptionMapper<WebApplicationException> {
+		@Override public Response toResponse(WebApplicationException exception) { return serverErrorResponse(exception); }
+	}
+	
 }

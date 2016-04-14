@@ -44,6 +44,7 @@ import org.picketlink.idm.query.IdentityQuery;
 import org.picketlink.oauth.provider.model.ApplicationDetailResponse;
 import org.picketlink.oauth.provider.model.ApplicationListRequest;
 import org.picketlink.oauth.provider.model.ApplicationListResponse;
+import org.picketlink.oauth.provider.rest._Endpoint;
 import org.picketlink.oauth.provider.security.UserLoggedIn;
 import org.picketlink.oauth.provider.setup.RESTActivation;
 
@@ -56,7 +57,7 @@ import org.picketlink.oauth.provider.setup.RESTActivation;
 @Stateless
 @Path("/applist")
 @TransactionAttribute
-public class ApplicationListEndpoint {
+public class ApplicationListEndpoint  extends _Endpoint {
 
     @Inject private Logger log;
 

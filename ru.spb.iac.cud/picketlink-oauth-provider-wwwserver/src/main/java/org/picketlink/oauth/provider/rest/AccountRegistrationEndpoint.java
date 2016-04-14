@@ -42,7 +42,7 @@ import org.picketlink.oauth.provider.setup.RESTActivation;
  */
 @Stateless
 @Path("/accregister")
-public class AccountRegistrationEndpoint {
+public class AccountRegistrationEndpoint  extends _Endpoint {
 
     @Inject
     private IdentityManager identityManager;

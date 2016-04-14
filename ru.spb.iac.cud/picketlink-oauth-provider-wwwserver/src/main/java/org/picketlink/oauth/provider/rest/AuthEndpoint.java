@@ -18,16 +18,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.oltu.oauth2.as.issuer.MD5Generator;
-import org.apache.oltu.oauth2.as.issuer.OAuthIssuerImpl;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.message.types.ResponseType;
 import org.picketlink.Identity;
@@ -39,8 +37,9 @@ import org.picketlink.idm.model.basic.User;
 import org.picketlink.oauth.provider.model.AuthenticationRequest;
 import org.picketlink.oauth.provider.model.AuthenticationResponse;
 import org.picketlink.oauth.provider.model.AuthorizationResponse;
-import org.picketlink.oauth.provider.model.exceptions.OAuthProviderException.OAuthProviderExceptionCode;
 import org.picketlink.oauth.provider.model.exceptions.OAuthProviderException.OAPE;
+import org.picketlink.oauth.provider.model.exceptions.OAuthProviderException.OAuthProviderExceptionCode;
+import org.picketlink.oauth.provider.services.ClientAppManager;
 import org.picketlink.oauth.provider.services.OAuthRegister;
 import org.picketlink.oauth.provider.setup.RESTActivation;
 import org.slf4j.Logger;
@@ -55,7 +54,7 @@ import ru.spb.iac.cud.exceptions.GeneralFailure;
 
 @Stateless
 @Path("/auth")
-public class AuthEndpoint {
+public class AuthEndpoint extends _Endpoint {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AuthEndpoint.class);	
     
     @Inject private OAuthRegister oauthRegister;
@@ -64,6 +63,7 @@ public class AuthEndpoint {
     @Inject private DefaultLoginCredentials credential;
     @Context ServletContext servletContext;
     @Context HttpServletRequest httpServletRequest;
+    @Context private HttpServletResponse response;
     @Context UriInfo uriInfo;
     
     private PageTemplate pageTemplate;
@@ -102,6 +102,10 @@ public class AuthEndpoint {
 		}
 	}
     
+
+    @PermitAll @OPTIONS @Path("login") public Response loginOpts(@Context HttpServletRequest request) { return getOKResponse(); }
+
+    
     @PermitAll @POST @Path("login")
     @Consumes(RESTActivation.MediaJSON) @Produces(RESTActivation.MediaJSON)
     public AuthenticationResponse login(final AuthenticationRequest authcRequest) {
@@ -125,7 +129,7 @@ public class AuthEndpoint {
     }
 
     private AuthenticationResponse createLoginResponse(final AuthenticationRequest authcRequest) {
-        AuthenticationResponse response = new AuthenticationResponse();
+        AuthenticationResponse response = new AuthenticationResponse(this.response);
 
         response.setUserId(authcRequest.getUserId());
         response.setLoggedIn(this.identity.isLoggedIn());
@@ -145,21 +149,29 @@ public class AuthEndpoint {
 
     private static final String[] paramsError = { "error", "error_description" };
     
+    @PermitAll @OPTIONS @Path("scope") public Response scopeOpts(@Context HttpServletRequest request) { return getOptionsCORSResponse(null, "Auth-Token, JSESSIONID"); }
+    
     @PermitAll @GET @Path("scope")
     @Produces(RESTActivation.MediaHTML)
     public Response scopeApprovePage(final @Context HttpServletRequest request) {
-    	final Response.ResponseBuilder responseBuilder = Response.status(HttpServletResponse.SC_FOUND);
+    	LOGGER.info("scopeApprovePage: 10");
+    	final Response.ResponseBuilder responseBuilder = Response.status(HttpServletResponse.SC_OK);
     	final Map<String, String> scopeParams = fetchScopeParams(request);
     	final Map<String, String> paramErrors; 
-		if(!identity.isLoggedIn()) 
-	    	responseBuilder.location(getUrlLogin());   	
-    	else if((paramErrors = checkScopeParams(scopeParams))!=null)
-    		getPageTemplate().sendWebTemplate(responseBuilder, "scopeparamerror", new PageTemplate.TokenReplacer(paramErrors));
-    	else {    		
+		if(!identity.isLoggedIn()) {
+			LOGGER.info("scopeApprovePage: 20");
+	    	responseBuilder.location(getUrlLogin());
+		} else if((paramErrors = checkScopeParams(scopeParams))!=null) {
+			LOGGER.info("scopeApprovePage: 30");
+			getPageTemplate().sendWebTemplate(responseBuilder, "scopeparamerror", new PageTemplate.TokenReplacer(paramErrors));
+		}    		
+    	else {
+    		LOGGER.info("scopeApprovePage: 40");
     		final boolean isFramed = request.getParameter("framed")!=null;
     		scopeParams.put("form_target", isFramed? " target='_parent' ":" target='_self'");
     		boolean approved = isAppScopeApproved(scopeParams.get(OAuth.OAUTH_CLIENT_ID), scopeParams);
     		if(approved) {
+    			LOGGER.info("scopeApprovePage: 50");
     			AuthorizationRequest authzRq = new AuthorizationRequest();
     			authzRq.setClient_id(scopeParams.get("client_id"));
     			final String response_type = scopeParams.get("response_type");
@@ -168,23 +180,44 @@ public class AuthEndpoint {
     			authzRq.setState(scopeParams.get("state"));
     			if("code".equals(response_type))
 				try {
+					LOGGER.info("scopeApprovePage: 60");
 					final AuthorizationResponse.AuthorizationCodeResponse scopeAuthResult = 
 							(AuthorizationResponse.AuthorizationCodeResponse)scopeAuthorize(authzRq);
 					scopeParams.put("code", scopeAuthResult.getCode());
 					//scopeParams.put("auth_tkn", scopeAuthResult.getAccessToken());
 				} catch (GeneralFailure e) {
+					LOGGER.info("scopeApprovePage: 70");
 					approved = false; 
 				}
         	}
+    		LOGGER.info("scopeApprovePage: 80");
     		getPageTemplate().sendWebTemplate(responseBuilder, approved? "frameredirect": "scopeapprove", new PageTemplate.TokenReplacer(scopeParams));
     	}
+		LOGGER.info("scopeApprovePage: 100");
     	return responseBuilder.build(); 
     }
 
+    @Inject private ClientAppManager clientAppManager;
     private boolean isAppScopeApproved(String clientAppId, Map<String, String> scopeParams) {
 		try {
-			return aml.is_exist(clientAppId) && !idpUtil.systemSignReq(clientAppId);
+			LOGGER.info("isAppScopeApproved: 10");
+			//return aml.is_exist(clientAppId) && !idpUtil.systemSignReq(clientAppId);
+			if(aml.is_exist(clientAppId) && !idpUtil.systemSignReq(clientAppId)) {
+				LOGGER.info("isAppScopeApproved: 20");
+				if(!this.clientAppManager.existsApp(clientAppId)) {
+					LOGGER.info("isAppScopeApproved: 30");
+					String owner = "cud";
+					String appURL = scopeParams.get(OAuth.OAUTH_REDIRECT_URI);
+					LOGGER.info("isAppScopeApproved: 40: "+clientAppId+", "+appURL);
+					this.clientAppManager.create(clientAppId, appURL, owner, clientAppId, clientAppId);
+				}
+				return true;
+			} else {
+				LOGGER.info("isAppScopeApproved: 30");
+				return false;
+			}
 		} catch (Exception e) {
+			LOGGER.info("isAppScopeApproved: 80");
 			LOGGER.error("isAppScopeApproved for clientApp:"+clientAppId+": "+e.getMessage());
 			return false;
 		}
@@ -234,7 +267,7 @@ public class AuthEndpoint {
 			newAuthCode = oauthRegister.issueToken(tokenInfo);			
 			switch(respType) { 
 			case CODE:
-				authresp = new AuthorizationResponse.AuthorizationCodeResponse(authrRequest.getState(), newAuthCode.getTokenId());
+				authresp = new AuthorizationResponse.AuthorizationCodeResponse(this.response, authrRequest.getState(), newAuthCode.getTokenId());
 				break; 
 			case TOKEN: 
 				// TODO: debug this use-case
@@ -242,7 +275,7 @@ public class AuthEndpoint {
 				newAccessToken = oauthRegister.issueToken(new TokenInfo.AuthCodeTokenInfo(Token.DefaultTokenLifeTime, 
 									authrRequest.getClient_id(), userId, 
 									newAuthCode.getTokenId(), newAuthCode, "openid"));				
-				authresp = new AuthorizationResponse.AuthorizationAccessTokenResponse(authrRequest.getState(), newAccessToken);
+				authresp = new AuthorizationResponse.AuthorizationAccessTokenResponse(this.response, authrRequest.getState(), newAccessToken);
 				break; 
 			}
 		} catch(Exception x) {

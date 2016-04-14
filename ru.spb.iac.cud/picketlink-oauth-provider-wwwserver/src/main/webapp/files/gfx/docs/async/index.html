@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Асинхронные запросы, модуль async и особенности определения методов</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+
+<body><h1>Асинхронные запросы</h1>
+<ul>
+  <li>Про асинхронные запросы и async: 
+    <ul>
+      <li><a href="http://blog.carbonfive.com/2015/01/29/composing-synchronous-and-asynchronous-functions-in-javascript/">composing-synchronous-and-asynchronous-functions-in-javascript</a></li>
+      <li><a href="http://alexeypetrushin.github.io/synchronize/docs/index.html">synchronize/docs</a></li>
+      <li><a href="https://www.npmjs.com/package/async">async</a></li>
+    </ul>
+  </li>
+</ul>
+<h1>Модуль async</h1>
+<p>В проекте используется переработанная библиотека async. Переработанная: оформлена 
+  в виде подключаемого модуля RequireJS, пересмотрены методы (выбраны только необходимые, 
+  слишком абстрактные перенесены в underscore. </p>
+<ul>
+  <li>Работающий демонстрационный пример цепочки асинхронных запросов (&quot;Composing 
+    Synchronous and Asynchronous Functions in JavaScript&quot; на переработанном 
+    модуле)</li>
+</ul>
+<h1>Особенности определения асинхронных методов</h1>
+<table width="100%" border="1" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td><strong>Сценарий использования</strong></td>
+    <td><strong>Общая формула</strong></td>
+    <td><strong>Пример</strong></td>
+  </tr>
+  <tr> 
+    <td><p>Метод с одним параметром</p>
+      <p>Рекомендуется всё-таки использовать объект аргументов args.</p></td>
+    <td><p>f(argument, callbackFunction)</p>
+      <p>f(args, callbackFunction) {</p>
+      <p>var argumentValue = args.argument;</p>
+      <p>}</p></td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr> 
+    <td><p>Метод с несколькиими параметрами</p>
+      <ul>
+        <li>единый стиль оформления асинхронных методов</li>
+        <li>неограниченное число параметров (var args)</li>
+        <li>именованные аргументы (не важен порядок следования)</li>
+        <li>проще работать с параметрами "по умолчанию"</li>
+        <li>возможность организовать единое поле зрения аргументов при использовании цепочки асинхронных запросов</li>
+      </ul></td>
+    <td>f(args, callbackFunction)</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr> 
+    <td>Единое поле зрения аргументов для цепочки асинхронных запросов</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr> 
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+</table>
+<h1>Определение функции обратной связи</h1>
+<pre>			function sampleCallback(<font color="#FF0066"><strong>err</strong></font>, <strong><font color="#336666">result</font></strong>)  {<br>				if(err)<br>					writeLine(&quot;ERROR: err=&quot;+err);<br>				else<br>					writeLine(&quot;SUCCESS: result=&quot;+result);<br>			}
+</pre>
+<h1>Вызов функции обратной связи</h1>
+<pre>			function callbackCaller(arg, callbackFn)  {<br>				if(err)<br>					callbackFn(&quot;Operation failed!&quot;);<br>				else<br>					callbackFn(<strong>null</strong>, 777);<br>			}
+</pre>
+</body>
+</html>

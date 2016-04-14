@@ -18,19 +18,18 @@ package org.picketlink.oauth.provider.model;
 
 import java.io.Serializable;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.codehaus.jackson.annotate.JsonWriteNullProperties;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-@XmlRootElement
-@JsonSerialize @JsonWriteNullProperties(false)
-public class AuthenticationResponse implements Serializable {
+@XmlRootElement @JsonSerialize
+public class AuthenticationResponse extends OAuthResponse {
+    public AuthenticationResponse(HttpServletResponse response) { super(response); }
+	private static final long serialVersionUID = 2637023097272776078L;
 
-    private static final long serialVersionUID = 2637023097272776078L;
-
-    private String 	userId; 	public String getUserId() { return userId; } 		public void setUserId(String userId) { this.userId = userId;   }
-    private boolean loggedIn;	public boolean isLoggedIn() { return loggedIn; }	public void setLoggedIn(boolean loggedIn) { this.loggedIn = loggedIn; }
-    private String 	token;		public String getToken() {        return token; }	public void setToken(String token) { this.token = token; }    
+    private String 	userId; 	public String getUserId() 	{ return userId; } 		public void setUserId(String userId) 		{ this.userId = userId;   }
+    private boolean loggedIn;	public boolean isLoggedIn() { return loggedIn; }	public void setLoggedIn(boolean loggedIn) 	{ this.loggedIn = loggedIn; }
+    private String 	token;		public String getToken() 	{ return token; }		public void setToken(String token) 			{ this.token = token; }    
 
 }

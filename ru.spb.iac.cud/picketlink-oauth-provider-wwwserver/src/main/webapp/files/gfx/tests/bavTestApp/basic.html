@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>B^LUEvSKY Test System</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script src="http://<%HOST%>/picketlink-oauth-provider-wwwserver/files/gfx/current/lib/require-2.1.20.js" 
+		data-main="http://<%HOST%>/picketlink-oauth-provider-wwwserver/files/gfx/current/config.js"></script>
+<script src="http://<%HOST%>/picketlink-oauth-provider-wwwserver/files/gfx/current/config.js"></script>
+</head>
+<body onLoad="gfxDemo()">
+	<H1>B^LUEvSKY Test System (basic test)</H1>
+	<P>Welcome to B^LUEvSKY Test System JavaScript-based&nbsp;&nbsp;ClientApp!</P>
+	
+	<DIV id=dvLog>Идёт загрузка ...</DIV>
+	
+
+<script src="http://<%HOST%>/picketlink-oauth-provider-wwwserver/files/gfx/current/lib/json2.js"></script>
+
+<script language="JavaScript">
+	function gfxDemo() {
+		requirejs(['GaliaJSFX'],
+		function( _gfx) {
+			dvLog.innerHTML = 'GaliaJSFX version: ' + _gfx.version;
+		});
+	}
+</script>
+</body>
+</html>

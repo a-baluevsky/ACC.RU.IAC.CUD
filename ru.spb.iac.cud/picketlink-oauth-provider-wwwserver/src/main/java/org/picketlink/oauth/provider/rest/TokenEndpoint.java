@@ -16,11 +16,13 @@ import javaw.lang.Strings;
 import javaw.util.Tuple;
 import javaw.util.Tuple.T2;
 
+import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -43,6 +45,7 @@ import org.apache.oltu.oauth2.jwt.io.JWTWriter;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.picketlink.oauth.provider.model.AuthenticationRequest;
 import org.picketlink.oauth.provider.model.TokenInfoRequest;
 import org.picketlink.oauth.provider.model.TokenInfoResponse;
 import org.picketlink.oauth.provider.model.TokenRequest;
@@ -76,11 +79,15 @@ import org.slf4j.LoggerFactory;
 import org.apache.oltu.oauth2.jwt.io.JWTUtil;
 
 @Path("/token")
-public class TokenEndpoint {
+public class TokenEndpoint extends _Endpoint {
+	@Context private HttpServletResponse response;
 	private static final Logger LOGGER = LoggerFactory.getLogger(TokenEndpoint.class);	
+	
 	//@Inject private IdentityManager identityManager;
 	@Inject private OAuthRegister oauthRegister;
 
+    @PermitAll @OPTIONS public Response authorizeOpts(final AuthenticationRequest authcRequest) { return getOKResponse(); }	
+	
     @ProtectedByClientCredentials @POST
     @Consumes(RESTActivation.MediaFORM_URLENCODED) @Produces(RESTActivation.MediaJSON)
     public Response authorizeForm(@Context HttpServletRequest request) throws OAuthSystemException, OAuthProblemException, GeneralFailure {
@@ -98,7 +105,7 @@ public class TokenEndpoint {
     @Consumes(RESTActivation.MediaJSON) @Produces(RESTActivation.MediaJSON)	
 	public TokenResponse authorize(TokenRequest tokenRequest) throws GeneralFailure
     {
-    	TokenResponse tokenResponse = new TokenResponse();
+    	TokenResponse tokenResponse = new TokenResponse(response);
 		AuthorizationCodeInfo authCodeInfo = null; String refresh_token = null;
 		GrantType grant_type = getGrantType(tokenRequest.getGrant_type());
 		Token<?> issuedToken = null;

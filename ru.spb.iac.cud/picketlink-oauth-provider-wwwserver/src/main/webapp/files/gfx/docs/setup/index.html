@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Подключение Galia JSFX к проекту</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body><h1>Подключение Galia JSFX к проекту</h1>
+<ul>
+  <li>Подключить скрипты (заменить <strong><u>host</u></strong> на реальный адрес OAuth Provider)
+    <ul>
+      <li>RequireJS</li>
+      <p>Рекомендуется помещать скрипт RequireJS в заголовке &lt;head&gt;, а остальные скрипты в конце 
+        кода страницы (перед закрывающим тегом &lt;/body&gt;) для имитации быстрой 
+        загрузки страницы:</p>
+      <code> &lt;script src=&quot;http://<strong><u>host</u></strong>/picketlink-oauth-provider-wwwserver/files/gfx/current/lib/require-2.1.20.js&quot; 
+      <br>
+      data-main=&quot;http://<strong><u>host</u></strong>/picketlink-oauth-provider-wwwserver/files/gfx/current/config.js&quot;&gt;&lt;/script&gt; 
+		<br/>
+		&lt;script src="http://<strong><u>host</u></strong>/picketlink-oauth-provider-wwwserver/files/gfx/current/config.js"&gt;&lt;/script&gt; 	  
+      </code> 
+      <li>json2 (опционально - для браузеров без встроенной поддержки JSON) 
+        <p><code> &lt;script src=&quot;http://<strong><u>host</u></strong>/picketlink-oauth-provider-wwwserver/files/gfx/current/lib/json2.js&quot;&gt;&lt;/script&gt; 
+          </code></p>
+      </li>
+    </ul>
+  </li>
+  <li>Добавить загрузку компонентов библиотеки с помощью RequireJS и использовать 
+    их: 
+    <p> 
+    <blockquote>
+      <blockquote><code>
+        <pre>&lt;body onLoad=&quot;gfxDemo()&quot;&gt;<br/>
+      ...<br/>
+      &lt;DIV id=dvLog&gt;&lt;/DIV&gt;<br>
+      ...<br>&lt;script language=&quot;JavaScript&quot;&gt;<br>
+      function gfxDemo() {<br>
+      requirejs(['GaliaJSFX'],<br>
+      function( _gfx) {<br>
+      dvLog.innerHTML = 'GaliaJSFX version: ' + _gfx.version;<br>
+      });<br>
+  }
+&lt;/script&gt;	  
+</pre>
+        </code></blockquote>
+    </blockquote></p>
+    </p> (см. <a href="../../tests/bavTestApp/basic.html">Пример подключения</a>)</li>
+  <li></li>
+  <li></li>
+  <li></li>
+</ul>
+</body>
+</html>

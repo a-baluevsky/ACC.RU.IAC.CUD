@@ -22,6 +22,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -45,13 +46,11 @@ import org.picketlink.oauth.provider.setup.RESTActivation;
 @Stateless
 @Path("/signin")
 @TransactionAttribute
-public class SignInEndpoint {
-
+public class SignInEndpoint extends _Endpoint {
     @Inject private Identity identity;
-
     @Inject private DefaultLoginCredentials credential;
-
     @Context private HttpServletRequest httpServletRequest;
+    @Context private HttpServletResponse response;
 
     /**
      * <p>Performs the authentication using the informations provided by the {@link AuthenticationRequest}</p>
@@ -75,7 +74,7 @@ public class SignInEndpoint {
     }
 
     private AuthenticationResponse createResponse(AuthenticationRequest authcRequest) {
-        AuthenticationResponse response = new AuthenticationResponse();
+        AuthenticationResponse response = new AuthenticationResponse(this.response);
 
         response.setUserId(authcRequest.getUserId());
         response.setLoggedIn(this.identity.isLoggedIn());

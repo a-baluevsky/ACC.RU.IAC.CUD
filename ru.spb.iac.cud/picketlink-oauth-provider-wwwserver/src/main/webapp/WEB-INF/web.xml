@@ -19,4 +19,16 @@
 		<param-name>resteasy.providers</param-name>
 		<param-value>org.picketlink.oauth.provider.rest.interceptors.SecurityInterceptor</param-value>
 	</context-param>
+	
+	<!-- 
+	<filter>
+		<filter-name>cors</filter-name>
+		<filter-class>org.picketlink.oauth.provider.rest.interceptors.HeadersFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>cors</filter-name>
+		<url-pattern>*/*</url-pattern>
+	</filter-mapping>
+	 -->
+	
 </web-app>

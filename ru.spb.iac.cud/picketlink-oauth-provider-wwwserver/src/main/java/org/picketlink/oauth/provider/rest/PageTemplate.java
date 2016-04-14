@@ -1,6 +1,7 @@
 package org.picketlink.oauth.provider.rest;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -44,10 +45,14 @@ public class PageTemplate {
 	
  	public PageTemplate(String baseUri, String templatesPath) {
 		URL_OAUTH_PROVIDER = baseUri; PATH_WEB_TEMPLATES = templatesPath;
-	}	
-	public PageTemplate(UriInfo uriInfo, ServletContext servletContext) {
-		this(uriInfo.getBaseUri().toString(), servletContext.getRealPath(TemplatesLocation));
 	}
+	public PageTemplate(UriInfo uriInfo, ServletContext servletContext, String basePath) {
+		this(uriInfo.getBaseUri().toString(), servletContext.getRealPath(basePath));
+	} 	
+	public PageTemplate(UriInfo uriInfo, ServletContext servletContext) {		
+		this(uriInfo, servletContext, TemplatesLocation);
+	}
+	
 
 	public URI uri(StringBuilder uri) { 
 	    try {	    	
@@ -102,7 +107,8 @@ public class PageTemplate {
 	}		
     
 	public String getPathWebTemplate(String fileName) {
-		StringBuilder sbPath = appendPath(new StringBuilder(PATH_WEB_TEMPLATES), fileName.replace('/', '\\'));
+		StringBuilder sbPath = appendPath(new StringBuilder(PATH_WEB_TEMPLATES), 
+				File.separatorChar!='/'? fileName.replace('/', File.separatorChar): fileName);
 		if(fileName.indexOf('.')==-1)
 			sbPath.append(".html");
 		return sbPath.toString(); 
@@ -153,7 +159,7 @@ public class PageTemplate {
 	}
 	
 	private static StringBuilder appendPath(StringBuilder sbPath, String pathPart) {
-		return appendToken(sbPath, pathPart, '\\');
+		return appendToken(sbPath, pathPart, File.separatorChar);
 	}
 	private static StringBuilder appendURL(StringBuilder sbURL, String urlPart) {
 		return appendToken(sbURL, urlPart, '/');
@@ -170,17 +176,17 @@ public class PageTemplate {
 		}		
 		Map<String, String> mpUrl = new HashMap<String, String>();
 		mpUrl.put("RequestURL", sbURL.toString());
-		return sendWebTemplate(Response.status(HttpServletResponse.SC_FOUND), 
+		return sendWebTemplate(Response.status(HttpServletResponse.SC_OK), 
 				"paaaframe", new TokenReplacer(mpUrl)).build();
 	}
 	
 	
 	public Response sendWebTemplate(String templateName) {
-		return sendWebTemplate(Response.status(HttpServletResponse.SC_FOUND), templateName, null).build();
+		return sendWebTemplate(Response.status(HttpServletResponse.SC_OK), templateName, null).build();
 	}
 	
 	public <T> Response sendWebTemplate(String templateName, IPageCodeAdaptor<T> pageCodeAdaptor) {
-		return sendWebTemplate(Response.status(HttpServletResponse.SC_FOUND), templateName, pageCodeAdaptor).build();
+		return sendWebTemplate(Response.status(HttpServletResponse.SC_OK), templateName, pageCodeAdaptor).build();
 	}	
 	
     public Response.ResponseBuilder sendWebTemplate(
@@ -202,23 +208,28 @@ public class PageTemplate {
     	return responseBuilder;
 	}
     
-    public <T> String getWebTemplate(String templateName, IPageCodeAdaptor<T> pageCodeAdaptor) 
+    public <T> String getWebFile(String filePath, IPageCodeAdaptor<T> pageCodeAdaptor) 
     throws FileNotFoundException, IOException {
     	BufferedReader data = null;
     	try {
-			data = new BufferedReader(new InputStreamReader(new FileInputStream(
-					getPathWebTemplate(templateName)), Charset.forName("UTF-8")));
+			data = new BufferedReader(new InputStreamReader(
+					new FileInputStream(filePath), Charset.forName("UTF-8")));
 			final StringBuilder sbOut = new StringBuilder();
 			String strLine;
 			while ((strLine = data.readLine()) != null) {
-			    sbOut.append(strLine);
+			    sbOut.append(strLine).append('\n');
 			}			
 			return pageCodeAdaptor==null?sbOut.toString(): pageCodeAdaptor.process(sbOut);
     	}
 		finally {
 			if(data!=null)
 				data.close();
-		} 
+		}
+    }
+    
+    public <T> String getWebTemplate(String templateName, IPageCodeAdaptor<T> pageCodeAdaptor) 
+    throws FileNotFoundException, IOException {
+    	return getWebFile(getPathWebTemplate(templateName), pageCodeAdaptor);
     }
     
 }

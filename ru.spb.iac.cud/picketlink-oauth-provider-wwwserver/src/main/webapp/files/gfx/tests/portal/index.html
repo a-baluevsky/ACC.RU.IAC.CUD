@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Модель портала</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<!-- this should be here to avoid dynamic script loading errors -->
+	<script src="http://<%HOST%>/picketlink-oauth-provider-wwwserver/files/gfx/current/lib/require-2.1.20.js" 
+			data-main="http://<%HOST%>/picketlink-oauth-provider-wwwserver/files/gfx/current/config.js"></script>
+	<script src="http://<%HOST%>/picketlink-oauth-provider-wwwserver/files/gfx/current/config.js"></script>	
+</head>
+
+<body onLoad="showAppList()"><h1>Модель списка ИС на портале</h1>
+Портал отображает ссылки на аутентификацию ИС и авторизацию пользователя.
+Генерацию ссылок берёт на себя компонент AuthRequest.
+
+<script language="JavaScript">
+	var RegClientApps = {
+		/*
+		TemplateClientApp: {
+			client_id: 'urn:eis:your:appId',
+			client_secret: 'urn:eis:your:appId',
+			client_name: 'Your app name shown to user',
+			redirect_uri: '/path/to/your/appId.html'   
+		},
+		*/
+		CTest2ClientAppJS: {
+			client_id: 'urn:eis:BlueSky:test1',
+			client_secret: 'urn:eis:BlueSky:test1',	
+			client_name: 'B^LUEvSKY Test System ClientApp (JavaScript)',
+			redirect_uri: '/picketlink-oauth-provider-wwwserver/files/gfx/tests/bavTestApp/index.html'	    
+		}	        
+	}
+	
+	function showAppList() {
+		requirejs(['underscore_plus', 'GaliaJSFX'],
+		function(_, _gfx) {
+			debugger;
+			
+			window._ = _;
+			window.async = _async;			
+
+			var _ClientApp 		= _gfx.ClientApp;
+			var _AuthRequest 	= _gfx.AuthRequest;
+			// TODO: REFACTOR & CHECK THIS! Add <%HOST%> patching!
+			// see origin @ W:\paaa_oauth\ajax\GaliaJSFX_EndPointTest.htm
+			writeDivFrameGFX('<ul>');
+			_.each(_ClientApp.RegClientApps, function (testAppInfo) {
+				var testApp = _ClientApp.new_ClientApp(testAppInfo, restProviderUrl, lgrGFXTest, lgrGFXOut, lgrGFXIn);
+				var lnkAuthCode = _AuthRequest.getAuthCodeLink({clientApp: testApp});
+				writeDivFrameGFX('<li>');
+				writeDivFrameGFX( lnkAuthCode  );
+				writeDivFrameGFX('</li>');
+			});
+
+			
+			//dvLog.innerHTML = 'GaliaJSFX version: ' + _gfx.version+'<hr/>';		
+			//var clientApp = initApp(_gfx.ClientApp);
+			//initAppState({async: _async, 
+			//	_AuthRequest: _gfx.AuthRequest, _User: _gfx.ClientAppUser, clientApp: clientApp});
+			
+		});
+	}
+</script>
+	
+</body>
+</html>

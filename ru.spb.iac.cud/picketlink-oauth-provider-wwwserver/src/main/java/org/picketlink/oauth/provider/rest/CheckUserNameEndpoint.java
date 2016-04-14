@@ -38,7 +38,7 @@ import org.picketlink.oauth.provider.setup.RESTActivation;
  */
 @Stateless
 @Path("/alreadyExists")
-public class CheckUserNameEndpoint {
+public class CheckUserNameEndpoint extends _Endpoint {
 
     @Inject
     private IdentityManager identityManager;

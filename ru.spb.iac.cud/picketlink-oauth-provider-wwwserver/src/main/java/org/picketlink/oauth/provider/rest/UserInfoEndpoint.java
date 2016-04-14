@@ -37,7 +37,7 @@ import org.picketlink.idm.model.basic.User;
  */
 @Stateless
 @Path("/userinfo")
-public class UserInfoEndpoint {
+public class UserInfoEndpoint extends _Endpoint {
 
     @Inject
     private Identity identity;

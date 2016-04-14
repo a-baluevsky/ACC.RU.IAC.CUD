@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javaw.lang.Strings;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -14,13 +15,12 @@ import ru.spb.iac.cud.core.oauth.Token;
 import ru.spb.iac.cud.core.oauth.TokenInfo;
 
 @JsonSerialize @JsonWriteNullProperties(false) @XmlRootElement
-public class TokenResponse implements Serializable {
+public class TokenResponse extends OAuthResponse implements Serializable {
 	private static final long serialVersionUID = 4939974526145642433L;
 	protected String token_type, access_token, expires_in, refresh_token;
-	public TokenResponse() {
-	
-	}
-	public TokenResponse(String token_type, String access_token, String expires_in, String refresh_token) {
+	public TokenResponse(HttpServletResponse response) { super(response); }
+	public TokenResponse(HttpServletResponse response, String token_type, String access_token, String expires_in, String refresh_token) {
+		super(response); 
 		this.token_type = token_type;		this.access_token = access_token;
 		this.expires_in = expires_in;		this.refresh_token = refresh_token;		
 	}
@@ -36,7 +36,7 @@ public class TokenResponse implements Serializable {
 
 	public static class TokenResponseWithIdToken extends TokenResponse {
 		public TokenResponseWithIdToken(TokenResponse tr) {
-			super(tr.token_type, tr.access_token, tr.expires_in, tr.refresh_token);
+			super(tr.response, tr.token_type, tr.access_token, tr.expires_in, tr.refresh_token);
 		}
 		public TokenResponseWithIdToken(TokenResponse tr, String id_token) {
 			this(tr); this.id_token = id_token;

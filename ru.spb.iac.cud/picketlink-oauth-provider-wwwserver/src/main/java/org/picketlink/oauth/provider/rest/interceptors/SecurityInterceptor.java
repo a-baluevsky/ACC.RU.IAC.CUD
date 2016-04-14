@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import javaw.lang.Strings;
 import javaw.util.PassBy;
 import javaw.util.Tuple;
 
@@ -68,6 +69,7 @@ import ru.spb.iac.cud.core.oauth.Token;
 import ru.spb.iac.cud.core.oauth.Token.IAccessToken;
 import ru.spb.iac.cud.core.oauth.TokenInfo;
 import ru.spb.iac.cud.core.oauth.TokenInfo.AccessTokenType;
+import ru.spb.iac.cud.exceptions.GeneralFailure;
 
 /**
  * <p>
@@ -93,36 +95,53 @@ public class SecurityInterceptor extends org.jboss.resteasy.plugins.interceptors
     //private PicketBoxIdentity identity;
     @Inject private Identity identity;
 
-    @Context
-    private HttpServletRequest httpServletRequest;
-
+    @Context private HttpServletRequest httpServletRequest;
+    @Context private HttpServletResponse response;
+    
     /*
      * (non-Javadoc)
      *
      * @see org.jboss.resteasy.spi.interception.PreProcessInterceptor#preProcess(org.jboss.resteasy.spi.HttpRequest,
      * org.jboss.resteasy.core.ResourceMethod)
-     */
-    @Override
-    
+     */    
+    @Override    
     public ServerResponse preProcess(HttpRequest request, ResourceMethod method) throws Failure, WebApplicationException {
+    	
+    	/*
+    	if("OPTIONS".equalsIgnoreCase(request.getHttpMethod())) {
+    		LOGGER.debug("preProcess: OPTIONS");
+    		
+    		ServerResponse response = new ServerResponse();
+    		HeadersFilter.setHeaderAccCtlAllowOrigin(response);
+    		response.setStatus(HttpServletResponse.SC_OK);
+    		
+    		return response;
+    	}
+    	*/
+    	
         //HttpSession session = httpServletRequest.getSession();
         //ServerResponse response = null;
+    	LOGGER.info("preProcess: 10");
         boolean isAllowed = false;
         final PassBy.reference<ProtectedByAccessToken> 	refProtByAccTknPost = PassBy.reference(null); // post-process: Around-invoke interceptor
         final PassBy.reference<ProtectedBy.AccessToken> refProtByAccTknPre  = PassBy.reference(null); // pre-process: SecurityInterceptor-only (put Context-only)
         final Class<? extends IAccessToken<? extends TokenInfo>> accessTokenSubjectType;
         if(protectedByClientCredentials(method)) {
+        	LOGGER.info("preProcess: 20");
         	// This step: we only extractClientCredentials, since clientApp creds can be passed as JSON params.  
         	// So checkClientCredentials performed later with org.picketlink.oauth.provider.rest.interceptors.ProtectedByClientCredentialsInterceptor
         	isAllowed = extractClientCredentials(request);
         } else if(SecurityCheck.getAnnotation(LOGGER, method, ProtectedByAccessToken.class, refProtByAccTknPost)) { // advanced scheme
+        	LOGGER.info("preProcess: 30");
         	accessTokenSubjectType = (Class<? extends IAccessToken<? extends TokenInfo>>) refProtByAccTknPost.getValue().value();        	
 			isAllowed = preprocessProtectedByAccessToken_unsafe(request, accessTokenSubjectType);
          } else if(SecurityCheck.getAnnotation(LOGGER, method, ProtectedBy.AccessToken.class, refProtByAccTknPre)) { // simpler scheme
-        	  accessTokenSubjectType = (Class<? extends IAccessToken<? extends TokenInfo>>) refProtByAccTknPre.getValue().value().clsAccessTokenType;
-        	  isAllowed = preprocessProtectedByAccessToken_unsafe(request, accessTokenSubjectType);
+        	 LOGGER.info("preProcess: 40");
+        	 accessTokenSubjectType = (Class<? extends IAccessToken<? extends TokenInfo>>) refProtByAccTknPre.getValue().value().clsAccessTokenType;
+        	 isAllowed = preprocessProtectedByAccessToken_unsafe(request, accessTokenSubjectType);
          }
-        else if (requiresAuthentication(method)) {        	
+        else if (requiresAuthentication(method)) {
+        	LOGGER.info("preProcess: 50");
         	BasicAuthorization ba = basicAuthParseHeader(request);
         	if(ba!=null) {
         		// by-pass login-pw requests; actually, they will be checked later
@@ -139,8 +158,11 @@ public class SecurityInterceptor extends org.jboss.resteasy.plugins.interceptors
 	                }*/
 	            }	
 	        }
-    	} else 
+    	} else {
+    		LOGGER.info("preProcess: 60");
     		isAllowed = true;
+    	}
+        LOGGER.info("preProcess: 100");
         return isAllowed? super.preProcess(request, method) // null -> OK, by-pass
         	   :getForbiddenResponse(); 
     }
@@ -150,10 +172,12 @@ public class SecurityInterceptor extends org.jboss.resteasy.plugins.interceptors
      */
 	private boolean preprocessProtectedByAccessToken_unsafe(
 			HttpRequest request,
-			Class accessTokenSubjectType) {
+			Class accessTokenSubjectType) throws WebApplicationException {
 		final String tokenTypeString = getAuthorizationHeader(request);		
 		boolean isAllowed = false;
-		try {
+		if(Strings.isNullOrEmptyTrim(tokenTypeString)) {
+			LOGGER.error("AuthorizationHeader has no access token info (Type AccToken)!");
+		} else try {
 			final Tuple.T2<AccessTokenType, String> typeStr = AccessToken.parseTokenTypeString(tokenTypeString);
 			final String tokenId = AccessToken.getTokenId(typeStr.item1, typeStr.item2);
 			final RefreshToken refreshToken = oauthRegister.getRefreshToken(tokenId);
@@ -183,7 +207,9 @@ public class SecurityInterceptor extends org.jboss.resteasy.plugins.interceptors
 			if(isAllowed)
 				ResteasyProviderFactory.pushContext((Class<IAccessToken<?>>)accessTokenSubjectType, accToken);
 		} catch (Exception e) {
-			LOGGER.debug("preProcess: "+e.toString());
+			final String errMsg = e.toString();
+			LOGGER.debug("preProcess: "+errMsg);
+			OAPE.WebApplicationException.throwIt(new WebApplicationException(new Exception(errMsg)));
 		}
 		return isAllowed;
 	}
@@ -227,11 +253,7 @@ public class SecurityInterceptor extends org.jboss.resteasy.plugins.interceptors
 		return isAllowed;
 	}
     
-
-    
 	//private boolean checkAccessToken(final HttpRequest request) {return AccessToken.check(getAuthorizationHeader(request), clsTokenInfo);}    
-    
-
 
 	public static boolean protectedByClientCredentials(final ResourceMethod method) {
     	return SecurityCheck.hasAnnotation(method, ProtectedByClientCredentials.class) // advanced scheme
@@ -267,7 +289,7 @@ public class SecurityInterceptor extends org.jboss.resteasy.plugins.interceptors
 	}
 	
 	private ServerResponse getForbiddenResponse() {
-		AuthenticationResponse authcResponse = new AuthenticationResponse();	
+		AuthenticationResponse authcResponse = new AuthenticationResponse(this.response);	
 		authcResponse.setLoggedIn(false);
 		ServerResponse response = new ServerResponse();
 		response.setEntity(authcResponse);
@@ -322,5 +344,6 @@ public class SecurityInterceptor extends org.jboss.resteasy.plugins.interceptors
 	public boolean accept(Class declaring, Method method) {
 		// return super.accept(declaring, method);
     	return true;
-	} 
+	}
+
 }

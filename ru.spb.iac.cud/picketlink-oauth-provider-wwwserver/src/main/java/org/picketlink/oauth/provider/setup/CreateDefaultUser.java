@@ -21,17 +21,17 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
-
 import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.PartitionManager;
 import org.picketlink.idm.RelationshipManager;
 import org.picketlink.idm.credential.Password;
-import org.picketlink.idm.model.Account;
 import org.picketlink.idm.model.basic.BasicModel;
 import org.picketlink.idm.model.basic.Role;
 import org.picketlink.idm.model.basic.User;
-
 import  org.picketlink.idm.IdentityManagementException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Create an Admin user
@@ -41,6 +41,7 @@ import  org.picketlink.idm.IdentityManagementException;
 @Singleton
 @Startup
 public class CreateDefaultUser {
+	protected static final Logger LOGGER = LoggerFactory.getLogger(CreateDefaultUser.class);	
     @Inject PartitionManager partitionManager;
 
     @PostConstruct
@@ -49,19 +50,24 @@ public class CreateDefaultUser {
         if(password == null){
             throw new RuntimeException("picketlink.oauth.admin system property not setup");
         }
-        User admin = new User("admin");
-        admin.setEmail("admin@acme.com");
+        try {
+			User admin = new User("admin");
+			admin.setEmail("admin@acme.com");
 
-        IdentityManager identityManager = partitionManager.createIdentityManager();
-        
-        identityManager.add(admin);
-        identityManager.updateCredential(admin, new Password(password));
+			IdentityManager identityManager = partitionManager.createIdentityManager();
+			
+			identityManager.add(admin);
+			identityManager.updateCredential(admin, new Password(password));
 
-        Role roleAdmin = new Role("administrator");
-        identityManager.add(roleAdmin);
+			Role roleAdmin = new Role("administrator");
+			identityManager.add(roleAdmin);
 
-        RelationshipManager relationshipManager = partitionManager.createRelationshipManager();
-        BasicModel.grantRole(relationshipManager,admin,roleAdmin);
-        //identityManager.grantRole(admin, roleAdmin);
+			RelationshipManager relationshipManager = partitionManager.createRelationshipManager();
+			BasicModel.grantRole(relationshipManager,admin,roleAdmin);
+			//identityManager.grantRole(admin, roleAdmin);
+		} catch (IdentityManagementException e) {
+			//e.printStackTrace();
+			LOGGER.debug("admin user not created. "+e.getMessage());
+		}
     }
 }

@@ -33,7 +33,7 @@ import org.picketlink.Identity;
  */
 @Stateless
 @Path("/logout")
-public class LogoutEndpoint {
+public class LogoutEndpoint  extends _Endpoint {
 
     @Inject
     private Identity identity;

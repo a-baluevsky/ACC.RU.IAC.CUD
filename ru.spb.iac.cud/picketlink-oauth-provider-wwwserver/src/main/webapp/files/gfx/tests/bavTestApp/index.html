@@ -1,0 +1,264 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>B^LUEvSKY Test System</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<!-- this should be here to avoid dynamic script loading errors -->
+	<script src="http://<%HOST%>/picketlink-oauth-provider-wwwserver/files/gfx/current/lib/require-2.1.20.js" 
+			data-main="http://<%HOST%>/picketlink-oauth-provider-wwwserver/files/gfx/current/config.js"></script>
+	<script src="http://<%HOST%>/picketlink-oauth-provider-wwwserver/files/gfx/current/config.js"></script>			
+</head>
+<body onLoad="gfxDemo()">
+	<H1>B^LUEvSKY Test System</H1>
+	<P>Welcome to B^LUEvSKY Test System JavaScript-based&nbsp;&nbsp;ClientApp!</P>
+	
+	<DIV id=dvLog></DIV>
+
+	<!-- scripts section -->
+	<script id="js/locale.ru.js">
+		var L_OAUTH_PROVIDER_ADDR = '<%HOST%>'; //'cuddevelop1:8080';  // 'paaa1.test.toris.vpn';
+		var L_OAUTH_PROVIDER_ROOT = 'http://'+L_OAUTH_PROVIDER_ADDR+"/picketlink-oauth-provider-wwwserver";
+		var L_JSON_CONTENT_TYPE = "application/json; charset=UTF-8";
+		var L_ERR_AUTHENTICATION_FAILED = 'Auth Failed!';
+	</script>	
+<script src="http://<%HOST%>/picketlink-oauth-provider-wwwserver/files/gfx/current/lib/json2.js"></script>
+
+<script language="JavaScript">
+	var RegClientApps = {
+		/*
+		TemplateClientApp: {
+			client_id: 'urn:eis:your:appId',
+			client_secret: 'urn:eis:your:appId',
+			client_name: 'Your app name shown to user',
+			redirect_uri: '/path/to/your/appId.html'   
+		},
+		*/
+		CTest2ClientAppJS: {
+			client_id: 'urn:eis:BlueSky:test1',
+			client_secret: 'urn:eis:BlueSky:test1',	
+			client_name: 'B^LUEvSKY Test System ClientApp (JavaScript)',
+			redirect_uri: '/picketlink-oauth-provider-wwwserver/files/gfx/tests/bavTestApp/index.html'	    
+		}	        
+	}
+		
+	function gfxDemo() {
+		requirejs(['underscore_plus', 'async', 'GaliaJSFX'],
+		function(_, _async, _gfx) {
+			debugger;
+			
+			window._ = _;
+			window.async = _async;			
+			dvLog.innerHTML = 'GaliaJSFX version: ' + _gfx.version+'<hr/>';
+			
+			var clientApp = initApp(_gfx.ClientApp);
+
+			initAppState({async: _async, 
+				_AuthRequest: _gfx.AuthRequest, _User: _gfx.ClientAppUser, clientApp: clientApp});
+			
+		});
+	}
+	
+	function initApp(_ClientApp) {
+		return clientApp = _ClientApp.new_ClientApp(RegClientApps.CTest2ClientAppJS, L_OAUTH_PROVIDER_ROOT);			
+	}
+	
+	function initAppState(args) {
+		var params = {};
+		var state;
+		var errInfo = {};
+		if (args._AuthRequest.fillAuthCodeParams(params, errInfo)) {
+			state = params.state;
+		} else {
+			if(errInfo.error && errInfo.cntParams)
+				state = 'ERROR';
+		}
+		switch(state) {
+			case 'ERROR':
+				writeLog('ERROR! '+errInfo.error, errInfo.error_description);
+				break;
+			case 0: case null: case undefined:
+				clientApp.appLoginUrl = args._AuthRequest.getAuthCodeUrl({clientApp: clientApp, state: 1000});
+				dvLog.innerHTML = 'You must authorize to use this app<br><INPUT id=btnLogin type=button value="Begin login!" LANGUAGE=javascript onclick="return btnLogin_onclick()">' ;
+				break;					
+			case '1000':
+				demo({_AuthRequest: args._AuthRequest, _User: args._User, clientApp: args.clientApp, params: params});	
+				break;
+			default:	
+				dvLog.innerHTML = ('Invalid app state! state='+state).fontcolor('darkred');
+		};		
+	}
+		
+	function demo(args) {
+		try {
+			demo_AuthRequest(args);
+			demo_ClientApp(args);
+		} catch(x) {
+			if(x.header && x.value)
+				writeLog(x.header.fontcolor("red"), x.value.fontcolor("darkred"));
+			else if(x.name && x.message) {					
+				var fn = arguments.callee.caller;
+				var fnName = fn.name || fn.toString();
+				debugger;
+				writeLog(fnName.fontcolor("red"), (x.name+': '+x.message).fontcolor("darkred"));
+			}
+			else {
+				debugger;
+				writeLog('ERROR!'.fontcolor("red"), x.toString().fontcolor("darkred"));
+			}
+		}
+	}	
+
+	function demo_AuthRequest(args) {
+		//debugger;
+		var _ar = args._AuthRequest;
+		var params = {};
+		if (_ar.fillAuthCodeParams(params)) {
+			var sParams = 'Parameters:';
+			_.each(params, function (value, name) {
+				sParams+='<br>'+(name.bold()+' => '+value);
+			});				
+			writeLog('AuthRequest', sParams);				
+		} else {
+			throw {header: 'Need login first!', value: 'No parameters specified, or invalid parameter specified! Use portal home page to access this app.'+
+			'<br><INPUT id=btnLogin type=button value="Begin login!" LANGUAGE=javascript onclick="return btnLogin_onclick()">'};
+		}
+	}
+		
+	function demo_ClientApp(args) {
+		//debugger;
+		var testApp = args.clientApp;
+		writeLog('demo_ClientApp start', 'testApp info: '+testApp.redirect_uri);
+			
+		function tstGetAccessToken(args, callback) {
+			//debugger;
+			var getAppAccTknResCb =  _.partial(async.genericErrResCallback, function(data) {
+				var appAccTkn = args.access_token = data.access_token;
+				writeLog('tstGetAccessToken', 'SUCCESS:  got ClientApp access token: '+appAccTkn);
+				return args;
+			}, callback);
+			args.clientApp.getAccessToken(args.token_type, getAppAccTknResCb);
+		}
+		function tstGetAccessTokenFromUserCredentials(args, callback) {									
+			//debugger;
+			var getGetAccTknFromUserCredsCb =  _.partial(async.genericErrResCallback, function(data) {
+				//debugger;
+				var access_token = args.access_token = data.access_token;
+				writeLog('tstGetAccessTokenFromUserCredentials', ' SUCCESS: ClientApp got access_token: '+access_token+'  from user creds: '+args.userLogin);
+				return args;
+			}, callback);
+			args.clientApp.getAccessTokenFromUserCredentials({username: args.userLogin, password: args.userPassword}, getGetAccTknFromUserCredsCb);					
+		}
+		function tstLoginUser(args, callback) {
+			// debugger;
+			var tryLoginUserCb = _.partial(async.genericErrResCallback, function(userId) {
+				writeLog('tstLoginUser', 'SUCCESS: user logged-in: '+userId);			
+				return args;
+			}, callback);
+			var user=args.user;
+			args.user.Login('baluevsky', tryLoginUserCb);	
+		}
+		function tstGetAuthorizationCode(args, callback) {
+			//debugger;
+			var getAuthCodeCb = _.partial(async.genericErrResCallback, function(code) {
+				args.authCode = code;
+				writeLog('tstGetAuthorizationCode', 'SUCCESS: GetAuthorizationCode: '+code);
+				return args;
+			}, callback);
+			//args.clientApp.getAuthorizationCode({scope: 'openid', user: args.user}, getAuthCodeCb);				
+			callback(null, args); // return that is passed through app arguments
+		}			
+		function tstGetAccessTokenFromAuthCode(args, callback) {
+			//debugger;
+			var getAccTokenFromAuthCodeCb = _.partial(async.genericErrResCallback, function(data) {
+				var access_token = args.access_token = data.access_token;
+				writeLog('tstGetAccessTokenFromAuthCode', 'SUCCESS: got access token (from AuthCode): '+access_token);
+				return args;						
+			}, callback);
+			args.clientApp.getAccessTokenFromAuthorizationCode({code: args.authCode, token_type: 'Bearer'}, getAccTokenFromAuthCodeCb);				
+		}
+		function tstAccessAppProtRes(args, callback) {
+			var getAccessAppProtResCb =  _.partial(async.genericErrResCallback, function(resData) {
+				//debugger;
+				var protData=!!resData.data? resData.data: ''+resData;
+				writeLog('tstAccessAppProtRes', 'SUCCESS: ClientApp got protected data: '+protData);
+				return args;
+			}, callback);				
+			args.clientApp.getProtectedResource(args.urlAppProtRes, getAccessAppProtResCb);				
+		}				
+		function tstAccessUserProtRes(args, callback) {
+			//debugger;
+			var getAccessAppProtResCb =  _.partial(async.genericErrResCallback, function(resData) {
+				var protData=!!resData.data? resData.data: ''+resData;
+				writeLog('tstAccessUserProtRes', 'SUCCESS: ClientApp got protected data: '+protData);
+				return args;
+			}, callback);
+			args.clientApp.getProtectedResource(args.urlUserProtRes, getAccessAppProtResCb);				
+		}
+		function tstLogoutUser(args, callback) {
+			//debugger;
+			var getLogoutUserCb =  _.partial(async.genericErrResCallback, function(logoutStatus) {
+				writeLog('tstLogoutUser', logoutStatus? 'user logged out!': 'FAILED user log-out');
+				return args;
+			}, callback);
+			args.user.Logout(getLogoutUserCb);					
+		}
+			
+		//debugger;
+			
+		var restProviderUrl = L_OAUTH_PROVIDER_ROOT;
+		var userLogin = 'baluevsky', userPassword = userLogin;
+		var user = args._User.new_ClientAppUser(userLogin, restProviderUrl);
+			
+		var workflow = async.compose(
+			tstGetAccessToken,
+			tstAccessAppProtRes,
+			tstGetAccessTokenFromUserCredentials,
+			//tstLoginUser,
+			tstGetAuthorizationCode,
+			tstGetAccessTokenFromAuthCode,
+			tstAccessUserProtRes
+			//,tstLogoutUser					
+		);
+		
+		//debugger;
+		var args = { authCode: args.params.code, 
+			user: user, clientApp: clientApp,
+			token_type: 'Bearer',
+			userLogin: userLogin, userPassword: userPassword,
+			urlAppProtRes: L_OAUTH_PROVIDER_ROOT+'/test/secured_app_method',
+			urlUserProtRes: L_OAUTH_PROVIDER_ROOT+'/test/resource'
+		};
+		workflow(args, function(err, res) {
+			if(err) 
+				writeLog(err.fnName, 'ERROR! '+JSON.stringify(err));
+			else
+				writeLog('TEST SUCCEEDED!', 'RESULT: '+JSON.stringify(res));
+				
+		});
+	}	
+	
+	function writeLog(header, value) {
+		var tblLogLine = document.createElement('TABLE');
+		tblLogLine.width='100%';
+		tblLogLine.align='center';
+		tblLogLine.border=
+		1;tblLogLine.cellPadding=tblLogLine.cellSpacing=1;
+		var trLogLine = document.createElement('TR');
+		var tdLogLineHeader = document.createElement('TD');
+		var tdLogLineValue = document.createElement('TD');
+		tdLogLineHeader.width="30%";
+		tdLogLineHeader.innerHTML = (''+header).bold();
+		tdLogLineValue.innerHTML = value;
+		trLogLine.appendChild(tdLogLineHeader);
+		trLogLine.appendChild(tdLogLineValue);	
+		tblLogLine.appendChild(trLogLine);	
+		dvLog.innerHTML+=tblLogLine.outerHTML;
+	}
+
+	function btnLogin_onclick() {
+		window.location = clientApp.appLoginUrl;
+	}
+	
+</script>
+</body>
+</html>

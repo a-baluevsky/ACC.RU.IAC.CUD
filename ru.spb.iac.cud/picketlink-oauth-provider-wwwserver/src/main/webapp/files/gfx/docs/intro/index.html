@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Общее описание многоуровневой архитектуры </title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+
+<body><h1>Общее описание многоуровневой архитектуры</h1>
+<p>Компоненты образуют иерархию по уровню абстракции и функциональности.</p>
+<table width="100%" border="1" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td><strong>Уровень</strong></td>
+    <td><strong>Компоненты</strong></td>
+    <td><strong>Функциональность</strong></td>
+  </tr>
+  <tr> 
+    <td bgcolor="#99FFFF">Транспортный</td>
+    <td>HttpClient</td>
+    <td><p>Платформо-независимая (независимая от браузера) коммуникация с сервером 
+        на основе AJAX-запросов.<br>
+        Поддерживается Msxml XML HTTP (Internet Explorer 6+) и XMLHttpRequest 
+        (Mozilla-like браузеры: Chrome, FireFox).</p>
+      </td>
+  </tr>
+  <tr> 
+    <td bgcolor="#FFFFAA">REST-API</td>
+    <td>GaliaJSFX_OAuthProviderREST</td>
+    <td>Определяет интерфейс взаимодействия с OAuth Provider. <br/>
+      Содержит описание точек доступа (REST endpoints): адрес и набор параметров. 
+      <br/>
+      Обеспечивает программное взаимодействие с OAuth Provider.</td>
+  </tr>
+  <tr> 
+    <td bgcolor="#FFCC99">Логический уровень</td>
+    <td>
+<p>GaliaJSFX_AuthRequest</p>
+      <p>GaliaJSFX_ClientApp</p>
+      <p>GaliaJSFX_ClientAppUser</p></td>
+    <td>Объектно-ориентированное представление участников бизнес-задач. <strong><br>
+      AuthRequest</strong> абстрагирует процесс аутентификации и авторизации пользователей 
+      и информационных систем (ИС). <strong><br>
+      ClientApp</strong> реализует действия ИС при взаимодействии с OAuth Provider. 
+      Например, выполняет авторизацию пользователя, выполняет получение токена 
+      доступа (Access Token), отслеживает его время жизни, использует его при 
+      вызове защищённых методов.<br>
+      <strong>ClientAppUser </strong> реализует работу с учётной записью пользователя: выполнение программного входа в ИС и выхода из неё (отслеживание сеанса),
+	  получение сведений (имя, статус входа в систему, атрибуты, роли).</td>
+  </tr>
+  <tr> 
+    <td>Обобщающий</td>
+    <td>GaliaJSFX</td>
+    <td>Загрузка и объединение компонент библиотеки. Выполнение цепочки логически 
+      связанных действий (Авторизация пользователя-&gt; Получение AccessToken (например, по коду авторизации) -&gt; Проверка валидности и обновление токена -&gt; Вызов защищённого метода), 
+      высокоуровневая обработка ошибок.</td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+
+</body>
+</html>
