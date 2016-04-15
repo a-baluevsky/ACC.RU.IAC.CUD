@@ -163,7 +163,7 @@ import org.jboss.seam.log.Log;
 	          	 	   st=(st!=null?st+" and ":" ")+" t1_org_code = '"+cau.getUpSign()+"' ";
 	               }
 	               //!!!
-                     auditList = new ArrayList<BaseItem>( getSharedUserList( orderQuery, st, firstRow, numberOfRows));
+                     auditList =   getSharedUserList( orderQuery, st, firstRow, numberOfRows);
 	               
 	             log.info("rolUsrManager:invokeLocal:list:02");
 	             
@@ -382,12 +382,14 @@ import org.jboss.seam.log.Log;
 			         .append("t1.t1_tel, t1.t1_email,t1.t1_pos, t1.t1_dep_name, t1.t1_org_code, ") 
 			         .append("t1.t1_org_name, t1.t1_org_adr, t1.t1_org_tel, t1.t1_start, t1.t1_end, ") 
 			         .append("t1.t1_status, t1.t1_crt_date, t1.t1_crt_usr_login, t1.t1_upd_date, t1.t1_upd_usr_login, ")
-			         .append("t1.t1_dep_code, t1.t1_org_status, t1.t1_usr_status, t1.t1_dep_status, t1.t1_iogv_bind_type  ")
+			         .append("t1.t1_dep_code, t1.t1_org_status, t1.t1_usr_status, t1.t1_dep_status, t1.t1_iogv_bind_type, t1.t1_snils ")
 			  .append("from( ")
 			  .append("select AU_FULL.ID_SRV t1_id, AU_FULL.login t1_login, AU_FULL.CERTIFICATE t1_cert, t2.CL_USR_CODE t1_usr_code, ")
 			   .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_fio, ")
 			    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.PHONE, CL_USR_FULL.PHONE ) t1_tel, ")
 			    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.E_MAIL, CL_USR_FULL.EMAIL) t1_email, ")
+			    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SNILS, CL_USR_FULL.SNILS) t1_snils, ")
+			    
 			    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.POSITION, CL_USR_FULL.POSITION)t1_pos, ")
 			    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.DEPARTMENT, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.FULL_)) t1_dep_name, ")
 			    .append("t1.CL_ORG_CODE t1_org_code, CL_ORG_FULL.FULL_ t1_org_name, ")
@@ -474,7 +476,8 @@ import org.jboss.seam.log.Log;
        			  objectArray[21]!=null?objectArray[21].toString():"",
        			  objectArray[22]!=null?objectArray[22].toString():"",
        			  objectArray[23]!=null?objectArray[23].toString():"",
-       			  objectArray[24]!=null?Long.valueOf(objectArray[24].toString()):null
+       			  objectArray[24]!=null?Long.valueOf(objectArray[24].toString()):null,
+       					  objectArray[25]!=null?objectArray[25].toString():""
        			   );
        	  resultList.add(ui);
        	  

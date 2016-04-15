@@ -1001,6 +1001,7 @@ public class CommonTest {
        // assertEquals(expResult, result);
        Assert.assertTrue(result);
     }
+
     @Test
     public void testFindAlias82() {
         System.out.println("ArmManager:forViewCert");
@@ -1008,7 +1009,7 @@ public class CommonTest {
        
         UserBindingItem am = new UserBindingItem();
         
-        am = new UserBindingItem(null, "", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 0);
+        am = new UserBindingItem(null, "", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 0);
         
         boolean result = true;
       

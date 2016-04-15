@@ -704,11 +704,11 @@ import org.jboss.seam.transaction.Transaction;
 	    		AcUser au = getSessionItem("currentUser"); 
 	    		 
 	    		if(au.getAllowedSys()!=null){
-	    			listArm=new ArrayList<AcApplication>(entityManager.createQuery(
+	    			listArm=entityManager.createQuery(
 		       				  "select o from AcApplication o " 
 		       				  + "where o.idArm in (:idsArm) order by o.name ")
 		       				  .setParameter("idsArm", au.getAllowedSys())
-		       				  .getResultList());
+		       				  .getResultList();
 	    		}else{
 	       		   listArm=new ArrayList<AcApplication>(entityManager.createQuery(
 	       				  "select o from AcApplication o  order by o.name ")
@@ -748,7 +748,7 @@ import org.jboss.seam.transaction.Transaction;
 	   log.info("orgManager:getAuditItemsListContext");
 	   if(auditItemsListContext==null){
 		   ArmContext acArm= new ArmContext();
-		   auditItemsListContext=new ArrayList<BaseTableItem>(acArm.getAuditItemsCollection());
+		   auditItemsListContext= acArm.getAuditItemsCollection();
 	   }
 	   return this.auditItemsListContext;
    }

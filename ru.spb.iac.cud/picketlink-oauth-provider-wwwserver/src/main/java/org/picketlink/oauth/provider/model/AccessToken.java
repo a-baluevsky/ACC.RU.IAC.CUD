@@ -80,7 +80,7 @@ extends Token.AbstractAccessToken<TOKENINFO>
 	public static <TOKENINFO extends TokenInfo, ACCESSTOKEN extends AccessToken<TOKENINFO>> 
 	ACCESSTOKEN	getAccessToken(Class<ACCESSTOKEN> clsAccessToken, String tokenId)
 	throws InvalidTokenException, GeneralFailure {		
-		final AccessToken<TOKENINFO> token = ((IOAuthRegister<TOKENINFO, AccessToken<TOKENINFO>>)oaReg).getToken((Class<AccessToken<TOKENINFO>>) clsAccessToken, tokenId);
+		final AccessToken<TOKENINFO> token = ((IOAuthRegister<TOKENINFO, AccessToken<TOKENINFO>>)oaReg()).getToken((Class<AccessToken<TOKENINFO>>) clsAccessToken, tokenId);
 		if(token==null) {
 			InvalidTokenException.throwIt(LOGGER, "Not found Access Token: "+tokenId);
 			return null;
@@ -103,7 +103,7 @@ extends Token.AbstractAccessToken<TOKENINFO>
 	throws InvalidTokenException, GeneralFailure {
 		if(Token.IUserAccessToken.class.isAssignableFrom(clsAccessToken)) {
 			final String tokenId = getTokenId(tokenType, tokenString);			
-			TokenInfo.IGetTokenInfo token = oaReg.getTokenRaw(Token.IAccessToken.class, tokenId);
+			TokenInfo.IGetTokenInfo token = oaReg().getTokenRaw(Token.IAccessToken.class, tokenId);
 			if (token==null)
 				GeneralFailure.throwIt(LOGGER, "Token not found: id="+tokenId+", class="+clsAccessToken.getName());
 			final String nameClsAccessToken = token.getClass().getName();

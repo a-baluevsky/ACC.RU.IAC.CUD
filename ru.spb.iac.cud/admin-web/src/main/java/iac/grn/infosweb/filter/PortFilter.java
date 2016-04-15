@@ -95,8 +95,8 @@ import org.slf4j.LoggerFactory;
 
 		try {
 			String st = URLEncoder.encode("","utf-8");
-			List<String> availablePorts = new ArrayList<String>(
-					Arrays.asList("".split(",")));
+			List<String> availablePorts =  
+					Arrays.asList("".split(","));
 
 			LOGGER.debug("main:02:" + availablePorts.size());
 			LOGGER.debug("main:03:" + st);

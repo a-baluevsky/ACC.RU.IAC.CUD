@@ -27,20 +27,16 @@ import ru.spb.iac.cud.idp.web.sig.GOSTSAML2Signature;
 			SAML2HandlerResponse response) throws ProcessingException {
 
 		// есть подпись
-		
-		if(request.getOptions().get("request_with_sign") != null){
-		
+		// A.B. http://crane.iac.spb.ru/company/personal/user/1604/tasks/task/view/2030/
+		//if(request.getOptions().get("request_with_sign") != null){
 			Document responseDocument = response.getResultingDocument();
-
-		LOGGERSLF4J.debug("handleRequestType:01");
-
-		if (responseDocument == null) {
-			logger.trace("No response document found");
-			return;
-		}
-
-		this.signAssertion(responseDocument, request, response);
-	  }
+			LOGGERSLF4J.debug("handleRequestType:01");
+			if (responseDocument == null) {
+				logger.trace("No response document found");
+				return;
+			}
+			this.signAssertion(responseDocument, request, response);
+	    //} // if(request.getOptions().get("request_with_sign") != null)
 	}
 
 	private void signAssertion(Document samlDocument,

@@ -90,7 +90,7 @@ public class AuthEndpoint extends _Endpoint {
     }
     
     private void importPicketLinkUserByPAAACreds(String login, String password) {
-		if(aml.isValidLoginPassword(login, password)) {
+		if(aml().isValidLoginPassword(login, password)) {
 	        try {
 	        	User newUser = new User(login);
 	        	identityManager.add(newUser);
@@ -202,7 +202,7 @@ public class AuthEndpoint extends _Endpoint {
 		try {
 			LOGGER.info("isAppScopeApproved: 10");
 			//return aml.is_exist(clientAppId) && !idpUtil.systemSignReq(clientAppId);
-			if(aml.is_exist(clientAppId) && !idpUtil.systemSignReq(clientAppId)) {
+			if(aml().is_exist(clientAppId) && !idpUtil().systemSignReq(clientAppId)) {
 				LOGGER.info("isAppScopeApproved: 20");
 				if(!this.clientAppManager.existsApp(clientAppId)) {
 					LOGGER.info("isAppScopeApproved: 30");

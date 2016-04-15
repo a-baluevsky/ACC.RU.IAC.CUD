@@ -20,13 +20,13 @@ import java.util.List;
 			String orgAdr, String orgTel, String start, String finish,
 			Long status, String crtDate, String crtUserLogin, String updDate,
 			String updUserLogin, String depCode, String orgIogvStatus,
-			String usrIogvStatus, String depIogvStatus, Long iogvBindType,
+			String usrIogvStatus, String depIogvStatus, Long iogvBindType, String snils,
 			int binFlag) {
 
 		super(idUser, login, cert, usrCode, fio, phone, email, position,
 				department, orgCode, orgName, orgAdr, orgTel, start, finish,
 				status, crtDate, crtUserLogin, updDate, updUserLogin, depCode,
-				orgIogvStatus, usrIogvStatus, depIogvStatus, iogvBindType);
+				orgIogvStatus, usrIogvStatus, depIogvStatus, iogvBindType, snils);
 
 		this.binFlag = binFlag;
 	}

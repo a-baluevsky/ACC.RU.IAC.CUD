@@ -40,7 +40,7 @@ public @Stateless class ClientAppManager
 		return app;
 	}
 	private static String getClientAppSecret(String id) {
-		return OAuthProviderProxyObjects.AccessManager._.getOAuthClientAppSecret(id); //OAuthClientAppManager
+		return OAuthProviderProxyObjects.AccessManager()._.getOAuthClientAppSecret(id); //OAuthClientAppManager
 	}
 	public boolean existsApp(String id) {
 		if(BasicModel.getAgent(identityManager,id)!=null)

@@ -147,7 +147,14 @@
 											<td style="padding-top: 10px;" valign="top"><h:outputText
 													value="#{usrManager.note}" /></td>
 										</tr>
-
+										<tr>
+											<td width="150px" height="25px" class="table_left_header"
+												style="padding-top: 10px;" valign="top"><h:outputText
+													value="Последний вход:" /></td>
+											<td style="padding-top: 10px;" valign="top"><h:outputText
+													value="#{usrManager.lastLoginTime}" /></td>
+										</tr>
+										
 										
 										<!--tr>
             <td width="150px" height="25px" class="table_left_header">
@@ -630,9 +637,9 @@
 										<f:selectItem itemLabel="Активен" itemValue="1" />
 										<f:selectItem itemLabel="Заблокирован" itemValue="2" />
 									</h:selectOneMenu>									
-								<span>СНИЛС:<h:inputText value="#{usrBeanCrt.snils}" id="snils"
-										maxlength="20" size="20" />
-								</span>
+									<span>СНИЛС:<h:inputText value="#{usrBeanCrt.snils}" id="snils"
+											maxlength="20" size="20" />
+									</span>
 								</td>
 							</tr>
 

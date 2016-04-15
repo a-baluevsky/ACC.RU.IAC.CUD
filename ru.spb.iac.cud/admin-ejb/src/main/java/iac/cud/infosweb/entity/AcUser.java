@@ -577,5 +577,10 @@ import org.jboss.seam.annotations.Role;
   	}  		
 	public void setNote(String note) {
 		this.note = note;
-	}  	
+	}  
+	
+	@Column(name="SNILS") private String snils;
+	public String getSnils() { return snils; }
+	public void setSnils(String snils) { this.snils = snils; }
+	
   }

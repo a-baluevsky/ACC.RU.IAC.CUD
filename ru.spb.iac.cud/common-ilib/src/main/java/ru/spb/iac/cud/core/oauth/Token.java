@@ -48,7 +48,7 @@ implements TokenInfo.IGetTokenInfo<TOKENINFO>, Cloneable {
 	
 	@Validating
 	public Token(Class<TokenInfo.IGetTokenInfo<TOKENINFO>> clsToken, String tokenId) throws GeneralFailure {
-		final IGetTokenInfo<TOKENINFO> token = ((IOAuthRegister<TOKENINFO, TokenInfo.IGetTokenInfo<TOKENINFO>>)oaReg).getToken(clsToken, tokenId);
+		final IGetTokenInfo<TOKENINFO> token = ((IOAuthRegister<TOKENINFO, TokenInfo.IGetTokenInfo<TOKENINFO>>)oaReg()).getToken(clsToken, tokenId);
 		this.id = token.getTokenId(); this.tokenInfo = (TOKENINFO) token.getTokenInfo(); this.clsTokenInfo = (Class<TOKENINFO>) this.tokenInfo.getClass();
 	}
 	
@@ -56,13 +56,14 @@ implements TokenInfo.IGetTokenInfo<TOKENINFO>, Cloneable {
 	<TOKENINFO extends TokenInfo, TOKEN extends Token<TOKENINFO>> Token<TOKENINFO> 
 	issueTkn(TOKENINFO tokenInfo) throws GeneralFailure
 	{
-		return ((IOAuthRegister<TOKENINFO, TOKEN>)OAuthProviderProxyObjects.oaReg).issueToken(tokenInfo); // Generating
+		return ((IOAuthRegister<TOKENINFO, TOKEN>)OAuthProviderProxyObjects.oaReg()).issueToken(tokenInfo); // Generating
 	}
 
 	public static<TKNINFO extends TokenInfo, TOKEN extends Token<TKNINFO>> 
 	String generateTokenId(Class<TKNINFO> tokenInfoClass) throws GeneralFailure {		
 		final Class<TOKEN> mp = TokenInfo.mapTokenInfoClassToTokenClass(tokenInfoClass);
-		return ((IOAuthRegister<TKNINFO, TOKEN>)OAuthProviderProxyObjects.oaReg).generateTokenId(mp);
+		final IOAuthRegister<TKNINFO, TOKEN> OAuthRegister = (IOAuthRegister<TKNINFO, TOKEN>)OAuthProviderProxyObjects.oaReg();
+		return OAuthRegister.generateTokenId(mp);
 	}
 	
 	protected static<TKNINFO extends TokenInfo, TOKEN extends Token<TKNINFO>> 

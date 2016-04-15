@@ -1,15 +1,10 @@
 package iac.grn.infosweb.context.mc.rol;
 
-import java.util.List;
-
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.log.Log;
-
+import static iac.cud.jboss.SeamComponentAdminEjb.getApplicationLinksMap;
+import static iac.cud.jboss.SeamComponentAdminEjb.getConversationItem;
+import static iac.cud.jboss.SeamComponentAdminEjb.getEventItem;
+import static iac.cud.jboss.SeamComponentAdminEjb.getSessionItem;
+import static iac.cud.jboss.SeamComponentAdminEjb.getSessionList;
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.entity.AcAppPage;
 import iac.cud.infosweb.entity.AcApplication;
@@ -19,14 +14,12 @@ import iac.cud.infosweb.entity.AcPermissionsList;
 import iac.cud.infosweb.entity.AcRole;
 import iac.cud.infosweb.entity.AcUser;
 import iac.grn.infosweb.context.mc.MCData;
+import static iac.grn.infosweb.context.mc.MCData.atrOp;
 import iac.grn.infosweb.context.mc.QuerySvc;
 import iac.grn.infosweb.session.audit.actions.ActionsMap;
 import iac.grn.infosweb.session.audit.actions.ResourcesMap;
 import iac.grn.infosweb.session.audit.export.AuditExportData;
-import iac.grn.infosweb.session.navig.LinksMap;
-import javaw.util.SerializableList;
-import javaw.util.ArrayList;
-import javaw.util.HashSet;
+import iac.grn.serviceitems.BaseTableItem;
 
 import java.util.Date;
 import java.util.Iterator;
@@ -34,13 +27,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jboss.seam.Component;
+import javaw.util.ArrayList;
+import javaw.util.HashSet;
 
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 
-import iac.grn.serviceitems.BaseTableItem;
-import static iac.cud.jboss.SeamComponentAdminEjb.*;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.log.Log;
 
 /**
  * ”правл€ющий Ѕин
@@ -1133,30 +1131,9 @@ import static iac.cud.jboss.SeamComponentAdminEjb.*;
  
    
    private boolean roleCodeExistCrt(Long idArm, String roleCode) throws Exception {
-		log.info("RoleManager:codeRoleExistCrt:roleCode="+roleCode);
-		if(roleCode!=null){
-		  try{
-			  List<Object> lo=entityManager.createNativeQuery(
-	  			      (new StringBuilder("select rl.sign_object "))
-                      .append("from AC_ROLES_BSS_T rl ")
-                      .append("where rl.up_IS=? ")
-                      .append("and RL.SIGN_OBJECT=? ")
-	  			      .toString())
-	  				.setParameter(1, idArm)
-	  				.setParameter(2, roleCode)
-	  				.getResultList();
-	  
-	          if(!lo.isEmpty()){
-		        roleCodeExist=true;
-	          }
-			  log.info("RoleManager:roleCodeExistCrt:addLoginExist!");	
-			  
-		  }catch(Exception e){
-	           log.error("RoleManager:roleCodeExistCrt:Error:"+e);
-	           throw e;
-        }
-		}
-		return this.roleCodeExist;
+	   this.roleCodeExist = MCData.hasAtr(log, entityManager, "AC_ROLES_BSS_T", atrOp("up_IS", idArm), atrOp("sign_object", roleCode));
+	   if(this.roleCodeExist) log.info("RoleManager:roleCodeExistCrt:addLoginExist!");	
+	   return this.roleCodeExist;
   }
    
    private boolean roleCodeExistUpd(Long idArm, String roleCode, Long idRole) throws Exception {

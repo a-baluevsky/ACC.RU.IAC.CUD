@@ -135,15 +135,18 @@ import ru.spb.iac.cud.util.TIDEncode;
 	}
 
 	/**
-	 * регистрация пользоавтеля
+	 * регистрация пользователя
+	 * @param principal2 
 	 */
 	private AppAccept user_registration(String surnameUser, String nameUser,
 			String patronymicUser, String iogvCodeUser, String positionUser,
 			String emailUser, String phoneUser, String certificateUser,
 			String nameDepartament, String nameOrg, String iogvCodeOrg,
-			String principal, Long idUser, String IPAddress)
+			String snils, String principal, Long idUser, String IPAddress)
 			throws GeneralFailure {
 
+		// bav: TODO: use snils
+		
 		// idUser может = -1L
 		// это значит заявка от самого пользователя на себя
 
@@ -191,8 +194,12 @@ import ru.spb.iac.cud.util.TIDEncode;
 					(new StringBuilder("insert into JOURN_APP_USER_BSS_T (ID_SRV, SURNAME_USER, NAME_USER, PATRONYMIC_USER, "))
 					  .append("SIGN_USER, POSITION_USER, EMAIL_USER, PHONE_USER, ")
 					  .append("CERTIFICATE_USER, NAME_DEPARTAMENT, NAME_ORG, SIGN_ORG, ")
-					  .append("UP_USER, SECRET ) ")
-					  .append(" values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ")
+					  .append("UP_USER, SECRET, SNILS_USER")
+					  .append(") ")
+					  .append(" values ( ")
+					  .append("?, ?, ?, ?, ?, ")
+					  .append("?, ?, ?, ?, ?, ")
+					  .append("?, ?, ?, ?, ? ) ")
 			.toString())
 					.setParameter(1, number).setParameter(2, surnameUser)
 					.setParameter(3, nameUser).setParameter(4, patronymicUser)
@@ -203,7 +210,9 @@ import ru.spb.iac.cud.util.TIDEncode;
 					.setParameter(10, nameDepartament)
 					.setParameter(11, nameOrg).setParameter(12, iogvCodeOrg)
 					.setParameter(13, (!idUser.equals(-1L) ? idUser : ""))
-					.setParameter(14, secret).executeUpdate();
+					.setParameter(14, secret)
+					.setParameter(15, snils)
+					.executeUpdate();
 
 			LOGGER.debug("user_registration:02");
 
@@ -313,6 +322,7 @@ import ru.spb.iac.cud.util.TIDEncode;
 					atMap.get(AppUserAttributesClassif.NAME_DEPARTAMENT.name()),
 					atMap.get(AppUserAttributesClassif.NAME_ORG.name()),
 					atMap.get(AppUserAttributesClassif.IOGV_CODE_ORG.name()),
+					atMap.get(AppUserAttributesClassif.SNILS_USER.name()),
 					principal, idUser, IPAddress);
 
 		} catch (Exception e) {
@@ -901,12 +911,17 @@ import ru.spb.iac.cud.util.TIDEncode;
 				if (rejectReason == null) {
 
 					em.createNativeQuery(
-							(new StringBuilder("insert into JOURN_APP_USER_MODIFY_BSS_T (ID_SRV, LOGIN_USER, "))
+							(new StringBuilder("insert into JOURN_APP_USER_MODIFY_BSS_T ("))
+							  .append("ID_SRV, LOGIN_USER, ")
 							  .append("SURNAME_USER, NAME_USER, PATRONYMIC_USER, ")
 							  .append("SIGN_USER, POSITION_USER, EMAIL_USER, PHONE_USER, ")
 							  .append("CERTIFICATE_USER, NAME_DEPARTAMENT, ")
-							  .append("UP_USER_APP, UP_USER, SECRET ) ")
-							  .append(" values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ")
+							  .append("UP_USER_APP, UP_USER, SECRET, SNILS_USER ) ")
+							  .append(" values ( ")
+							  .append("?, ?, ?, ?, ?, ")
+							  .append("?, ?, ?, ?, ?, ")
+							  .append("?, ?, ?, ?, ? ")
+							  .append(") ")
 					.toString())
 							.setParameter(1, number)
 							.setParameter(2, "-"/* loginUser */)
@@ -948,7 +963,14 @@ import ru.spb.iac.cud.util.TIDEncode;
 											.name()))
 
 							.setParameter(12, idUserApp)
-							.setParameter(13, idUser).setParameter(14, secret)
+							.setParameter(13, idUser)
+							.setParameter(14, secret)
+							
+							.setParameter(
+									15,
+									atMapUm.get(AppUserAttributesClassif.SNILS_USER
+											.name()))
+											
 							.executeUpdate();
 
 				} else {
@@ -957,8 +979,13 @@ import ru.spb.iac.cud.util.TIDEncode;
 							  .append("SURNAME_USER, NAME_USER, PATRONYMIC_USER, ")
 							  .append("SIGN_USER, POSITION_USER, EMAIL_USER, PHONE_USER, ")
 							  .append("CERTIFICATE_USER, NAME_DEPARTAMENT, ")
-							  .append("UP_USER_APP, UP_USER, SECRET, STATUS, REJECT_REASON ) ")
-							  .append(" values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ")
+							  .append("UP_USER_APP, UP_USER, SECRET, STATUS, REJECT_REASON, SNILS_USER ) ")
+							  .append(" values ( ")
+							  .append("?, ?, ?, ?, ?, ")
+							  .append("?, ?, ?, ?, ?, ")
+							  .append("?, ?, ?, ?, ?, ")
+							  .append("?, ? ")
+							  .append(") ")
 					.toString())
 							.setParameter(1, number)
 							.setParameter(2, "-"/* loginUser */)
@@ -1001,8 +1028,11 @@ import ru.spb.iac.cud.util.TIDEncode;
 
 							.setParameter(12, idUserApp)
 							.setParameter(13, idUser).setParameter(14, secret)
-
 							.setParameter(15, 2).setParameter(16, rejectReason)
+							.setParameter(
+									17,
+									atMapUm.get(AppUserAttributesClassif.SNILS_USER
+											.name()))							
 							.executeUpdate();
 				}
 

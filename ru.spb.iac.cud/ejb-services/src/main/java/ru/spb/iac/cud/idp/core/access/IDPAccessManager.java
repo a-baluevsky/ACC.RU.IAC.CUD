@@ -59,6 +59,8 @@ import ru.spb.iac.cud.core.util.CUDConstants;
        attributesList.put(19, "ORG_INN");
        attributesList.put(20, "ORG_KPP");
        
+       attributesList.put(21, "USER_SNILS");
+       
 	}
 	
 	/**
@@ -93,11 +95,13 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 					.append("       t1.t1_org_OKOGU, ")
 					.append("       t1.t1_org_OGRN,")
 					.append("       t1.t1_org_INN,")
-					.append("        t1.t1_org_KPP")
+					.append("        t1.t1_org_KPP,")
+					.append("        t1.t1_usr_SNILS")
 					.append("  FROM (SELECT AU_FULL.ID_SRV t1_id,  ")
 					.append("               AU_FULL.login t1_login,  ")
 					.append("               AU_FULL.CERTIFICATE t1_cert,  ")
 					.append("               t2.CL_USR_CODE t1_usr_code,  ")
+					
 					.append("               DECODE (  ")
 					.append("                  AU_FULL.UP_SIGN_USER,  ")
 					.append("                  NULL,    AU_FULL.SURNAME  ")
@@ -107,14 +111,23 @@ import ru.spb.iac.cud.core.util.CUDConstants;
 					.append("                        || AU_FULL.PATRONYMIC,  ")
 					.append("                  CL_USR_FULL.FIO)  ")
 					.append("                  t1_fio,  ")
+					
 					.append("               DECODE (AU_FULL.UP_SIGN_USER,  ")
 					.append("                       NULL, AU_FULL.PHONE,  ")
 					.append("                       CL_USR_FULL.PHONE)  ")
 					.append("                  t1_tel,  ")
+					
+					
 					.append("               DECODE (AU_FULL.UP_SIGN_USER,  ")
 					.append("                       NULL, AU_FULL.E_MAIL,  ")
 					.append("                       CL_USR_FULL.EMAIL)  ")
 					.append("                  t1_email,  ")
+					
+					.append("               DECODE (AU_FULL.UP_SIGN_USER,  ")
+					.append("                       NULL, AU_FULL.SNILS,  ")
+					.append("                       CL_USR_FULL.SNILS)  ")
+					.append("                  t1_usr_SNILS,  ")					
+					
 					.append("               DECODE (AU_FULL.UP_SIGN_USER,  ")
 					.append("                       NULL, AU_FULL.POSITION,  ")
 					.append("                       CL_USR_FULL.POSITION)  ")

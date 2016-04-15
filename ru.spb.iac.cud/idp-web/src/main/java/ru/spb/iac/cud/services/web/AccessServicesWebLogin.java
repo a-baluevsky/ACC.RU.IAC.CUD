@@ -2,6 +2,7 @@ package ru.spb.iac.cud.services.web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 
 import javaw.net.Net;
 
@@ -88,160 +89,35 @@ import org.slf4j.LoggerFactory;
 			
 
 			if (login == null && password == null) {
-
 				response.setContentType("text/html; charset=windows-1251");
-
 				PrintWriter pw = response.getWriter();
-
-				pw.print("<html>");
-				pw.print("<HEAD>");
-				
-				
-				pw.print("<script type=\"text/javascript\" src=\""
-						+ request.getContextPath()
-						+ "/js/login.js\"></script>");
-				
-				pw.print("<link rel=\"stylesheet\" type=\"text/css\" href=\""
-						+ request.getContextPath()
-						+ "/stylesheet/theme.css\"/>");
-				
-				
-				pw.print("</HEAD>");
-
-				pw.print("<body onload =\"setRemember('cudRememberPass');\">");
-
-				pw.print("<table style=\"width:100%; height:100%;\">");
-				pw.print("<tr>");
-				pw.print("<td align=\"center\" valign=\"middle\">");
-
-				pw.print("<div style=\"border:0; width:253px; height:135px\">");
-				pw.print("<div style=\"border:1px solid silver; width:250px; height:130px\">");
-
-				pw.print("<FORM METHOD=\"POST\" ACTION=\"" + destination
-						+ "\">");
-
-				if (backUrl != null) {
-					pw.print("<INPUT TYPE=\"HIDDEN\" NAME=\"backUrl\" VALUE=\""
-							+ parseUrl(backUrl) + "\"/>");
-				}
-
-				if (samlRequestMessage != null && !samlRequestMessage.isEmpty()) {
-					pw.print("<INPUT TYPE=\"HIDDEN\" NAME=\"" + SAMLMessageKey
-							+ "\" VALUE=\"" + samlRequestMessage + "\"/>");
-				}
-				if (httpMethod != null && !httpMethod.isEmpty()) {
-					pw.print("<INPUT TYPE=\"HIDDEN\" NAME=\"" + HTTPMethodKey
-							+ "\" VALUE=\"" + httpMethod + "\"/>");
-				}
-
-				if (RequestQueryString != null && !RequestQueryString.isEmpty()) {
-					pw.print("<INPUT TYPE=\"HIDDEN\" NAME=\""
-							+ RequestQueryStringKey + "\" VALUE=\""
-							+ RequestQueryString + "\"/>");
-				}
-				if (RequestRequestURI != null && !RequestRequestURI.isEmpty()) {
-					pw.print("<INPUT TYPE=\"HIDDEN\" NAME=\""
-							+ RequestRequestURIKey + "\" VALUE=\""
-							+ RequestRequestURI + "\"/>");
-				}
-
+				HashMap<String, String> settings = new HashMap<String, String>();
+				settings.put("RequestContextPath", request.getContextPath());
+				settings.put("FormAction", destination);
+				if(backUrl != null) settings.put("BackUrl", parseUrl(backUrl));
+				settings.put("SAMLMessageKey", SAMLMessageKey);
+				settings.put("SAMLMessageValue", samlRequestMessage);
+				settings.put("HTTPMethodKey", HTTPMethodKey);
+				settings.put("HTTPMethodValue", httpMethod);
+				settings.put("RequestQueryStringKey", RequestQueryStringKey);
+				settings.put("RequestQueryStringValue", RequestQueryString);
+				settings.put("RequestRequestURIKey", RequestRequestURIKey);
+				settings.put("RequestRequestURIValue", RequestRequestURI);
 				if (pswitch == null || !"false".equals(pswitch)) {
 					LOGGER.debug("service:pswitch");
 				} else {
-					pw.print("<INPUT TYPE=\"HIDDEN\" NAME=\"switch\" VALUE=\"false\"/>");
+					settings.put("pswitch", "false");
 				}
-
-				//pw.print("<table width = \"220px\">");
-				pw.print("<table width = \"230px\">");
-
 				if (request.getParameter("success") != null
-						&& "false".equals(request.getParameter("success"))) {
-					pw.print("<tr>");
-					pw.print("<td colspan=\"2\" align=\"center\" height = \"20px\" style=\"color:red;\" >");
-					pw.print("Пользователь не идентифицирован!");
-					pw.print("</td>");
-					pw.print("</tr>");
+					&& "false".equals(request.getParameter("success"))) {
+					settings.put("ErrorMessageText", "Пользователь не идентифицирован!");
 				}
-				pw.print("<tr>");
-				pw.print("<td colspan=\"2\" align=\"center\" height = \"40px\" >");
-				pw.print("Зарегистрируйтесь!");
-				pw.print("</td>");
-				pw.print("</tr>");
-				pw.print("<tr>");
-				pw.print("<td width = \"50px\">");
-				pw.print("Логин:");
-				pw.print("</td>");
-				pw.print("<td>");
-				pw.print("<input type=\"text\" NAME=\"login\" />");
-				pw.print("</td>");
-				pw.print("</tr>");
-				pw.print("<tr>");
-				pw.print("<td>");
-				pw.print("Пароль:");
-				pw.print("</td>");
-				pw.print("<td>");
-				pw.print("<input type=\"password\" NAME=\"password\" />");
-				pw.print("</td>");
-				pw.print("</tr>");
-				
-			/*	pw.print("<tr>");
-	            pw.print("<td width = \"50px\" height = \"10px\"></td>");
-				pw.print("<td align=\"left\" height = \"10px\">");
-				pw.print("<input id=\"remember\" type=\"checkbox\" \"/> Запомнить");
-					
-				pw.print("</td>");
-	            pw.print("</tr>");
-				*/
-	            pw.print("<tr>");
-
-				pw.print("<td colspan=\"2\"  align=\"center\" height = \"30px\">");
-				
-				pw.print("<table width = \"100%\" border=\"0\">");
-				pw.print("<tr><td width = \"80px\"></td><td align=\"center\">");
-				pw.print("<input type=\"submit\" value=\"Войти\" class=\"but_class\""
-						+ "onclick=\"goAuth('cudRememberPass','"+request.getContextPath()+"');\"/>");
-			
-				pw.print("<td width = \"80px\">");
-				pw.print("<input type=\"checkbox\" id=\"remember\" style=\"float: left;padding:0px;margin:0px;margin-top: 1px; border:0px;\"/> "
-						+ "<LABEL for=\"remember\" style=\"float: left; margin-top: 2px;font-size: 11px;\">Запомнить</LABEL>");
-				pw.print("</td>");
-				pw.print("</tr>");
-				pw.print("</table>");
-				pw.print("</td>");
-
-				
-				pw.print("</tr>");
-	            
-	        	
-				pw.print("</table>");
-
-				pw.print("</FORM>");
-
-				pw.print("</div>");
-				pw.print("</div>");
-				
-				if (multiAuthRequest!=null) {
-					
-				    pw.print("<table width = \"220px\">");
-				    pw.print("<tr>");
-				    pw.print("<td colspan=\"2\" align=\"right\" >");
-				     
-				    pw.print("<a href=\""+request.getContextPath()+"/services/access_cert.jsp"
-			    		   + "\" />Войти по сертификату</a>");
-				    
-				    pw.print("</td>");
-			        pw.print("</tr>");
-	   		        pw.print("</table>");
-				}
-				
-
-				pw.print("</td>");
-				pw.print("</tr>");
-				pw.print("</table>");
-				
-				
-				pw.print("</body>");
-				pw.print("</html>");
+				settings.put("MultiAuthRequest", multiAuthRequest);
+				// legacy UI switch
+				DhLoginDlg loginForm = request.getParameter("lui") != null? 
+						new DhLoginDlg.DhLoginDlg1(settings): 
+						new DhLoginDlg.DhLoginDlg2(settings);
+				pw.print(loginForm.toString());
 				pw.close();
 
 			} else { // новый режим - получаем от клиента логин/пароль

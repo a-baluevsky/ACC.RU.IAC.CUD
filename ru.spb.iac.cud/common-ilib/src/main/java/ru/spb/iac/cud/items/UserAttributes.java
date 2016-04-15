@@ -21,24 +21,13 @@ import javax.xml.bind.annotation.XmlType;
 	public UserAttributes() {
 	}
 
-	public String getUid() {
-		return this.uid;
-	}
+	public String 	getUid() 			{ return this.uid; }
+	public void 	setUid(String uid) 	{ this.uid = uid;	}
 
-	public void setUid(String uid) {
-		this.uid = uid;
-	}
+	public List<Attribute> 		getAttributes() 							{ return attributes;	}
+	public void 				setAttributes(List<Attribute> attributes) 	{ this.attributes = attributes; }
 
-	public List<Attribute> getAttributes() {
-		return attributes;
-	}
-
-	public void setAttributes(List<Attribute> attributes) {
-		this.attributes = attributes;
-	}
-
-	@Override
-	public String toString() {
+	@Override public String toString() {
 		return "{user " + attributes;
 	}
 }

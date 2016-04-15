@@ -274,25 +274,33 @@ import ru.spb.iac.cud.util.CudPrincipal;
 
 				Document doc = null;
 				// есть подпись
+				// A.B. http://crane.iac.spb.ru/company/personal/user/1604/tasks/task/view/2030/
+				/*
 				if(hs.getAttribute("request_with_sign")!= null){
+				*/
 					doc = handler.postProcess(
 							(Document) ((DOMSource) source).getNode(), request);
+				/*
 				}else{
 					doc = DocumentUtil.normalizeNamespaces((Document) ((DOMSource) source).getNode());
 				}
-				
+				*/
 				return new DOMSource(doc);
 			} else if (requestType.equals(WSTrustConstants.RENEW_REQUEST)) {
 				Source source = this.marshallResponse(handler.renew(request,
 						cud_principal));
 				Document document = null;
 				// есть подпись
+				// A.B. http://crane.iac.spb.ru/company/personal/user/1604/tasks/task/view/2030/
+				/*
 				if(hs.getAttribute("request_with_sign")!= null){
+				*/
 					document= handler.postProcess(
 							(Document) ((DOMSource) source).getNode(), request);
-				}else{
+				
+				/*}else{
 					document = DocumentUtil.normalizeNamespaces((Document) ((DOMSource) source).getNode());
-				}
+				}*/
 				return new DOMSource(document);
 			} else if (requestType.equals(WSTrustConstants.CANCEL_REQUEST)) {
 				return this.marshallResponse(handler.cancel(request,

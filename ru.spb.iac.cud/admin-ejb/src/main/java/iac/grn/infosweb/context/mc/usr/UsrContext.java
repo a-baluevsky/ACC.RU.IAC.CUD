@@ -43,8 +43,13 @@ import java.util.List;
 		
 		
 		
+		
 		auditItemsMap.put("statusValue",new BaseTableItem("Статус","...", "statusValue", "t1_status", 0));
+		auditItemsMap.put("snils",new BaseTableItem("СНИЛС","...", "snils", "t1_usr_SNILS", 55));
+		
 		auditItemsMap.put("fio",new BaseTableItem("ФИО","...", "fio", "t1_fio", 10));
+		
+		
 		
 		auditItemsMap.put("login",new BaseTableItem("Логин","...", "login", "t1_login", 11));
 		auditItemsMap.put("cert",new BaseTableItem("Номер сертификата","...", "cert", 12));
@@ -68,5 +73,7 @@ import java.util.List;
 		auditItemsMap.put("crtUserLogin",new BaseTableItem("Создал","...", "crtUserLogin", 91));
 		auditItemsMap.put("updDate",new BaseTableItem("Дата редактирования","...", "updDate", "t1_crt_date",92));
 		auditItemsMap.put("updUserLogin",new BaseTableItem("Редактировал","...", "updUserLogin", 93));
+		
+		
 	}
 }

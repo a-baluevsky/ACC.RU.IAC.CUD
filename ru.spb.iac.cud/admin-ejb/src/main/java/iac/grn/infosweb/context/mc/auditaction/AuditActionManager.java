@@ -11,6 +11,7 @@ import iac.cud.infosweb.entity.AcApplication;
 import iac.cud.infosweb.entity.AcUser;
 import iac.cud.infosweb.entity.ActionsBssT;
 import iac.grn.infosweb.context.mc.MCData;
+import static iac.grn.infosweb.context.mc.MCData.atrOp;
 import iac.grn.infosweb.context.mc.QuerySvc;
 import iac.grn.infosweb.session.audit.actions.ActionsMap;
 import iac.grn.infosweb.session.audit.actions.ResourcesMap;
@@ -242,12 +243,18 @@ import org.jboss.seam.log.Log;
    public void addAuditAction(){
 	   log.info("auditActionManager:addAuditAction:01");
 	   ActionsBssT auditActionBeanCrt = getConversationItem("auditActionBeanCrt");
-	   if(auditActionBeanCrt!=null) {
-		   try {
+	   if(auditActionBeanCrt!=null) {		   
+			try {
+				Long upIS = auditActionBeanCrt.getAcIsBssT();
+				String code = auditActionBeanCrt.getSign().trim();
+				if(AuditActionCodeExistCrt(upIS, code)) {
+					   log.warn("Code exist:upIS="+upIS+", code="+code);
+					   return;
+				}				
 			   AcUser au = getSessionItem("currentUser"); 
 			   final Long lngIdSrv = auditActionBeanCrt.getIdSrv();
-			   if(!auditActionCodeExist(lngIdSrv) && !limitedAddAuditAction(au)) {				   
-	    		  log.info("auditActionManager:addAuditAction:06");	    		  
+			   if(!limitedAddAuditAction(au)) {				   
+				  log.info("auditActionManager:addAuditAction:06");	    		  
 				  auditActionBeanCrt.setFull(auditActionBeanCrt.getFull().trim());				  
 				  auditActionBeanCrt.setSign(auditActionBeanCrt.getSign().trim());				  
 				  String sDescription = auditActionBeanCrt.getDescriptions();
@@ -258,11 +265,11 @@ import org.jboss.seam.log.Log;
 			      entityManager.persist(auditActionBeanCrt);
 			      refreshEntityManager(auditActionBeanCrt);
 			   } else {
-				   log.warn("addAuditAction:exist IdSrv="+lngIdSrv);
+				   log.warn("addAuditAction: limitedAddAuditAction for userId: "+au.getLogin());
 			   }
-		    } catch (Exception e) {
-		       log.error("auditActionManager:addAuditAction:ERROR:"+e);
-		    } 
+			} catch (Exception e) {
+			   log.error("auditActionManager:addAuditAction:ERROR:"+e);
+			} 
 	   }  else {
 		   log.warn("auditActionManager:addAuditAction:Can't getConversationItem auditActionBeanCrt");
 	   }
@@ -281,9 +288,13 @@ private void refreshEntityManager(Object target) {
 	   try {		   
 		final Long lngSessionId = Long.valueOf(sessionId);
 		final Long idSrv = auditActionBean.getIdSrv();
+		final Long upIS = auditActionBean.getAcIsBssT();
+		final String code = auditActionBean.getSign().trim();
 		if(!lngSessionId.equals(idSrv)) {
 			log.warn("Can't update: different ID specified! lngSessionId="+lngSessionId+", idSrv = "+idSrv);
-		} else if(auditActionCodeExist(idSrv)){  
+		} else if(AuditActionCodeExistUpd(lngSessionId, upIS, code)) {  
+			log.warn("Code exist:upIS="+upIS+", code="+code);
+		} else {  
 			ActionsBssT aam = entityManager.find(ActionsBssT.class, lngSessionId);
 			aam.setFull(auditActionBean.getFull().trim());
 			aam.setSign(auditActionBean.getSign().trim());
@@ -304,7 +315,12 @@ private void refreshEntityManager(Object target) {
        }
    }
    
-   public void delAuditAction(){
+   private boolean AuditActionCodeExistUpd(Long lngSessionId, Long upIS, String code) {
+	return this.auditActionCodeExist = MCData.hasAtr(log, entityManager, "ACTIONS_BSS_T", 
+					atrOp("UP_IS", upIS), atrOp("SIGN_OBJECT", code), atrOp("ID_SRV", "!=", lngSessionId));
+}
+
+public void delAuditAction(){
 	 try {
 		log.info("auditActionManager:delAuditAction:01");
 		ActionsBssT auditActionBean = getConversationItem("auditActionBean");
@@ -468,21 +484,21 @@ private void refreshEntityManager(Object target) {
 	   this.dellMessage = dellMessage;
    } 
    
-   private boolean auditActionCodeExist(Long crtIdSrv) throws Exception {
-		log.info("AuditActionManager:AuditActioncodeExistCrt:auditActionCode="+crtIdSrv);
-		if(crtIdSrv!=null)
-		try {
-		  List<Object> lo=entityManager.createNativeQuery("select ID_SRV from ACTIONS_BSS_T where ID_SRV=? ")
-				.setParameter(1, crtIdSrv)
-				.getResultList();
-		  auditActionCodeExist=!lo.isEmpty();
-		  log.info("AuditActionManager:AuditActionCodeExistCrt:addLoginExist!");	
-		} catch(Exception e){
-		   log.error("AuditActionManager:AuditActionCodeExistCrt:Error:"+e);
-		   throw e;
-		}
-		return this.auditActionCodeExist;
- }
+
+   /*
+   private boolean auditActionIdExist(Long crtIdSrv) throws Exception {
+	   this.auditActionCodeExist = MCData.hasAtr(log, entityManager, "ACTIONS_BSS_T", "ID_SRV", crtIdSrv, null, null);
+	   if(this.auditActionCodeExist)
+		   log.info("AuditActionManager:AuditActionCodeExistCrt:addLoginExist!");	
+	   return this.auditActionCodeExist;
+   }
+   */
+   
+   private boolean AuditActionCodeExistCrt(Long upIS, String code) throws Exception {
+	   return this.auditActionCodeExist = MCData.hasAtr(log, entityManager, "ACTIONS_BSS_T", 
+			   atrOp("UP_IS", upIS), atrOp("SIGN_OBJECT", code));
+   }
+   
   
   public void audit(ResourcesMap resourcesMap, ActionsMap actionsMap){
 	   try{

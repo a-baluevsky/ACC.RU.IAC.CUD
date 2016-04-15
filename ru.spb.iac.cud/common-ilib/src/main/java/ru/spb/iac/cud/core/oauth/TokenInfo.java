@@ -145,7 +145,7 @@ public class TokenInfo implements Cloneable {
 		public final Map<String, String> eisAttributes;
 		public ClientAppTokenInfo(Long lifeTime, String client_id, String scope) throws GeneralFailure {			
 			super(lifeTime, client_id, scope);
-			this.eisAttributes = OAuthProviderProxyObjects.uml.getEISAttributes(client_id, null);
+			this.eisAttributes = OAuthProviderProxyObjects.uml().getEISAttributes(client_id, null);
 		}
 	}
 	
@@ -155,13 +155,13 @@ public class TokenInfo implements Cloneable {
 		@Override
 		public Map<String, String> getClaims(Map<String, String> mapData) {
 			final Map<String, String> claims = super.getClaims(mapData);
-			claims.put("sub", aml.getUserIdByLogin(((TokenInfo.UserTokenInfo)this).userLogin).toString());
+			claims.put("sub", aml().getUserIdByLogin(((TokenInfo.UserTokenInfo)this).userLogin).toString());
 			return claims;
 		}
 		public UserTokenInfo(Long lifeTime, String client_id, String userLogin, String scope) throws Exception {
 			super(lifeTime, client_id, scope);
 			this.userLogin = userLogin;
-			this.userAttributes = idpaml.attributes(userLogin);
+			this.userAttributes = idpaml().attributes(userLogin);
 		}
 	}
 	public static class AuthCodeTokenInfo extends UserTokenInfo { // user access token obtained in Authz Code flow
@@ -184,7 +184,7 @@ public class TokenInfo implements Cloneable {
 			this.auth_time = (new Date()).getTime()/1000L; //(the number of seconds)
 			this.userLogin = userLogin;
 			this.state = state;	
-			this.userAttributes = idpaml.attributes(userLogin);
+			this.userAttributes = idpaml().attributes(userLogin);
 		}
 	}
 	
@@ -232,7 +232,7 @@ public class TokenInfo implements Cloneable {
 	public static<TKNINFO extends TokenInfo, TOKEN extends TokenInfo.IGetTokenInfo<TKNINFO>> 
 	TOKEN getTokenByTokenInfoClass(Class<TKNINFO> tokenInfoClass, String tokenId) throws GeneralFailure {
 		final Class<TOKEN> clsToken = mapTokenInfoClassToTokenClass(tokenInfoClass);
-		return ((IOAuthRegister<TKNINFO, TOKEN>)oaReg).getToken(clsToken, tokenId);
+		return ((IOAuthRegister<TKNINFO, TOKEN>)oaReg()).getToken(clsToken, tokenId);
 	}
 
 	public static<TKNINFO extends TokenInfo, TOKEN extends Token<TKNINFO>>  

@@ -254,13 +254,14 @@ import javax.persistence.NoResultException;
 						         .append("t1.t1_tel, t1.t1_email,t1.t1_pos, t1.t1_dep_name, t1.t1_org_code, ") 
 						         .append("t1.t1_org_name, t1.t1_org_adr, t1.t1_org_tel, t1.t1_start, t1.t1_end, ") 
 						         .append("t1.t1_status, t1.t1_crt_date, t1.t1_crt_usr_login, t1.t1_upd_date, t1.t1_upd_usr_login, ")
-						         .append("t1.t1_dep_code, t1.t1_org_status, t1.t1_usr_status, t1.t1_dep_status, t1.t1_iogv_bind_type, ") 
+						         .append("t1.t1_dep_code, t1.t1_org_status, t1.t1_usr_status, t1.t1_dep_status, t1.t1_iogv_bind_type, t1.t1_snils, ") 
 						         .append("t1_bin_flag ")
 						  .append("from( ")
 						  .append("select AU_FULL.ID_SRV t1_id, AU_FULL.login t1_login, AU_FULL.CERTIFICATE t1_cert, t2.CL_USR_CODE t1_usr_code, ")
 						   .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_fio, ")
 						    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.PHONE, CL_USR_FULL.PHONE ) t1_tel, ")
 						    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.E_MAIL, CL_USR_FULL.EMAIL) t1_email, ")
+						    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SNILS, CL_USR_FULL.SNILS) t1_snils, ")
 						    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.POSITION, CL_USR_FULL.POSITION)t1_pos, ")
 						    .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.DEPARTMENT, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.FULL_)) t1_dep_name, ")
 						    .append("t1.CL_ORG_CODE t1_org_code, CL_ORG_FULL.FULL_ t1_org_name, ")
@@ -351,9 +352,9 @@ import javax.persistence.NoResultException;
             			   objectArray[22]!=null?objectArray[22].toString():"",
             			   objectArray[23]!=null?objectArray[23].toString():"",
             			   objectArray[24]!=null?Long.valueOf(objectArray[24].toString()):null,
-            			   Integer.parseInt(objectArray[25].toString())
+            			   objectArray[25]!=null?objectArray[25].toString():"",
+            			   Integer.parseInt(objectArray[26].toString())
             			   );
-            	     
             	     
             	     
             	     auditList.add(ui);
@@ -395,7 +396,7 @@ import javax.persistence.NoResultException;
            		  .append(" CL_USR_FULL.PHONE t1_tel, CL_USR_FULL.EMAIL t1_email,  CL_USR_FULL.POSITION t1_pos, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.FULL_) t1_dep_name, CL_ORG_FULL.SIGN_OBJECT t1_org_code, ") 
            		  .append("CL_ORG_FULL.FULL_ t1_org_name,  CL_ORG_FULL.PREFIX || decode(CL_ORG_FULL.HOUSE, null, null, ','  ||CL_ORG_FULL.HOUSE  ) t1_org_adr,  CL_ORG_FULL.PHONE t1_org_tel, null t1_start, null t1_end, ") 
            		  .append("null t1_status, null t1_crt_date, null t1_crt_usr_login, null t1_upd_date, null t1_upd_usr_login, ") 
-           		  .append(" CL_DEP_FULL.SIGN_OBJECT t1_dep_code,  CL_ORG_FULL.STATUS t1_org_status, CL_USR_FULL.STATUS t1_usr_status, CL_DEP_FULL.STATUS t1_dep_status, null t1_iogv_bind_type ") 
+           		  .append(" CL_DEP_FULL.SIGN_OBJECT t1_dep_code,  CL_ORG_FULL.STATUS t1_org_status, CL_USR_FULL.STATUS t1_usr_status, CL_DEP_FULL.STATUS t1_dep_status, null t1_iogv_bind_type,  CL_USR_FULL.SNILS t1_usr_snils") 
            		  .append(" ") 
            		  .append(" ") 
            		  .append(" from BINDING_AUTO_LINK_BSS_T bin, ") 
@@ -459,7 +460,8 @@ import javax.persistence.NoResultException;
           			  objectArray[21]!=null?objectArray[21].toString():"",
           			  objectArray[22]!=null?objectArray[22].toString():"",
           			  objectArray[23]!=null?objectArray[23].toString():"",
-          			  objectArray[24]!=null?Long.valueOf(objectArray[24].toString()):null
+          			  objectArray[24]!=null?Long.valueOf(objectArray[24].toString()):null,
+          					objectArray[25]!=null?objectArray[25].toString():""  
           			   );
             	 
             	 idRec=objectArray[0].toString();
@@ -1173,10 +1175,11 @@ import javax.persistence.NoResultException;
              	 (new StringBuilder("select t1.t1_id, t1.t1_login, t1.t1_cert, t1.t1_usr_code, t1.t1_fio, t1.t1_tel, t1.t1_email,t1.t1_pos, t1.t1_dep_name, "))
 	    		   .append("t1.t1_org_code, t1.t1_org_name, t1.t1_org_adr, t1.t1_org_tel, t1.t1_start, t1.t1_end, t1.t1_status, ")
 	    		   .append("t1.t1_crt_date, t1.t1_crt_usr_login, t1.t1_upd_date, t1.t1_upd_usr_login, ")
-	    		   .append("t1.t1_dep_code, t1.t1_org_status, t1.t1_usr_status, t1.t1_dep_status, t1.t1_iogv_bind_type ")
+	    		   .append("t1.t1_dep_code, t1.t1_org_status, t1.t1_usr_status, t1.t1_dep_status, t1.t1_iogv_bind_type, t1.t1_snils ")
 	    		   .append("from( ")
 	    		   .append("select USR.ID_SRV t1_id, null t1_login, USR.SIGN_OBJECT t1_usr_code, null t1_cert, USR.FIO t1_fio, ")
 	    		   .append("USR.POSITION t1_pos, USR.PHONE t1_tel, USR.EMAIL t1_email,DEP.FULL_ t1_dep_name, ORG.SIGN_OBJECT t1_org_code, ")
+	    		   .append("USR.SNILS t1_snils, ")
 	    		   .append("ORG.FULL_ t1_org_name, ORG.PREFIX || decode(ORG.HOUSE, null, null, ','  ||ORG.HOUSE  ) t1_org_adr, ORG.PHONE t1_org_tel, ")
 	    		   .append("null t1_start, null t1_end, ")
 	    		   .append("null t1_status,null t1_crt_date, null t1_crt_usr_login, ")
@@ -1239,7 +1242,8 @@ import javax.persistence.NoResultException;
         			  objectArray[21]!=null?objectArray[21].toString():"",
         			  objectArray[22]!=null?objectArray[22].toString():"",
         			  objectArray[23]!=null?objectArray[23].toString():"",
-        			  objectArray[24]!=null?Long.valueOf(objectArray[24].toString()):null
+        			  objectArray[24]!=null?Long.valueOf(objectArray[24].toString()):null,
+        					objectArray[25]!=null?objectArray[25].toString():""  
         			   );
         	     applicantList.add(ui);
         	   }catch(Exception e1){

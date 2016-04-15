@@ -127,7 +127,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
     	String userLoginFact=(this.userLogin!=null?this.userLogin:(String)hs.getAttribute(CUDUserConsoleConstants.userLoginForgot));
     	
     	HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-    	String context_url=request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath();
+    	String context_url=/*request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+*/ request.getContextPath();
 			
     	List<String> emails = userForgotEJB.step1(userLoginFact, this.userEmail, context_url);
         //при уточнении email, emails будет = этому уточненнному email  

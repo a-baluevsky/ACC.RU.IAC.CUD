@@ -175,7 +175,7 @@ import org.jboss.seam.log.Log;
 	               
 	             
 	               
-	               auditList = new ArrayList<BaseItem>(rolUsrManager.getSharedUserList( orderQuery, st, firstRow, numberOfRows));
+	               auditList =  rolUsrManager.getSharedUserList( orderQuery, st, firstRow, numberOfRows);
 	               
 	               
 	               

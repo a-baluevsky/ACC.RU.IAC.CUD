@@ -151,6 +151,7 @@ import org.slf4j.LoggerFactory;
 	private List<MunicBssT> municList;
 	
 	private String note;
+	private String lastLoginTime;
 	
 	static{
 		
@@ -269,9 +270,7 @@ import org.slf4j.LoggerFactory;
 
 
    public void forView(String modelType) {
-	   String  usrId = FacesContext.getCurrentInstance().getExternalContext()
-		        .getRequestParameterMap()
-		        .get("sessionId");
+	   String  usrId = getSSID();
 	  log.info("forView:sessionId:"+usrId);
 	  log.info("forView:modelType:"+modelType);
 	  if(!Strings.isNullOrEmpty(usrId)){
@@ -361,7 +360,10 @@ import org.slf4j.LoggerFactory;
 	   }
 	 
 	   try {
-	    	
+		   final String snils = usrBeanCrt.getSnils();
+		   if(snils!=null)
+			   usrBeanCrt.setSnils(snils.trim());
+			   
 		   log.info("usrManager:addUsr:clUsrBean:SignObject:"+clUsrBean.getSignObject());
 		   log.info("usrManager:addUsr:clUsrBean:Name1:"+usrBeanCrt.getName1());
 		   
@@ -500,9 +502,7 @@ import org.slf4j.LoggerFactory;
 	   
 	   AcUser usrBean = getConversationItem("usrBean");
 	   
-	   String  sessionId = FacesContext.getCurrentInstance().getExternalContext()
-		        .getRequestParameterMap()
-		        .get("sessionId");
+	   String  sessionId = getSSID();
 	   log.info("UsrManager:updUsr:sessionId_:"+sessionId);
 	
 	   if(usrBean==null || sessionId==null){
@@ -515,7 +515,9 @@ import org.slf4j.LoggerFactory;
 		   AcUser  cau = getSessionItem("currentUser");
 		  
 		   AcUser aum = entityManager.find(AcUser.class, Long.valueOf(sessionId));
-		  
+		
+		   aum.setSnils(usrBean.getSnils());  
+		
 		if((((cau.getAllowedSys()!=null || cau.getIsAccOrgManagerValue()) && !cau.isAllowedReestr("002", "3"))|| !loginExistUpd(usrBean.getLogin().trim(), Long.valueOf(sessionId)))&&!certNumExistUpd(usrBean.getCertificate(), Long.valueOf(sessionId))){
 			  
 		 
@@ -715,9 +717,7 @@ import org.slf4j.LoggerFactory;
 	   
 	   AcUser usrBean = getConversationItem("usrBean");
 	   
-	   String  sessionId = FacesContext.getCurrentInstance().getExternalContext()
-		        .getRequestParameterMap()
-		        .get("sessionId");
+	   String  sessionId = getSSID();
 	   log.info("UsrManager:updUsrAppAcc:sessionId:"+sessionId);
 	
 	   if(usrBean==null || sessionId==null){
@@ -798,9 +798,7 @@ import org.slf4j.LoggerFactory;
 	   
 	     AcUser usrBean = getConversationItem("usrBean");
 	   
-	   String  sessionId = FacesContext.getCurrentInstance().getExternalContext()
-		        .getRequestParameterMap()
-		        .get("sessionId");
+	   String  sessionId = getSSID();
 	   log.info("UsrManager:updUsrAppBlock:sessionId:"+sessionId);
 	
 	   if(usrBean==null || sessionId==null){
@@ -881,13 +879,14 @@ import org.slf4j.LoggerFactory;
         		   (new StringBuilder("select t1.t1_id, t1.t1_login, t1.t1_cert, t1.t1_usr_code, t1.t1_fio, t1.t1_tel, t1.t1_email,t1.t1_pos, t1.t1_dep_name, "))
 				     .append("t1.t1_org_code, t1.t1_org_name, t1.t1_org_adr, t1.t1_org_tel, t1.t1_start, t1.t1_end, t1.t1_status, ")
 				      .append("t1.t1_crt_date, t1.t1_crt_usr_login, t1.t1_upd_date, t1.t1_upd_usr_login, ")
-				      .append("t1.t1_dep_code, t1.t1_org_status, t1.t1_usr_status, t1.t1_dep_status, t1.t1_iogv_bind_type  ")
+				      .append("t1.t1_dep_code, t1.t1_org_status, t1.t1_usr_status, t1.t1_dep_status, t1.t1_iogv_bind_type, t1.t1_snils  ")
 				     .append("from( ")
 				     .append("select AU_FULL.ID_SRV t1_id, AU_FULL.login t1_login, AU_FULL.CERTIFICATE t1_cert, t2.CL_USR_CODE t1_usr_code, ")
 				      .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SURNAME||' '||AU_FULL.NAME_ ||' '|| AU_FULL.PATRONYMIC,  CL_USR_FULL.FIO ) t1_fio, ")
 				       .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.PHONE, CL_USR_FULL.PHONE ) t1_tel, ")
 				       .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.E_MAIL, CL_USR_FULL.EMAIL) t1_email, ")
 				       .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.POSITION, CL_USR_FULL.POSITION)t1_pos, ")
+				       .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SNILS, CL_USR_FULL.SNILS)t1_snils, ")
 				       .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.DEPARTMENT, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.FULL_)) t1_dep_name, ")
 				       .append("t1.CL_ORG_CODE t1_org_code, CL_ORG_FULL.FULL_ t1_org_name, ")
 				       .append("CL_ORG_FULL.PREFIX || decode(CL_ORG_FULL.HOUSE, null, null, ','  ||CL_ORG_FULL.HOUSE  ) t1_org_adr, ")
@@ -968,7 +967,8 @@ import org.slf4j.LoggerFactory;
         			  objectArray[21]!=null?objectArray[21].toString():"",
         			  objectArray[22]!=null?objectArray[22].toString():"",
         			  objectArray[23]!=null?objectArray[23].toString():"",
-        			  objectArray[24]!=null?Long.valueOf(objectArray[24].toString()):null
+        			  objectArray[24]!=null?Long.valueOf(objectArray[24].toString()):null,
+        			  objectArray[25]!=null?objectArray[25].toString():""	  
         			   );
         	     return ui;
         	   }catch(Exception e1){
@@ -993,9 +993,7 @@ import org.slf4j.LoggerFactory;
 	   String idArm = FacesContext.getCurrentInstance().getExternalContext()
 		        .getRequestParameterMap()
 		        .get("idArm");
-	   String  sessionId = FacesContext.getCurrentInstance().getExternalContext()
-		        .getRequestParameterMap()
-		        .get("sessionId");
+	   String  sessionId = getSSID();
 	   log.info("usrManager:updUsr:idArm:"+idArm);
 	   log.info("usrManager:updUsr:sessionId:"+sessionId);
 	
@@ -1155,9 +1153,7 @@ import org.slf4j.LoggerFactory;
 	    
 	   AcUser usrBean = getConversationItem("usrBean");
 	   
-	   String sessionId = FacesContext.getCurrentInstance().getExternalContext()
-		        .getRequestParameterMap()
-		        .get("sessionId");
+	   String sessionId = getSSID();
 	   log.info("usrManager:updUsrGroup:sessionId:"+sessionId);
 	
 	   if(usrBean==null || sessionId==null){
@@ -1252,9 +1248,7 @@ import org.slf4j.LoggerFactory;
 	   
 	    AcUser usrBean = getConversationItem("usrBean");
 	   
-	   String sessionId = FacesContext.getCurrentInstance().getExternalContext()
-		        .getRequestParameterMap()
-		        .get("sessionId");
+	   String sessionId = getSSID();
 	   log.info("usrManager:updUsrAdminIS:sessionId:"+sessionId);
 	
 	   if(usrBean==null || sessionId==null){
@@ -1351,9 +1345,7 @@ import org.slf4j.LoggerFactory;
 	   log.info("usrManager:updUsrAllowReestr:01+");
 	   
 	   
-	   String sessionId = FacesContext.getCurrentInstance().getExternalContext()
-		        .getRequestParameterMap()
-		        .get("sessionId");
+	   String sessionId = getSSID();
 	   log.info("usrManager:updUsrAllowReestr:sessionId:"+sessionId);
 	
 	   if(sessionId==null){
@@ -1460,9 +1452,7 @@ import org.slf4j.LoggerFactory;
 	   log.info("usrManager:updUsrAccOrgManager:01:"+this.accOrgManager);
 	   
 	   
-	   String sessionId = FacesContext.getCurrentInstance().getExternalContext()
-		        .getRequestParameterMap()
-		        .get("sessionId");
+	   String sessionId = getSSID();
 	   log.info("usrManager:updUsrAccOrgManager:sessionId:"+sessionId);
 	
 	   if(sessionId==null){
@@ -1521,9 +1511,7 @@ import org.slf4j.LoggerFactory;
 	   
 	   log.info("usrManager:initAllowReestr:01");
 	   
-	   String sessionId = FacesContext.getCurrentInstance().getExternalContext()
-		        .getRequestParameterMap()
-		        .get("sessionId");
+	   String sessionId = getSSID();
 	   log.info("usrManager:initAllowReestr:sessionId:"+sessionId);
 	
 	   if(sessionId==null){
@@ -1598,9 +1586,7 @@ import org.slf4j.LoggerFactory;
    
    public void forViewUpdDel() {
 	   try{
-	     String sessionIdUser = FacesContext.getCurrentInstance().getExternalContext()
-			        .getRequestParameterMap()
-			        .get("sessionId");
+	     String sessionIdUser = getSSID();
 	     log.info("forViewUpdDel:sessionId:"+sessionIdUser);
 	     if(sessionIdUser!=null){
 	    	 AcUser ahUm = entityManager.find(AcUser.class, Long.valueOf(sessionIdUser));
@@ -1643,9 +1629,7 @@ import org.slf4j.LoggerFactory;
    } 
    
    public void forViewDelMessage() {
-		  String sessionId = FacesContext.getCurrentInstance().getExternalContext()
-				.getRequestParameterMap()
-				.get("sessionId");
+		  String sessionId = getSSID();
 		  log.info("forViewDel:sessionId:"+sessionId);
 		  if(!Strings.isNullOrEmpty(sessionId)){
 			 AcUser aa = entityManager.find(AcUser.class, Long.valueOf(sessionId));
@@ -1711,9 +1695,7 @@ import org.slf4j.LoggerFactory;
    public List<AcApplication> getListUsrArmEdit() throws Exception{
 	    log.info("UsrManager:getListUsrArmEdit:01");
 	   
-	    String  idUsr = FacesContext.getCurrentInstance().getExternalContext()
-		        .getRequestParameterMap()
-		        .get("sessionId");
+	    String  idUsr = getSSID();
 	    log.info("UsrManager:getListUsrArmEdit:sessionId:"+idUsr);
 	
 	    try {
@@ -1775,9 +1757,7 @@ import org.slf4j.LoggerFactory;
    public List<AcApplication> getListUsrArmForView() throws Exception{
 	    log.info("UsrManager:getListUsrArmForView:01");
 	   
-	    String sessionId = FacesContext.getCurrentInstance().getExternalContext()
-		        .getRequestParameterMap()
-		        .get("sessionId");
+	    String sessionId = getSSID();
 	    
 	    log.info("UsrManager:getListUsrArmForView:sessionId:"+sessionId);
 	    List<Object[]> lo=null;
@@ -1915,9 +1895,7 @@ import org.slf4j.LoggerFactory;
 	    AcRole rol = null;
 	    int group_change_flag=0;
 	    
-	    String sessionId = FacesContext.getCurrentInstance().getExternalContext()
-		        .getRequestParameterMap()
-		        .get("sessionId");
+	    String sessionId = getSSID();
 	    
 	    log.info("UsrManager:getListUsrGroupForView:sessionId:"+sessionId);
 	    
@@ -1986,9 +1964,7 @@ import org.slf4j.LoggerFactory;
 		   String idArm = FacesContext.getCurrentInstance().getExternalContext()
 			        .getRequestParameterMap()
 			        .get("idArm");
-		   String sessionIdUm = FacesContext.getCurrentInstance().getExternalContext()
-			        .getRequestParameterMap()
-			        .get("sessionId");
+		   String sessionIdUm = getSSID();
 		   String remoteAudit = FacesContext.getCurrentInstance().getExternalContext()
 			        .getRequestParameterMap()
 			        .get("remoteAudit");
@@ -2094,9 +2070,7 @@ import org.slf4j.LoggerFactory;
 	   //а значит нам надо обновить groupList с учётом новых фильтров.
 	   
 	   if(this.groupList==null){
-		  String sessionId = FacesContext.getCurrentInstance().getExternalContext()
-			        .getRequestParameterMap()
-			        .get("sessionId");
+		  String sessionId = getSSID();
 		   String remoteAudit = FacesContext.getCurrentInstance().getExternalContext()
 			        .getRequestParameterMap()
 			        .get("remoteAudit");
@@ -2224,9 +2198,7 @@ import org.slf4j.LoggerFactory;
 	   //а значит нам надо обновить groupList с учётом новых фильтров.
 	   
 	   if(this.ISList==null){
-		  String sessionId = FacesContext.getCurrentInstance().getExternalContext()
-			        .getRequestParameterMap()
-			        .get("sessionId");
+		  String sessionId = getSSID();
 		   String remoteAudit = FacesContext.getCurrentInstance().getExternalContext()
 			        .getRequestParameterMap()
 			        .get("remoteAudit");
@@ -2317,9 +2289,7 @@ import org.slf4j.LoggerFactory;
 		   log.info("UsrManager:getListUserSysEmpty:01");
 		   
 		   try{
-			   String sessionId = FacesContext.getCurrentInstance().getExternalContext()
-				        .getRequestParameterMap()
-				        .get("sessionId");
+			   String sessionId = getSSID();
 			   
 			   List<AcApplication> listUserSys=entityManager.createQuery(
 			    		 "select o from AcApplication o JOIN o.linkAdminUserSys o1 " 
@@ -2551,9 +2521,7 @@ import org.slf4j.LoggerFactory;
      		   
 	   try{
 	   
-	     String sessionIdUm = FacesContext.getCurrentInstance().getExternalContext()
-			        .getRequestParameterMap()
-			        .get("sessionId");
+	     String sessionIdUm = getSSID();
 		 log.info("UsrManager:search:sessionId:"+sessionIdUm);
 		   
 	     if(sessionIdUm==null){
@@ -2677,9 +2645,7 @@ import org.slf4j.LoggerFactory;
 	   
 	   UCCertItem ui = null;
 	   try{
-		  String sessionId = FacesContext.getCurrentInstance().getExternalContext()
-			        .getRequestParameterMap()
-			        .get("sessionId");
+		  String sessionId = getSSID();
 		  log.info("UsrManager:loadUserCert:sessionId:"+sessionId);
 		  
 		  String sessionIdCrack = FacesContext.getCurrentInstance().getExternalContext()
@@ -3106,9 +3072,7 @@ import org.slf4j.LoggerFactory;
      		String remoteAudit = FacesContext.getCurrentInstance().getExternalContext()
  	             .getRequestParameterMap()
  	             .get("remoteAudit");
-     		String sessionId = FacesContext.getCurrentInstance().getExternalContext()
-    	             .getRequestParameterMap()
-    	             .get("sessionId");
+     		String sessionId = getSSID();
      		
      		if(remoteAudit==null||sessionId==null){
      			return null;
@@ -3137,9 +3101,7 @@ import org.slf4j.LoggerFactory;
    
    
    public void selectRecord(){
-	    String  sessionId = FacesContext.getCurrentInstance().getExternalContext()
-		        .getRequestParameterMap()
-		        .get("sessionId");
+	    String  sessionId = getSSID();
 	    log.info("selectRecord:sessionId="+sessionId);
 	    
 	   //  for/View/(); //!!!
@@ -3319,9 +3281,7 @@ import org.slf4j.LoggerFactory;
 			             .getRequestParameterMap()
 			             .get("remoteAudit");
 			    log.info("usrManager:evaluteForBean:remoteAudit:"+remoteAuditUm);
-				String sessionIdUm = FacesContext.getCurrentInstance().getExternalContext()
-			             .getRequestParameterMap()
-			             .get("sessionId");
+				String sessionIdUm = getSSID();
 			    log.info("usrManager:evaluteForBean:sessionId:"+sessionIdUm);
 		    	if(sessionIdUm!=null && remoteAuditUm!=null &&
 		    	   ("rowSelectFact".equals(remoteAuditUm)||	
@@ -3383,9 +3343,7 @@ public Boolean getAccOrgManager() {
 		   log.info("UsrManager:getAccOrgManager:01");
 		   
 		   try{
-			   String sessionId = FacesContext.getCurrentInstance().getExternalContext()
-				        .getRequestParameterMap()
-				        .get("sessionId");
+			   String sessionId = getSSID();
 			   
 			    String isManager = (String) entityManager.createNativeQuery(
 			    		 "select to_char(t1.IS_ACC_ORG_MANAGER) " 
@@ -3441,34 +3399,63 @@ public List<MunicBssT> getMunicList() {
 	return this.municList;
 }
 
-public void setMunicList(List<MunicBssT> municList) {
-	this.municList = municList;
-}
+	public void setMunicList(List<MunicBssT> municList) {
+		this.municList = municList;
+	}
 
-	public String getNote() {
-		if(this.note==null){
-			try {				
-				String ssid = FacesContext.getCurrentInstance().getExternalContext()
-								        .getRequestParameterMap()
-								        .get("sessionId");
-				if(!Strings.isNullOrEmpty(ssid)) {
-				   note = (String) entityManager.createNativeQuery(
-			    		 "select NOTE " 
-			    		 + "from AC_USERS_KNL_T t1 " 
-			    		 + "where t1.ID_SRV = :idUser ")
-						 .setParameter("idUser", Long.valueOf(ssid))
-						 .getSingleResult();					
-				}
-
-			} catch(Exception x) {
-				logger.warn("UsrManager:getNote:error:"+x);
-			}
-		}
-		return note;
+	public static String getSSID() {
+		return FacesContext.getCurrentInstance().getExternalContext()
+			   .getRequestParameterMap().get("sessionId");
 	}
 	
+	private static Object getSSIDQuerySingleResult(EntityManager entityManager, 
+			String what, String from, String where,
+			String ssidParamName, String callerName) {
+		Object res = null;
+		try {				
+			final String ssid = getSSID();			
+			if(!Strings.isNullOrEmpty(ssid)) {
+				final StringBuilder sbQuery = new StringBuilder("select ");
+				sbQuery.append(what).append(" from ").append(from)
+					.append(" where ").append(where);
+			    res = entityManager.createNativeQuery(sbQuery.toString())
+					 .setParameter(ssidParamName, Long.valueOf(ssid))
+					 .getSingleResult();					
+			}
+		} catch(Exception x) {
+			logger.warn("UsrManager:"+callerName+":error:"+x);
+		}
+		return res;
+	}
+
+	public String getNote() {
+		if(this.note==null)
+			this.note = (String)getSSIDQuerySingleResult(entityManager, 
+					"NOTE", "AC_USERS_KNL_T t1", 
+					"t1.ID_SRV = :idUser", 
+					"idUser", "getNote");
+		return note;
+	}
 	public void setNote(String note) {
 		this.note = note;
+	}
+
+	public String getLastLoginTime() {
+		// SELECT max(sl.CREATED) FROM SERVICES_LOG_KNL_T sl
+		// WHERE sl.UP_USERS = :idUser and sl.UP_SERVICES in (4, 82, 2, 62, 83);
+		if(this.lastLoginTime == null) {
+			final Object lastAccTime = getSSIDQuerySingleResult(entityManager, 
+					"max(SL.CREATED)", "SERVICES_LOG_KNL_T sl",
+					"sl.UP_USERS = :idUser and sl.UP_SERVICES in (4, 82, 2, 62, 83)",
+					"idUser", "getLastLoginTime");
+			if(lastAccTime!=null)
+				this.lastLoginTime = lastAccTime.toString();
+		}
+		return this.lastLoginTime;
+	}
+
+	public void setLastLoginTime(String lastLoginTime) {
+		this.lastLoginTime = lastLoginTime;
 	}
 
 }

@@ -193,7 +193,7 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
       	
      	 
      
-     	 String assertionConsumerServiceURL = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/public.xhtml";
+     	 String assertionConsumerServiceURL = /*request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+*/ request.getContextPath()+ "/public.xhtml";
      	 
      	LOGGER.debug("authenticator:cudAuth:01_:"+request.getContextPath());
      	 
@@ -278,10 +278,8 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
  	 //String destination = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/cudidp/loginEncrypt";     
      	 
   	 sendPost(samlRequest, /*destination*/
-  			request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/cudidp/loginEncrypt",
+  			/*request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+*/ "/cudidp/loginEncrypt",
   			response);
-  	 
-  	 
   	 
      	}catch(Exception e){
      		LOGGER.error("authenticator:cudAuth:error:"+e);
@@ -368,9 +366,9 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
 	    	
 	   	 
 	   	 // "http://10.128.66.140:8080/cudidp/";
-	   	 String destination = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/cudidp/logout";
+	   	 String destination = /*request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+*/ "/cudidp/logout";
 	   
-	   	 String logoutBackUrl = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/uarm/";
+	   	 String logoutBackUrl = /*request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+*/ "/uarm/";
 	   	 
 	   	LOGGER.debug("authenticator:cudLogout:02:"+destination);
 	   	LOGGER.debug("authenticator:cudLogout:03:"+logoutBackUrl);
@@ -567,7 +565,7 @@ import ru.spb.iac.cud.uarm.ws.STSServiceClient;
 		        String samlDestination = logout.getDestination().toString()
 		        		                 + "?logoutBackUrl="+URLEncoder.encode(logoutBackUrl, "utf-8");
 		        
-		        logout.setDestination(URI.create(samlDestination));		        
+		        logout.setDestination(URI.create(samlDestination));
 		        
 		        NameIDType nameID = new NameIDType();
 		        	

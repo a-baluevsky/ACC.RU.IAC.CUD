@@ -184,14 +184,17 @@ import ru.spb.iac.cud.services.web.init.Configuration;
 		try {
 			String queryString = httpContext.getRequest().getQueryString();
 
-			 
-
-			byte[] sigValue;
-
-			sigValue = GOSTRedirectBindingSignatureUtil
-					.getSignatureValueFromSignedURL(queryString);
-
-			boolean isSystemSignReq = (new ContextIDPUtilManager()).systemSignReq(
+			byte[] sigValue = null;
+			boolean isSystemSignReq = false;
+			
+			try {
+				sigValue = GOSTRedirectBindingSignatureUtil
+						.getSignatureValueFromSignedURL(queryString);
+			} catch (Exception e) {
+				LOGGERSLF4J.debug("+++sigValue:"+(sigValue==null));
+			}
+			
+			isSystemSignReq = (new ContextIDPUtilManager()).systemSignReq(
 	        		(String)request.getOptions().get("SYSTEM_CODE"));
 			
 			//подписи нет, а требуется			

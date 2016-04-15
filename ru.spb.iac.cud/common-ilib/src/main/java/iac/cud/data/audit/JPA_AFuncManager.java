@@ -59,21 +59,31 @@ public class JPA_AFuncManager extends JPABuilder {
 			 .toString();
 	}
 	
+	private static Date getDateFilterValue(String s) {
+		return (Date)DataFieldType.DATE_DDMMYY.fromString(s);
+	}
+	private static Date getDateFilterValue(Object o) {
+		return o instanceof Date? (Date)o: getDateFilterValue(o.toString());
+	}	
+	
+	
 	public void setFilter(Map<String, String> filter) throws InvalidAlgorithmParameterException {
 		resetWhereConditions();
         if(filter!=null){
    		 Set<Map.Entry<String, String>> setFilterAFunc = filter.entrySet();
              for (Map.Entry<String, String> me : setFilterAFunc) {  
-           	  String sKey=me.getKey();           	  
-             //у нас act_dat_value переведена в строку уже в запросе	            	  
+           	  String sKey=me.getKey();
+           	  Object val = me.getValue();
+     	  
+             //у нас act_dat_value переведена в строку уже в запросе	
   		      if("arm_id".equals(sKey)){ 
   		    	 putWhereCondition("arm_id", "=", me.getValue());      	        		  
 	          } else if("act_dat_value".equals(sKey)) {	        	  
 	        	  //putWhereCondition(new DataField<String>(DataFieldType.DATE, "act_dat"), ">=", me.getValue());
-	        	  putWhereCondition(new DataField<Date>(DataFieldType.DATE_YYYYMMDD, "act_dat"), ">=", (Date)DataFieldType.DATE_DDMMYY.fromString(me.getValue()));
+	        	  putWhereCondition(new DataField<Date>(DataFieldType.DATE_YYYYMMDD, "act_dat"), ">=", getDateFilterValue(val));
 	          } else if("act_dat_value2".equals(sKey)) {
 	        	  //putWhereCondition(new DataField<String>(DataFieldType.DATE, "act_dat"), "<=", me.getValue());
-	        	  putWhereCondition(new DataField<Date>(DataFieldType.DATE_YYYYMMDD, "act_dat"), "<=", (Date)DataFieldType.DATE_DDMMYY.fromString(me.getValue()));
+	        	  putWhereCondition(new DataField<Date>(DataFieldType.DATE_YYYYMMDD, "act_dat"), "<=", getDateFilterValue(val));
 	          } else if("usr_id".equals(sKey)) {
 	        	  putWhereCondition(new DataField<Long>(DataFieldType.NUMBER_LONG, "usr_id"), "=", Long.valueOf(me.getValue()));
 	          } else { //делаем фильтр на начало текста

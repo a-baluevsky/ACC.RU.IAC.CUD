@@ -138,7 +138,7 @@ public class TokenEndpoint extends _Endpoint {
 	        	case PASSWORD:
 	        		// obtain permission (scope) from oauthRegister
 	        		tknScope = "openid";
-	        		if(!aml.isValidLoginPassword(tokenRequest.getUsername(), tokenRequest.getPassword())) {
+	        		if(!aml().isValidLoginPassword(tokenRequest.getUsername(), tokenRequest.getPassword())) {
 	        			LOGGER.error("invalid username or password for user: "+tokenRequest.getUsername());
 	        			OAPE.TokenException.throwIt(OAuthProviderExceptionCode.invalid_grant);
 	        		} else try {
@@ -203,7 +203,7 @@ public class TokenEndpoint extends _Endpoint {
         		if(authCodeInfo!=null) {
 		        	final boolean isOpenId = (tknScope!=null) && tknScope.contains("openid");
 		 			if(isOpenId) {	 				
-						final IDToken idToken = new IDToken(aml.getUserIdByLogin(authCodeInfo.userLogin).toString(),
+						final IDToken idToken = new IDToken(aml().getUserIdByLogin(authCodeInfo.userLogin).toString(),
 								tokenRequest.getClient_id(), Token.DefaultTokenLifeTime, authCodeInfo.auth_time, authCodeInfo.state);
 						tokenResponse = new TokenResponse.TokenResponseWithIdToken(tokenResponse, IDToken.toJWT(idToken, null));
 						//tokenResponse.setId_token(IDToken.toJWT(idToken, null));
