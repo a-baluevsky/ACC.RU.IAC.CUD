@@ -82,8 +82,8 @@ define(['GaliaJSFX_OAuthProviderREST'], function (OAuthProviderREST) {
         // ?? get AccessToken on login
 		this.getAccessTokenFromUserCredentials = function(args, callbackErrResult) {  // do not store password! use it and forget it
     		//debugger;
-	
-			var username = args.username;
+			var user = args.user;
+			
 			var password = args.password;
 			var token_type = args.token_type || "Bearer";
 			
@@ -98,11 +98,15 @@ define(['GaliaJSFX_OAuthProviderREST'], function (OAuthProviderREST) {
 						if(data && data.access_token) {
 							_this.refresh_token = data.refresh_token;
 							_this.access_token = data.access_token;
+							
+							user.refresh_token = data.refresh_token;
+							user.access_token = data.access_token;
+							
 							callbackErrResult(null, data);
 						} else
 							callbackErrResult('ClientApp.getAccessTokenFromUserCredentials: no access_token returned from TokenPassword');
 					}
-				}, _this.client_id, _this.client_secret, username, password, token_type
+				}, _this.client_id, _this.client_secret, user.Login, password, token_type
 			);
 		}
 		
@@ -212,6 +216,24 @@ define(['GaliaJSFX_OAuthProviderREST'], function (OAuthProviderREST) {
 			);
 		}
 		
+		this.getClientAppUserRolesInfo = function (args, callbackErrResult) {
+			//debugger;
+			var user 		= args.user;
+			var role_code 	= args.role_code;
+			var role_info 	= args.role_info;	// null or array of combination
+				// role_info = ['code', 'name', 'description', 'creator_id', 'date_created', 'modificator_id', 'date_modified'];
+			var _this = this;
+			_this.m_OAuthProviderREST.GetClientAppUserRoleInfo(function (err, result) {
+				//debugger;
+				if(err)
+					callbackErrResult(err);
+				else {					
+					var roles = result.data; // cache roles? = user.Roles
+					callbackErrResult(null, roles);
+				}
+			}, role_code, role_info, user.access_token);	
+			
+		};
 		
 		// init
 		this.m_OAuthProviderREST = OAuthProviderREST;

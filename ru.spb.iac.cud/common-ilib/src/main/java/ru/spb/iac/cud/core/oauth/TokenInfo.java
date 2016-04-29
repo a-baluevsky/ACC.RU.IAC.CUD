@@ -7,6 +7,7 @@ import static ru.spb.iac.cud.core.oauth.OAuthProviderProxyObjects.oaReg;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -87,7 +88,7 @@ public class TokenInfo implements Cloneable {
 	extends IGetTokenTypeInfo<TOKENTYPE, TOKENINFO>, ISetTokenTypeInfo<TOKENTYPE, TOKENINFO>  {}	
 	
 	public interface IGetTokenInfoOpenId {
-		public Map<String, String> getAttributes();
+		public Map<String, String> getAttributes();		
 		public String getTokenScope();
 		public boolean checkTokenScope(String checkScope);
 		public boolean checkTokenScope(Collection<String> checkScopeList);
@@ -152,6 +153,7 @@ public class TokenInfo implements Cloneable {
 	public static class UserTokenInfo extends TokenInfo {
 		public final String userLogin;
 		public final Map<String, String> userAttributes;
+		public final List<String> userRoles;
 		@Override
 		public Map<String, String> getClaims(Map<String, String> mapData) {
 			final Map<String, String> claims = super.getClaims(mapData);
@@ -160,8 +162,10 @@ public class TokenInfo implements Cloneable {
 		}
 		public UserTokenInfo(Long lifeTime, String client_id, String userLogin, String scope) throws Exception {
 			super(lifeTime, client_id, scope);
-			this.userLogin = userLogin;
+			this.userLogin = userLogin;			
 			this.userAttributes = idpaml().attributes(userLogin);
+			this.userRoles = idpaml().rolesCodes(userLogin, client_id); //aml().getUserRolesArm(client_id, userLogin);
+			this.userAttributes.put("userRoles", Strings.join(this.userRoles, ","));			
 		}
 	}
 	public static class AuthCodeTokenInfo extends UserTokenInfo { // user access token obtained in Authz Code flow

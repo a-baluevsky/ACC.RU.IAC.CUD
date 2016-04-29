@@ -1,6 +1,7 @@
 package ru.spb.iac.cud.core;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,6 +49,10 @@ public interface AccessManagerRemote {
 	public List<String> getUserRolesArm(String codeSys, String login) throws GeneralFailure;
 	
 	public Map<String, Object> getAppUserAttrs(String login);
+	public Map<String, Map<String, ?>> getClientAppRolesInfo(String client_id, String userLogin,
+			List<String> lstRolesCodes,
+			HashMap<String, String> mapAttrName_FieldName)
+			throws GeneralFailure;
 	
 	// used in OAuth Provider
 	public String getOAuthClientAppSecret(String clientAppId);
@@ -55,4 +60,6 @@ public interface AccessManagerRemote {
 	public boolean isValidLoginPassword(String login, String password);
 	
 	public Long getUserIdByLogin(String userLogin);
+	
+
 }

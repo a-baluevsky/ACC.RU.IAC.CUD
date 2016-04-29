@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Low-level ESOV Services (PAAA) endpoints test</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+	<script id="jsTMP" language="javascript">
+
+	</script>
+	
+	<script data-main="/paaa_oauth/ajax/js/config.js" src="/paaa_oauth/ajax/js/lib/require-2.1.20.js"></script>
+	<script src="/paaa_oauth/ajax/js/lib/json2.js"></script>
+	
+	<script id="js/locale.ru.js">
+		var L_OAUTH_PROVIDER_ADDR = 'cuddevelop1:8080'; 'paaa1.test.toris.vpn'; // ; //  'paaa1.test.toris.vpn' //
+		var L_OAUTH_PROVIDER_ROOT = 'http://'+L_OAUTH_PROVIDER_ADDR+"/picketlink-oauth-provider-wwwserver";
+		var L_JSON_CONTENT_TYPE = "application/json; charset=UTF-8";
+		var L_ERR_AUTHENTICATION_FAILED = 'Auth Failed!'; //"Пользователь не аутентифицирован!"; //"Authentication failed. Try again ..."
+	</script>
+
+
+	<script id="jsTestSetGFX" language="javascript">
+		
+		function resetDivFrameGFX() {
+			divFrameGFX.innerHTML = '<IFRAME id=frmGFX width="100%" height="600"></IFRAME>';
+		}
+		function writeDivFrameGFX(strLine) {
+			var doc = frmGFX.contentDocument || frmGFX.document;
+			doc.writeln(strLine);			
+		}
+
+		function test_new_OAuthProviderREST() {
+			requirejs(['GaliaJSFX_OAuthProviderREST'],function(_oapr) {
+				var restProviderUrl = L_OAUTH_PROVIDER_ROOT;
+				var oapr = _oapr.new_OAuthProviderREST(restProviderUrl, lgrGFXTest, lgrGFXOut, lgrGFXIn);
+				lgrGFXTest.writeLine('oapr: '+oapr);
+			});
+		}	
+	</script>
+
+	
+	<SCRIPT ID=clientEventHandlersJS LANGUAGE=javascript>
+	<!--
+		var lgrGFXTest, lgrGFXIn, lgrGFXOut, testerGFX;
+		
+		function notifySuccess(req, data) {
+			lgrGFXTest.writeLine("Operation Success: "+req);
+		}
+		function notifyError(req, data) {
+			lgrGFXTest.writeLine("Operation Error: "+req);
+			alert(req+" failed! Details: "+data);
+		}		
+		function window_onload() {
+			requirejs([ 'underscore_plus', 
+				'async-1.0.0', 
+				'LoggerFX-1.0.0', 'TesterFX-1.0.0', 
+				'GaliaJSFX-1.0.0'], //
+			function(_, async, lfx, tfx, gfx) {
+				if(!window._) window._ = _;				
+				if(!window.async) window.async = async;
+					
+				lgrGFXIn = lfx.newListLogger(lstInGFX);
+				lgrGFXOut = lfx.newListLogger(lstOutGFX);
+				lgrGFXTest = lfx.newListLogger(lstTestOutputGFX);
+				testerGFX = tfx.newTester({testSetId: "jsTestSetGFX"});
+				testerGFX.outputTestList(lstTestsGFX);
+				window.GFX = gfx;
+				
+				if(_.isIEOlderThan(7))
+					lgrGFXTest.writeLine('IE 6');
+				
+				//if(!window.GFX)				
+				//	requirejs([],function() {
+				//		
+				//	});
+
+			});
+
+
+	
+		}
+		function btnRun_onclick() {
+			testerGFX.runSelTest(lstTestsGFX);
+		}		
+		function btnClearTestOutputGFX_onclick() {
+			dvActiveLogline.innerText = '';
+			lgrGFXTest.clear();
+		}
+		function btnClearInGFX_onclick() {
+			lgrGFXIn.clear();	
+		}
+		function btnClearOutGFX_onclick() {
+			lgrGFXTest.clear();
+		}
+		
+		function putTstUI(ctls) {
+			testUI.innerHTML = '';
+			for(i=0; i<ctls.length; ++i) {
+				testUI.appendChild(ctls[i]);
+			}
+			
+		}
+		
+		function lstTestOutputGFX_onclick() {
+			var selIndx = lstTestOutputGFX.selectedIndex;
+			if(selIndx>=0) {
+				var selItem = lstTestOutputGFX.item(selIndx);
+				dvActiveLogline.innerText = selItem.innerText;
+			}
+		}
+
+//-->
+	</SCRIPT>
+</head>
+
+<body LANGUAGE=javascript onload="return window_onload()">
+<table width="100%" height="100%" border="0" cellpadding="4" cellspacing="0">
+  <tr bgcolor="#1010af"> 
+    <td height="20" colspan="3"><font color="#ffffff">GaliaJSFX</font></td>
+  </tr>
+  <tr valign="top" bgcolor="#cccccc"> 
+    <td height="200">
+      <P align=right>Tests <INPUT language=javascript id=btnRun onclick="return btnRun_onclick()" type=button value=Run name=btnRun><SELECT id=lstTestsGFX style="WIDTH: 100%" 
+      size=12 name=lstTestsGFX></SELECT></P>
+      </td>
+    <td height="200">
+      <P align=right>Sent <INPUT language=javascript id=btnClearOutGFX onclick="return btnClearOutGFX_onclick()" type=button value=Clear name=btnClearOutGFX><SELECT id=lstOutGFX style="WIDTH: 100%" 
+      size=12 name=lstOutGFX></SELECT></P>
+      </td>
+    <td height="200">
+      <P align=right>Received<INPUT language=javascript id=btnClearInGFX onclick="return btnClearInGFX_onclick()" type=button value=Clear name=btnClearInGFX><SELECT id=lstInGFX 
+      style="WIDTH: 100%" size=12 name=lstInGFX></SELECT></P></td>
+  </tr>
+  <tr>
+	 <td height="40" width=320 style="WIDTH: 320px"><DIV id=testUI>
+	</DIV>
+	</td> 
+	 <td><FONT color=white>B</FONT></td> 	 
+	 <td><FONT color=white>C</FONT></td>
+    <td></td>
+  <tr valign="top" bgcolor="#cccccc"> 
+	 <td height="100%" colspan="3">
+      <P align=right>Output <INPUT language=javascript 
+      id=btnClearTestOutputGFX onclick="return btnClearTestOutputGFX_onclick()" type=button 
+      value=Clear name=btnClearTestOutputGFX><SELECT id=lstTestOutputGFX style="WIDTH: 100%" size=12 
+      name=lstTestOutputGFX LANGUAGE=javascript onclick="return lstTestOutputGFX_onclick()"></SELECT>
+      <DIV id=dvActiveLogline>&nbsp;</DIV></P>
+      <P>
+      <DIV id=divFrameGFX><IFRAME id=frmGFX width="100%" height="600"></IFRAME></DIV>
+      </P><!--iframe src="http://gis.test.toris.vpn/gistoris3" width="100%" height="200"></iframe--></td>	
+  </tr>
+</table>
+</body>
+</html>

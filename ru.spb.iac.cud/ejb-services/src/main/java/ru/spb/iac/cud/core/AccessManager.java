@@ -15,12 +15,16 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509CRL;
 import java.security.cert.X509CRLEntry;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap; 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.List;
 import java.util.Properties;
+
+import javaw.lang.Strings;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -43,6 +47,8 @@ import javax.ejb.TransactionAttributeType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.sun.xml.bind.v2.util.QNameMap.Entry;
 
 
 /**
@@ -997,5 +1003,44 @@ public Long getUserIdByLogin(String login) {
 			LOGGER.error("AccessManager:isValidLoginPassword:error:"+e);
 		}
 		return false;
+	}
+
+	@Override // Return RoleID->(AttrName->AttrValue)
+	public Map<String, Map<String, ?>> getClientAppRolesInfo(String client_id, String userLogin,
+			List<String> lstRolesCodes,
+			HashMap<String, String> mapAttrName_FieldName)
+			throws GeneralFailure {
+		if( lstRolesCodes!=null && !lstRolesCodes.isEmpty() &&
+			mapAttrName_FieldName!=null && !mapAttrName_FieldName.isEmpty())
+		try {			
+			ArrayList<String> lstAttrNames = new ArrayList<String>();
+			StringBuilder sbQuery = new StringBuilder("SELECT ROL.SIGN_OBJECT");
+			for (Map.Entry<String,String> e: mapAttrName_FieldName.entrySet()) {
+				sbQuery.append(", ROL.").append(e.getValue());
+				lstAttrNames.add(e.getKey());
+			}			
+			sbQuery.append("  FROM AC_IS_BSS_T app, AC_ROLES_BSS_T rol, AC_USERS_LINK_KNL_T url, AC_USERS_KNL_T usr")
+			.append("   WHERE ROL.UP_IS = APP.ID_SRV")
+			.append("         AND URL.UP_ROLES = ROL.ID_SRV")
+			.append("         AND APP.SIGN_OBJECT = '").append(client_id).append("'")	
+			.append(" AND USR.LOGIN = '").append(userLogin).append("'")
+			.append(" AND URL.UP_USERS =  USR.ID_SRV")
+			.append(" AND ROL.SIGN_OBJECT IN (").append(Strings.join(lstRolesCodes, ",", "'"));			
+			sbQuery.append(") ")
+			.append("   ORDER BY ROL.FULL_");			
+			Map<String, Map<String, ?>> mpResult = new HashMap<String, Map<String,?>>();
+			List<Object[]> lo=em.createNativeQuery(sbQuery.toString()).getResultList();
+			for(Object[] objectArray :lo){
+				int i=0;
+				HashMap<String, Object> hmAttrValues = new HashMap<>();
+				for (String attrName : lstAttrNames)
+					hmAttrValues.put(attrName, objectArray[++i]);
+				mpResult.put(objectArray[0].toString(), hmAttrValues);
+			}
+			return mpResult;
+		} catch(Exception e) {
+			LOGGER.error("AccessManager:getClientAppRolesInfo:error:"+e);
+		}
+		return null;
 	}
 }

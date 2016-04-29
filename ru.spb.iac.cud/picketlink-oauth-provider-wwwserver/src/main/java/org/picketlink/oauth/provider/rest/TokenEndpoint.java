@@ -8,9 +8,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javaw.lang.Strings;
 import javaw.util.Tuple;
@@ -46,10 +49,14 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.picketlink.oauth.provider.model.AuthenticationRequest;
+import org.picketlink.oauth.provider.model.RolesInfoRequest;
+import org.picketlink.oauth.provider.model.RolesInfoRequest.RoleInfo;
+import org.picketlink.oauth.provider.model.RolesInfoResponse;
 import org.picketlink.oauth.provider.model.TokenInfoRequest;
 import org.picketlink.oauth.provider.model.TokenInfoResponse;
 import org.picketlink.oauth.provider.model.TokenRequest;
 import org.picketlink.oauth.provider.model.TokenResponse;
+import org.picketlink.oauth.provider.model.UserAccessToken;
 import org.picketlink.oauth.provider.rest.interceptors.ProtectedByAccessToken;
 import org.picketlink.oauth.provider.rest.interceptors.ProtectedByClientCredentials;
 import org.picketlink.oauth.provider.services.OAuthRegister;
@@ -69,6 +76,7 @@ import ru.spb.iac.cud.core.oauth.TokenInfo.AccessTokenType;
 import ru.spb.iac.cud.core.oauth.TokenInfo.ISetTokenTypeInfo;
 import ru.spb.iac.cud.core.oauth.TokenInfo.InvalidTokenException;
 import ru.spb.iac.cud.core.oauth.TokenInfo.RefreshTokenInfo;
+import ru.spb.iac.cud.core.oauth.TokenInfo.UserTokenInfo;
 import ru.spb.iac.cud.exceptions.GeneralFailure;
 
 import org.picketlink.oauth.provider.model.AccessToken;
@@ -270,7 +278,61 @@ public class TokenEndpoint extends _Endpoint {
     public TokenInfoResponse userTokenInfo(@Context Token.IUserAccessToken accessToken, TokenInfoRequest tokenInfoRequest) // TokenInfoRequest implements ISetTokenTypeInfo
     throws InvalidTokenException, GeneralFailure {		
 		return getTokenInfo(accessToken, tokenInfoRequest.getInfoType());
+	}
+	
+	@ProtectedByAccessToken(Token.IUserAccessToken.class)
+	@POST @Path("UserInfo/Roles")
+    @Consumes(RESTActivation.MediaJSON) @Produces(RESTActivation.MediaJSON)
+    public List<String> userTokenInfoRoles(@Context Token.IUserAccessToken accessToken) // TokenInfoRequest implements ISetTokenTypeInfo
+    throws InvalidTokenException, GeneralFailure {
+		return accessToken.getTokenInfo().userRoles;
 	}	
+	@PermitAll @OPTIONS @Path("UserInfo/Roles") public Response userTokenInfoRolesOpts(@Context HttpServletRequest request) { return getOptionsCORSResponse(null, "Authorization"); }
+	
+	
+	private static boolean isValidNumberList(String chkNumLst) {
+		return chkNumLst.matches("\\s*(\\d+)\\s*(,\\s*(\\d+)\\s*)*");
+	}
+	private static final String rexRoleCode = "(\\S|:)+";
+	private static boolean isValidRolesList(String chkNumLst) {
+		return chkNumLst.matches("\\s*"+rexRoleCode+"\\s*(,\\s*+rexRoleCode+\\s*)*");
+	}
+
+	@ProtectedByAccessToken(Token.IUserAccessToken.class)
+	@POST @Path("UserInfo/RolesInfo")
+	@Consumes(RESTActivation.MediaJSON) @Produces(RESTActivation.MediaJSON)
+	public RolesInfoResponse userTokenInfoRolesInfo(@Context Token.IUserAccessToken accessToken, RolesInfoRequest rolesRequest) 
+	throws InvalidTokenException, GeneralFailure {
+		final String sRolesCodes = rolesRequest.getRole_code();		
+		final List<String> lstRolesCodes;
+		if(Strings.isNullOrEmptyTrim(sRolesCodes))
+			lstRolesCodes = userTokenInfoRoles(accessToken);
+		else if(isValidRolesList(sRolesCodes)) {
+			lstRolesCodes = new ArrayList<>();
+			final Pattern p = Pattern.compile(rexRoleCode);
+			final Matcher m = p.matcher(sRolesCodes);
+			while (m.find()) {
+				lstRolesCodes.add(m.group());
+			}
+		} else {
+			lstRolesCodes = null;
+			OAPE.ValidationException.throwIt("role_code must be one or many role codes separated by comma, or may be empty");
+		}
+		//rolesInfo.
+		final UserTokenInfo tokenInfo = accessToken.getTokenInfo();
+		List<RoleInfo> role_info = rolesRequest.getRole_info();
+		if(role_info==null||role_info.isEmpty()) {
+			role_info = new ArrayList<RolesInfoRequest.RoleInfo>();
+			role_info.add(RoleInfo.name);
+			role_info.add(RoleInfo.description);
+		}		
+		final Map<String, Map<String, ?>> clientAppRolesInfo = aml().getClientAppRolesInfo(tokenInfo.client_id, tokenInfo.userLogin, 
+				lstRolesCodes, RoleInfo.mapAttrName_FieldName(role_info));
+		RolesInfoResponse rolesInfo = new RolesInfoResponse(); 
+		rolesInfo.putAll(clientAppRolesInfo);
+		return rolesInfo; 
+	}
+	@PermitAll @OPTIONS @Path("UserInfo/RolesInfo") public Response userTokenInfoRolesInfoOpts(@Context HttpServletRequest request) { return getOptionsCORSResponse(null, "Authorization"); }	
 	
 	@ProtectedByAccessToken(Token.IAccessToken.class)
 	@POST @Path("info")
@@ -332,14 +394,13 @@ public class TokenEndpoint extends _Endpoint {
 
 	private static Map<String, String> filterJSONAttrs(Map<String, String> attributes) {
 		Map<String, String> fltAttrs = new HashMap<String, String>();
-		for (Entry<String, String>  e : attributes.entrySet())
-			switch(e.getKey().length()) {
-				//case "iat": ""
-			case 3:
-				break;
-			default:
-				fltAttrs.put(e.getKey(), e.getValue());	
-			}
+		for (Entry<String, String>  e : attributes.entrySet()) {
+			final String key = e.getKey();
+			if(key.length()!=3)
+				fltAttrs.put(key, e.getValue());
+		}
+			
+
 		return fltAttrs;
 	}
 

@@ -1,6 +1,7 @@
 package ru.spb.iac.cud.core;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -49,6 +50,10 @@ public interface AccessManagerLocal {
 			Date date2, int rowsCount, long rowStartOffset, long filterUser) throws GeneralFailure;
 
 	public List<String> getUserRolesArm(String codeSys, String login) throws GeneralFailure;
+	public Map<String, Map<String, ?>> getClientAppRolesInfo(String client_id, String userLogin,
+			List<String> lstRolesCodes,
+			HashMap<String, String> mapAttrName_FieldName)
+			throws GeneralFailure;
 	
 	public Map<String, Object> getAppUserAttrs(String login);
 

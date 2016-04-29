@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 // Convenient methods for String manipulation
@@ -165,4 +166,33 @@ public abstract class Strings {
 		String st = s.trim();			
 		return  st.length()==0 ? defaultValue: st;
 	}
+	public static String join(List<String> strList) {
+		return join(strList, ",");
+	}
+	public static String join(List<String> strList, String delim) {
+		StringBuilder sbJoin = new StringBuilder();
+		Iterator<String> itStrLst = strList.iterator();
+		if(itStrLst.hasNext()) {
+			sbJoin.append(itStrLst.next());
+			while (itStrLst.hasNext())
+				sbJoin.append(delim).append(itStrLst.next());
+		}
+		return sbJoin.toString();
+	}	
+	public static String join(List<String> strList, String delim, String wrap) {
+		return join(strList, delim, wrap, wrap);
+	}
+	public static String join(List<String> strList, String delim, String prefix, String suffix) {
+		StringBuilder sbJoin = new StringBuilder();
+		Iterator<String> itStrLst = strList.iterator();
+		if(itStrLst.hasNext()) {
+			sbJoin.append(prefix).append(itStrLst.next()).append(suffix);
+			while (itStrLst.hasNext())
+				sbJoin.append(delim).append(prefix).append(itStrLst.next()).append(suffix);
+		}
+		return sbJoin.toString();
+	}	
+
+
+
 }

@@ -348,32 +348,23 @@
 										status="statusCompOrg" usingSuggestObjects="true"
 										for="statesinput"
 										suggestionAction="#{clOrgManager.autocomplete}" var="cap"
-										fetchValue="#{cap.full}" id="suggestion" minChars="3"
+										fetchValue="#{cap.name}" id="suggestion" minChars="1"
 										ajaxSingle="true"
-										onselect="invokeClOrgSelect(#{rich:component('suggestion')}.getSelectedItems().pluck('signObject'));"
+										onselect="invokeClOrgSelect(#{rich:component('suggestion')}.getSelectedItems().pluck('cod'));"
 										nothingLabel="Нет данных"
 										ignoreDupResponses="true">
 										<f:param name="onCreate" value="1" />
 										<f:param name="remoteAudit" value="clOrgSuggestFact" />
-										<!--h:column>
-                <h:outputText value="#{cap.signObject}" />
-            </h:column-->
 										<h:column>
-											<h:outputText value="#{cap.full}" />
+											<h:outputText value="#{cap.name}" />
 										</h:column>
-										<!--a4j:support event="onselect" ajaxSingle="true" reRender="outCBmpUsrCrt">
-              <f:param name="onCreate" value="1"/> 
-              <f:param name="remoteAudit" value="clOrgSelectFact"/>
-              <f:param name="signObject" value="#{cap.signObject}"/>
-              <f:setPropertyActionListener value="#{cap.label}" target="#{bean.property1}" />
-            </a4j:support-->
-									</rich:suggestionbox>
+		</rich:suggestionbox>
 								</a4j:region></td>
 						</tr>
 						<tr>
 							<td colspan="2"><a4j:outputPanel id="outCBmpOrgHiddenCrt">
 
-									<h:inputHidden id="clorgso" value="#{clOrgBean.signObject}" />
+									<h:inputHidden id="clorgso" value="#{clOrgBeanIogv.cod}" />
 
 									<h:panelGroup rendered="#{param['signObject']!=null}">
 										<table style="width: 99%;">
@@ -381,9 +372,8 @@
 												<td width="100px" height="20px" valign="top">
 												<h:outputText value="Выбрана организация" /></td>
 												<td>
-													<!--h:panelGrid columns="2" border="0" cellpadding="0" cellspacing="0">
-                <h:outputText value="Название: " /--> <h:outputText
-														value="#{clOrgBean.full}" /> <!--/h:panelGrid-->
+													 <h:outputText
+														value="#{clOrgBeanIogv.name}" /> <!--/h:panelGrid-->
 												</td>
 											</tr>
 										</table>
@@ -391,24 +381,21 @@
 								</a4j:outputPanel></td>
 						</tr>
 
-						<tr>
-							<td width="100px" height="20px" valign="top" class="requiredfield">
-								<h:outputText value="Пользователь" /></td>
+						<!--tr>
+							<td width="100px" height="20px" valign="top"><h:outputText
+									value="Пользователь" /></td>
 							<td><h:selectOneRadio id="stiu" layout="lineDirection"
 									value="1" onchange="/*invokeTypeUserInput(this.value);*/"
 									onclick="invokeTypeUserInput(this.value);">
 									<f:selectItem itemLabel="из справочника" itemValue="1" />
 									<f:selectItem itemLabel="ручной ввод" itemValue="2" />
 								</h:selectOneRadio></td>
-						</tr>
+						</tr-->
 						<tr>
 							<td colspan="2"><a4j:outputPanel id="outCBmpUsrFIOSectCrt">
 
-									<h:panelGroup
+									<!--h:panelGroup
 										rendered="#{(param['remoteAudit']!='CrtFact' and param['typeUserInput']!='2') or (param['remoteAudit']=='CrtFact' and param['CBformCrt:cluso']!=null)}">
-										<!--/table-->
-										<!--rich:tabPanel switchType="client" style="margin-bottom:10px;">
-          <rich:tab label="Справочник" style="padding-top:10px;"-->
 										<table style="width: 99%;">
 											<tr>
 												<td width="100px" height="20px" valign="top"><h:outputText value="ФИО" /></td>
@@ -448,15 +435,11 @@
 																	<f:param name="remoteAudit" value="clUsrSuggestFact" />
 																	<f:param name="signObject"
 																		value="#{param['signObject']}" />
-																	<!--h:column>
-                <h:graphicImage value="#{cap.stateFlag}" />
-            </h:column-->
+
 																	<h:column>
 																		<h:outputText value="#{cap.fio}" />
 																	</h:column>
-																	<!--a4j:support event="onselect" action="#{bean.action}">
-              <f:setPropertyActionListener value="#{cap.label}" target="#{bean.property1}" />
-           </a4j:support-->
+
 																</rich:suggestionbox>
 															</a4j:region>
 														</h:panelGroup>
@@ -484,7 +467,7 @@
 																	<td width="100px" height="20px" valign="top"><h:outputText
 																			value="Выбран пользователь" /></td>
 																	<td>
-																		<!--h:outputText value="#{cap.fio}" /--> <h:panelGrid
+																		 <h:panelGrid
 																			columns="2" border="0" cellpadding="0"
 																			cellspacing="0">
 																			<h:outputText value="ФИО: " />
@@ -505,12 +488,11 @@
 													</a4j:outputPanel></td>
 											</tr>
 										</table>
-									</h:panelGroup>
-									<h:panelGroup
-										rendered="#{(param['remoteAudit']!='CrtFact' and param['typeUserInput']=='2') or (param['remoteAudit']=='CrtFact' and param['CBformCrt:cluso']==null)}">
-										<!--/rich:tab>
-          <rich:tab label="Произвольное" style="padding-top:10px;"-->
-										<table style="width: 90%;">
+									</h:panelGroup-->
+									<!--h:panelGroup
+										rendered="#{(param['remoteAudit']!='CrtFact' and param['typeUserInput']=='2') or (param['remoteAudit']=='CrtFact' and param['CBformCrt:cluso']==null)}"-->
+                                    <h:panelGroup>
+										 <table style="width: 90%;">
 											<tr>
 												<td width="100px" height="20px"><h:outputText
 														value="Подразделение" /></td>
@@ -559,9 +541,7 @@
 								</a4j:outputPanel></td>
 						</tr>
 					</table>
-					<!--/rich:tab>
-           
-            </rich:tabPanel-->
+	
 					<table style="width: 90%;">
 						<!--tr>
             <td width="100px" height="20px">

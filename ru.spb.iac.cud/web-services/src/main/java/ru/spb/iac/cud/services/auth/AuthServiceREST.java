@@ -34,8 +34,10 @@ import ru.spb.iac.cud.exceptions.InvalidCredentials;
 import ru.spb.iac.cud.idp.core.access.IDPAccessManagerLocal;
 import ru.spb.iac.cud.items.AuthMode;
 
+// originally erroroneus name chosen, so its contents should be in AuthService.java
+
 @Path("/auth")
-public class AuthService {
+public class AuthServiceREST {
 	private static final String JSON_UTF8 = MediaType.APPLICATION_JSON + "; charset=UTF-8";
 	private static final String HTML_UTF8 = MediaType.TEXT_HTML + "; charset=UTF-8";
 	

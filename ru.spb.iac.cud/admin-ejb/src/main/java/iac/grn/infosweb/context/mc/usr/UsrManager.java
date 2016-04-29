@@ -11,6 +11,7 @@ import iac.cud.infosweb.entity.AcRole;
 import iac.cud.infosweb.entity.AcUser;
 import iac.cud.infosweb.entity.AcUsersCertBssT;
 import iac.cud.infosweb.entity.GroupUsersKnlT;
+import iac.cud.infosweb.entity.Iogv;
 import iac.cud.infosweb.entity.IspBssT;
 import iac.cud.infosweb.entity.LinkAdminUserSys;
 import iac.cud.infosweb.entity.LinkGroupUsersUsersKnlT;
@@ -353,7 +354,8 @@ import org.slf4j.LoggerFactory;
 	   
 	   IspBssT clUsrBean = getConversationItem("clUsrBean");
 	 
-	   IspBssT clOrgBean = getConversationItem("clOrgBean");
+	   Iogv clOrgBeanIogv = getConversationItem("clOrgBeanIogv");
+
 	   
 	   if(usrBeanCrt==null){
 		   return;
@@ -383,13 +385,14 @@ import org.slf4j.LoggerFactory;
 	    	
 	    	 usrBeanCrt.setUpSignUser(clUsrBean.getSignObject());
 	    	    	  
-	    	  //usrBeanCrt.setUpSign(clUsrBean.getSignObject().substring(0,3)+"00000");
-	    	 usrBeanCrt.setUpSign(clOrgBean.getSignObject());	//изменение для учёта отделов как организаций     	 
+	    	  usrBeanCrt.setUpSignIogv(clUsrBean.getSignObject().substring(0,3)+"00000");
+	    	 //изменение для учёта отделов как организаций 
+	    	 //usrBeanCrt.setUpSign(clOrgBean.getSignObject());
 	    	  
 	       }else{
 	       	  log.info("usrManager:addUsr:03");
 	    	   
-	    	  usrBeanCrt.setUpSign(clOrgBean.getSignObject());
+	    	  usrBeanCrt.setUpSignIogv(clOrgBeanIogv.getCod());
 	       }
 	    	 
 	    	 log.info("usrManager:addUsr:04");
@@ -888,9 +891,9 @@ import org.slf4j.LoggerFactory;
 				       .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.POSITION, CL_USR_FULL.POSITION)t1_pos, ")
 				       .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.SNILS, CL_USR_FULL.SNILS)t1_snils, ")
 				       .append("decode(AU_FULL.UP_SIGN_USER, null, AU_FULL.DEPARTMENT, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.FULL_)) t1_dep_name, ")
-				       .append("t1.CL_ORG_CODE t1_org_code, CL_ORG_FULL.FULL_ t1_org_name, ")
-				       .append("CL_ORG_FULL.PREFIX || decode(CL_ORG_FULL.HOUSE, null, null, ','  ||CL_ORG_FULL.HOUSE  ) t1_org_adr, ")
-				       .append("CL_ORG_FULL.PHONE t1_org_tel, ")
+					  .append("t1.CL_ORG_CODE t1_org_code, CL_ORG_FULL.name t1_org_name, ")
+					  .append("cl_org_adr_full.NAME_ADDR t1_org_adr, ")
+				       .append("'' t1_org_tel, ")
 				       .append("to_char(AU_FULL.START_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_start, ")
 				       .append("to_char(AU_FULL.END_ACCOUNT, 'DD.MM.YY HH24:MI:SS') t1_end, ")
 				       .append("AU_FULL.STATUS t1_status, ")
@@ -903,11 +906,11 @@ import org.slf4j.LoggerFactory;
 				        .append("decode(AU_FULL.UP_SIGN_USER, null, null, decode(substr(CL_DEP_FULL.sign_object,4,2), '00', null, CL_DEP_FULL.STATUS)) t1_dep_status, ") 
 				        .append("AU_FULL.UP_BINDING t1_iogv_bind_type ")
 				     .append("from ")
-				     .append("(select max(CL_ORG.ID_SRV) CL_ORG_ID,  CL_ORG.SIGN_OBJECT  CL_ORG_CODE ")
-				     .append("from ISP_BSS_T cl_org, ")
+					.append("(select max(CL_ORG.ID) CL_ORG_ID,  CL_ORG.cod  CL_ORG_CODE ")
+					.append("from IOGV cl_org, ")
 				     .append("AC_USERS_KNL_T au ")
-				     .append("where AU.UP_SIGN = CL_ORG.SIGN_OBJECT ")
-				     .append("group by CL_ORG.SIGN_OBJECT) t1, ")
+					.append("where AU.UP_SIGN_IOGV = CL_ORG.cod ")
+					.append("group by CL_ORG.cod) t1, ")
 				     .append("(select max(CL_usr.ID_SRV) CL_USR_ID,  CL_USR.SIGN_OBJECT  CL_USR_CODE ")
 				     .append("from ISP_BSS_T cl_usr, ")
 				     .append("AC_USERS_KNL_T au ")
@@ -918,20 +921,23 @@ import org.slf4j.LoggerFactory;
 				     .append("AC_USERS_KNL_T au ")
 				     .append("where substr(au.UP_SIGN_USER,1,5)||'000'  =cl_dep.SIGN_OBJECT(+) ")
 				     .append("group by CL_DEP.SIGN_OBJECT) t3, ")
-				     .append("ISP_BSS_T cl_org_full, ")
+					 .append("IOGV cl_org_full, ")
 				     .append("ISP_BSS_T cl_usr_full, ")
 				     .append("ISP_BSS_T cl_dep_full, ")
 				     .append("AC_USERS_KNL_T au_full, ")
 				     .append("AC_USERS_KNL_T usr_crt, ")
-				     .append("AC_USERS_KNL_T usr_upd ")
-				     .append("where cl_org_full.ID_SRV= CL_ORG_ID ")
+				     .append("AC_USERS_KNL_T usr_upd, ")
+					 .append("ADDR_IOGV cl_org_adr_full ")
+				     .append("where cl_org_full.ID= CL_ORG_ID ")
 				     .append("and cl_usr_full.ID_SRV(+)=CL_USR_ID ")
 				     .append("and cl_DEP_full.ID_SRV(+)=CL_DEP_ID ")
-				     .append("and au_full.UP_SIGN = CL_ORG_CODE ")
+					 .append("and au_full.UP_SIGN_IOGV = CL_ORG_CODE ")
 				     .append("and au_full.UP_SIGN_USER  =  CL_USR_CODE(+) ")
 				     .append("and substr(au_full.UP_SIGN_USER,1,5)||'000'  =  CL_DEP_CODE(+) ")
 				     .append("and au_full.CREATOR=USR_CRT.ID_SRV ")
 				     .append("and au_full.MODIFICATOR=USR_UPD.ID_SRV(+) ") 
+                     .append("and cl_org_adr_full.COD_IOGV(+) =  CL_ORG_CODE ")
+                		 .append("and cl_org_adr_full.status(+) = 'A' ")
 				     .append("and au_full.ID_SRV=? ")
 				     .append(")t1 ")
 		   .toString())

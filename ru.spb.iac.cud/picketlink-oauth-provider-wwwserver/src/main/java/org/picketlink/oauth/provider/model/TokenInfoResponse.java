@@ -21,7 +21,7 @@ public class TokenInfoResponse {
 	}
 	
 	@JsonSerialize public static class JSON extends TokenInfoResponse {
-		private Map<String, String> token_info;
+		private Map<String, ?> token_info; //String
 		@Override public String toString() { 
 			final ObjectMapper objMapper = new ObjectMapper();
 			String strVal = "";
@@ -30,7 +30,7 @@ public class TokenInfoResponse {
 			} catch (Exception e) { }
 			return strVal; 
 		}
-		public Map<String, String> getToken_info() { return token_info; }
-		public void setToken_info(Map<String, String> token_info) { this.token_info = token_info; }
+		public Map<String, ?> getToken_info() { return token_info; }
+		public void setToken_info(Map<String, ?> token_info) { this.token_info = token_info; }
 	}	
 }

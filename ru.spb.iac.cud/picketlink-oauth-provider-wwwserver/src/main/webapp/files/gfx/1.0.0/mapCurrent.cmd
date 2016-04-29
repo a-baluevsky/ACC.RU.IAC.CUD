@@ -8,6 +8,9 @@ SET ntfslink="C:\WINDOWS\ntfslink.exe"
 
 ECHO %PATHVER% --- %PATHCUR%
 
+%ntfslink%  "%PATHVER%lib" "%PATHCUR%lib"
+%ntfslink%  "%PATHVER%tester" "%PATHCUR%tester"
+
 %ntfslink%  "%PATHVER%async%VERSUF%.js" "%PATHCUR%async.js"
 %ntfslink%  "%PATHVER%CookieFX%VERSUF%.js" "%PATHCUR%CookieFX.js"
 %ntfslink%  "%PATHVER%GaliaJSFX%VERSUF%.js" "%PATHCUR%GaliaJSFX.js"
@@ -16,5 +19,7 @@ ECHO %PATHVER% --- %PATHCUR%
 %ntfslink%  "%PATHVER%GaliaJSFX_ClientAppUser%VERSUF%.js" "%PATHCUR%GaliaJSFX_ClientAppUser.js"
 %ntfslink%  "%PATHVER%GaliaJSFX_OAuthProviderREST%VERSUF%.js" "%PATHCUR%GaliaJSFX_OAuthProviderREST.js"
 %ntfslink%  "%PATHVER%HttpClient%VERSUF%.js" "%PATHCUR%HttpClient.js"
+
+
 
 PAUSE

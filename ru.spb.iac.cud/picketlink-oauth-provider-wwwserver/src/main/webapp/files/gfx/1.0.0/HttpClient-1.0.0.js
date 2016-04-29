@@ -122,7 +122,34 @@ define(['underscore_plus',  'CookieFX'], function (_, _COOKIE) {
 				return callbackErrResult('HttpClient: invalid contentType or dataType');
 		},
 		getData: function(args, callbackErrResult) {
-			return this.ajax_exec(args.url, false, 'JSON', '', 'GET', args.headers, callbackErrResult);
+			var url = args.url;
+			var postedData = args.postedData;
+			var dataFormat = args.dataFormat;
+			
+			var contentType = LARR_CONTENTTYPES[dataFormat];
+			
+			var dataType, data;
+			switch(dataFormat) {
+				case 'JSON':
+					dataType = 'json';
+					data = JSON.stringify(postedData);
+					break;
+				case 'TEXT':
+				    dataType = 'text';
+				    data = postedData;
+				    break;
+				    	
+				case 'FORM':
+					debugger;
+					alert('HttpClient: dataFormat not implemented: '+dataFormat);
+					dataType = 'html';
+					data = postedData;
+					break;			    
+				default:
+					alert('HttpClient: unknown dataFormat: '+dataFormat);
+					debugger;
+			}		
+			return this.ajax_exec(url, contentType, dataType, data, 'GET', args.headers, callbackErrResult);
 		},
 		getTextData:  function(args, callbackErrResult) {
 		    // debugger;

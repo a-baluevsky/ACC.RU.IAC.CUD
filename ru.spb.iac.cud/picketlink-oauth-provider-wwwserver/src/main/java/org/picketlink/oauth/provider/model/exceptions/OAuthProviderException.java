@@ -89,7 +89,9 @@ public class OAuthProviderException extends GeneralFailure {
 		unsupported_grant_type
 			("The authorization grant type is not supported by the authorization server."),
 		unsupported_token_info_type
-			("The token information type is not supported by the authorization server.")			
+			("The token information type is not supported by the authorization server."),
+		invalid_info_type
+			("Requested data type/format is not supported or not implemented yet.")
 		,//ResourceResponse
 		expired_token
 			("Token expired"),
@@ -98,7 +100,9 @@ public class OAuthProviderException extends GeneralFailure {
 		insufficient_scope_openid
 			("The request requires higher privileges than provided by the access token. openid MUST be in scope!"),			
 		invalid_token
-			("The access token provided is expired, revoked, malformed, or invalid for other reasons.")
+			("The access token provided is expired, revoked, malformed, or invalid for other reasons."), 
+		validation_failed
+			("Passed arguments, user input, or action request is malformed, out of allowed range, or invalid for other reasons.")
 		;
 		private String error_description;
 		private OAuthProviderExceptionCode(String error_description) { this.error_description = error_description; }
@@ -126,6 +130,9 @@ public class OAuthProviderException extends GeneralFailure {
 			}),
 			ServerException(new OAuthProviderException() {
 				@Override public void throwIt(String msg) throws GeneralFailure { throwIt(OAuthProviderExceptionCode.server_error.toString(), msg, null); }
+			}),
+			ValidationException(new OAuthProviderException() {
+				@Override public void throwIt(String msg) throws GeneralFailure { throwIt(OAuthProviderExceptionCode.validation_failed.toString(), msg, null); }
 			})
 		;
 		

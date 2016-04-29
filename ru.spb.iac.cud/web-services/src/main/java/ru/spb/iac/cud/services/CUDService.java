@@ -18,15 +18,13 @@ import org.w3c.dom.Element;
 import ru.spb.iac.cud.core.util.SAML_Assertion;
 import ru.spb.iac.cud.core.util.SAML_Document;
 import ru.spb.iac.cud.exceptions.GeneralFailure;
-import ru.spb.iac.cud.services.audit.AuditServiceImpl;
 
 import com.sun.xml.messaging.saaj.soap.ver1_2.HeaderElement1_2Impl;
 
 // base class for all ru.spb.iac.cud services 
 public class CUDService {
+	
 	private static final Logger LOGGER = LoggerFactory.getLogger(CUDService.class);
-    @Resource(name="wsContext")
-    protected WebServiceContext wsContext;
 
 	public static SAML_Assertion LoadAssertionFromMessageContext(MessageContext context) throws Exception {
 	   	ArrayList<SoapHeader> hl = (ArrayList<SoapHeader>) context.get(Header.HEADER_LIST);
@@ -42,22 +40,29 @@ public class CUDService {
 		throw new Exception( "getSamlAssertionFromSoapHeader: no SOAP header with saml:Assertion!");    	 
     }
 	
-    protected HttpServletRequest getHttpServletRequest() {
-        MessageContext context = wsContext.getMessageContext();
-        return (HttpServletRequest)context.get(MessageContext.SERVLET_REQUEST);   	 
-	 }
-     
-     protected String getIPAddress() {
-    	return getHttpServletRequest().getRemoteAddr(); 
-	 }
-     
-     protected String getIDSystem(){
-        String idSystem = (String)getHttpServletRequest().getSession().getAttribute("cud_sts_principal"); 
-        LOGGER.debug("getIDSystem:"+idSystem);
-	    return idSystem;
-	 }
-     
-     protected Long getIDUser() throws GeneralFailure{
+	private static class CUDServiceContext implements ICUDServiceContext {
+		@Resource(name="wsContext")
+		protected WebServiceContext wsContext;
+		
+		@Override
+		public HttpServletRequest getHttpServletRequest() throws GeneralFailure {
+	        MessageContext context = wsContext.getMessageContext();
+	        return (HttpServletRequest)context.get(MessageContext.SERVLET_REQUEST); 
+		}
+		@Override
+		public String getIPAddress() throws GeneralFailure {
+			return getHttpServletRequest().getRemoteAddr(); 
+		}
+
+		@Override
+		public String getIDSystem() throws GeneralFailure {
+	        String idSystem = (String)getHttpServletRequest().getSession().getAttribute("cud_sts_principal"); 
+	        LOGGER.debug("getIDSystem:"+idSystem);
+		    return idSystem;
+	    }
+
+		@Override
+		public Long getIDUser() throws GeneralFailure {
 	        HttpSession session = getHttpServletRequest().getSession();
 	        Long idUser = null;
 	        try{
@@ -70,8 +75,6 @@ public class CUDService {
 	        	//поэтому при извлечении из сессии можно было делать привидение к Long
 	        	//сейчас же мы кладём в сессиию ид пользователя из текстового поля запроса
 	        	//Long i/dUser = (Long/request.getSe/ssion().getAttr/ibute("user_id_principal"); 
-	        
-	        	
 	        	if(session.getAttribute("user_id_principal")!=null&&
 	        			!session.getAttribute("user_id_principal").toString().isEmpty()){
 	        	
@@ -86,7 +89,9 @@ public class CUDService {
 	        
 	        }catch(Exception e){
 	        	throw new GeneralFailure("USER UID IS NOT CORRECT");
-	        }
-	 }
-     
+	        }			
+		}
+	}
+	// See "stackOvflw: 12294761 Spring injection inner class" to do it properly!
+	protected ICUDServiceContext serviceContext = new CUDServiceContext();
 }

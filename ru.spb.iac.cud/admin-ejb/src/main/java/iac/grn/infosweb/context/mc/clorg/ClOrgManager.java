@@ -7,6 +7,7 @@ import java.util.List;
 import iac.cud.infosweb.dataitems.BaseItem;
 import iac.cud.infosweb.entity.AcLegalEntityType;
 import iac.cud.infosweb.entity.AcUser;
+import iac.cud.infosweb.entity.Iogv;
 import iac.cud.infosweb.entity.IspBssT;
 import iac.grn.serviceitems.BaseTableItem;
 import javaw.util.SerializableList;
@@ -70,6 +71,8 @@ import org.jboss.seam.log.Log;
 	private /*Serializable*/ List<AcLegalEntityType> listLET = null;
 	
 	private /*Serializable*/ List<IspBssT> listOrg = null;
+	
+	private List<Iogv> listOrgIogv = null;
 	
  	public List<BaseItem> getAuditList(int firstRow, int numberOfRows){
 	  String remoteAudit = FacesContext.getCurrentInstance().getExternalContext()
@@ -341,44 +344,44 @@ import org.jboss.seam.log.Log;
    }
 
     
-    public List<IspBssT> autocomplete(Object suggest) throws Exception{
+    public List<Iogv> autocomplete(Object suggest) throws Exception{
     	String pref = (String)suggest;
     	
 	    log.info("autocomplete:01:pref:"+pref);
 	    try {
 	    	
-	    	if(listOrg==null){
+	    	if(listOrgIogv==null){
 	    		
 	    		log.info("autocomplete:02");
 	    		
 	    		AcUser  cau = getSessionItem("currentUser");
 	    		boolean bFltr = pref.length()<3;
 	    		StringBuilder sbRequest = new StringBuilder("select o");
-	    		sbRequest.append(" from IspBssT o where o.status='A' ");
+	    		sbRequest.append(" from Iogv o where o.status='A' ");
 	    		if(bFltr) {
 		    		sbRequest.append(" AND ROWNUM < 100 ");
 	    		}
 	    		
 	    		sbRequest	
-	    		//.append("and o.signObject like '%00000' ")
-	    		.append("and o.signObject like '%000' " ) //изменение для учёта отделов как организаций
-	    		.append("and ( 1 = :orgAccFlag  or o.signObject = :orgCode) ")	    				
-	    		.append("and upper(o.full) like upper(:pref) ") 
-	    		.append("order by o.full ");
+	    		.append("and ( 1 = :orgAccFlag  or o.cod = :orgCode) ")	    				
+	    			//	"and o.full like '"+pref+"%' " +
+	    		    //"and (upper(o.name) like upper(:pref) or upper(o.sname) like upper(:pref)) " +
+	    		.append("and upper(o.name) like upper(:pref) ") 
+	    		.append("order by o.name ");
 	    		
-	    		listOrg=entityManager.createQuery(sbRequest.toString())
+	    		listOrgIogv=entityManager.createQuery(sbRequest.toString())
 	    				.setParameter("pref", "%"+pref+"%")
 	    				.setParameter("orgAccFlag", cau.getIsAccOrgManagerValue() ? -1 : 1)
 	    				.setParameter("orgCode", cau.getUpSign()!=null? cau.getUpSign():"")
 	    				.getResultList();
 	    		
-	    		log.info("autocomplete:03:size:"+listOrg.size());
+	    		//log.info("autocomplete:03:size:"+listOrgIogv.size());
 	    	}
 	     } catch (Exception e) {
 	    	 log.error("autocomplete:ERROR:"+e);
 	         throw e;
 	     }
-	    return listOrg;
+	    return listOrgIogv;
    }
    public int getConnectError(){
 	   return connectError;
@@ -456,14 +459,14 @@ import org.jboss.seam.log.Log;
 				        .get("signObject");
 		     log.info("forViewAutocomplete:signObject:"+signObject);
 		     if(signObject!=null){
-		    	 IspBssT ao = (IspBssT)entityManager.createQuery(
-		    				"select o from IspBssT o where o.status='A' " 
-		    				+ "and o.signObject = :signObject ")
+		    	 Iogv ao = (Iogv)entityManager.createQuery(
+		    				"select o from Iogv o where o.status='A' " +
+		    				"and o.cod = :signObject ")
 		    		    	.setParameter("signObject", signObject)
 		    		    	.getSingleResult();
 		    	
 		    	 
-		    	 Contexts.getEventContext().set("clOrgBean", ao);
+		    	 Contexts.getEventContext().set("clOrgBeanIogv", ao);
 		   	 }
 		   }catch(Exception e){
 			   log.error("forViewAutocomplete:Error:"+e);

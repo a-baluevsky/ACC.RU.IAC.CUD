@@ -3,13 +3,13 @@ define(['underscore_plus', 'GaliaJSFX_OAuthProviderREST'], function (_, OAuthPro
 	
 	// ClientAppUser.inc.php
 	// async
-	function new_ClientAppUser(id, providerUrl, loggerTest, loggerSend, loggerRecv) {
+	function new_ClientAppUser(login, providerUrl, loggerTest, loggerSend, loggerRecv) {
 		var oapr = OAuthProviderREST.new_OAuthProviderREST(providerUrl, loggerTest, loggerSend, loggerRecv);
-		return new ClientAppUser(id, oapr, loggerTest);
+		return new ClientAppUser(login, oapr, loggerTest);
 	}
 	
 	// sync
-	function ClientAppUser(id, OAuthProviderREST, loggerTest) {
+	function ClientAppUser(login, OAuthProviderREST, loggerTest) {
 		// inner (closure) functions
 		function logTest(txtLine) {
 			if(loggerTest)
@@ -24,7 +24,7 @@ define(['underscore_plus', 'GaliaJSFX_OAuthProviderREST'], function (_, OAuthPro
 			    switch(status) {
 				    case 200:
 					    //if(_.isArray(body)) {
-					     this.Id = body.userId;
+					     this.Login = body.userId;
 					     this.IsLoggedIn = body.loggedIn? true:false;
 						 
 					     this.AuthToken = body.token;
@@ -51,11 +51,11 @@ define(['underscore_plus', 'GaliaJSFX_OAuthProviderREST'], function (_, OAuthPro
 				    result.status = 200;
 					_this._refresh_logon_state(result);
 					if(_this.IsLoggedIn)
-						callbackErrResult(null, _this.Id);
+						callbackErrResult(null, _this.Login);
 					else
 						callbackErrResult('Error logging in!');
 				}
-			}, this.Id, password);
+			}, this.Login, password);
 		}
 
 		this.Logout = function(callbackErrResult) {
@@ -72,21 +72,31 @@ define(['underscore_plus', 'GaliaJSFX_OAuthProviderREST'], function (_, OAuthPro
 			}, this.AuthToken);
 		}
 		
+
 		this.getUserInfo = function(callbackErrResult) {
 		    var _this=this;
 		    var appRoles = {testSys: 'admin', cud: 'user'};
 		    callbackErrResult(null, {appRoles: appRoles});
 		}
 
+		// access_token & refresh_token handling
+		// this is specific for clientApp & user (different from clientApp's access_token & refresh_token
+		this.refresh_token = null;
+		this.access_token = null;
+		this.refreshUserAccessToken = function (args, callbackErrResult) {
+			debugger;	// TODO
+		}			
+
 		// init
 		this.m_OAuthProviderREST = OAuthProviderREST;
 		this.AuthToken;
-		this.Id = id;
+		this.Login = login;
 		this.UserInfo = [];
 		this.FullName = '';
 		this.Roles = [];
-		logTest('ClientAppUser created: id='+id);
+		logTest('ClientAppUser created: login='+login);
 
+		
 	}	
 	
 	

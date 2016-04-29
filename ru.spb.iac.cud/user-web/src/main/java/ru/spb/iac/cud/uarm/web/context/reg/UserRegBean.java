@@ -91,7 +91,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
         LOGGER.debug("UserRegBean:step1:02:"+version);
         
         HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-    	String context_url= /*request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+*/ request.getContextPath();
+    	String context_url=request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath();
 		
     	userRegEJB.step1(this.userEmail, context_url);
         

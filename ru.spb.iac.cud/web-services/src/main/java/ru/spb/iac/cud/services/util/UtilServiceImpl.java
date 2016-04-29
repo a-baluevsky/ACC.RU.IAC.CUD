@@ -24,18 +24,17 @@ import ru.spb.iac.cud.items.GroupsData;
 import ru.spb.iac.cud.items.Resource;
 import ru.spb.iac.cud.items.Role;
 import ru.spb.iac.cud.items.UsersData;
+import ru.spb.iac.cud.services.CUDService;
 
 @WebService(targetNamespace = UtilServiceImpl.NS)
 @HandlerChain(file = "/handlers.xml")
 @BindingType(SOAPBinding.SOAP12HTTP_BINDING)
- public class UtilServiceImpl implements UtilService {
+ public class UtilServiceImpl extends CUDService implements UtilService {
 
 	public static final String NS = "http://util.services.cud.iac.spb.ru/";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UtilServiceImpl.class);
 	
-	@javax.annotation.Resource(name = "wsContext")
-	private WebServiceContext wsContext;
 
 	@WebMethod
 	@WebResult(targetNamespace = NS)
@@ -52,9 +51,9 @@ import ru.spb.iac.cud.items.UsersData;
 		LOGGER.debug("users_data");
 		
 		
-		return (new ContextUtilManager()).users_data(getIDSystem(), uidsUsers,
+		return (new ContextUtilManager()).users_data(serviceContext.getIDSystem(), uidsUsers,
 				category, rolesCodes, groupsCodes, startRow, countRow, settings,
-				getIDUser(), getIPAddress());
+				serviceContext.getIDUser(), serviceContext.getIPAddress());
 
 	}
 
@@ -64,8 +63,8 @@ import ru.spb.iac.cud.items.UsersData;
 		
 		LOGGER.debug("sys_roles");
 		
-		return (new ContextSyncManager()).is_roles(getIDSystem(), getIDUser(),
-				getIPAddress());
+		return (new ContextSyncManager()).is_roles(serviceContext.getIDSystem(), serviceContext.getIDUser(),
+				serviceContext.getIPAddress());
 	}
 
 	@WebResult(targetNamespace = NS)
@@ -73,8 +72,8 @@ import ru.spb.iac.cud.items.UsersData;
 		
 		LOGGER.debug("sys_functions");
 		
-		return (new ContextSyncManager()).is_functions(getIDSystem(),
-				getIDUser(), getIPAddress());
+		return (new ContextSyncManager()).is_functions(serviceContext.getIDSystem(),
+				serviceContext.getIDUser(), serviceContext.getIPAddress());
 
 	}
 
@@ -91,9 +90,9 @@ import ru.spb.iac.cud.items.UsersData;
 
 		LOGGER.debug("groups_data");
 		
-		return (new ContextUtilManager()).groups_data(getIDSystem(),
+		return (new ContextUtilManager()).groups_data(serviceContext.getIDSystem(),
 				groupsCodes, category, rolesCodes, startRow, countRow, null,
-				getIDUser(), getIPAddress());
+				serviceContext.getIDUser(), serviceContext.getIPAddress());
 	}
 
 	
@@ -106,9 +105,9 @@ import ru.spb.iac.cud.items.UsersData;
 
 		LOGGER.debug("resources_data");
 		
-		return (new ContextUtilManager()).resources_data_subsys(getIDSystem(), 
+		return (new ContextUtilManager()).resources_data_subsys(serviceContext.getIDSystem(), 
 				
-				category, getIDUser(), getIPAddress());
+				category, serviceContext.getIDUser(), serviceContext.getIPAddress());
 
 	}
 
@@ -118,69 +117,8 @@ import ru.spb.iac.cud.items.UsersData;
 		
 		LOGGER.debug("roles_data");
 		
-		return (new ContextUtilManager()).roles_data(getIDSystem(), 
-				category, getIDUser(), getIPAddress());
+		return (new ContextUtilManager()).roles_data(serviceContext.getIDSystem(), 
+				category, serviceContext.getIDUser(), serviceContext.getIPAddress());
 	}
 
-	
-	private String getIPAddress() {
-		MessageContext context = wsContext.getMessageContext();
-		HttpServletRequest request = (HttpServletRequest) context
-				.get(MessageContext.SERVLET_REQUEST);
-
-		String ipAddress = request.getRemoteAddr();
-		return ipAddress;
-	}
-
-	private String getIDSystem() {
-		MessageContext context = wsContext.getMessageContext();
-		HttpServletRequest request = (HttpServletRequest) context
-				.get(MessageContext.SERVLET_REQUEST);
-
-		String idSystem = (String) request.getSession().getAttribute(
-				"cud_sts_principal");
-
-		return idSystem;
-	}
-
-	private Long getIDUser() throws GeneralFailure {
-		MessageContext context = wsContext.getMessageContext();
-		HttpServletRequest request = (HttpServletRequest) context
-				.get(MessageContext.SERVLET_REQUEST);
-
-		Long idUser = null;
-		try {
-			// user из ApplicantToken_1
-			// это заявитель
-
-			// когда пользователя определяли по логину, то сначала в
-			// AppSOAPHandler
-			// вычисляли его ИД через authenticate_login_obo
-			// и в сессию клали уже Long idUser,
-			// поэтому при извлечении из сессии можно было делать привидение к
-			// Long
-			// сейчас же мы кладём в сессиию ид пользователя из текстового поля
-			// запроса
-			// Long /idUser /=
-			// (Long)/request/.getSession()/.getAttribute(/"user_id_principal"/)
-
-			if (request.getSession().getAttribute("user_id_principal") != null
-					&& !request.getSession().getAttribute("user_id_principal")
-							.toString().isEmpty()) {
-
-				// это заявитель
-				idUser = Long.valueOf((String) request.getSession().getAttribute(
-						"user_id_principal"));
-
-			
-			} else {
-				// аноним
-				idUser = -1L;
-			}
-			return idUser;
-
-		} catch (Exception e) {
-			throw new GeneralFailure("USER UID IS NOT CORRECT");
-		}
-	}
 }

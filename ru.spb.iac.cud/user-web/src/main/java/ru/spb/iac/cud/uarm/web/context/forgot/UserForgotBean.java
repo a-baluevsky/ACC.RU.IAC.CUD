@@ -63,19 +63,19 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
        	   LOGGER.debug("UserForgotBean:changePassword:05");
        	  
        	  FacesContext.getCurrentInstance().addMessage(null, 
-	        			new FacesMessage("Обязятельны все поля!"));
+	        			new FacesMessage("РћР±СЏР·СЏС‚РµР»СЊРЅС‹ РІСЃРµ РїРѕР»СЏ!"));
        	   return;
          }
          
          
-         Boolean latin = Pattern.matches("[^а-яА-Я]*", userNewPassword);
+         Boolean latin = Pattern.matches("[^Р°-СЏРђ-РЇ]*", userNewPassword);
        
          if(!latin){
        	  
        	  LOGGER.debug("UserForgotBean:changePassword:06");
        	  
        	  FacesContext.getCurrentInstance().addMessage(null, 
-	        			new FacesMessage("В пароле не допустима кириллица!"));
+	        			new FacesMessage("Р’ РїР°СЂРѕР»Рµ РЅРµ РґРѕРїСѓСЃС‚РёРјР° РєРёСЂРёР»Р»РёС†Р°!"));
        	   return;
          }
          
@@ -84,7 +84,7 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
        	  LOGGER.debug("UserForgotBean:changePassword:07");
        	  
 		      	FacesContext.getCurrentInstance().addMessage(null, 
-	        			new FacesMessage("Пароли не совпадают!"));
+	        			new FacesMessage("РџР°СЂРѕР»Рё РЅРµ СЃРѕРІРїР°РґР°СЋС‚!"));
 	   	 }else{
          
 			HttpSession hs = (HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false); 
@@ -113,27 +113,27 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
 
    public void step1() {
         
-	   //здесь в 2-х случаях:
-	   //1) на первом шаге (this.userEmail = null)
-	   //2) пользователь уточнил свой email (this.userEmail = уточнённый email)
+	   //Р·РґРµСЃСЊ РІ 2-С… СЃР»СѓС‡Р°СЏС…:
+	   //1) РЅР° РїРµСЂРІРѕРј С€Р°РіРµ (this.userEmail = null)
+	   //2) РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ СѓС‚РѕС‡РЅРёР» СЃРІРѕР№ email (this.userEmail = СѓС‚РѕС‡РЅС‘РЅРЅС‹Р№ email)
      try{
         
     	LOGGER.debug("UserForgotBean:step1:01");
         
     	HttpSession hs = (HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false); 
  		
-    	//th/is.use/rLogin!=null при шаге1
-    	//th/is.us/erLogin==null при уточнении пользователем email
+    	//th/is.use/rLogin!=null РїСЂРё С€Р°РіРµ1
+    	//th/is.us/erLogin==null РїСЂРё СѓС‚РѕС‡РЅРµРЅРёРё РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј email
     	String userLoginFact=(this.userLogin!=null?this.userLogin:(String)hs.getAttribute(CUDUserConsoleConstants.userLoginForgot));
     	
     	HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-    	String context_url=/*request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+*/ request.getContextPath();
+    	String context_url=request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath();
 			
     	List<String> emails = userForgotEJB.step1(userLoginFact, this.userEmail, context_url);
-        //при уточнении email, emails будет = этому уточненнному email  
+        //РїСЂРё СѓС‚РѕС‡РЅРµРЅРёРё email, emails Р±СѓРґРµС‚ = СЌС‚РѕРјСѓ СѓС‚РѕС‡РЅРµРЅРЅРЅРѕРјСѓ email  
     	
     	if(emails==null||emails.isEmpty()){
-    		//у пользователя нет прикреплённых email
+    		//Сѓ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РЅРµС‚ РїСЂРёРєСЂРµРїР»С‘РЅРЅС‹С… email
     		
     		LOGGER.debug("UserForgotBean:step1:02");
     		
@@ -141,8 +141,8 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
     	        		.getContextPath()+"/context/forgot/pass_step1_message_not_email.xhtml");
     	   
     	}else if(emails.size()>1){
-    		//у пользователя не один email
-    		//даём пользователю выбрать email
+    		//Сѓ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РЅРµ РѕРґРёРЅ email
+    		//РґР°С‘Рј РїРѕР»СЊР·РѕРІР°С‚РµР»СЋ РІС‹Р±СЂР°С‚СЊ email
     		
     		LOGGER.debug("UserForgotBean:step1:03:"+emails.size());
     		
@@ -156,9 +156,10 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
   	
     		  
     	}else {
-    		//нормальный вариант - один email
+    		//РЅРѕСЂРјР°Р»СЊРЅС‹Р№ РІР°СЂРёР°РЅС‚ - РѕРґРёРЅ email
     		
     		LOGGER.debug("UserForgotBean:step1:04");
+    		hs.setAttribute(userEmailsList, emails);
     		
     	    FacesContext.getCurrentInstance().getExternalContext().redirect(((HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest())
         		.getContextPath()+"/context/forgot/pass_step1_message.xhtml");
@@ -169,11 +170,11 @@ import ru.spb.iac.cud.uarm.util.CUDUserConsoleConstants;
  		LOGGER.error("UserForgotBean:step1:berror:"+be);
  		
  		if(CodesErrors.NOT_FOUND.equals(be.getCodeError())){
- 			//пользователь не определён
+ 			//РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РЅРµ РѕРїСЂРµРґРµР»С‘РЅ
  			 try{
  				 
  			   FacesContext.getCurrentInstance().addMessage(null, 
- 	        			new FacesMessage("Пользователь не определён!"));
+ 	        			new FacesMessage("РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ РЅРµ РѕРїСЂРµРґРµР»С‘РЅ!"));
  	      	
  			 }catch(Exception e){
  	    		LOGGER.error("UserForgotBean:step1:error2:"+e);

@@ -47,8 +47,8 @@ import ru.spb.iac.cud.services.CUDService;
 			@WebParam(name = "modeExec", targetNamespace = NS) String modeExec)
 			throws GeneralFailure {
 		LOGGER.debug("sync_roles");
-		(new ContextSyncManager()).sync_roles(getIDSystem(), roles, modeExec,
-				getIDUser(), getIPAddress());
+		(new ContextSyncManager()).sync_roles(serviceContext.getIDSystem(), roles, modeExec,
+				serviceContext.getIDUser(), serviceContext.getIPAddress());
 	}
 
 	@WebMethod
@@ -58,19 +58,17 @@ import ru.spb.iac.cud.services.CUDService;
 			@WebParam(name = "modeExec", targetNamespace = NS) String modeExec)
 			throws GeneralFailure {
 		LOGGER.debug("access_roles");
-		(new ContextAdminManager()).access(getIDSystem(), uidsUsers, modeExec,
-				codesRoles, getIDUser(), getIPAddress());
+		(new ContextAdminManager()).access(serviceContext.getIDSystem(), uidsUsers, modeExec,
+				codesRoles, serviceContext.getIDUser(), serviceContext.getIPAddress());
 	}
 
 	@WebMethod
 	public void cert_change_sys(
 			@WebParam(name = "newCert", targetNamespace = NS) String newCert)
-			throws GeneralFailure {
-		
+			throws GeneralFailure {		
 		LOGGER.debug("cert_change_sys");
-		
-		(new ContextAdminManager()).cert_change(getIDSystem(), newCert,
-				getIDUser(), getIPAddress());
+		(new ContextAdminManager()).cert_change(serviceContext.getIDSystem(), newCert,
+				serviceContext.getIDUser(), serviceContext.getIPAddress());
 	}
 
 	@WebMethod
@@ -79,8 +77,8 @@ import ru.spb.iac.cud.services.CUDService;
 			@WebParam(name = "modeExec", targetNamespace = NS) String modeExec)
 			throws GeneralFailure {
 		LOGGER.debug("sync_functions");
-		(new ContextSyncManager()).sync_functions(getIDSystem(), functions,
-				modeExec, getIDUser(), getIPAddress());
+		(new ContextSyncManager()).sync_functions(serviceContext.getIDSystem(), functions,
+				modeExec, serviceContext.getIDUser(), serviceContext.getIPAddress());
 	}
 
 	@WebMethod
@@ -89,8 +87,8 @@ import ru.spb.iac.cud.services.CUDService;
 			@WebParam(name = "modeExec", targetNamespace = NS) String modeExec)
 			throws GeneralFailure {
 		LOGGER.debug("sync_groups");
-		(new ContextSyncManager()).sync_groups(getIDSystem(), groups, modeExec,
-				getIDUser(), getIPAddress());
+		(new ContextSyncManager()).sync_groups(serviceContext.getIDSystem(), groups, modeExec,
+				serviceContext.getIDUser(), serviceContext.getIPAddress());
 	}
 
 	@WebMethod
@@ -100,8 +98,8 @@ import ru.spb.iac.cud.services.CUDService;
 			@WebParam(name = "modeExec", targetNamespace = NS) String modeExec)
 			throws GeneralFailure {
 		LOGGER.debug("sync_groups_roles");
-		(new ContextSyncManager()).sync_groups_roles(getIDSystem(),
-				codesGroups, codesRoles, modeExec, getIDUser(), getIPAddress());
+		(new ContextSyncManager()).sync_groups_roles(serviceContext.getIDSystem(),
+				codesGroups, codesRoles, modeExec, serviceContext.getIDUser(), serviceContext.getIPAddress());
 	}
 
 	@WebMethod
@@ -111,8 +109,8 @@ import ru.spb.iac.cud.services.CUDService;
 			@WebParam(name = "modeExec", targetNamespace = NS) String modeExec)
 			throws GeneralFailure {
 
-		(new ContextAdminManager()).access_groups(getIDSystem(), uidsUsers,
-				modeExec, codesGroups, getIDUser(), getIPAddress());
+		(new ContextAdminManager()).access_groups(serviceContext.getIDSystem(), uidsUsers,
+				modeExec, codesGroups, serviceContext.getIDUser(), serviceContext.getIPAddress());
 
 	}
 
@@ -121,9 +119,8 @@ import ru.spb.iac.cud.services.CUDService;
 			@WebParam(name = "resources", targetNamespace = NS) List<Resource> resources,
 			@WebParam(name = "modeExec", targetNamespace = NS) String modeExec)
 			throws GeneralFailure {
-
-		(new ContextSyncManager()).sync_resources(getIDSystem(), resources,
-				modeExec, getIDUser(), getIPAddress());
+		(new ContextSyncManager()).sync_resources(serviceContext.getIDSystem(), resources,
+				modeExec, serviceContext.getIDUser(), serviceContext.getIPAddress());
 
 	}
 
@@ -133,11 +130,9 @@ import ru.spb.iac.cud.services.CUDService;
 			@WebParam(name = "codesRoles", targetNamespace = NS) List<String> codesRoles,
 			@WebParam(name = "modeExec", targetNamespace = NS) String modeExec)
 			throws GeneralFailure {
-
-		(new ContextSyncManager()).sync_resources_roles(getIDSystem(),
-				codesResources, codesRoles, modeExec, getIDUser(),
-				getIPAddress());
-
+		(new ContextSyncManager()).sync_resources_roles(serviceContext.getIDSystem(),
+				codesResources, codesRoles, modeExec, serviceContext.getIDUser(),
+				serviceContext.getIPAddress());
 	}
 
 
@@ -166,7 +161,7 @@ import ru.spb.iac.cud.services.CUDService;
 
 		(new ContextAdminManager()).getAdminManager().store_organization_attributes(
 				JPA_EisAdminManager.MakeOrgAttrsFromOrgCode(organizationCode, organizationAttributes), 
-				getIDUser());
+				serviceContext.getIDUser());
 	}
 	
 	@WebMethod

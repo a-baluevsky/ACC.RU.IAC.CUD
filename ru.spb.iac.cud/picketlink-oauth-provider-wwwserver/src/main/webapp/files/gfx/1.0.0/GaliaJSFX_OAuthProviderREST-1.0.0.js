@@ -43,7 +43,7 @@ define(['HttpClient', 'CookieFX'], function (_httpClient, _QK) {
 						callbackErrResult(err);
 					else {
 						var url = _.strStartsWith(pathEndpoint, 'http:', true)? pathEndpoint: _.strUrlCombine(_providerUrl, pathEndpoint);
-						httpClient.postData({url:url, postedData: argsJSON, dataFormat: 'JSON'}, callbackErrResult);						
+						httpClient.postData({url:url, postedData: argsJSON, dataFormat: 'JSON', optHeaders: optHeaders}, callbackErrResult);						
 					}						
 				});
 		}
@@ -222,8 +222,8 @@ define(['HttpClient', 'CookieFX'], function (_httpClient, _QK) {
 			); // returns access_token, expires_in
 		}	
 
-		this.TokenInfo = function (callbackErrResult, client_id, client_secret, token, token_type, tknInfoType) { 
-			debugger;
+		this.TokenInfo = function (callbackErrResult, token, token_type, tknInfoType) { 
+			//debugger;
 			tknInfoType=tknInfoType||"jwt";
 			return _post(callbackErrResult,  
 				'/token/info', 
@@ -239,8 +239,8 @@ define(['HttpClient', 'CookieFX'], function (_httpClient, _QK) {
 			); // returns
 		}
 	
-		this.TokenUserAccessInfo = function (callbackErrResult, client_id, client_secret, user_acc_token, token_type, tknInfoType) { 
-			debugger;
+		this.TokenUserAccessInfo = function (callbackErrResult, user_acc_token, token_type, tknInfoType) { 
+			//debugger;
 			tknInfoType=tknInfoType||"jwt";
 			return _post(callbackErrResult,  
 				'/token/UserInfo', 
@@ -252,6 +252,29 @@ define(['HttpClient', 'CookieFX'], function (_httpClient, _QK) {
 				}
 			); // returns
 		}
+		
+		this.GetClientAppUserRoles = function (callbackErrResult, user_acc_token, token_type) { 
+			token_type = token_type||'Bearer';
+			return _post(callbackErrResult,  
+				'/token/UserInfo/Roles', null, 
+				{
+					Authorization: token_type+' '+user_acc_token
+				}
+			); // returns
+		};
+		this.GetClientAppUserRoleInfo = function (callbackErrResult, role_code, role_info, user_acc_token, token_type) { 
+			token_type = token_type||'Bearer';
+			return _post(callbackErrResult,  
+				'/token/UserInfo/RolesInfo', 
+				{
+					role_code: role_code, 
+					role_info: role_info
+				}, 
+				{
+					Authorization: token_type+' '+user_acc_token
+				}
+			); // returns
+		};	
 		
 		//  Server test functions
 		this.TestException = function (callbackErrResult, exceptionId, error_description) {

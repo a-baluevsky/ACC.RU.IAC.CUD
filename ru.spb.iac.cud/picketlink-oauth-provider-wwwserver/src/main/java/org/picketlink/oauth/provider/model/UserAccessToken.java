@@ -1,6 +1,6 @@
 package org.picketlink.oauth.provider.model;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
@@ -10,10 +10,7 @@ import ru.spb.iac.cud.core.oauth.Token;
 import ru.spb.iac.cud.core.oauth.TokenInfo;
 import ru.spb.iac.cud.core.oauth.TokenInfo.AccessTokenType;
 import ru.spb.iac.cud.core.oauth.TokenInfo.InvalidTokenException;
-import ru.spb.iac.cud.core.oauth.TokenInfo.UserTokenInfo;
 import ru.spb.iac.cud.exceptions.GeneralFailure;
-
-import org.picketlink.oauth.provider.model.AuthCodeToken;
 public class UserAccessToken 
 extends AccessToken<TokenInfo.UserTokenInfo>
 implements Token.IUserAccessToken {
@@ -46,4 +43,5 @@ implements Token.IUserAccessToken {
 		mapJWTAttrs.putAll(tokenInfo.userAttributes);
 		return mapJWTAttrs;
 	}
+	
 }

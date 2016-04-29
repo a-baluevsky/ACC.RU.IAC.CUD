@@ -8,6 +8,7 @@ import static ru.spb.iac.cud.core.oauth.OAuthProviderProxyObjects.oaReg;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -128,6 +129,7 @@ implements TokenInfo.IGetTokenInfo<TOKENINFO>, Cloneable {
 	public static interface IAccessToken<ACCESSTOKENINFO extends TokenInfo> 
 	extends TokenInfo.IGetTokenInfo<ACCESSTOKENINFO>, TokenInfo.IGetTokenInfoOpenId {
 		AccessTokenType getTokenType();
+		ACCESSTOKENINFO getTokenInfo();
 	};
 		
 	
@@ -164,7 +166,9 @@ implements TokenInfo.IGetTokenInfo<TOKENINFO>, Cloneable {
 	}
 	
 	public static interface IClientAppAccessToken 	extends IAccessToken<TokenInfo.ClientAppTokenInfo> {};
-	public static interface IUserAccessToken 		extends IAccessToken<TokenInfo.UserTokenInfo> {};
+	public static interface IUserAccessToken 		extends IAccessToken<TokenInfo.UserTokenInfo> {
+		//List<String> getClientAppRoles() throws GeneralFailure;		
+	};
 	public static interface IAuthCodeToken 			extends IAccessToken<TokenInfo.AuthCodeTokenInfo> {
 		// since IAuthCodeToken is actually a User Access Token, we must treat it special way:
 		// coerce to IUserAccessToken, if needed		

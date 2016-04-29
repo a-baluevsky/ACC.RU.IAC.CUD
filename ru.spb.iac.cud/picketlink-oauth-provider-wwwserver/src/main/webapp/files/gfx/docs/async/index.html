@@ -3,9 +3,15 @@
 <head>
 <title>Асинхронные запросы, модуль async и особенности определения методов</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+	<script data-main="/picketlink-oauth-provider-wwwserver/files/gfx/1.0.0/config_dev_local.js" 
+			src="/picketlink-oauth-provider-wwwserver/files/gfx/1.0.0/lib/require-2.1.20.js"></script>
+	<script src="/picketlink-oauth-provider-wwwserver/files/gfx/1.0.0/config_dev_local.js"></script>
+	<script src="/picketlink-oauth-provider-wwwserver/files/gfx/1.0.0/lib/json2.js"></script>
+	
 </head>
 
-<body><h1>Асинхронные запросы</h1>
+<body onload="return window_onload()"><h1>Асинхронные запросы</h1>
 <ul>
   <li>Про асинхронные запросы и async: 
     <ul>
@@ -22,8 +28,11 @@
 <ul>
   <li>Работающий демонстрационный пример цепочки асинхронных запросов (&quot;Composing 
     Synchronous and Asynchronous Functions in JavaScript&quot; на переработанном 
-    модуле)</li>
+    модуле): CPS_workflow. Обрати внимание, что браузер не зависает, пока "создаётся" запись в БД.</li>
 </ul>
+
+<div id="TesterPanel"></div>
+
 <h1>Особенности определения асинхронных методов</h1>
 <table width="100%" border="1" cellspacing="0" cellpadding="0">
   <tr> 
@@ -69,5 +78,134 @@
 <h1>Вызов функции обратной связи</h1>
 <pre>			function callbackCaller(arg, callbackFn)  {<br>				if(err)<br>					callbackFn(&quot;Operation failed!&quot;);<br>				else<br>					callbackFn(<strong>null</strong>, 777);<br>			}
 </pre>
+
+	<SCRIPT ID=testerGFX LANGUAGE=javascript>
+		var lgrGFXTest, testerGFX;
+		function window_onload() {
+			requirejs([ 'underscore_plus', 'async', 'LoggerFX', 'TesterFX'], //
+			function(_, async, lfx, tfx) {
+				if(!window._) window._ = _;				
+				if(!window.async) window.async = async;
+				
+				tfx.createrTesterPanel(TesterPanel);
+				
+				lgrGFXTest = lfx.newListLogger(lstTestOutputGFX);
+				testerGFX = tfx.newTester({testSetId: "jsTestSetGFX"});
+				testerGFX.outputTestList(lstTestsGFX);
+				
+				if(_.isIEOlderThan(7))
+					lgrGFXTest.writeLine('IE 6');
+					
+			});
+		}		
+	</SCRIPT>
+	
+	<script id="jsTestSetGFX" language="javascript">		
+		function test_async() {
+			//requirejs(['async'],function(async) {
+				//debugger;
+				lgrGFXTest.writeLine( async.test() );
+			//});
+		}
+		
+		function test_async_asyncify() {
+			function head(xs) {
+			    if (_.isArray(xs) && !_.isEmpty(xs))
+			        return xs[0];
+			    else
+			        throw "Can't get head of empty array.";
+			}
+			function notifyCallback(err, result)  {
+				if(err)
+					lgrGFXTest.writeLine("ERROR: err="+err);
+				else
+					lgrGFXTest.writeLine("SUCCESS: result="+result);
+			}
+			
+			var cbHead = async.asyncify(head);
+			cbHead([1, 2, 3],	notifyCallback);	//result === 1
+			cbHead([],			notifyCallback);	// err === "Can't get head of empty array.";			
+		}
+		
+
+		// Taken from  "Composing Synchronous and Asynchronous Functions in JavaScript" @http://www.carbonfive.com
+		//  (Posted on 29th January 2015 by Erin Swenson-Healey in Web)
+		//   http://blog.carbonfive.com/2015/01/29/composing-synchronous-and-asynchronous-functions-in-javascript/
+		// See also:
+		//  http://www.mobl-lang.org/283/reducing-the-pain-synchronous-asynchronous-programming/		
+		//  http://alexeypetrushin.github.io/synchronize/docs/index.html
+		//  http://elijahmanor.com/reducing-filter-and-map-down-to-reduce/		
+		//  https://www.npmjs.com/package/async
+		function createEmployee(person, callback) { // composition of async functions! 
+			//debugger;
+			
+			// checks
+			function hasWildHair(person)	{ return person.hairLength >= 20;	}
+			function isMature(person)		{ return person.age >= 18; }
+			function hasDriverLic(person)	{ return person.driverLicenseId != null; }
+			function livesInSpb(person)		{ return person.city == 'St-Peterburg'; }
+			// action
+			function database_createEmployee(person, callback) {
+				function mimicLengthyOp() {
+					btnRun.style.visibility = '';
+					if(person.luckyDay) 
+						//      return person.id = 100+Math.round(100*Math.random()  );					
+						callback(null, person.id = 100+Math.round(100*Math.random()) );
+					else
+						// throw "Database failure! Try another time...";
+						callback("Database failure! Try another time...");					
+				}
+				btnRun.style.visibility = 'hidden';
+				lgrGFXTest.writeLine('Database: trying to create record. Please wait ...');
+				window.setTimeout(mimicLengthyOp, 100+Math.random()*8000);
+			}
+
+			var ensureHasWildHair			= _.partial(_.ensure, hasWildHair,		'Person must have wild hair (>=20 cm).');
+			var ensureOfAge					= _.partial(_.ensure, isMature,			'Person must be 18+ years of age.');
+			var ensureDriversLicense		= _.partial(_.ensure, hasDriverLic,		'Person must have driver license.');
+			var ensureLocalAddress			= _.partial(_.ensure, livesInSpb,		'Person must live in St-Peterburg, Russia.');
+			
+		    var workflow = async.compose(
+					async.asyncify(ensureLocalAddress),		    
+					async.asyncify(ensureOfAge),							    	        
+					async.asyncify(ensureDriversLicense),
+					async.asyncify(ensureHasWildHair),
+					database_createEmployee
+			);
+		    workflow(person, callback);
+		}
+		
+		function dumpObjProps(o, s, bIncludeFns) {
+			return _.reduce(o, 
+				function(strResult, prpValue, prpName) { 
+					return (async.isFunction(prpValue))? (bIncludeFns?strResult+'\n  ' + prpName + ': <function>':strResult): strResult+'\n  ' + prpName + ': '+prpValue; 
+				},
+				s || '' );
+		}
+		
+		// CPS (continuation-passing style) async workflow test
+		function test_CPS_workflow() {
+			// simulate real-world behavior by randomized success
+			var chance = Math.round(64*Math.random());
+			var person = {
+				hairLength: chance,
+				age: 7+Math.round(0.68 * chance),
+				driverLicenseId: (chance & 1)?'DRV'+1000+Math.round(8000*Math.random()): null,
+				city: (chance & 2)?'St-Peterburg': 'Vologda',
+				luckyDay: (chance & 4)!=0,
+				toString: function () { return dumpObjProps(this, 'PERSON: '); }
+			};
+			alert("CPS (continuation-passing style) async workflow test.\nTry hiring this "+person);
+			createEmployee(person, function (err, result) {
+				//debugger;
+				if(err)
+					lgrGFXTest.writeLine("createEmployee failed: err="+err);
+				else
+					lgrGFXTest.writeLine("SUCCESS: person.id="+result);				
+			});
+		}	
+	</script>
+	
+
 </body>
 </html>

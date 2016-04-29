@@ -583,4 +583,8 @@ import org.jboss.seam.annotations.Role;
 	public String getSnils() { return snils; }
 	public void setSnils(String snils) { this.snils = snils; }
 	
+    @Column(name="UP_SIGN_IOGV") private String upSignIogv;
+	public String getUpSignIogv() { return this.upSignIogv;	}
+	public void setUpSignIogv(String upSignIogv) { this.upSignIogv = upSignIogv; }    
+	
   }

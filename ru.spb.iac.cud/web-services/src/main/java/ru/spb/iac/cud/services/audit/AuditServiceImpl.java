@@ -37,7 +37,7 @@ import ru.spb.iac.cud.services.CUDService;
 			    @WebParam(name = "userFunctions", targetNamespace = NS) List<AuditFunction> userFunctions) throws GeneralFailure{
     	 
     	 LOGGER.debug("audit");
-		 cam.audit(getIDSystem(), uidUser, userFunctions, getIDUser(), getIPAddress());
+		 cam.audit(serviceContext.getIDSystem(), uidUser, userFunctions, serviceContext.getIDUser(), serviceContext.getIPAddress());
 	 }
      
 	@Override
@@ -52,7 +52,7 @@ import ru.spb.iac.cud.services.CUDService;
 		
 		AuditDataPage adp = null;
 		try {
-			String sysCode = getIDSystem(); //LoadAssertionFromMessageContext(wsContext.getMessageContext()).getSubjectNameID();
+			String sysCode = serviceContext.getIDSystem(); //LoadAssertionFromMessageContext(wsContext.getMessageContext()).getSubjectNameID();
 			LOGGER.debug("getAuditDataISByPeriod");
 			adp = cam.getAuditDataISByPeriod(sysCode, date1, date2, rowsCount, rowStartOffset, filterUser);
 		} catch (Exception e) {		
