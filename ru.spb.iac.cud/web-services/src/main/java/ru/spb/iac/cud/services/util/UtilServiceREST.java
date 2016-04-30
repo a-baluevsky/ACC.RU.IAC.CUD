@@ -1,10 +1,12 @@
 package ru.spb.iac.cud.services.util;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ru.spb.iac.cud.services.CUDService;
 import ru.spb.iac.cud.services.CUDServiceREST;
 
 import javax.ws.rs.core.Response;
@@ -30,6 +32,7 @@ import ru.spb.iac.cud.items.GroupsData;
 import ru.spb.iac.cud.items.Resource;
 import ru.spb.iac.cud.items.Role;
 import ru.spb.iac.cud.items.UsersData;
+
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -37,6 +40,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.OPTIONS;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 @Path("/util")
 public class UtilServiceREST extends CUDServiceREST {
@@ -97,7 +101,9 @@ public class UtilServiceREST extends CUDServiceREST {
    @Consumes(JSON_UTF8) @Produces(JSON_UTF8)
    public UsersData users_data(UsersDataParams params) throws GeneralFailure {
      UsersData retVal = null;
-      return impl.users_data(uidsUsers, category, rolesCodes, groupsCodes, startRow, countRow, settings);
+      //return impl.users_data(uidsUsers, category, rolesCodes, groupsCodes, startRow, countRow, settings);
+      return impl.users_data(params.uidsUsers, params.category, params.rolesCodes, params.groupsCodes, params.startRow, params.countRow, params.settings);
+
    }
    @GET @Path("sys_roles")
    @Produces(JSON_UTF8)
@@ -107,7 +113,7 @@ public class UtilServiceREST extends CUDServiceREST {
    }
    @POST @Path("sys_roles")
    @Consumes(JSON_UTF8) @Produces(JSON_UTF8)
-   public List<Role> sys_roles() throws GeneralFailure {
+   public List<Role> sys_roles_post() throws GeneralFailure {
      List<Role> retVal = null;
       return impl.sys_roles();
    }
@@ -119,7 +125,7 @@ public class UtilServiceREST extends CUDServiceREST {
    }
    @POST @Path("sys_functions")
    @Consumes(JSON_UTF8) @Produces(JSON_UTF8)
-   public List<Function> sys_functions() throws GeneralFailure {
+   public List<Function> sys_functions_post() throws GeneralFailure {
      List<Function> retVal = null;
       return impl.sys_functions();
    }
@@ -158,7 +164,8 @@ public class UtilServiceREST extends CUDServiceREST {
    @Consumes(JSON_UTF8) @Produces(JSON_UTF8)
    public GroupsData groups_data(GroupsDataParams params) throws GeneralFailure {
      GroupsData retVal = null;
-      return impl.groups_data(groupsCodes, category, rolesCodes, startRow, countRow, settings);
+     return impl.groups_data(params.groupsCodes, params.category, params.rolesCodes, params.startRow, params.countRow, params.settings);
+     // return impl.groups_data(groupsCodes, category, rolesCodes, startRow, countRow, settings);
    }
    private static class ResourcesDataParams {
        private 	String 	category;
@@ -175,7 +182,8 @@ public class UtilServiceREST extends CUDServiceREST {
    @Consumes(JSON_UTF8) @Produces(JSON_UTF8)
    public List<Resource> resources_data(ResourcesDataParams params) throws GeneralFailure {
      List<Resource> retVal = null;
-      return impl.resources_data(category);
+      return impl.resources_data(params.category);
+     // return impl.resources_data(category);
    }
    private static class RolesDataParams {
        private 	String 	category;
@@ -192,7 +200,8 @@ public class UtilServiceREST extends CUDServiceREST {
    @Consumes(JSON_UTF8) @Produces(JSON_UTF8)
    public List<Role> roles_data(RolesDataParams params) throws GeneralFailure {
      List<Role> retVal = null;
-      return impl.roles_data(category);
+      return impl.roles_data(params.category);
+    // return impl.roles_data(category);
    }
 
    

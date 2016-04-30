@@ -1,7 +1,9 @@
 package ru.spb.iac.cud.services.application;
 
+import ru.spb.iac.cud.services.CUDService;
 import ru.spb.iac.cud.services.CUDServiceREST;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 import javax.ws.rs.core.Response;
@@ -25,10 +27,10 @@ import javax.xml.ws.soap.SOAPBinding;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -36,6 +38,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.OPTIONS;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 @Path("/app/result")
 public class ApplicationResultServiceREST extends CUDServiceREST {
@@ -71,7 +74,7 @@ public class ApplicationResultServiceREST extends CUDServiceREST {
    @Consumes(JSON_UTF8) @Produces(JSON_UTF8)
    public List<AppResult> result(ResultParams params) throws GeneralFailure {
      List<AppResult> retVal = null;
-      return impl.result(appResultRequestList);
+      return impl.result(params.appResultRequestList);
    }
 
 	// CORS support OPTION methods
