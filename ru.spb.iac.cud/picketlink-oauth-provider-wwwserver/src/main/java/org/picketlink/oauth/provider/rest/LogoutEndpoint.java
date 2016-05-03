@@ -23,7 +23,6 @@ import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
-import org.picketlink.Identity;
 
 /**
  * <p>JAX-RS Endpoint to logout users.</p>
@@ -35,8 +34,7 @@ import org.picketlink.Identity;
 @Path("/logout")
 public class LogoutEndpoint  extends _Endpoint {
 
-    @Inject
-    private Identity identity;
+ 
 
     /**
      * <p>Performs the logout.</p>
@@ -44,9 +42,9 @@ public class LogoutEndpoint  extends _Endpoint {
      */
     @GET
     public void logout() {
-        if (this.identity.isLoggedIn()) {
+       /* if (this.identity.isLoggedIn()) {
             this.identity.logout();
-        }
+        }*/
     }
 
 }

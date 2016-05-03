@@ -70,8 +70,8 @@ public class IDToken {
 	}	
 	public static String toJWT(IDToken idToken, Map<String, String> optClaimsSet) {
     	final JWT.Builder jwtBld = (new JWT.Builder())
-    			.setHeaderAlgorithm("RS256")
-    			.setSignature("ABCDEFGHIJKLM"); //getJWTSignature(csFlgSignature) )
+    			.setHeaderAlgorithm("GOST3411withGOST3410EL")
+    			.setSignature("DEFAULT"); //getJWTSignature(csFlgSignature) )
     	jwtBld.setClaimsSetIssuer(idToken.iss);		jwtBld.setClaimsSetSubject(idToken.sub);
     	jwtBld.setClaimsSetAudience(idToken.aud);	jwtBld.setClaimsSetExpirationTime(idToken.exp);
     	jwtBld.setClaimsSetCustomField("auth_time", idToken.auth_time);
@@ -80,6 +80,7 @@ public class IDToken {
     	if(optClaimsSet!=null)
     		for (Entry<String, String> eAtrNV : optClaimsSet.entrySet())
     			jwtBld.setClaimsSetCustomField(eAtrNV.getKey(), eAtrNV.getValue());    	
-		return new JWTWriter().write(jwtBld.build());		
+		//return new JWTWriter().write(jwtBld.build());	
+		return new CUDJWTWriter().writeExt(jwtBld.build());
 	}
 }

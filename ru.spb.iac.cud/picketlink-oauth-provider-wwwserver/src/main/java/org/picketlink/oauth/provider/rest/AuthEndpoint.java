@@ -2,6 +2,7 @@ package org.picketlink.oauth.provider.rest;
 
 import static ru.spb.iac.cud.core.oauth.OAuthProviderProxyObjects.aml;
 import static ru.spb.iac.cud.core.oauth.OAuthProviderProxyObjects.idpUtil;
+import iac.grn.infosweb.session.Authenticator;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -28,12 +29,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.message.types.ResponseType;
-import org.picketlink.Identity;
 import org.picketlink.credential.DefaultLoginCredentials;
-import org.picketlink.idm.IdentityManagementException;
-import org.picketlink.idm.IdentityManager;
-import org.picketlink.idm.credential.Password;
-import org.picketlink.idm.model.basic.User;
 import org.picketlink.oauth.provider.model.AuthenticationRequest;
 import org.picketlink.oauth.provider.model.AuthenticationResponse;
 import org.picketlink.oauth.provider.model.AuthorizationResponse;
@@ -58,13 +54,15 @@ public class AuthEndpoint extends _Endpoint {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AuthEndpoint.class);	
     
     @Inject private OAuthRegister oauthRegister;
-    @Inject private Identity 	identity;
-    @Inject private IdentityManager identityManager;
-    @Inject private DefaultLoginCredentials credential;
     @Context ServletContext servletContext;
     @Context HttpServletRequest httpServletRequest;
     @Context private HttpServletResponse response;
     @Context UriInfo uriInfo;
+    
+    private boolean isLoggedIn;
+    private String login;
+    
+    @Inject private Authenticator authenticator;
     
     private PageTemplate pageTemplate;
     
@@ -80,23 +78,105 @@ public class AuthEndpoint extends _Endpoint {
     @GET @PermitAll @Produces(RESTActivation.MediaHTML)
     public Response auth(final @Context HttpServletRequest request)
     throws URISyntaxException {
-		return getPageTemplate().sendFramedRedirect("paaaframe", identity.isLoggedIn()?"/auth/scope":"/auth/login", request.getQueryString()); 	
+    	login = (String)httpServletRequest.getSession().getAttribute("user_login");
+    	if(login!=null){
+    		isLoggedIn=true;
+    	}
+		return getPageTemplate().sendFramedRedirect("paaaframe", /*identity.isLoggedIn()*/isLoggedIn?"/auth/scope":"/auth/login", request.getQueryString()); 	
+
     }
     
     @PermitAll @GET @Path("login") @Produces(RESTActivation.MediaHTML)
     public Response loginPage(final @Context HttpServletRequest request) {
-    	if(identity.isLoggedIn()) identity.logout(); // .. or goto switchuser page?
-    	return getPageTemplate().sendWebTemplate("loginuser"); 
+System.out.println("login-get-session:"+httpServletRequest.getSession().getId());
+    	
+    	String pSAMLResponse = httpServletRequest.getParameter("SAMLResponse");
+    	
+    	if(pSAMLResponse!=null){ //разбираем ответ от IDP
+    		authenticator.authenticate(httpServletRequest, pSAMLResponse);
+     	}
+    	
+    	
+    	login = (String)httpServletRequest.getSession().getAttribute("user_login");
+    	if(login!=null){
+    		isLoggedIn=true;
+    	}
+    	
+    	
+    	System.out.println("login-get-isLoggedIn:"+isLoggedIn);
+    	System.out.println("login-get-login:"+login);
+    	
+    	if(isLoggedIn){
+    		 return scopeApprovePage(request);
+    	}else{
+    		 // return getPageTemplate().sendWebTemplate("loginuser");
+    		try {
+    		
+    	      //формируем запрос к IDP
+         
+    		authenticator.cudAuth(httpServletRequest, response);
+    	  	return Response.ok(response.getWriter()).build();
+          	
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+    	}
+    	
+    }
+    @PermitAll @POST @Path("login_response") @Produces(RESTActivation.MediaHTML)
+    @Consumes({ "text/html","application/xhtml+xml","application/xml", "application/x-www-form-urlencoded"})
+    public Response loginResponsePage(final @Context HttpServletRequest request) {
+    	//if(identity.isLoggedIn()) identity.logout(); // .. or goto switchuser page?
+    	System.out.println("login-get-session:"+httpServletRequest.getSession().getId());
+    	
+    	String pSAMLResponse = httpServletRequest.getParameter("SAMLResponse");
+    	
+    	if(pSAMLResponse!=null){ //разбираем ответ от IDP
+    		authenticator.authenticate(httpServletRequest, pSAMLResponse);
+     	}
+    	
+    	
+    	login = (String)httpServletRequest.getSession().getAttribute("user_login");
+    	if(login!=null){
+    		isLoggedIn=true;
+    	}
+    	
+    	
+    	System.out.println("login-get-isLoggedIn:"+isLoggedIn);
+    	System.out.println("login-get-login:"+login);
+    	
+    	if(isLoggedIn){
+    		 return scopeApprovePage(request);
+    	}else{
+    		 // return getPageTemplate().sendWebTemplate("loginuser");
+    		try {
+    		
+    	      //формируем запрос к IDP
+         
+    		authenticator.cudAuth(httpServletRequest, response);
+    	  	return Response.ok(response.getWriter()).build();
+          	
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+    	}
+    	
     }
     
     private void importPicketLinkUserByPAAACreds(String login, String password) {
-		if(aml().isValidLoginPassword(login, password)) {
+    	if(aml().isValidLoginPassword(login, password)) {
 	        try {
-	        	User newUser = new User(login);
-	        	identityManager.add(newUser);
-	        	identityManager.updateCredential(newUser, new Password(password));
+	        	
+	        	httpServletRequest.getSession().setAttribute("user_login", login);;
+	        	//User newUser = new User(login);
+	        	//identityManager.add(newUser);
+	        	//identityManager.updateCredential(newUser, new Password(password));
 	        }
-	        catch(IdentityManagementException exIDM) {
+	        catch(Exception exIDM) {
 	        	LOGGER.error(exIDM.toString());
 	        }
 		}
@@ -109,31 +189,34 @@ public class AuthEndpoint extends _Endpoint {
     @PermitAll @POST @Path("login")
     @Consumes(RESTActivation.MediaJSON) @Produces(RESTActivation.MediaJSON)
     public AuthenticationResponse login(final AuthenticationRequest authcRequest) {
-    	//LOGGER.info("identity +> "+javaw.util.reflection.ClassInfo.getClassFileLocation(this.identity));
-    	
-        if (this.identity.isLoggedIn()) 
-        	//return createLoginResponse(authcRequest);
-        	identity.logout();
+	System.out.println("login-post-session:"+httpServletRequest.getSession().getId());
         
+    	System.out.println("login-post-Password:"+authcRequest.getPassword());
+    	
         final String userLogin = authcRequest.getUserId();
         final String userPassword = authcRequest.getPassword();
         
+        System.out.println("login_login:"+login);
+        
+        login = userLogin;
+        
         importPicketLinkUserByPAAACreds(userLogin, userPassword);
        
-		this.credential.setUserId(userLogin);        
-		this.credential.setCredential(new Password(userPassword));
+		//this.credential.setUserId(userLogin);        
+		//this.credential.setCredential(new Password(userPassword));
 
-        this.identity.login();
+        //this.identity.login();
 
-        return createLoginResponse(authcRequest);
+        return createLoginResponse(userLogin);
     }
 
-    private AuthenticationResponse createLoginResponse(final AuthenticationRequest authcRequest) {
+    private AuthenticationResponse createLoginResponse(String userLogin/*final AuthenticationRequest authcRequest*/) {
         AuthenticationResponse response = new AuthenticationResponse(this.response);
 
-        response.setUserId(authcRequest.getUserId());
-        response.setLoggedIn(this.identity.isLoggedIn());
-
+        response.setUserId(/*authcRequest.getUserId()*/userLogin);
+       // response.setLoggedIn(this.identity.isLoggedIn());
+        response.setLoggedIn(true);
+        
         if (response.isLoggedIn()) {
             //response.setToken(this.identity.getUserContext().getSession().getId().getId().toString());
             response.setToken(httpServletRequest.getSession().getId());
@@ -158,7 +241,11 @@ public class AuthEndpoint extends _Endpoint {
     	final Response.ResponseBuilder responseBuilder = Response.status(HttpServletResponse.SC_OK);
     	final Map<String, String> scopeParams = fetchScopeParams(request);
     	final Map<String, String> paramErrors; 
-		if(!identity.isLoggedIn()) {
+    	login = (String)httpServletRequest.getSession().getAttribute("user_login");
+    	if(login!=null){
+    		isLoggedIn=true;
+    	}
+		if(/*!identity.isLoggedIn()*/!isLoggedIn) {
 			LOGGER.info("scopeApprovePage: 20");
 	    	responseBuilder.location(getUrlLogin());
 		} else if((paramErrors = checkScopeParams(scopeParams))!=null) {
@@ -169,7 +256,7 @@ public class AuthEndpoint extends _Endpoint {
     		LOGGER.info("scopeApprovePage: 40");
     		final boolean isFramed = request.getParameter("framed")!=null;
     		scopeParams.put("form_target", isFramed? " target='_parent' ":" target='_self'");
-    		boolean approved = isAppScopeApproved(scopeParams.get(OAuth.OAUTH_CLIENT_ID), scopeParams);
+    		boolean approved = false;//isAppScopeApproved(scopeParams.get(OAuth.OAUTH_CLIENT_ID), scopeParams);
     		if(approved) {
     			LOGGER.info("scopeApprovePage: 50");
     			AuthorizationRequest authzRq = new AuthorizationRequest();
@@ -197,20 +284,20 @@ public class AuthEndpoint extends _Endpoint {
     	return responseBuilder.build(); 
     }
 
-    @Inject private ClientAppManager clientAppManager;
+   // @Inject private ClientAppManager clientAppManager;
     private boolean isAppScopeApproved(String clientAppId, Map<String, String> scopeParams) {
 		try {
 			LOGGER.info("isAppScopeApproved: 10");
 			//return aml.is_exist(clientAppId) && !idpUtil.systemSignReq(clientAppId);
 			if(aml().is_exist(clientAppId) && !idpUtil().systemSignReq(clientAppId)) {
 				LOGGER.info("isAppScopeApproved: 20");
-				if(!this.clientAppManager.existsApp(clientAppId)) {
+				/*if(!this.clientAppManager.existsApp(clientAppId)) {
 					LOGGER.info("isAppScopeApproved: 30");
 					String owner = "cud";
 					String appURL = scopeParams.get(OAuth.OAUTH_REDIRECT_URI);
 					LOGGER.info("isAppScopeApproved: 40: "+clientAppId+", "+appURL);
-					this.clientAppManager.create(clientAppId, appURL, owner, clientAppId, clientAppId);
-				}
+					//this.clientAppManager.create(clientAppId, appURL, owner, clientAppId, clientAppId);
+				}*/
 				return true;
 			} else {
 				LOGGER.info("isAppScopeApproved: 30");
@@ -226,17 +313,28 @@ public class AuthEndpoint extends _Endpoint {
 	@PermitAll @POST @Path("scope")    
     @Consumes(RESTActivation.MediaJSON)    @Produces(RESTActivation.MediaJSON)    
     public AuthorizationResponse scopeAuthorize(final AuthorizationRequest request) throws GeneralFailure {
-		if(!identity.isLoggedIn())
-			OAPE.AuthorizationException.throwIt(OAuthProviderExceptionCode.access_denied);
-    	else {  checkScopeParams(request);
-				try {
-					User usr = (User)identity.getAccount(); //identity.getAccount().getAttribute("userId").getValue().toString()
-					return createResponseScopeAuthorize(request, usr.getLoginName()); //
-				} catch (Exception e) { //OAuthSystem
-					OAPE.AuthorizationException.throwIt(e.getMessage());
-				}    	
-    	}
-		return null; // never get here
+		try {
+			
+			login = (String)httpServletRequest.getSession().getAttribute("user_login");
+	    	if(login!=null){
+	    		isLoggedIn=true;
+	    	}
+			System.out.println("scope_login_post:"+login);
+			
+			if(/*!identity.isLoggedIn()*/!isLoggedIn)
+				OAPE.AuthorizationException.throwIt(OAuthProviderExceptionCode.access_denied);
+	    	else {  checkScopeParams(request);
+					try {
+						/*User usr = (User)identity.getAccount();*/ //identity.getAccount().getAttribute("userId").getValue().toString()
+						return createResponseScopeAuthorize(request, /*usr.getLoginName()*/login); //
+					} catch (Exception e) { //OAuthSystem
+						OAPE.AuthorizationException.throwIt(e.getMessage());
+					}    	
+	    	}
+	    } catch (Exception e) { //OAuthSystem
+	    	System.out.println("scope_login_post:error:"+e);
+		}   
+			return null; // never get here
     }
 
 	private void checkScopeParams(AuthorizationRequest request) throws GeneralFailure {

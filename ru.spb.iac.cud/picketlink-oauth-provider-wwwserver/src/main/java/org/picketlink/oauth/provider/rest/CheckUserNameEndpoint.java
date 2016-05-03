@@ -26,9 +26,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import org.picketlink.idm.IdentityManager;
-import org.picketlink.idm.model.basic.BasicModel;
-import org.picketlink.idm.model.basic.User;
 import org.picketlink.oauth.provider.model.AccountRegistrationResponse;
 import org.picketlink.oauth.provider.setup.RESTActivation;
 
@@ -40,8 +37,7 @@ import org.picketlink.oauth.provider.setup.RESTActivation;
 @Path("/alreadyExists")
 public class CheckUserNameEndpoint extends _Endpoint {
 
-    @Inject
-    private IdentityManager identityManager;
+  
 
     /**
      * Check if an UserName is already taken
@@ -55,11 +51,11 @@ public class CheckUserNameEndpoint extends _Endpoint {
 
         AccountRegistrationResponse response = new AccountRegistrationResponse();
 
-        User user = BasicModel.getUser(identityManager,userName);
+       /* User user = BasicModel.getUser(identityManager,userName);
 
         if (user != null) {
             response.setRegistered(true);
-        }
+        }*/
 
         return response;
     }

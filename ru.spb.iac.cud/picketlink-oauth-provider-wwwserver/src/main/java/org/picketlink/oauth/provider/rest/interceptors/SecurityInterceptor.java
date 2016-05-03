@@ -43,7 +43,6 @@ import org.jboss.resteasy.spi.Failure;
 import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.resteasy.spi.interception.PreProcessInterceptor;
-import org.picketlink.Identity;
 import org.picketlink.oauth.provider.model.AccessToken;
 import org.picketlink.oauth.provider.model.AuthenticationResponse;
 import org.picketlink.oauth.provider.model.ClientAppAuth;
@@ -51,7 +50,6 @@ import org.picketlink.oauth.provider.model.RefreshToken;
 import org.picketlink.oauth.provider.model.exceptions.OAuthProviderException;
 import org.picketlink.oauth.provider.model.exceptions.OAuthProviderException.OAPE;
 import org.picketlink.oauth.provider.model.exceptions.OAuthProviderException.OAuthProviderExceptionCode;
-import org.picketlink.oauth.provider.rest.AccountRegistrationEndpoint;
 import org.picketlink.oauth.provider.rest.AuthEndpoint;
 import org.picketlink.oauth.provider.rest.CheckUserNameEndpoint;
 import org.picketlink.oauth.provider.rest.LogoutEndpoint;
@@ -93,7 +91,7 @@ public class SecurityInterceptor extends org.jboss.resteasy.plugins.interceptors
     @Inject private OAuthRegister oauthRegister;
     
     //private PicketBoxIdentity identity;
-    @Inject private Identity identity;
+  
 
     @Context private HttpServletRequest httpServletRequest;
     @Context private HttpServletResponse response;
@@ -146,18 +144,18 @@ public class SecurityInterceptor extends org.jboss.resteasy.plugins.interceptors
         	if(ba!=null) {
         		// by-pass login-pw requests; actually, they will be checked later
         		ResteasyProviderFactory.pushContext(BasicAuthorization.class, ba);  		
-        	} else if(!this.identity.isLoggedIn()) {
+        	} /*else if(!this.identity.isLoggedIn()) {
 	            String token = getToken(request);	
 	            if (token != null) {
-	            	isAllowed = identity.isLoggedIn();
+	            	isAllowed = identity.isLoggedIn();*/
 	                /*try {
 	                    isLoggedIn = identity.isLoggedIn();
 	                    //isLoggedIn = identity.restoreSession(token);
 	                } catch (AuthenticationException e) {
 	                    log.error("Authentiation Failed:", e);
 	                }*/
-	            }	
-	        }
+	           /* }	
+	        }*/
     	} else {
     		LOGGER.info("preProcess: 60");
     		isAllowed = true;
@@ -331,7 +329,7 @@ public class SecurityInterceptor extends org.jboss.resteasy.plugins.interceptors
     		return false;
         Class<?> declaringClass = method.getMethod().getDeclaringClass();
 
-        Class<?>[] arr = new Class[] { SignInEndpoint.class, LogoutEndpoint.class, AccountRegistrationEndpoint.class,
+        Class<?>[] arr = new Class[] { SignInEndpoint.class, LogoutEndpoint.class, /*AccountRegistrationEndpoint.class,*/
                 CheckUserNameEndpoint.class, UserInfoEndpoint.class, AuthEndpoint.class, 
                 FileServer.class }; //, TestEndpoint.class
 

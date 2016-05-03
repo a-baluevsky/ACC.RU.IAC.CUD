@@ -3,10 +3,31 @@
 		<exclusions>
 			<module name="org.apache.log4j" />
 		</exclusions>
+		<dependencies>
+	<system export="true">
+				<paths>
+					<path name="ru/CryptoPro/JCP" />
+					<path name="ru/CryptoPro/JCP/tools" />
+					<path name="ru/CryptoPro/JCP/params" />
+					<path name="ru/CryptoPro/JCP/ASN/CryptographicMessageSyntax" />
+					<path name="com/objsys/asn1j/runtime" />
+
+					<path name="ru/CryptoPro/JCPxml/dsig/internal/dom" />
+
+					<!-- //test-contur <path name="ru/CryptoPro/ssl"/> -->
+
+				</paths>
+			</system>
+			
+			<module name="org.apache.santuario.xmlsec" export="true" />
+			
+	</dependencies>		
+	
 	</deployment>
 	<sub-deployment name="picketlink-oauth-provider-wwwserver.war">
 		<dependencies>
 			<module name="ru.spb.iac.cud" export="true" />
+			<module name="org.picketlink" export="true"  />
 		</dependencies>
 	</sub-deployment>
 </jboss-deployment-structure>

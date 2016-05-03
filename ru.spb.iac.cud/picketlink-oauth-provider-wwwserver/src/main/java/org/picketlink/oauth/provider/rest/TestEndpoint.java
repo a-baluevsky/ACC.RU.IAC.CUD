@@ -40,7 +40,6 @@ import static ru.spb.iac.cud.core.oauth.Token.AbstractAccessToken.AccessTokenSub
 
 import org.picketlink.oauth.provider.model.AuthenticationRequest;
 import org.picketlink.oauth.provider.model.exceptions.OAuthProviderException;
-import org.picketlink.oauth.provider.services.ClientApp;
 import org.picketlink.oauth.provider.services.ClientAppManager;
 import org.picketlink.oauth.provider.services.FileServer;
 import org.picketlink.oauth.provider.services.OAuthRegister;
@@ -184,8 +183,8 @@ import org.picketlink.oauth.provider.model.ClientApp;
     //@Inject  private IdentityManager identityManager;	
 	private void registerTestClientApp() {
 		if(!clientAppManager.existsApp(clientID)) {
-	        ClientApp oauthApp = clientAppManager.create(clientID, clientAppBaseURL, getLoggedUserId(), clientID, clientSecret);
-	        oauthApp.setEnabled(true);
+	       // ClientApp oauthApp = clientAppManager.create(clientID, clientAppBaseURL, getLoggedUserId(), clientID, clientSecret);
+	       //oauthApp.setEnabled(true);
 		}
 	}
 	

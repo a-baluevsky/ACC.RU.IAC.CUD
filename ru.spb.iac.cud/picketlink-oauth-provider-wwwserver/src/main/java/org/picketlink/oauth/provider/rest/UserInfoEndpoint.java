@@ -25,9 +25,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.picketlink.Identity;
-import org.picketlink.idm.model.Account;
-import org.picketlink.idm.model.basic.User;
 
 /**
  * <p>JAX-RS Endpoint to authenticate users.</p>
@@ -39,22 +36,21 @@ import org.picketlink.idm.model.basic.User;
 @Path("/userinfo")
 public class UserInfoEndpoint extends _Endpoint {
 
-    @Inject
-    private Identity identity;
 
     @GET
     @Produces (MediaType.APPLICATION_JSON)
     public UserInfo getInfo() {
         UserInfo userInfo = new UserInfo();
 
-        if (identity.isLoggedIn()) {
-            Account account = identity.getAccount();
+      /*  if (identity.isLoggedIn()) {
+        	
+        	Account account = identity.getAccount();
 
             User user = (User) account;
             //User user = this.identity.getUser();
             userInfo.setUserId(user.getLoginName());
             userInfo.setFullName(user.getFirstName() + " " + user.getLastName());
-
+*/
            /* UserContext userContext = this.identity.getUserContext();
 
             Collection<Role> roles = userContext.getRoles();
@@ -68,7 +64,7 @@ public class UserInfoEndpoint extends _Endpoint {
             }
 
             userInfo.setRoles(rolesArray);*/
-        }
+       // }
 
         return userInfo;
     }

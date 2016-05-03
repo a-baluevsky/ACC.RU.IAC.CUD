@@ -175,7 +175,7 @@ public class OAuthRegister {
 	
 	public <TOKENINFO extends TokenInfo, ACCESSTOKEN extends AccessToken<TOKENINFO>>
 	ACCESSTOKEN issueAccessToken(TOKENINFO tokenInfo, AccessTokenType accessTokenType) throws GeneralFailure {
-		try {
+		try { 
 			return issueAccessToken(tokenInfo, (Class<TOKENINFO>)tokenInfo.getClass(), accessTokenType);
 		} catch (Exception e) {
 			OAPE.OAuthRegisterException.throwIt("Failed issueAccessToken. "+e.getMessage());

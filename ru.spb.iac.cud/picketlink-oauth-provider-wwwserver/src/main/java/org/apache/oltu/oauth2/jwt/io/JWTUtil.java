@@ -11,8 +11,8 @@ import org.apache.oltu.oauth2.jwt.JWT;
 public class JWTUtil {
 	public static JWT createJWT(Map<String, String> mapAttrNameValue) {
     	final JWT.Builder jwtBld = (new JWT.Builder())
-    			.setHeaderAlgorithm("RS256")
-    			.setSignature("ABCDEFGHIJKLM"); //getJWTSignature(csFlgSignature) )
+    			.setHeaderAlgorithm("GOST3411withGOST3410EL")
+    			.setSignature("DEFAULT"); //getJWTSignature(csFlgSignature) )
     	for (Entry<String, String> eAtrNV : mapAttrNameValue.entrySet()) {
     		final String key = eAtrNV.getKey();
     		final String value = eAtrNV.getValue();
@@ -41,6 +41,7 @@ public class JWTUtil {
 	}
 	
 	public static String writeJWT(JWT jwt) {
-		return (new JWTWriter()).write(jwt);
+		//return (new JWTWriter()).write(jwt);
+		return (new CUDJWTWriter()).writeExt(jwt);
 	}
 }

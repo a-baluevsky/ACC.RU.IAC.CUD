@@ -30,9 +30,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import org.picketlink.Identity;
-import org.picketlink.credential.DefaultLoginCredentials;
-import org.picketlink.idm.credential.Password;
 import org.picketlink.oauth.provider.model.AuthenticationRequest;
 import org.picketlink.oauth.provider.model.AuthenticationResponse;
 import org.picketlink.oauth.provider.setup.RESTActivation;
@@ -47,8 +44,6 @@ import org.picketlink.oauth.provider.setup.RESTActivation;
 @Path("/signin")
 @TransactionAttribute
 public class SignInEndpoint extends _Endpoint {
-    @Inject private Identity identity;
-    @Inject private DefaultLoginCredentials credential;
     @Context private HttpServletRequest httpServletRequest;
     @Context private HttpServletResponse response;
 
@@ -61,7 +56,7 @@ public class SignInEndpoint extends _Endpoint {
     @POST
     @Consumes(RESTActivation.MediaJSON) @Produces(RESTActivation.MediaJSON)
     public AuthenticationResponse login(final AuthenticationRequest authcRequest) {
-        if (this.identity.isLoggedIn()) {
+     /*   if (this.identity.isLoggedIn()) {
             return createResponse(authcRequest);
         }
 
@@ -69,7 +64,7 @@ public class SignInEndpoint extends _Endpoint {
         this.credential.setCredential(new Password(authcRequest.getPassword().toCharArray()));
 
         this.identity.login();
-
+*/
         return createResponse(authcRequest);
     }
 
@@ -77,7 +72,7 @@ public class SignInEndpoint extends _Endpoint {
         AuthenticationResponse response = new AuthenticationResponse(this.response);
 
         response.setUserId(authcRequest.getUserId());
-        response.setLoggedIn(this.identity.isLoggedIn());
+     //   response.setLoggedIn(this.identity.isLoggedIn());
 
         if (response.isLoggedIn()) {
             //response.setToken(this.identity.getUserContext().getSession().getId().getId().toString());

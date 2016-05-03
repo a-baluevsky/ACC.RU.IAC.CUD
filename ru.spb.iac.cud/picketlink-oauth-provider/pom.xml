@@ -26,7 +26,8 @@
 
       <jboss.bom.version>1.0.7.Final</jboss.bom.version>
        <!-- PicketLink dependency versions -->
-       <version.picketlink.javaee.bom>2.6.0.CR1</version.picketlink.javaee.bom>
+              <!--version.picketlink.javaee.bom>2.6.0.CR1</version.picketlink.javaee.bom-->
+        <version.picketlink.javaee.bom>2.5.2.Final</version.picketlink.javaee.bom>
    </properties>
    
     <dependencyManagement>
@@ -38,13 +39,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency> <!-- Dependency Management for PicketLink and Java EE 6.0. -->
-            <dependency>
+            <!--dependency>
                 <groupId>org.picketlink</groupId>
                 <artifactId>picketlink-javaee-6.0</artifactId>
                 <version>${version.picketlink.javaee.bom}</version>
                 <scope>import</scope>
                 <type>pom</type>
-            </dependency>
+            </dependency-->
         </dependencies>
     </dependencyManagement>
 	
@@ -70,7 +71,8 @@
 					<webModule>
 						<groupId>${project.groupId}</groupId>
 						<artifactId>picketlink-oauth-provider-wwwserver</artifactId>
-						<contextRoot>/</contextRoot>
+						<bundleFileName>picketlink-oauth-provider-wwwserver.war</bundleFileName>
+						<contextRoot>picketlink-oauth-provider-wwwserver</contextRoot>
 					</webModule>                  
                </modules>
             </configuration>
