@@ -64,7 +64,9 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppUserBssT;
         
         try{
         	MimeMessage m = new MimeMessage(mailSession);
-        	Address from = new InternetAddress("do-not-reply@iac.spb.ru");
+        	
+        	Address from = new InternetAddress("is2-support@iac.spb.ru");
+        	
         	Address[] to = new InternetAddress[] {
         			new InternetAddress(email) 
         			};
@@ -72,7 +74,7 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppUserBssT;
         	
         	m.setFrom(from);
         	m.setRecipients(Message.RecipientType.TO, to);
-        	m.setSubject("Проверка адреса эл. почты", "utf-8");
+        	m.setSubject("РџСЂРѕРІРµСЂРєР° Р°РґСЂРµСЃР° СЌР». РїРѕС‡С‚С‹", "utf-8");
         	m.setSentDate(new java.util.Date());
         	
         	String validationKey = (new BigInteger(email.getBytes("utf-8"))).toString(16);
@@ -83,15 +85,15 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppUserBssT;
         	
         	LOGGER.debug("UserRegEJB:step1:02:"+link);
         	 
-        	String content = (new StringBuilder("Добрый день!<br/>"))
-             	   .append("Вы интересовались запросом на регистрацию пользователя в ИАЦ ПААА.<br/>") 
-            	   .append("Пожалуйста перейдите по ссылке ниже, чтобы подтвердить ") 
-            	   .append("Ваш адрес эл. почты: <br/>")
+        	String content = (new StringBuilder("Р”РѕР±СЂС‹Р№ РґРµРЅСЊ!<br/>"))
+             	   .append("Р’С‹ РёРЅС‚РµСЂРµСЃРѕРІР°Р»РёСЃСЊ Р·Р°РїСЂРѕСЃРѕРј РЅР° СЂРµРіРёСЃС‚СЂР°С†РёСЋ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РІ РРђР¦ РџРђРђРђ.<br/>") 
+            	   .append("РџРѕР¶Р°Р»СѓР№СЃС‚Р° РїРµСЂРµР№РґРёС‚Рµ РїРѕ СЃСЃС‹Р»РєРµ РЅРёР¶Рµ, С‡С‚РѕР±С‹ РїРѕРґС‚РІРµСЂРґРёС‚СЊ ") 
+            	   .append("Р’Р°С€ Р°РґСЂРµСЃ СЌР». РїРѕС‡С‚С‹: <br/>")
             	   .append("<a href=\"").append(link).append("\">").append(link)
             	   .append("</a> <br/><br/>") 
 		      	   .append("---<br/>") 
-		      	   .append("С уважением,<br/> ") 
-		      	   .append("ИАЦ")       	 
+		      	   .append("РЎ СѓРІР°Р¶РµРЅРёРµРј,<br/> ") 
+		      	   .append("РРђР¦")       	 
 		        	 .toString();
         	
         	m.setContent(content, "text/html; charset=utf-8");

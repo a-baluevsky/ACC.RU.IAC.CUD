@@ -72,6 +72,7 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppUserBssT;
 
     	//email_up_to_date - уточнённый email
     	//когда у пользователя несколько email, и он выбирает один из них
+    	System.out.println("UserForgotEJB:step1:01:"+login);
     	
         LOGGER.debug("UserForgotEJB:step1:01:"+login);
         LOGGER.debug("UserForgotEJB:step1:01_2:"+context_url);
@@ -130,8 +131,12 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppUserBssT;
         
         	String email = result.get(0);
         	
+        	System.out.println("UserForgotEJB:step1:02:"+email);
+        	
         	MimeMessage m = new MimeMessage(mailSession);
-        	Address from = new InternetAddress("do-not-reply@iac.spb.ru");
+        	
+        	Address from = new InternetAddress("is2-support@iac.spb.ru");
+        	
         	Address[] to = new InternetAddress[] {
         			new InternetAddress(email) 
         			};
@@ -169,12 +174,17 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppUserBssT;
         	LOGGER.debug("UserForgotEJB:step1:03");
         
         }catch(BaseError be){
+        	System.out.println("UserForgotEJB:step1:error:1:"+be);
+        	
         	LOGGER.error("UserForgotEJB:step1:berror:"+be);
         	throw be;
         	
         }catch(Exception e){
+        	System.out.println("UserForgotEJB:step1:error:2:"+e);
      	   LOGGER.error("UserForgotEJB:step1:error:"+e);
         }
+        
+        System.out.println("UserForgotEJB:step1:03");
         
         return result;
      }
