@@ -124,6 +124,7 @@
 				lgrGFXTest.writeLine('RESULT: '+JSON.stringify(res));
 		}
 		
+		
 		function test_getClientAppAccessToken() {
 			var getGetAccTknFromUserCredsCb =  _.partial(async.genericErrResCallback, function(data) {
 				//debugger;
@@ -131,7 +132,17 @@
 				lgrGFXTest.writeLine('ClientApp got access_token: '+access_token+'  for user creds: '+user.Login);
 				return access_token;
 			}, callback);
-			clientApp.getAccessTokenFromUserCredentials({user: user, password: userPassword}, getGetAccTknFromUserCredsCb);
+			
+			requirejs(	['GaliaJSFX_OAuthProviderREST', 'GaliaJSFX_ClientApp', 'GaliaJSFX_ClientAppUser'], //
+						function(_oapr, _ClientApp, _User) {
+				oapr		= _oapr.new_OAuthProviderREST(L_OAUTH_PROVIDER_ROOT, lgrGFXTest);
+				
+				testAppInfo = _ClientApp.RegClientApps.CTest2ClientApp;			
+				clientApp	= _ClientApp.new_ClientApp(testAppInfo, L_OAUTH_PROVIDER_ROOT)
+				user		= _User.new_ClientAppUser(userLogin, L_OAUTH_PROVIDER_ROOT);
+					
+				clientApp.getAccessTokenFromUserCredentials({user: user, password: userPassword}, getGetAccTknFromUserCredsCb);
+			});
 		}
 	
 		function test_UseCase1_RAW_JSON() {
@@ -207,16 +218,13 @@
 		};
 		
 	</script>
-	
 	<SCRIPT ID=testerGFX LANGUAGE=javascript>
 		var lgrGFXTest, testerGFX;
 		function window_onload() {
 			cboAuthProviderAddr_onchange();
-			requirejs([ 'underscore_plus', 'async', 'LoggerFX', 'TesterFX',
-				'GaliaJSFX_OAuthProviderREST', 'GaliaJSFX_ClientApp', 'GaliaJSFX_ClientAppUser'
+			requirejs([ 'underscore_plus', 'async', 'LoggerFX', 'TesterFX'				
 			], //
-			function(_, async, lfx, tfx,
-				_oapr, _ClientApp, _User) {
+			function(_, async, lfx, tfx) {
 				if(!window._) window._ = _;				
 				if(!window.async) window.async = async;
 				
@@ -225,12 +233,6 @@
 				lgrGFXTest = lfx.newListLogger(lstTestOutputGFX);
 				testerGFX = tfx.newTester({testSetId: "jsTestSetGFX"});
 				testerGFX.outputTestList(lstTestsGFX);
-				
-				oapr		= _oapr.new_OAuthProviderREST(L_OAUTH_PROVIDER_ROOT, lgrGFXTest);
-				
-				testAppInfo = _ClientApp.RegClientApps.CTest2ClientApp;			
-				clientApp	= _ClientApp.new_ClientApp(testAppInfo, L_OAUTH_PROVIDER_ROOT)
-				user		= _User.new_ClientAppUser(userLogin, L_OAUTH_PROVIDER_ROOT);
 				
 				if(_.isIEOlderThan(7))
 					lgrGFXTest.writeLine('IE 6');
