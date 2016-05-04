@@ -29,13 +29,11 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.message.types.ResponseType;
-import org.picketlink.credential.DefaultLoginCredentials;
 import org.picketlink.oauth.provider.model.AuthenticationRequest;
 import org.picketlink.oauth.provider.model.AuthenticationResponse;
 import org.picketlink.oauth.provider.model.AuthorizationResponse;
 import org.picketlink.oauth.provider.model.exceptions.OAuthProviderException.OAPE;
 import org.picketlink.oauth.provider.model.exceptions.OAuthProviderException.OAuthProviderExceptionCode;
-import org.picketlink.oauth.provider.services.ClientAppManager;
 import org.picketlink.oauth.provider.services.OAuthRegister;
 import org.picketlink.oauth.provider.setup.RESTActivation;
 import org.slf4j.Logger;

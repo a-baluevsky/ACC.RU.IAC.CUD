@@ -27,6 +27,7 @@ import ru.spb.iac.cud.items.AuditFunction;
 import ru.spb.iac.cud.items.wrapper.AuditDataPage;
 import ru.spb.iac.cud.services.CUDService;
 import ru.spb.iac.cud.services.CUDServiceREST;
+import ru.spb.iac.cud.services.application.ApplicationServiceImpl;
 
 @Path("/audit")
 public class AuditServiceREST extends CUDServiceREST {
@@ -35,19 +36,8 @@ public class AuditServiceREST extends CUDServiceREST {
 
 	// use aggregation to reuse web service implementation class
 	AuditServiceImpl impl;
-	public AuditServiceREST() {
-		//impl.serviceContext not accessible, so do injection manually
-		final Class<CUDService> clsImpl = CUDService.class;
-		try {			
-			impl = new AuditServiceImpl();
-			final Field fldServiceContext = clsImpl.getDeclaredField("serviceContext"); //getField("serviceContext"); //getDeclaredField("serviceContext");
-			fldServiceContext.setAccessible(true);
-			fldServiceContext.set(impl, serviceContext);
-		} catch (Exception e) {		
-			e.printStackTrace();
-		}
-	}
-
+	private AuditServiceImpl impl() { return impl==null? impl=switchServiceContext(new AuditServiceImpl()): impl; }	
+	
 	// Proxy methods
 	/*
    private static class AuditParams {
@@ -62,7 +52,7 @@ public class AuditServiceREST extends CUDServiceREST {
    @Produces(JSON_UTF8)
    public RESTResult audit(@QueryParam("uidUser") String uidUser,
         @QueryParam("userFunctions") List<AuditFunction> userFunctions) throws GeneralFailure {
-       impl.audit(uidUser, userFunctions);
+       impl().audit(uidUser, userFunctions);
        return RESTResult.OK;
    }
    @POST @Path("audit")
@@ -96,13 +86,13 @@ public class AuditServiceREST extends CUDServiceREST {
         @QueryParam("rowStartOffset") long rowStartOffset,
         @QueryParam("filterUser") long filterUser) throws GeneralFailure {
      AuditDataPage retVal = null;
-      return impl.EISAuditPageByPeriod(date1, date2, rowsCount, rowStartOffset, filterUser);
+      return impl().EISAuditPageByPeriod(date1, date2, rowsCount, rowStartOffset, filterUser);
    }
    @POST @Path("EISAuditPageByPeriod")
    @Consumes(JSON_UTF8) @Produces(JSON_UTF8)
    public AuditDataPage EISAuditPageByPeriod(AuditDataISByPeriodParams params) throws GeneralFailure {
      AuditDataPage retVal = null;
-      return impl.EISAuditPageByPeriod(date1, date2, rowsCount, rowStartOffset, filterUser);
+      return impl().EISAuditPageByPeriod(date1, date2, rowsCount, rowStartOffset, filterUser);
    }
 	
 	

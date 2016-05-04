@@ -43,6 +43,7 @@ public class CUDRsApp  extends Application {
 		resources.add(ru.spb.iac.cud.marshaler.JAXBMarshaler.ResourceMarshaler.class);
 		resources.add(ru.spb.iac.cud.marshaler.JAXBMarshaler.AuditFunctionMarshaler.class);
 		resources.add(ru.spb.iac.cud.marshaler.JAXBMarshaler.AppResultRequestMarshaler.class);
+		//resources.add(ru.spb.iac.cud.marshaler.JAXBMarshaler.AppResultRequestListMarshaler.class);
 		resources.add(ru.spb.iac.cud.marshaler.JAXBMarshaler.AppAttributeMarshaler.class);	
 	}
 }

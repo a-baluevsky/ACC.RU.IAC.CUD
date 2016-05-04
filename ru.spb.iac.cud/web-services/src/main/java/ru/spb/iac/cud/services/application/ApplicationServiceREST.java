@@ -29,19 +29,8 @@ public class ApplicationServiceREST extends CUDServiceREST {
 	
 	// use aggregation to reuse web service implementation class
 	ApplicationServiceImpl impl;
-	public ApplicationServiceREST() {
-		//impl.serviceContext not accessible, so do injection manually
-		final Class<CUDService> clsImpl = CUDService.class;
-		try {			
-			impl = new ApplicationServiceImpl();
-			final Field fldServiceContext = clsImpl.getDeclaredField("serviceContext"); //getField("serviceContext"); //getDeclaredField("serviceContext");
-			fldServiceContext.setAccessible(true);
-			fldServiceContext.set(impl, serviceContext);
-		} catch (Exception e) {		
-			e.printStackTrace();
-		}
-	}
-
+	private ApplicationServiceImpl impl() { return impl==null? impl=switchServiceContext(new ApplicationServiceImpl()): impl; }	
+	
 	// Proxy methods
    private static class SystemRegistrationParams {
        private 	List<AppAttribute> 	attributes;
@@ -52,13 +41,13 @@ public class ApplicationServiceREST extends CUDServiceREST {
    @Produces(JSON_UTF8)
    public AppAccept system_registration(@QueryParam("attributes") List<AppAttribute> attributes) throws GeneralFailure {
      AppAccept retVal = null;
-      return impl.system_registration(attributes);
+      return impl().system_registration(attributes);
    }
    @POST @Path("system_registration")
    @Consumes(JSON_UTF8) @Produces(JSON_UTF8)
    public AppAccept system_registration(SystemRegistrationParams params) throws GeneralFailure {
      AppAccept retVal = null;
-      return impl.system_registration(params.attributes);
+      return impl().system_registration(params.attributes);
    }
    private static class UserRegistrationParams {
        private 	List<AppAttribute> 	attributes;
@@ -69,13 +58,13 @@ public class ApplicationServiceREST extends CUDServiceREST {
    @Produces(JSON_UTF8)
    public AppAccept user_registration(@QueryParam("attributes") List<AppAttribute> attributes) throws GeneralFailure {
      AppAccept retVal = null;
-      return impl.user_registration(attributes);
+      return impl().user_registration(attributes);
    }
    @POST @Path("user_registration")
    @Consumes(JSON_UTF8) @Produces(JSON_UTF8)
    public AppAccept user_registration(UserRegistrationParams params) throws GeneralFailure {
      AppAccept retVal = null;
-      return impl.user_registration(params.attributes);
+      return impl().user_registration(params.attributes);
    }
    private static class AccessRolesParams {
        private 	String 	modeExec;
@@ -94,13 +83,13 @@ public class ApplicationServiceREST extends CUDServiceREST {
 						@QueryParam("uidUser") String uidUser,
 						@QueryParam("codesRoles") List<String> codesRoles) throws GeneralFailure {
      AppAccept retVal = null;
-      return impl.access_roles(modeExec, uidUser, codesRoles);
+      return impl().access_roles(modeExec, uidUser, codesRoles);
    }
    @POST @Path("access_roles")
    @Consumes(JSON_UTF8) @Produces(JSON_UTF8)
    public AppAccept access_roles(AccessRolesParams params) throws GeneralFailure {
      AppAccept retVal = null;
-      return impl.access_roles(params.modeExec, params.uidUser, params.codesRoles);
+      return impl().access_roles(params.modeExec, params.uidUser, params.codesRoles);
    }
    private static class AccessGroupsParams {
        private 	String 	modeExec;
@@ -119,13 +108,13 @@ public class ApplicationServiceREST extends CUDServiceREST {
         @QueryParam("uidUser") String uidUser,
         @QueryParam("codesGroups") List<String> codesGroups) throws GeneralFailure {
      AppAccept retVal = null;
-      return impl.access_groups(modeExec, uidUser, codesGroups);
+      return impl().access_groups(modeExec, uidUser, codesGroups);
    }
    @POST @Path("access_groups")
    @Consumes(JSON_UTF8) @Produces(JSON_UTF8)
    public AppAccept access_groups(AccessGroupsParams params) throws GeneralFailure {
      AppAccept retVal = null;
-      return impl.access_groups(params.modeExec, params.uidUser, params.codesGroups);
+      return impl().access_groups(params.modeExec, params.uidUser, params.codesGroups);
    }
    private static class BlockParams {
        private 	String 	modeExec;
@@ -144,13 +133,13 @@ public class ApplicationServiceREST extends CUDServiceREST {
         @QueryParam("uidUser") String uidUser,
         @QueryParam("blockUser") String blockUser) throws GeneralFailure {
      AppAccept retVal = null;
-      return impl.block(modeExec, uidUser, blockUser);
+      return impl().block(modeExec, uidUser, blockUser);
    }
    @POST @Path("block")
    @Consumes(JSON_UTF8) @Produces(JSON_UTF8)
    public AppAccept block(BlockParams params) throws GeneralFailure {
      AppAccept retVal = null;
-      return impl.block(params.modeExec, params.uidUser, params.blockUser);
+      return impl().block(params.modeExec, params.uidUser, params.blockUser);
    }
    private static class SystemModificationParams {
        private 	List<AppAttribute> 	attributes;
@@ -161,13 +150,13 @@ public class ApplicationServiceREST extends CUDServiceREST {
    @Produces(JSON_UTF8)
    public AppAccept system_modification(@QueryParam("attributes") List<AppAttribute> attributes) throws GeneralFailure {
      AppAccept retVal = null;
-      return impl.system_modification(attributes);
+      return impl().system_modification(attributes);
    }
    @POST @Path("system_modification")
    @Consumes(JSON_UTF8) @Produces(JSON_UTF8)
    public AppAccept system_modification(SystemModificationParams params) throws GeneralFailure {
      AppAccept retVal = null;
-      return impl.system_modification(params.attributes);
+      return impl().system_modification(params.attributes);
    }
    private static class UserModificationParams {
        private 	String 	uidUser;
@@ -182,13 +171,13 @@ public class ApplicationServiceREST extends CUDServiceREST {
    public AppAccept user_modification(@QueryParam("uidUser") String uidUser,
         @QueryParam("attributes") List<AppAttribute> attributes) throws GeneralFailure {
      AppAccept retVal = null;
-      return impl.user_modification(uidUser, attributes);
+      return impl().user_modification(uidUser, attributes);
    }
    @POST @Path("user_modification")
    @Consumes(JSON_UTF8) @Produces(JSON_UTF8)
    public AppAccept user_modification(UserModificationParams params) throws GeneralFailure {
      AppAccept retVal = null;
-      return impl.user_modification(params.uidUser, params.attributes);
+      return impl().user_modification(params.uidUser, params.attributes);
    }
    private static class UserIdentityModificationParams {
        private 	String 	uidUser;
@@ -207,13 +196,13 @@ public class ApplicationServiceREST extends CUDServiceREST {
         @QueryParam("login") String login,
         @QueryParam("password") String password) throws GeneralFailure {
      AppAccept retVal = null;
-      return impl.user_identity_modification(uidUser, login, password);
+      return impl().user_identity_modification(uidUser, login, password);
    }
    @POST @Path("user_identity_modification")
    @Consumes(JSON_UTF8) @Produces(JSON_UTF8)
    public AppAccept user_identity_modification(UserIdentityModificationParams params) throws GeneralFailure {
      AppAccept retVal = null;
-      return impl.user_identity_modification(params.uidUser, params.login, params.password);
+      return impl().user_identity_modification(params.uidUser, params.login, params.password);
    }
    private static class UserCertModificationParams {
        private 	String 	modeExec;
@@ -232,13 +221,13 @@ public class ApplicationServiceREST extends CUDServiceREST {
         @QueryParam("uidUser") String uidUser,
         @QueryParam("certBase64") String certBase64) throws GeneralFailure {
      AppAccept retVal = null;
-      return impl.user_cert_modification(modeExec, uidUser, certBase64);
+      return impl().user_cert_modification(modeExec, uidUser, certBase64);
    }
    @POST @Path("user_cert_modification")
    @Consumes(JSON_UTF8) @Produces(JSON_UTF8)
    public AppAccept user_cert_modification(UserCertModificationParams params) throws GeneralFailure {
      AppAccept retVal = null;
-      return impl.user_cert_modification(params.modeExec, params.uidUser, params.certBase64);
+      return impl().user_cert_modification(params.modeExec, params.uidUser, params.certBase64);
    }
 
 	// CORS support OPTION methods

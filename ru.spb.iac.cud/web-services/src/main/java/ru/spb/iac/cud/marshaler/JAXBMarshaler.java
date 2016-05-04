@@ -18,6 +18,7 @@ import ru.spb.iac.cud.items.Resource;
 import ru.spb.iac.cud.items.Role;
 import ru.spb.iac.cud.items.app.AppAttribute;
 import ru.spb.iac.cud.items.app.AppResultRequest;
+import ru.spb.iac.cud.items.app.AppResultRequestList;
 
 public class JAXBMarshaler<T> {
 	protected static final JAXBContext jaxbContext = getJAXBCtx();
@@ -99,9 +100,17 @@ public class JAXBMarshaler<T> {
 		@Override	public AppResultRequest fromString(String str) { return _fromString(str); }
 		@Override	public String toString(AppResultRequest value) { return _toString(value); }
 	}
+	
+	// XML <=> AppResultRequestList
+	public static @Provider class AppResultRequestListMarshaler extends JAXBMarshaler<AppResultRequestList>  implements StringConverter<AppResultRequestList> {
+		@Override	public AppResultRequestList fromString(String str) { return _fromString(str); }
+		@Override	public String toString(AppResultRequestList value) { return _toString(value); }
+	}	
+	
 	// XML <=> AppAttribute
 	public static @Provider class AppAttributeMarshaler extends JAXBMarshaler<AppAttribute>  implements StringConverter<AppAttribute> {
 		@Override	public AppAttribute fromString(String str) { return _fromString(str); }
 		@Override	public String toString(AppAttribute value) { return _toString(value); }
-	}	
+	}
+
 }

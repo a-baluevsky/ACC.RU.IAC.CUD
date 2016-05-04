@@ -41,6 +41,14 @@ public class CUDService {
     }
 	
 	private static class CUDServiceContext implements ICUDServiceContext {
+		public CUDServiceContext() {
+			// TODO Auto-generated constructor stub
+		}
+		
+		public CUDServiceContext(WebServiceContext wsContext) {
+			this.wsContext = wsContext;
+		}
+
 		@Resource(name="wsContext")
 		protected WebServiceContext wsContext;
 		
@@ -93,5 +101,13 @@ public class CUDService {
 		}
 	}
 	// See "stackOvflw: 12294761 Spring injection inner class" to do it properly!
-	protected ICUDServiceContext serviceContext = new CUDServiceContext();
+	protected ICUDServiceContext serviceContext; 
+	// ;
+	@Resource(name="wsContext")
+	protected WebServiceContext wsContext;
+	
+	protected ICUDServiceContext serviceContext() {
+		return serviceContext==null? serviceContext=new CUDServiceContext(this.wsContext): serviceContext;
+	}
+	
 }

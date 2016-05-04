@@ -52,19 +52,8 @@ import javax.xml.bind.Unmarshaller;
 public class AdminServiceREST extends CUDServiceREST {
 	// use aggregation to reuse web service implementation class
 	AdminServiceImpl impl;
-	public AdminServiceREST() {
-		//impl.serviceContext not accessible, so do injection manually
-		final Class<CUDService> clsImpl = CUDService.class;
-		try {			
-			impl = new AdminServiceImpl();
-			final Field fldServiceContext = clsImpl.getDeclaredField("serviceContext"); //getField("serviceContext"); //getDeclaredField("serviceContext");
-			fldServiceContext.setAccessible(true);
-			fldServiceContext.set(impl, serviceContext);
-		} catch (Exception e) {		
-			e.printStackTrace();
-		}
-	}
-
+	private AdminServiceImpl impl() { return impl==null? impl=switchServiceContext(new AdminServiceImpl()): impl; }
+	
 	// Proxy methods
    private static class SyncRolesParams {
        private 	List<Role> 	roles;
@@ -78,7 +67,7 @@ public class AdminServiceREST extends CUDServiceREST {
    @Produces(JSON_UTF8)
    public RESTResult sync_roles(@QueryParam("roles") List<Role> roles,
         @QueryParam("modeExec") String modeExec) throws GeneralFailure {
-       impl.sync_roles(roles, modeExec);
+       impl().sync_roles(roles, modeExec);
        return RESTResult.OK;
    }
    @POST @Path("sync_roles")
@@ -103,7 +92,7 @@ public class AdminServiceREST extends CUDServiceREST {
    public RESTResult access_roles(@QueryParam("uidsUsers") List<String> uidsUsers,
         @QueryParam("codesRoles") List<String> codesRoles,
         @QueryParam("modeExec") String modeExec) throws GeneralFailure {
-       impl.access_roles(uidsUsers, codesRoles, modeExec);
+       impl().access_roles(uidsUsers, codesRoles, modeExec);
        return RESTResult.OK;
    }
    @POST @Path("access_roles")
@@ -120,7 +109,7 @@ public class AdminServiceREST extends CUDServiceREST {
    @GET @Path("cert_change_sys")
    @Produces(JSON_UTF8)
    public RESTResult cert_change_sys(@QueryParam("String") String String) throws GeneralFailure {
-       impl.cert_change_sys(String);
+       impl().cert_change_sys(String);
        return RESTResult.OK;
    }
    @POST @Path("cert_change_sys")
@@ -143,7 +132,7 @@ public class AdminServiceREST extends CUDServiceREST {
    @Produces(JSON_UTF8)
    public RESTResult sync_functions(@QueryParam("functions") List<Function> functions, 
         @QueryParam("modeExec") String modeExec) throws GeneralFailure {
-       impl.sync_functions(functions, modeExec);
+       impl().sync_functions(functions, modeExec);
        return RESTResult.OK;
    }
 
@@ -166,7 +155,7 @@ public class AdminServiceREST extends CUDServiceREST {
    @Produces(JSON_UTF8)
    public RESTResult sync_groups(@QueryParam("groups") List<Group> groups,
         @QueryParam("modeExec") String modeExec) throws GeneralFailure {
-       impl.sync_groups(groups, modeExec);
+       impl().sync_groups(groups, modeExec);
        return RESTResult.OK;
    }
    @POST @Path("sync_groups")
@@ -191,7 +180,7 @@ public class AdminServiceREST extends CUDServiceREST {
    public RESTResult sync_groups_roles(@QueryParam("codesGroups") List<String> codesGroups,
         @QueryParam("codesRoles") List<String> codesRoles,
         @QueryParam("modeExec") String modeExec) throws GeneralFailure {
-       impl.sync_groups_roles(codesGroups, codesRoles, modeExec);
+       impl().sync_groups_roles(codesGroups, codesRoles, modeExec);
        return RESTResult.OK;
    }
    @POST @Path("sync_groups_roles")
@@ -217,7 +206,7 @@ public class AdminServiceREST extends CUDServiceREST {
    public RESTResult access_groups(@QueryParam("uidsUsers") List<String> uidsUsers,
         @QueryParam("codesGroups") List<String> codesGroups,
         @QueryParam("modeExec") String modeExec) throws GeneralFailure {
-       impl.access_groups(uidsUsers, codesGroups, modeExec);
+       impl().access_groups(uidsUsers, codesGroups, modeExec);
        return RESTResult.OK;
    }
    @POST @Path("access_groups")
@@ -238,7 +227,7 @@ public class AdminServiceREST extends CUDServiceREST {
    @Produces(JSON_UTF8)
    public RESTResult sync_resources(@QueryParam("resources") List<Resource> resources,
         @QueryParam("modeExec") String modeExec) throws GeneralFailure {
-       impl.sync_resources(resources, modeExec);
+       impl().sync_resources(resources, modeExec);
        return RESTResult.OK;
    }
    @POST @Path("sync_resources")
