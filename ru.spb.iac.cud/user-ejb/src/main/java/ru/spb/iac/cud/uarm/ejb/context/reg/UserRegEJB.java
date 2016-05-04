@@ -74,7 +74,7 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppUserBssT;
         	
         	m.setFrom(from);
         	m.setRecipients(Message.RecipientType.TO, to);
-        	m.setSubject("�������� ������ ��. �����", "utf-8");
+        	m.setSubject("Проверка адреса эл. почты", "utf-8");
         	m.setSentDate(new java.util.Date());
         	
         	String validationKey = (new BigInteger(email.getBytes("utf-8"))).toString(16);
@@ -85,15 +85,15 @@ import ru.spb.iac.cud.uarm.ejb.entity.JournAppUserBssT;
         	
         	LOGGER.debug("UserRegEJB:step1:02:"+link);
         	 
-        	String content = (new StringBuilder("������ ����!<br/>"))
-             	   .append("�� �������������� �������� �� ����������� ������������ � ��� ����.<br/>") 
-            	   .append("���������� ��������� �� ������ ����, ����� ����������� ") 
-            	   .append("��� ����� ��. �����: <br/>")
+        	String content = (new StringBuilder("Добрый день!<br/>"))
+             	   .append("Вы интересовались запросом на регистрацию пользователя в ИАЦ ПААА.<br/>") 
+            	   .append("Пожалуйста перейдите по ссылке ниже, чтобы подтвердить ") 
+            	   .append("Ваш адрес эл. почты: <br/>")
             	   .append("<a href=\"").append(link).append("\">").append(link)
             	   .append("</a> <br/><br/>") 
 		      	   .append("---<br/>") 
-		      	   .append("� ���������,<br/> ") 
-		      	   .append("���")       	 
+		      	   .append("С уважением,<br/> ") 
+		      	   .append("ИАЦ")       	 
 		        	 .toString();
         	
         	m.setContent(content, "text/html; charset=utf-8");
